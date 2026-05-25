@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>无权限说明 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="_prototype/prototype.css">
+  <style>
+    .denied-page { min-height: 100vh; background: linear-gradient(135deg,#f7fbff 0%,#fff8ed 100%); display: grid; place-items: center; padding: 24px; color: #17233a; }
+    .denied-card { width: min(760px,100%); background: rgba(255,255,255,.88); border: 1px solid rgba(255,255,255,.76); border-radius: 26px; box-shadow: var(--shadow); padding: 32px; }
+    .denied-icon { width: 58px; height: 58px; border-radius: 18px; background: #fff1df; display: grid; place-items: center; font-size: 28px; margin-bottom: 18px; }
+    .param-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 18px 0; }
+    .param { background: #f6f8fb; border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px; }
+    .param span { display:block; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+    .param strong { word-break: break-all; }
+    @media (max-width: 680px) { .param-grid { grid-template-columns: 1fr; } .denied-card { padding: 22px; } }
+  </style>
+</head>
+<body class="denied-page">
+  <main class="denied-card">
+    <div class="denied-icon">!</div>
+    <span class="badge warning">无权限访问</span>
+    <h1 class="title" style="margin-top:12px">当前身份不能访问此页面</h1>
+    <p class="subtitle">该说明页只展示权限边界和返回入口，不展示目标页面的业务对象详情，也不提供任何业务办理按钮。</p>
+
+    <section class="param-grid" aria-label="访问参数">
+      <div class="param"><span>当前身份 role</span><strong id="role-value">-</strong></div>
+      <div class="param"><span>目标页面 target</span><strong id="target-value">-</strong></div>
+      <div class="param"><span>允许角色 required</span><strong id="required-value">-</strong></div>
+      <div class="param"><span>来源 from / 原因 reason</span><strong id="from-value">-</strong></div>
+    </section>
+
+    <section class="callout info">
+      <div><strong>安全边界</strong><p>无权限访问不会自动切换身份，不会泄露教师档案、材料、线索或系统日志，也不会改变任何业务状态。</p></div>
+    </section>
+
+    <div class="operation-bar" style="margin-top:18px">
+      <button class="btn primary" type="button" id="go-portal">返回全站入口</button>
+      <button class="btn outline" type="button" id="go-message">返回消息中心</button>
+      <button class="btn ghost" type="button" id="show-rule">查看权限说明</button>
+    </div>
+  </main>
+
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "unknown");
+      var target = Prototype.query("target", "未指定页面");
+      var required = Prototype.query("required", "未指定允许角色");
+      var from = Prototype.query("from", "无来源");
+      var reason = Prototype.query("reason", "role_not_allowed");
+      document.getElementById("role-value").textContent = role;
+      document.getElementById("target-value").textContent = target;
+      document.getElementById("required-value").textContent = required;
+      document.getElementById("from-value").textContent = from + " / " + reason;
+      document.getElementById("go-portal").addEventListener("click", function () {
+        window.location.href = "00-P-001-全站入口与身份切换页.html";
+      });
+      document.getElementById("go-message").addEventListener("click", function () {
+        var url = new URL("00-P-002-消息中心页.html", window.location.href);
+        if (role !== "unknown") url.searchParams.set("role", role);
+        window.location.href = url.toString();
+      });
+      document.getElementById("show-rule").addEventListener("click", function (event) {
+        Prototype.layer("权限说明", "<p>目标页面允许角色：<strong>" + Prototype.escapeHtml(required) + "</strong></p><p>当前身份：" + Prototype.escapeHtml(role) + "。请返回入口页选择合适的演示身份。</p>", '<button class="btn primary" type="button" data-close>知道了</button>', false, event.target);
+      });
+    });
+  </script>
+</body>
+</html>
