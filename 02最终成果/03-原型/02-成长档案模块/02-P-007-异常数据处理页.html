@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>异常数据处理 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page"></div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "department_manager");
+      var objectId = Prototype.query("object", "DOC-2026-018");
+      var journey = Prototype.query("journey", role === "admin" ? "J-06" : "J-05");
+      var state = Prototype.query("state", objectId === "TASK-SYNC-001" ? "system-error" : (objectId.indexOf("ARCH-CLUE") === 0 ? "candidate-risk" : "conflict"));
+      var page = document.getElementById("page");
+      var allowed = ["department_manager", "business_manager", "admin"];
+      if (allowed.indexOf(role) === -1) { Prototype.deny("部门管理者、业务主管部门或系统管理员身份"); return; }
+      var objects = {
+        "DOC-2026-018": ["2025 年企业岗位实践结项证明", "材料字段冲突", "来源单位与实践周期需再次核对", "02-P-002 待确认数据页", "林知夏 · 智能制造学院"],
+        "DOC-2026-024": ["数字孪生实践结项报告", "对象易混淆", "实践结项材料不得覆盖历史补档对象", "02-P-002 待确认数据页", "林知夏 · 智能制造学院"],
+        "ARCH-CLUE-2026-001": ["教学能力比赛获奖公示线索", "候选匹配不足", "公开来源与教师事实仍需补充佐证", "02-P-006 公开线索审核页", "林知夏 · 智能制造学院"],
+        "TASK-SYNC-001": ["成长档案公开来源同步任务", "系统解析异常", "采集任务存在字段解析失败，需要返回任务监控查看日志", "02-P-009 数据任务监控页", "系统任务"]
+      };
+      if (!objects[objectId]) objectId = role === "admin" ? "TASK-SYNC-001" : "DOC-2026-018";
+      var item = objects[objectId];
+      function badge() {
+        if (state === "closed") return '<span class="badge success">已关闭</span>';
+        if (state === "system-error") return '<span class="badge danger">系统异常</span>';
+        if (state === "candidate-risk") return '<span class="badge warning">候选风险</span>';
+        return '<span class="badge warning">待处理异常</span>';
+      }
+      function manageShell() {
+        var isBusiness = role === "business_manager";
+        var person = isBusiness ? "陈璐" : "周明远";
+        var scope = isBusiness ? "授权业务范围 / 跨部门" : "智能制造学院";
+        page.className = "management";
+        page.innerHTML = '<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div><div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">' + person.slice(0,1) + '</span><span>' + person + '</span> ▾</div></div></header><div class="manage-shell"><aside class="manage-side"><p class="menu-label">成长档案</p><button class="menu-item">档案管理</button><button class="menu-item">待确认数据</button><button class="menu-item">公开线索审核</button><button class="menu-item active">异常数据处理</button><button class="menu-item">档案质量</button></aside><div class="manage-body"><header class="context-bar"><div class="row"><strong>成长档案</strong><span class="muted">/ 异常数据处理</span></div><div class="row"><span class="badge info">' + scope + '</span><span>' + person + '</span></div></header><main class="manage-main" id="main"></main></div></div>';
+      }
+      function adminShell() {
+        page.className = "admin";
+        page.innerHTML = '<aside class="admin-side"><div class="brand"><span class="brand-mark">管</span>系统管理</div><p class="menu-label">数据治理</p><button class="menu-item">数据任务监控</button><button class="menu-item active">异常数据处理</button><button class="menu-item">规则配置</button><p class="menu-label">审计</p><button class="menu-item">操作日志</button></aside><div class="admin-body"><header class="env-bar"><div class="row"><span class="env-chip">生产环境</span><strong>异常数据处理</strong></div><div class="user-pill"><span class="avatar">孙</span><span>孙嘉禾</span></div></header><main class="admin-main" id="main"></main></div>';
+      }
+      function mainHtml() {
+        var system = role === "admin";
+        var actions = state === "closed" ? '<button class="btn outline" id="back-source" type="button">返回来源页</button>' : system ? '<button class="btn primary" id="view-log" type="button">查看日志</button><button class="btn outline" id="close-exception" type="button">标记已处理</button><button class="btn" id="back-source" type="button">返回任务监控</button>' : '<button class="btn primary" id="request-more" type="button">要求补充</button><button class="btn outline" id="close-exception" type="button">标记不采纳并关闭</button><button class="btn" id="assign-owner" type="button">转交业务主管</button><button class="btn ghost" id="back-source" type="button">返回来源页</button>';
+        return '<section class="spread mobile-stack"><div><p class="eyebrow">' + (system ? '系统治理 / 数据任务' : '异常治理 / 成长档案') + '</p><h1 class="title">异常数据处理</h1><p class="subtitle">定位异常来源、记录处理意见，并返回原办理流程。异常处理不等于确认入档。</p></div><span class="snapshot-note"><span class="dot"></span>' + journey + '</span></section><section class="metric-grid manage-summary"><div class="metric"><span>当前对象</span><b>1</b><span>' + objectId + '</span></div><div class="metric"><span>异常状态</span><b style="font-size:22px">' + (state === "closed" ? '已关闭' : item[1]) + '</b><span>' + badge() + '</span></div><div class="metric"><span>正式入档</span><b>0</b><span>本页不确认入档</span></div><div class="metric"><span>新异常实体</span><b>0</b><span>仅为条件演示</span></div></section><div class="confirm-grid"><section class="card confirm-queue"><div class="card-pad"><h2 class="section-heading" style="margin:0">异常对象</h2></div><button class="confirm-item active" type="button">' + badge() + '<h3>' + item[0] + '</h3><p>' + objectId + '<br>' + item[4] + '</p></button></section><section class="card"><div class="evidence-panel"><div class="spread"><span class="badge warning">' + item[1] + '</span>' + badge() + '</div><h2>' + item[0] + '</h2><dl class="evidence-fields"><dt>对象 ID</dt><dd>' + objectId + '</dd><dt>来源页面</dt><dd>' + item[3] + '</dd><dt>影响对象</dt><dd>' + item[4] + '</dd><dt>异常说明</dt><dd>' + item[2] + '</dd><dt>处理边界</dt><dd>不直接入档，不新建正式异常实体，不覆盖原对象事实。</dd></dl><div class="evidence-source"><strong>处理建议</strong><br>' + (system ? '请返回任务监控查看任务日志，确认采集或规则解析问题。' : '请先要求补充或关闭异常，再回到待确认数据页继续人工确认。') + '</div></div><div class="confirm-actions">' + actions + '</div><div class="process-note" id="note">当前仅记录页面内处理留痕；真实数据状态由后续业务流程写入。</div></section></div>';
+      }
+      function render() { if (role === "admin") adminShell(); else manageShell(); document.getElementById("main").innerHTML = mainHtml(); }
+      function goBack() {
+        var file = objectId === "TASK-SYNC-001" ? "02-P-009-数据任务监控页.html" : objectId.indexOf("ARCH-CLUE") === 0 ? "02-P-006-公开线索审核页.html" : "02-P-002-待确认数据页.html";
+        var target = new URL(file, window.location.href);
+        target.searchParams.set("role", role === "admin" ? "admin" : role);
+        target.searchParams.set("object", objectId);
+        target.searchParams.set("journey", journey);
+        window.location.href = target.toString();
+      }
+      render();
+      page.addEventListener("click", function (event) {
+        if (event.target.id === "request-more") Prototype.toast("已记录要求补充处理意见，异常仍待回到原流程确认");
+        if (event.target.id === "assign-owner") Prototype.toast("已记录转交业务主管意图，不创建新的跨部门数据对象");
+        if (event.target.id === "view-log") Prototype.layer("任务日志摘要", "<p>任务：TASK-SYNC-001<br>错误：字段解析失败<br>建议：返回数据任务监控页查看完整日志与重试条件。</p>", "", true, event.target);
+        if (event.target.id === "back-source") goBack();
+        if (event.target.id === "close-exception") {
+          state = "closed";
+          Prototype.setState("closed");
+          render();
+          Prototype.toast("异常已关闭，本页仅保留处理留痕");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
