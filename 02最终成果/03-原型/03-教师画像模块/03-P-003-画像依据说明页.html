@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>画像依据说明 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page"></div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "teacher");
+      var profile = Prototype.query("object", "PROFILE-2026-LIN");
+      var journey = Prototype.query("journey", "J-03");
+      var allowed = ["teacher", "department_manager", "business_manager", "school_leader"];
+      var page = document.getElementById("page");
+      if (allowed.indexOf(role) === -1) { Prototype.deny("教师、部门管理者、业务主管部门或校级领导身份"); return; }
+      var active = 0;
+      var items = [
+        ["EVIDENCE-TEACH-001", "成长档案", "ARCH-2026-LIN-001", "已确认", "课程建设和教学比赛记录支撑教学能力画像。", "success"],
+        ["EVIDENCE-PRACTICE-001", "成长档案", "DOC-2026-018", "待确认", "企业岗位实践结项证明仍待补充或部门确认。", "warning"],
+        ["EVIDENCE-RESEARCH-001", "成果与教研", "ACH-2026-004", "依据不足", "教研成果与项目记录不足，需要后续补充。", "info"],
+        ["RULE-ARCH-001", "数据规则配置", "RULE-ARCH-001", "规则说明", "企业实践材料识别规则影响依据分类，不直接改写画像事实。", "info"]
+      ];
+      function isTeacher(){return role === "teacher";}
+      function isLeader(){return role === "school_leader";}
+      function isBusiness(){return role === "business_manager";}
+      function shell(){
+        if(isTeacher()){
+          page.className="teacher";
+          page.innerHTML='<header class="teacher-top"><div class="brand"><span class="brand-mark">育</span>教师发展平台</div><nav class="teacher-nav"><a href="../00-P-001-全站入口与身份切换页.html">入口</a><a href="03-P-001-我的教师画像页.html?role=teacher&object=PROFILE-2026-LIN&journey=J-03">教师画像</a><a class="active" href="#">依据说明</a></nav><div class="user-pill"><span class="avatar">林</span><span>林知夏</span></div></header><main class="teacher-main" id="main"></main>';
+        } else {
+          var name=isBusiness()?"陈璐":isLeader()?"王宁远":"周明远";
+          var scope=isBusiness()?"授权业务范围":isLeader()?"校级只读汇总":"智能制造学院";
+          page.className="management";
+          page.innerHTML='<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div><div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">'+name.slice(0,1)+'</span><span>'+name+'</span> ▾</div></div></header><div class="manage-shell"><aside class="manage-side"><p class="menu-label">教师画像</p><button class="menu-item">画像分析</button><button class="menu-item active">依据说明</button><p class="menu-label">公共</p><button class="menu-item">消息中心</button></aside><div class="manage-body"><header class="context-bar"><div class="row"><strong>教师画像</strong><span class="muted">/ 画像依据说明</span></div><div class="row"><span class="badge info">'+scope+'</span><span>'+name+'</span></div></header><main class="manage-main" id="main"></main></div></div>';
+        }
+      }
+      function badge(item){return '<span class="badge '+item[5]+'">'+item[3]+'</span>';}
+      function listHtml(){return '<section class="card confirm-queue"><div class="card-pad"><h2 class="section-heading" style="margin:0">依据列表</h2><p class="muted">选择依据查看来源、状态和后续建议。</p></div>'+items.map(function(it,i){return '<button class="confirm-item '+(i===active?'active':'')+'" type="button" data-evidence="'+i+'">'+badge(it)+'<h3>'+it[0]+'</h3><p>'+it[1]+' · '+it[2]+'<br>'+it[4]+'</p></button>';}).join('')+'</section>';}
+      function actions(it){
+        if(isLeader()) return '<button class="btn outline" id="back-profile" type="button">返回画像分析</button>';
+        if(isTeacher() && it[2]==="DOC-2026-018") return '<button class="btn primary" id="supplement" type="button">补充材料</button><button class="btn outline" id="back-profile" type="button">返回我的画像</button>';
+        if(role==="department_manager" && it[2]==="DOC-2026-018") return '<button class="btn primary" id="handle-pending" type="button">处理待确认</button><button class="btn outline" id="back-profile" type="button">返回画像分析</button>';
+        if(isBusiness() && it[0]==="RULE-ARCH-001") return '<button class="btn primary" id="rule-impact" type="button">查看规则影响</button><button class="btn outline" id="back-profile" type="button">返回画像分析</button>';
+        return '<button class="btn outline" id="back-profile" type="button">返回画像</button><button class="btn ghost" id="source-note" type="button">查看来源说明</button>';
+      }
+      function detailHtml(){var it=items[active];return '<section class="card"><div class="evidence-panel"><div class="spread"><span class="badge info">'+it[1]+'</span>'+badge(it)+'</div><h2>'+it[0]+' 依据说明</h2><dl class="evidence-fields"><dt>画像对象</dt><dd>'+profile+'</dd><dt>来源模块</dt><dd>'+it[1]+'</dd><dt>关联对象</dt><dd>'+it[2]+'</dd><dt>依据状态</dt><dd>'+it[3]+'</dd><dt>说明</dt><dd>'+it[4]+'</dd><dt>解释边界</dt><dd>本页只解释画像依据，不确认入档、不补充材料、不发布规则、不给出自动评价裁决。</dd></dl><div class="evidence-source"><strong>后续建议</strong><br>'+suggestion(it)+'</div></div><div class="confirm-actions">'+actions(it)+'</div><div class="process-note">不展示排名、综合分或自动裁决；待确认依据不会被当作已确认事实。</div></section>';}
+      function suggestion(it){if(it[2]==="DOC-2026-018")return isTeacher()?"请补充企业实践材料，提交后等待部门确认。":"请回到待确认数据页完成材料确认。";if(it[0]==="RULE-ARCH-001")return "规则只影响后续识别、候选生成和异常判定，不直接修改教师画像事实。";return "可继续查看来源说明，后续由对应业务模块补充依据。";}
+      function render(){shell();var main=document.getElementById("main");main.innerHTML='<section class="spread mobile-stack"><div><p class="eyebrow">画像解释 / 跨模块依据</p><h1 class="title">画像依据说明</h1><p class="subtitle">解释教师画像来自哪些已确认事实、待确认材料、缺失依据和规则说明。</p></div><span class="snapshot-note"><span class="dot"></span>'+journey+' · '+profile+'</span></section><section class="metric-grid manage-summary"><div class="metric"><span>已确认依据</span><b>1</b><span>可作为画像事实</span></div><div class="metric"><span>待确认依据</span><b>1</b><span>不能直接计入</span></div><div class="metric"><span>依据不足</span><b>1</b><span>需后续补充</span></div><div class="metric"><span>规则说明</span><b>1</b><span>不改写事实</span></div></section><section class="callout info"><div><strong>解释边界</strong><p>画像依据说明不等于评价结果，不展示排名、综合分或自动裁决。</p></div></section><div class="confirm-grid">'+listHtml()+detailHtml()+'</div>';}
+      render();
+      page.addEventListener("click",function(event){
+        var ev=event.target.closest("[data-evidence]"); if(ev){active=Number(ev.dataset.evidence); render(); return;}
+        if(event.target.id==="supplement"){var t=new URL("../02-成长档案模块/02-P-003-材料上传页.html",window.location.href);t.searchParams.set("role","teacher");t.searchParams.set("object","DOC-2026-018");t.searchParams.set("journey","J-03");t.searchParams.set("state","missing");t.searchParams.set("from","03-P-003");window.location.href=t.toString();}
+        if(event.target.id==="handle-pending"){var p=new URL("../02-成长档案模块/02-P-002-待确认数据页.html",window.location.href);p.searchParams.set("role","department_manager");p.searchParams.set("object","DOC-2026-018");p.searchParams.set("journey","J-05");p.searchParams.set("state","pending");p.searchParams.set("from","03-P-003");window.location.href=p.toString();}
+        if(event.target.id==="rule-impact"){var r=new URL("../02-成长档案模块/02-P-008-数据规则配置页.html",window.location.href);r.searchParams.set("role","business_manager");r.searchParams.set("object","RULE-ARCH-001");r.searchParams.set("journey","J-06");r.searchParams.set("from","03-P-003");window.location.href=r.toString();}
+        if(event.target.id==="back-profile"){window.location.href=isTeacher()?"03-P-001-我的教师画像页.html?role=teacher&object=PROFILE-2026-LIN&journey=J-03&from=03-P-003":"03-P-002-部门教师画像分析页.html?role="+role+"&object=PROFILE-SNAPSHOT-DEPT-001&journey=J-03&from=03-P-003";}
+        if(event.target.id==="source-note")Prototype.layer("来源说明","<p>依据来源于成长档案、成果与教研或数据规则配置。当前页面只做解释说明。</p>","",true,event.target);
+      });
+    });
+  </script>
+</body>
+</html>
