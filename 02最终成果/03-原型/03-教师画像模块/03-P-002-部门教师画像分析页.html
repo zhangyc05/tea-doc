@@ -48,6 +48,11 @@
         var readonly = leader ? " · 只读" : "";
         document.getElementById("main").innerHTML = '<section class="spread mobile-stack"><div><p class="eyebrow">管理分析 / 教师画像</p><h1 class="title">部门教师画像分析' + readonly + '</h1><p class="subtitle">查看授权范围内教师画像样本分布、重点关注对象和依据下钻。页面不展示排名或综合评分。</p></div><span class="snapshot-note"><span class="dot"></span>' + journey + ' · PROFILE-SNAPSHOT-DEPT-001</span></section><section class="metric-grid manage-summary"><div class="metric"><span>样本人数</span><b>3</b><span>演示样本</span></div><div class="metric"><span>待确认依据</span><b>1</b><span>DOC-2026-018</span></div><div class="metric"><span>依据不足</span><b>1</b><span>教研能力</span></div><div class="metric"><span>排名/综合分</span><b>0</b><span>禁止展示</span></div></section><section class="card card-pad"><h2 class="section-heading">能力维度分布</h2><div class="metric-grid"><div class="metric"><span>教学能力</span><b>优势</b><span>依据充分</span></div><div class="metric"><span>实践能力</span><b>待确认</b><span>1 项材料影响</span></div><div class="metric"><span>教研能力</span><b>需补充</b><span>依据不足</span></div><div class="metric"><span>服务能力</span><b>稳定</b><span>记录可追溯</span></div></div></section><div class="confirm-grid">' + listHtml() + detailHtml() + '</div>';
       }
+      function goEvidence() {
+        var p = people[active];
+        var target = new URL("03-P-003-画像依据说明页.html", window.location.href);
+        target.searchParams.set("role", role); target.searchParams.set("object", p[0]); target.searchParams.set("journey", journey); target.searchParams.set("from", "03-P-002"); window.location.href = target.toString();
+      }
       render();
       page.addEventListener("click", function (event) {
         var p = event.target.closest("[data-person]");
@@ -60,7 +65,7 @@
           var rule = new URL("../02-成长档案模块/02-P-008-数据规则配置页.html", window.location.href);
           rule.searchParams.set("role", "business_manager"); rule.searchParams.set("object", "RULE-ARCH-001"); rule.searchParams.set("journey", "J-06"); rule.searchParams.set("from", "03-P-002"); window.location.href = rule.toString();
         }
-        if (event.target.id === "view-source") Prototype.layer("画像依据说明", "<p>画像依据来自成长档案已确认事实、待确认材料和能力清单维度。待确认依据不会作为已确认画像事实。</p>", "", true, event.target);
+        if (event.target.id === "view-source") goEvidence();
       });
     });
   </script>
