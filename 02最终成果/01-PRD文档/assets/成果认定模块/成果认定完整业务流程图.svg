@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}
+      .lane{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+      .lane-title{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .box{fill:#ffffff;stroke:#dc2626;stroke-width:2;rx:8;ry:8}
+      .box-alt{fill:#fef2f2;stroke:#dc2626;stroke-width:2;rx:8;ry:8}
+      .box-warn{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}
+      .box-ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}
+      .title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:26px;font-weight:700}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+  <text class="title" x="40" y="48">成果认定完整业务流程图</text>
+
+  <rect class="lane" x="40" y="80" width="1200" height="120"/>
+  <text class="lane-title" x="60" y="112">线索与申报</text>
+  <rect class="box-alt" x="150" y="120" width="180" height="58"/>
+  <text class="text" x="197" y="146">成长档案</text>
+  <text class="small" x="178" y="166">事实数据 / 材料依据</text>
+  <rect class="box" x="420" y="120" width="180" height="58"/>
+  <text class="text" x="467" y="146">识别线索</text>
+  <text class="small" x="448" y="166">AI / 规则辅助分类</text>
+  <rect class="box" x="690" y="120" width="180" height="58"/>
+  <text class="text" x="737" y="146">教师确认</text>
+  <text class="small" x="718" y="166">补充材料 / 发起申报</text>
+  <rect class="box" x="960" y="120" width="180" height="58"/>
+  <text class="text" x="1007" y="146">提交申报</text>
+  <text class="small" x="988" y="166">生成成果申报单</text>
+
+  <rect class="lane" x="40" y="235" width="1200" height="135"/>
+  <text class="lane-title" x="60" y="267">审核认定</text>
+  <rect class="box-warn" x="130" y="285" width="190" height="62"/>
+  <text class="text" x="177" y="311">材料校验</text>
+  <text class="small" x="158" y="331">完整性 / 重复识别</text>
+  <rect class="box" x="420" y="285" width="190" height="62"/>
+  <text class="text" x="467" y="311">部门初审</text>
+  <text class="small" x="450" y="331">真实性 / 完整性</text>
+  <rect class="box" x="710" y="285" width="190" height="62"/>
+  <text class="text" x="757" y="311">专项审核</text>
+  <text class="small" x="735" y="331">按成果类型分流</text>
+  <rect class="box-ok" x="1000" y="285" width="190" height="62"/>
+  <text class="text" x="1047" y="311">等级认定</text>
+  <text class="small" x="1028" y="331">形成正式结论</text>
+
+  <rect class="lane" x="40" y="405" width="1200" height="130"/>
+  <text class="lane-title" x="60" y="437">归档回写</text>
+  <rect class="box-ok" x="190" y="455" width="210" height="62"/>
+  <text class="text" x="245" y="481">认定结论</text>
+  <text class="small" x="218" y="501">类型 / 等级 / 意见</text>
+  <rect class="box-ok" x="540" y="455" width="210" height="62"/>
+  <text class="text" x="595" y="481">回写档案</text>
+  <text class="small" x="568" y="501">标记已认定成果</text>
+  <rect class="box" x="890" y="455" width="210" height="62"/>
+  <text class="text" x="945" y="481">消息通知</text>
+  <text class="small" x="918" y="501">补正 / 通过 / 驳回</text>
+
+  <rect class="lane" x="40" y="570" width="1200" height="120"/>
+  <text class="lane-title" x="60" y="602">评价引用</text>
+  <rect class="box" x="210" y="615" width="210" height="58"/>
+  <text class="text" x="265" y="641">职称评聘</text>
+  <text class="small" x="238" y="661">材料和条件核验</text>
+  <rect class="box" x="535" y="615" width="210" height="58"/>
+  <text class="text" x="590" y="641">聘期考核</text>
+  <text class="small" x="562" y="661">已认定成果引用</text>
+  <rect class="box" x="860" y="615" width="210" height="58"/>
+  <text class="text" x="915" y="641">绩效考核</text>
+  <text class="small" x="888" y="661">成果数据应用</text>
+
+  <path class="arrow" d="M330 149 L420 149"/>
+  <path class="arrow" d="M600 149 L690 149"/>
+  <path class="arrow" d="M870 149 L960 149"/>
+  <path class="arrow" d="M1050 178 L225 285"/>
+  <path class="arrow" d="M320 316 L420 316"/>
+  <path class="arrow" d="M610 316 L710 316"/>
+  <path class="arrow" d="M900 316 L1000 316"/>
+  <path class="arrow" d="M1095 347 L295 455"/>
+  <path class="arrow" d="M400 486 L540 486"/>
+  <path class="arrow" d="M750 486 L890 486"/>
+  <path class="arrow" d="M645 517 L315 615"/>
+  <path class="arrow" d="M645 517 L640 615"/>
+  <path class="arrow" d="M645 517 L965 615"/>
+  <path class="dash" d="M225 347 C235 385,270 410,295 455"/>
+  <text class="small" x="250" y="388">退回补正 / 重复处理</text>
+</svg>

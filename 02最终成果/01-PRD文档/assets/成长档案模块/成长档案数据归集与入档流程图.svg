@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <defs>
+    <style>
+      .bg{fill:#f6f8fb}
+      .title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:30px;font-weight:700}
+      .subtitle{fill:#64748b;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .band{fill:#ffffff;stroke:#d9e2ef;stroke-width:1;rx:10;ry:10}
+      .source{fill:#eef4ff;stroke:#5b7cfa;stroke-width:2;rx:8;ry:8}
+      .system{fill:#f0f9ff;stroke:#0284c7;stroke-width:2;rx:8;ry:8}
+      .manual{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}
+      .ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .end{fill:#f8fafc;stroke:#94a3b8;stroke-width:2;rx:8;ry:8}
+      .decision{fill:#fff7ed;stroke:#f59e0b;stroke-width:2}
+      .label{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}
+      .note{fill:#64748b;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:12px}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .arrow-blue{stroke:#0284c7;stroke-width:2;fill:none;marker-end:url(#arrow-blue)}
+      .arrow-orange{stroke:#f59e0b;stroke-width:2;fill:none;marker-end:url(#arrow-orange)}
+      .arrow-green{stroke:#10b981;stroke-width:2;fill:none;marker-end:url(#arrow-green)}
+      .dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0284c7"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1440" height="900"/>
+  <text class="title" x="52" y="54">成长档案数据归集与入档流程图</text>
+  <text class="subtitle" x="52" y="82">L1/L2 为可信结构化来源，校验后可自动入档；L3 为材料与线索来源，需解析、确认或审核后入档</text>
+
+  <rect class="band" x="48" y="112" width="1344" height="140"/>
+  <text class="label" x="72" y="148">一、三类数据来源</text>
+  <rect class="source" x="210" y="156" width="270" height="70"/>
+  <text class="text" x="292" y="182">L1 系统对接</text>
+  <text class="small" x="246" y="206">人事 / 教务 / 科研 / 竞赛 / 考核</text>
+  <rect class="source" x="585" y="156" width="270" height="70"/>
+  <text class="text" x="667" y="182">L2 业务沉淀</text>
+  <text class="small" x="616" y="206">培训 / 实践 / 教研 / 反思 / 活动过程</text>
+  <rect class="source" x="960" y="156" width="300" height="70"/>
+  <text class="text" x="1032" y="182">L3 材料与线索归集</text>
+  <text class="small" x="984" y="206">材料上传 / 批量导入 / 公开线索 / 专项补充</text>
+
+  <rect class="band" x="48" y="290" width="1344" height="215"/>
+  <text class="label" x="72" y="326">二、分来源处理</text>
+
+  <rect class="system" x="170" y="350" width="165" height="58"/>
+  <text class="text" x="204" y="374">教师匹配</text>
+  <text class="small" x="194" y="394">工号 / 姓名 / 部门</text>
+  <rect class="system" x="380" y="350" width="165" height="58"/>
+  <text class="text" x="414" y="374">数据归类</text>
+  <text class="small" x="400" y="394">维度 / 事件类型</text>
+  <rect class="system" x="590" y="350" width="165" height="58"/>
+  <text class="text" x="624" y="374">规则校验</text>
+  <text class="small" x="604" y="394">完整性 / 冲突 / 可信度</text>
+  <text class="note" x="170" y="435">L1/L2：结构化数据，不经过 AI 解析，满足规则后可自动入档。</text>
+
+  <rect class="system" x="880" y="326" width="145" height="54"/>
+  <text class="text" x="916" y="359">AI 解析</text>
+  <rect class="system" x="1070" y="326" width="145" height="54"/>
+  <text class="text" x="1104" y="359">教师匹配</text>
+  <rect class="system" x="1260" y="326" width="100" height="54"/>
+  <text class="text" x="1284" y="359">归类</text>
+  <rect class="manual" x="880" y="420" width="220" height="58"/>
+  <text class="text" x="922" y="444">候选数据 / 线索</text>
+  <text class="small" x="908" y="464">识别结果需确认或审核</text>
+  <rect class="manual" x="1140" y="420" width="220" height="58"/>
+  <text class="text" x="1190" y="444">人工协同</text>
+  <text class="small" x="1164" y="464">教师确认 / 管理者审核</text>
+  <text class="note" x="880" y="500">L3：非结构化或半结构化依据，需要 AI 解析和人工确认；公开线索不得直接入档。</text>
+
+  <rect class="band" x="48" y="540" width="1344" height="245"/>
+  <text class="label" x="72" y="577">三、入档判断</text>
+  <polygon class="decision" points="515,600 650,665 515,730 380,665"/>
+  <text class="text" x="456" y="660">是否满足入档规则？</text>
+  <text class="small" x="458" y="683">匹配成功 / 无冲突 / 依据充分</text>
+  <polygon class="decision" points="1025,600 1160,665 1025,730 890,665"/>
+  <text class="text" x="964" y="660">人工确认是否通过？</text>
+  <text class="small" x="970" y="683">候选数据 / 公开线索 / 异常</text>
+
+  <rect class="ok" x="700" y="630" width="195" height="64"/>
+  <text class="text" x="752" y="656">自动入档</text>
+  <text class="small" x="728" y="678">L1/L2 校验通过</text>
+  <rect class="manual" x="160" y="630" width="195" height="64"/>
+  <text class="text" x="212" y="656">待核验数据</text>
+  <text class="small" x="180" y="678">无法匹配 / 重复 / 冲突</text>
+  <rect class="ok" x="1210" y="630" width="145" height="64"/>
+  <text class="text" x="1246" y="656">确认入档</text>
+  <text class="small" x="1230" y="678">L3 审核通过</text>
+  <rect class="end" x="890" y="735" width="195" height="42"/>
+  <text class="text" x="940" y="761">驳回留痕</text>
+
+  <rect class="band" x="48" y="805" width="1344" height="65"/>
+  <text class="label" x="72" y="844">四、正式档案与复用</text>
+  <rect class="ok" x="360" y="818" width="270" height="38"/>
+  <text class="text" x="432" y="842">正式档案数据</text>
+  <rect class="source" x="810" y="818" width="270" height="38"/>
+  <text class="text" x="877" y="842">下游模块引用</text>
+
+  <path class="arrow-blue" d="M345 226 C345 282,252 312,252 350"/>
+  <path class="arrow-blue" d="M720 226 C720 282,675 312,675 350"/>
+  <path class="arrow-blue" d="M1110 226 C1110 282,952 298,952 326"/>
+
+  <path class="arrow-blue" d="M335 379 L380 379"/>
+  <path class="arrow-blue" d="M545 379 L590 379"/>
+  <path class="arrow-blue" d="M675 408 C650 475,600 545,560 610"/>
+  <path class="arrow-blue" d="M1025 353 L1070 353"/>
+  <path class="arrow-blue" d="M1215 353 L1260 353"/>
+  <path class="arrow-blue" d="M1310 380 C1290 402,1170 418,1100 445"/>
+  <path class="arrow-orange" d="M1100 449 L1140 449"/>
+  <path class="arrow-orange" d="M1250 478 C1190 525,1110 575,1068 610"/>
+
+  <path class="arrow-green" d="M650 665 L700 665"/>
+  <path class="arrow-orange" d="M380 665 L355 665"/>
+  <path class="arrow-green" d="M1160 665 L1210 665"/>
+  <path class="dash" d="M985 730 L985 735"/>
+  <path class="arrow-green" d="M895 665 C960 750,720 805,630 837"/>
+  <path class="arrow-green" d="M1355 665 C1320 770,720 805,630 837"/>
+  <path class="arrow-green" d="M797 694 C750 765,680 810,630 837"/>
+  <path class="dash" d="M257 694 C350 770,470 805,630 837"/>
+  <path class="arrow-green" d="M630 837 L810 837"/>
+
+  <text class="small" x="662" y="648">是</text>
+  <text class="small" x="338" y="648">否</text>
+  <text class="small" x="1172" y="648">通过</text>
+  <text class="small" x="996" y="728">不通过</text>
+
+  <text class="note" x="72" y="880">关键规则：L1/L2 不走 AI 解析，校验通过可自动入档；L3 统一承载材料和公开线索，必须解析、确认或审核后入档；冲突、重复、无法匹配数据进入待核验。</text>
+</svg>

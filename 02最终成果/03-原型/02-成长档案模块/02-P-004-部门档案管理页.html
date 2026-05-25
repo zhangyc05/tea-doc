@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>部门档案管理 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page" class="management">
+    <header class="manage-head">
+      <div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div>
+      <div class="head-right">
+        <div class="head-select">2025-2026 学年 第二学期 ▾</div>
+        <div class="head-user"><span class="head-avatar">周</span><span>周明远</span> ▾</div>
+      </div>
+    </header>
+    <div class="manage-shell">
+      <aside class="manage-side" aria-label="管理业务导航">
+        <p class="menu-label">成长档案</p>
+        <button class="menu-item active" type="button">档案管理</button>
+        <button class="menu-item" type="button" id="side-clues">公开线索审核</button>
+        <button class="menu-item" type="button" id="side-exception">异常数据处理</button>
+        <button class="menu-item" type="button">档案质量</button>
+        <p class="menu-label">业务协同</p>
+        <button class="menu-item" type="button">我的待办</button>
+        <button class="menu-item" type="button">教师画像</button>
+        <button class="menu-item" type="button">培训与实践</button>
+      </aside>
+      <div class="manage-body">
+        <header class="context-bar">
+          <div class="row"><strong>成长档案</strong><span class="muted">/ 部门档案管理</span></div>
+          <div class="row"><span class="badge info">智能制造学院</span><span>周明远 · 部门管理者</span></div>
+        </header>
+        <main class="manage-main">
+          <section class="spread mobile-stack">
+            <div>
+              <p class="eyebrow">业务管理 / 成长档案</p>
+              <h1 class="title">部门档案管理</h1>
+              <p class="subtitle">查看本部门已形成的档案待办，并将事项送往对应处理流程。</p>
+            </div>
+            <span class="snapshot-note"><span class="dot"></span>J-05 管理快照</span>
+          </section>
+
+          <section class="metric-grid manage-metrics-five manage-summary" aria-label="档案待办事实摘要">
+            <div class="metric"><span>当前列表教师</span><b>1</b><span>仅为演示范围</span></div>
+            <div class="metric"><span>待补充材料</span><b>0</b><span>已进入确认环节</span></div>
+            <div class="metric"><span>待确认数据</span><b id="pending-total">1</b><span>可立即处理</span></div>
+            <div class="metric"><span>待审核公开线索</span><b id="clue-total">2</b><span>需人工核查</span></div>
+            <div class="metric"><span>异常</span><b>0</b><span>暂无登记对象</span><button class="btn ghost small metric-action" type="button" id="zero-exception">查看说明</button></div>
+          </section>
+
+          <section class="manage-attention" aria-label="优先处理事项" id="attention">
+            <div>
+              <h2>历史档案材料待确认</h2>
+              <p>林知夏 · 2025 年企业岗位实践结项证明 · 来源于待办消息 MSG-2026-104</p>
+            </div>
+            <button class="btn primary" type="button" id="process-material">处理待确认</button>
+          </section>
+
+          <section class="card card-pad" aria-label="档案筛选">
+            <div class="filters">
+              <select class="field" aria-label="部门范围"><option>智能制造学院</option></select>
+              <select class="field" aria-label="事项状态"><option>全部待处理</option><option>待确认数据</option><option>待审核公开线索</option></select>
+              <select class="field" aria-label="事项类型"><option>全部档案事项</option><option>材料确认</option><option>公开线索</option></select>
+              <input class="field" aria-label="搜索教师" placeholder="搜索教师姓名">
+              <button class="btn primary small" type="button" id="filter-button">筛选</button>
+            </div>
+          </section>
+
+          <section class="card table-section" aria-labelledby="teacher-table-title">
+            <div class="table-head">
+              <div>
+                <h2 class="section-heading" id="teacher-table-title" style="margin:0 0 5px">教师档案待办列表</h2>
+                <p class="muted">当前样板仅展示已登记演示对象，不代表部门总体统计。</p>
+              </div>
+              <button class="btn outline small" type="button" id="show-processed">查看已处理状态</button>
+            </div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead>
+                  <tr>
+                    <th>教师</th>
+                    <th>待补充材料</th>
+                    <th>待确认</th>
+                    <th>待审核公开线索</th>
+                    <th>异常</th>
+                    <th>最近更新</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-rows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="manage-empty" id="exception-empty" aria-label="异常事项状态">
+            <strong>暂无已登记的异常事项</strong><br>
+            当前管理快照未包含可处理的异常对象；后续存在有依据的冲突数据时，才进入异常处理流程。
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "department_manager");
+      if (role !== "department_manager") {
+        Prototype.deny("部门管理者身份");
+        return;
+      }
+      var currentState = Prototype.query("state", "snapshot");
+
+      function openPending() {
+        var target = new URL("02-P-002-待确认数据页.html", window.location.href);
+        target.searchParams.set("role", "department_manager");
+        target.searchParams.set("object", "DOC-2026-018");
+        target.searchParams.set("journey", "J-05");
+        target.searchParams.set("state", "pending");
+        window.location.href = target.toString();
+      }
+      function openClues() {
+        var target = new URL("02-P-006-公开线索审核页.html", window.location.href);
+        target.searchParams.set("role", "department_manager");
+        target.searchParams.set("object", "ARCH-CLUE-2026-001");
+        target.searchParams.set("journey", "J-05");
+        window.location.href = target.toString();
+      }
+      function showNoException(trigger) {
+        Prototype.layer(
+          "暂无异常事项",
+          "<p>当前管理快照没有登记可处理的异常对象，因此本页不展示虚构的异常记录。</p>",
+          '<button class="btn primary" type="button" data-close>知道了</button>',
+          false,
+          trigger
+        );
+      }
+      function render() {
+        var processed = currentState === "processed";
+        var noTask = currentState === "no-task";
+        document.getElementById("pending-total").textContent = (processed || noTask) ? "0" : "1";
+        document.getElementById("clue-total").textContent = noTask ? "0" : "2";
+        document.getElementById("attention").innerHTML = noTask ?
+          '<div><h2>当前筛选下暂无待办事项</h2><p>可调整事项状态或类型查看本部门已登记档案记录。</p></div><button class="btn outline" type="button" id="reset-state">返回管理快照</button>' :
+          processed ?
+          '<div><h2>最近待确认事项已处理</h2><p>DOC-2026-018 的后续确认结果应由待确认数据流程记录，本页仅反馈队列变化。</p></div><button class="btn outline" type="button" id="reset-state">返回管理快照</button>' :
+          '<div><h2>历史档案材料待确认</h2><p>林知夏 · 2025 年企业岗位实践结项证明 · 来源于待办消息 MSG-2026-104</p></div><button class="btn primary" type="button" id="process-material">处理待确认</button>';
+        document.getElementById("teacher-rows").innerHTML = noTask ?
+          '<tr><td colspan="7" class="manage-empty">当前筛选下暂无待处理档案事项，请调整筛选条件后查看。</td></tr>' :
+          '<tr><td class="person"><strong>林知夏</strong><span>智能制造学院 · ARCH-2026-LIN-001</span></td>' +
+          '<td>0</td><td><span class="table-number">' + (processed ? "0" : "1") + '</span></td>' +
+          '<td><span class="table-number">2</span></td><td>0</td><td>2026-05-23 09:30</td>' +
+          '<td><div class="table-actions">' +
+          (processed ? "" : '<button class="btn small" type="button" id="row-process">处理待确认</button>') +
+          '<button class="btn outline small" type="button" id="row-clues">查看线索</button></div></td></tr>';
+      }
+
+      render();
+      document.getElementById("attention").addEventListener("click", function (event) {
+        if (event.target.id === "process-material") openPending();
+        if (event.target.id === "reset-state") {
+          currentState = "snapshot";
+          Prototype.setState("snapshot");
+          render();
+        }
+      });
+      document.getElementById("teacher-rows").addEventListener("click", function (event) {
+        if (event.target.id === "row-process") openPending();
+        if (event.target.id === "row-clues") openClues();
+      });
+      document.getElementById("side-clues").addEventListener("click", openClues);
+      document.getElementById("side-exception").addEventListener("click", function (event) { showNoException(event.currentTarget); });
+      document.getElementById("zero-exception").addEventListener("click", function (event) { showNoException(event.currentTarget); });
+      document.getElementById("filter-button").addEventListener("click", function () {
+        Prototype.toast("已筛选当前管理快照中的档案待办");
+      });
+      document.getElementById("show-processed").addEventListener("click", function () {
+        currentState = "processed";
+        Prototype.setState("processed");
+        render();
+      });
+    });
+  </script>
+</body>
+</html>

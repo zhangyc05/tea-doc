@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>待确认数据 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page"></div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "teacher");
+      var objectId = Prototype.query("object", "DOC-2026-018");
+      var journey = Prototype.query("journey", role === "teacher" ? "J-01" : "J-05");
+      var allowed = ["teacher", "department_manager", "business_manager"];
+      var isTeacher = role === "teacher";
+      var isBusiness = role === "business_manager";
+      var objects = {
+        "DOC-2026-018": {
+          name: "2025 年企业岗位实践结项证明",
+          kind: "材料",
+          dimension: "D4 企业实践",
+          source: "智造云科技有限公司",
+          time: "2026-05-23 09:30",
+          suggestion: "岗位实践结项证明 / 2025 年",
+          message: "MSG-2026-104"
+        },
+        "DOC-2026-024": {
+          name: "数字孪生实践结项报告",
+          kind: "材料",
+          dimension: "D4 企业实践",
+          source: "智能制造实践项目",
+          time: "2026-05-24 10:15",
+          suggestion: "实践结项报告 / 2026 年",
+          message: "MSG-2026-113"
+        },
+        "ARCH-CLUE-2026-001": {
+          name: "教学能力比赛获奖公示线索",
+          kind: "候选线索",
+          dimension: "D6 成果荣誉",
+          source: "学校官网公示",
+          time: "2026-05-18",
+          suggestion: "获奖名称、获奖级别、发布时间",
+          message: "线索审核转入"
+        },
+        "ARCH-CLUE-2026-002": {
+          name: "行业兼职任职公示线索",
+          kind: "候选线索",
+          dimension: "D5 社会服务",
+          source: "行业协会公开名单",
+          time: "2026-05-18",
+          suggestion: "任职名称、任职机构、任期",
+          message: "线索审核转入"
+        }
+      };
+      if (allowed.indexOf(role) === -1) {
+        Prototype.deny("教师、部门管理者或业务主管部门身份");
+        return;
+      }
+      if (!objects[objectId]) objectId = "DOC-2026-018";
+      var item = objects[objectId];
+      var defaultState = isTeacher ? "missing" : (item.kind === "候选线索" ? "candidate" : "pending");
+      var currentState = Prototype.query("state", defaultState);
+      var page = document.getElementById("page");
+
+      function teacherShell() {
+        page.className = "teacher";
+        page.innerHTML =
+          '<header class="teacher-top" aria-label="教师端导航">' +
+            '<div class="brand"><span class="brand-mark">育</span>教师发展平台</div>' +
+            '<nav class="teacher-nav" aria-label="我的业务"><a class="active" href="#">我的成长</a><a href="#">发展行动</a><a href="#">成果与评价</a><a href="#">消息</a></nav>' +
+            '<div class="user-pill"><span class="avatar">林</span><span>林知夏<br><small class="muted">副教授</small></span></div>' +
+          '</header><main class="teacher-main" id="task-content"></main>';
+      }
+
+      function managementShell() {
+        var person = isBusiness ? "陈璐" : "周明远";
+        var scope = isBusiness ? "授权业务范围 / 跨部门" : "智能制造学院";
+        var identity = isBusiness ? "业务主管部门" : "部门管理者";
+        page.className = "management";
+        page.innerHTML =
+          '<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div>' +
+            '<div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">' + person.slice(0, 1) + '</span><span>' + person + '</span> ▾</div></div></header>' +
+          '<div class="manage-shell"><aside class="manage-side" aria-label="管理业务导航">' +
+            '<p class="menu-label">成长档案</p><button class="menu-item" type="button">档案管理</button><button class="menu-item active" type="button">待确认数据</button><button class="menu-item" type="button">公开线索审核</button><button class="menu-item" type="button">异常数据处理</button><button class="menu-item" type="button">档案质量</button>' +
+            '<p class="menu-label">业务协同</p><button class="menu-item" type="button">我的待办</button><button class="menu-item" type="button">教师画像</button></aside>' +
+            '<div class="manage-body"><header class="context-bar"><div class="row"><strong>成长档案</strong><span class="muted">/ 待确认数据</span></div><div class="row"><span class="badge info">' + scope + '</span><span>' + person + ' · ' + identity + '</span></div></header><main class="manage-main" id="task-content"></main></div></div>';
+      }
+
+      function statusBadge() {
+        if (currentState === "confirmed") return '<span class="badge success">已确认入档</span>';
+        if (currentState === "candidate") return '<span class="badge warning">已转候选 · 待确认</span>';
+        if (currentState === "missing") return '<span class="badge warning">待补充</span>';
+        return '<span class="badge info">待确认</span>';
+      }
+
+      function headerMarkup(title, subtitle) {
+        return '<section class="teacher-title spread mobile-stack">' +
+          '<div><p class="eyebrow">' + (isTeacher ? "我的成长 / 材料补充" : "材料确认 / 成长档案") + '</p><h1 class="title">待确认数据</h1><p class="subtitle">' + subtitle + '</p></div>' +
+          '<span class="snapshot-note"><span class="dot"></span>' + journey + ' · ' + title + '</span></section>';
+      }
+
+      function evidenceCard(actionMarkup) {
+        return '<section class="card">' +
+          '<div class="evidence-panel"><div class="spread"><span class="badge info">' + item.kind + '</span>' + statusBadge() + '</div>' +
+          '<h2>' + item.name + '</h2><dl class="evidence-fields">' +
+          '<dt>对象 ID</dt><dd>' + objectId + '</dd><dt>关联教师</dt><dd>林知夏 · 智能制造学院</dd>' +
+          '<dt>所属维度</dt><dd>' + item.dimension + '</dd><dt>来源依据</dt><dd>' + item.source + '</dd>' +
+          '<dt>' + (item.kind === "材料" ? "提交时间" : "识别时间") + '</dt><dd>' + item.time + '</dd><dt>建议字段</dt><dd>' + item.suggestion + '</dd></dl>' +
+          '<div class="evidence-source">来源说明：当前信息来自已登记依据，需由对应身份完成补充或人工确认后，方可反映为正式档案更新。</div></div>' +
+          '<div class="confirm-actions">' + actionMarkup + '</div><div class="process-note">关联档案：ARCH-2026-LIN-001 · 进入来源：' + item.message + '</div></section>';
+      }
+
+      function queueCard(label) {
+        return '<section class="card confirm-queue" aria-label="当前对象"><div class="card-pad"><h2 class="section-heading" style="margin:0">' + label + '</h2></div>' +
+          '<button type="button" class="confirm-item active">' + statusBadge() + '<h3>' + item.name + '</h3><p>林知夏 · ' + objectId + '<br>' + item.dimension + '</p></button></section>';
+      }
+
+      function renderTeacher() {
+        var content = document.getElementById("task-content");
+        if (currentState === "empty") {
+          content.innerHTML = headerMarkup("本人事项", "查看需要本人行动的材料与确认事项。") +
+            '<section class="card card-pad"><div class="empty">当前暂无待确认数据。可返回我的成长档案继续查看已形成事实。</div></section>';
+          return;
+        }
+        content.innerHTML = headerMarkup("本人待补充", "查看本人需要补充的依据材料，提交后将进入人工确认流程。") +
+          '<section class="callout warning"><div><strong>企业实践材料仍待补充</strong><p>请在 2026-05-28 前补充证明材料；本页不会代替材料提交流程。</p></div></section>' +
+          '<div class="confirm-grid">' + queueCard("我的待补充材料") + evidenceCard(
+            '<button class="btn primary" type="button" id="supplement-material">补充材料</button><button class="btn outline" type="button" id="preview-evidence">查看说明</button>'
+          ) + '</div>';
+      }
+
+      function renderManager() {
+        var content = document.getElementById("task-content");
+        var range = isBusiness ? "授权业务范围内候选对象" : "本部门材料确认待办";
+        if (currentState === "empty") {
+          content.innerHTML = headerMarkup("当前队列", "处理权限范围内的材料与候选数据。") +
+            '<section class="card card-pad"><div class="empty">当前范围内暂无待确认数据，请调整筛选条件后查看。</div></section>';
+          return;
+        }
+        if (currentState === "confirmed") {
+          var note = objectId === "DOC-2026-024" ? "本次确认形成新的实践结项材料记录，不覆盖 DOC-2026-018 历史补档事项。" : "DOC-2026-018 已确认入档，ARCH-2026-LIN-001 的对应补充事项已关闭。";
+          content.innerHTML = headerMarkup("确认结果", "查看本次人工确认的入档反馈与依据留痕。") +
+            '<section class="callout success"><div><strong>材料已确认入档</strong><p>' + note + '</p></div></section>' +
+            '<div class="confirm-grid">' + queueCard("已处理对象") + evidenceCard(
+              '<button class="btn outline" type="button" id="preview-evidence">查看入档依据</button>'
+            ) + '</div>';
+          return;
+        }
+        if (currentState === "candidate") {
+          content.innerHTML = headerMarkup("候选承接", "核对从公开线索审核进入的候选对象，确认边界后再继续后续处理。") +
+            '<section class="callout warning"><div><strong>候选数据尚未成为正式档案</strong><p>该线索已转为候选，仍需基于公开来源和匹配依据完成确认。</p></div></section>' +
+            '<div class="confirm-grid">' + queueCard(range) + evidenceCard(
+              '<button class="btn outline" type="button" id="preview-evidence">查看来源依据</button><button class="btn" type="button" id="request-more">要求补充</button><button class="btn" type="button" id="transfer-exception">转异常</button>'
+            ) + '</div>';
+          return;
+        }
+        content.innerHTML = headerMarkup("待办处理", "核对提交材料及字段建议，确认结果将反馈至教师成长档案。") +
+          '<section class="callout info"><div><strong>' + range + '</strong><p>请查看原始依据后人工作出确认结论；材料确认前不会更新正式档案。</p></div></section>' +
+          '<div class="confirm-grid">' + queueCard("待确认队列") + evidenceCard(
+            '<button class="btn primary" type="button" id="confirm-archive">确认入档</button><button class="btn outline" type="button" id="modify-confirm">修改后确认</button><button class="btn" type="button" id="reject-material">驳回</button><button class="btn" type="button" id="transfer-exception">转异常</button><button class="btn ghost" type="button" id="preview-evidence">查看依据</button>'
+          ) + '</div>';
+      }
+
+      function render() {
+        if (isTeacher) {
+          teacherShell();
+          renderTeacher();
+        } else {
+          managementShell();
+          renderManager();
+        }
+      }
+
+      function openEvidence(trigger) {
+        Prototype.layer("材料依据预览", "<p><strong>" + item.name + "</strong></p><p>对象：" + objectId +
+          "<br>来源：" + item.source + "<br>关联教师：林知夏<br>字段建议：" + item.suggestion +
+          "</p><div class='callout info' style='margin-top:14px'><div><strong>人工确认边界</strong><p>依据只用于支撑核对，未完成确认前不形成正式档案更新。</p></div></div>", "", true, trigger);
+      }
+
+      render();
+      page.addEventListener("click", function (event) {
+        if (event.target.id === "supplement-material") {
+          Prototype.pendingPage("02-P-003", "材料上传页", objectId, journey, event.target);
+        }
+        if (event.target.id === "preview-evidence") openEvidence(event.target);
+        if (event.target.id === "confirm-archive" || event.target.id === "modify-confirm") {
+          Prototype.layer("确认材料入档", "<p>确认已核对材料依据与建议字段。完成后，该材料将反馈到林知夏成长档案。</p>",
+            '<button class="btn" type="button" data-close>取消</button><button class="btn primary" type="button" id="complete-confirm">确认完成</button>', false, event.target);
+        }
+        if (event.target.id === "reject-material") {
+          Prototype.layer("驳回材料", "<p>驳回将保留当前材料为未确认状态，并通知教师补充有效依据。</p>",
+            '<button class="btn" type="button" data-close>取消</button><button class="btn danger" type="button" id="complete-reject">确认驳回</button>', false, event.target);
+        }
+        if (event.target.id === "request-more") {
+          Prototype.toast("已记录要求补充依据的处理意图，候选仍待确认");
+        }
+        if (event.target.id === "transfer-exception") {
+          Prototype.pendingPage("02-P-007", "异常数据处理页", objectId, journey, event.target);
+        }
+      });
+      document.getElementById("layer").addEventListener("click", function (event) {
+        if (event.target.id === "complete-confirm") {
+          Prototype.closeLayer();
+          currentState = "confirmed";
+          Prototype.setState("confirmed");
+          render();
+          Prototype.toast("材料已确认入档，并保留本次人工处理依据");
+        }
+        if (event.target.id === "complete-reject") {
+          Prototype.closeLayer();
+          Prototype.toast("已记录驳回结果，材料仍处于待补充确认状态");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

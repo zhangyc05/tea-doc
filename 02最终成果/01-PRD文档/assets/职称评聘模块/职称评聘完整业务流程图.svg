@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}.lane{fill:#fff;stroke:#d7dee8;stroke-width:1}.lane-title{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .box{fill:#fff;stroke:#9333ea;stroke-width:2;rx:8;ry:8}.box-alt{fill:#faf5ff;stroke:#9333ea;stroke-width:2;rx:8;ry:8}.box-warn{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}.box-ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}.small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}.title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:26px;font-weight:700}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}.dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="760"/>
+  <text class="title" x="40" y="48">职称评聘完整业务流程图</text>
+  <rect class="lane" x="40" y="80" width="1200" height="120"/><text class="lane-title" x="60" y="112">批次与申报</text>
+  <rect class="box-alt" x="150" y="120" width="180" height="58"/><text class="text" x="197" y="146">创建批次</text><text class="small" x="178" y="166">条件 / 时间 / 流程</text>
+  <rect class="box" x="420" y="120" width="180" height="58"/><text class="text" x="467" y="146">查看达标</text><text class="small" x="448" y="166">条件和差距分析</text>
+  <rect class="box" x="690" y="120" width="180" height="58"/><text class="text" x="737" y="146">生成材料</text><text class="small" x="718" y="166">档案 / 已认定成果</text>
+  <rect class="box" x="960" y="120" width="180" height="58"/><text class="text" x="1007" y="146">提交申请</text><text class="small" x="988" y="166">进入评聘流程</text>
+  <rect class="lane" x="40" y="235" width="1200" height="135"/><text class="lane-title" x="60" y="267">审核评议</text>
+  <rect class="box" x="130" y="285" width="190" height="62"/><text class="text" x="177" y="311">部门初审</text><text class="small" x="158" y="331">材料和条件核验</text>
+  <rect class="box" x="420" y="285" width="190" height="62"/><text class="text" x="467" y="311">校级审核</text><text class="small" x="450" y="331">规则和资格复核</text>
+  <rect class="box" x="710" y="285" width="190" height="62"/><text class="text" x="757" y="311">专家评议</text><text class="small" x="735" y="331">评议意见留痕</text>
+  <rect class="box-warn" x="1000" y="285" width="190" height="62"/><text class="text" x="1047" y="311">退回补正</text><text class="small" x="1028" y="331">材料缺失或不符</text>
+  <rect class="lane" x="40" y="405" width="1200" height="130"/><text class="lane-title" x="60" y="437">公示与归档</text>
+  <rect class="box" x="200" y="455" width="200" height="62"/><text class="text" x="247" y="481">结果公示</text><text class="small" x="228" y="501">拟通过名单发布</text>
+  <rect class="box-warn" x="540" y="455" width="200" height="62"/><text class="text" x="587" y="481">异议处理</text><text class="small" x="568" y="501">受理 / 处理 / 留痕</text>
+  <rect class="box-ok" x="880" y="455" width="200" height="62"/><text class="text" x="927" y="481">结果归档</text><text class="small" x="908" y="501">形成正式记录</text>
+  <rect class="lane" x="40" y="570" width="1200" height="120"/><text class="lane-title" x="60" y="602">数据回流</text>
+  <rect class="box-ok" x="250" y="615" width="210" height="58"/><text class="text" x="305" y="641">成长档案</text><text class="small" x="278" y="661">回写评聘结果</text>
+  <rect class="box" x="535" y="615" width="210" height="58"/><text class="text" x="590" y="641">后续考核</text><text class="small" x="562" y="661">聘期 / 绩效引用</text>
+  <rect class="box" x="820" y="615" width="210" height="58"/><text class="text" x="875" y="641">消息通知</text><text class="small" x="848" y="661">补正 / 公示 / 结果</text>
+  <path class="arrow" d="M330 149 L420 149"/><path class="arrow" d="M600 149 L690 149"/><path class="arrow" d="M870 149 L960 149"/><path class="arrow" d="M1050 178 L225 285"/>
+  <path class="arrow" d="M320 316 L420 316"/><path class="arrow" d="M610 316 L710 316"/><path class="arrow" d="M900 316 L300 455"/><path class="dash" d="M225 347 C500 390,760 380,1095 347"/>
+  <path class="arrow" d="M400 486 L540 486"/><path class="arrow" d="M740 486 L880 486"/><path class="arrow" d="M980 517 L355 615"/><path class="arrow" d="M980 517 L640 615"/><path class="arrow" d="M980 517 L925 615"/>
+</svg>

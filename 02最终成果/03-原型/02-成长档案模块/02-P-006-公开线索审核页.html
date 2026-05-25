@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公开线索审核 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page" class="management">
+    <header class="manage-head">
+      <div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div>
+      <div class="head-right">
+        <div class="head-select">2025-2026 学年 第二学期 ▾</div>
+        <div class="head-user"><span class="head-avatar" id="header-avatar">周</span><span id="header-user">周明远</span> ▾</div>
+      </div>
+    </header>
+    <div class="manage-shell">
+      <aside class="manage-side" aria-label="管理业务导航">
+        <p class="menu-label">成长档案</p>
+        <button class="menu-item" type="button">档案管理</button>
+        <button class="menu-item active" type="button">公开线索审核</button>
+        <button class="menu-item" type="button">异常数据处理</button>
+        <button class="menu-item" type="button">档案质量</button>
+        <p class="menu-label">业务协同</p>
+        <button class="menu-item" type="button">我的待办</button>
+        <button class="menu-item" type="button">教师画像</button>
+        <button class="menu-item" type="button">培训与实践</button>
+      </aside>
+      <div class="manage-body">
+        <header class="context-bar">
+          <div class="row"><strong>成长档案</strong><span class="muted">/ 公开线索审核</span></div>
+          <div class="row"><span class="badge info" id="scope-pill">智能制造学院</span><span id="current-user">周明远 · 部门管理者</span></div>
+        </header>
+        <main class="manage-main">
+        <section class="spread mobile-stack">
+          <div>
+            <p class="eyebrow">待办审核 / 成长档案</p>
+            <h1 class="title">公开线索审核</h1>
+            <p class="subtitle" id="scope-copy">核查匹配到本部门教师的公共来源信息，形成可追溯处理结论。</p>
+          </div>
+          <button class="btn outline" type="button" id="toggle-role">切换业务主管视图</button>
+        </section>
+
+        <section class="metric-grid manage-summary" aria-label="审核摘要">
+          <div class="metric"><span>待审核</span><b id="pending-total">2</b><span>需要人工核查</span></div>
+          <div class="metric"><span>已转候选</span><b id="candidate-total">0</b><span>等待后续确认</span></div>
+          <div class="metric"><span>已驳回</span><b id="rejected-total">0</b><span>依据未通过</span></div>
+          <div class="metric"><span>待补充</span><b id="add-total">0</b><span>需要补足依据</span></div>
+        </section>
+
+        <section class="card card-pad" aria-label="审核筛选">
+          <div class="filters">
+            <select class="field" id="scope-select" aria-label="范围"><option>智能制造学院</option></select>
+            <select class="field" aria-label="状态"><option>待审核</option><option>全部状态</option></select>
+            <select class="field" aria-label="来源"><option>全部公开来源</option><option>学校官网公示</option><option>行业协会公开名单</option></select>
+            <input class="field" aria-label="搜索线索或教师" placeholder="搜索线索或教师">
+            <button class="btn primary small" type="button" id="filter-button">筛选</button>
+          </div>
+        </section>
+
+        <div class="review-grid">
+          <section class="card list-panel" aria-labelledby="queue-title">
+            <div class="card-pad" style="padding-bottom:12px"><h2 class="section-heading" id="queue-title" style="margin:0">线索处理队列</h2></div>
+            <div id="clue-list"></div>
+          </section>
+
+          <section class="card" aria-labelledby="detail-title">
+            <div class="detail-panel">
+              <div class="spread">
+                <h2 class="section-heading" id="detail-title" style="margin:0">来源与匹配详情</h2>
+                <span class="badge warning" id="detail-status">待审核</span>
+              </div>
+              <div class="divider"></div>
+              <h3 id="detail-name" style="font-size:18px;margin-bottom:16px"></h3>
+              <dl class="details" id="detail-data"></dl>
+              <div class="callout info" style="margin-top:18px">
+                <div><strong>人工核实提示</strong><p>核实通过后仅转为候选数据，仍需后续确认才可成为正式档案。</p></div>
+              </div>
+            </div>
+            <div class="operation-bar" id="actions">
+              <button class="btn primary" type="button" id="convert">转为候选</button>
+              <button class="btn" type="button" id="require-more">要求补充</button>
+              <button class="btn" type="button" id="reject">驳回</button>
+              <button class="btn ghost" type="button" id="transfer">转交部门</button>
+            </div>
+            <div class="history" id="history"><strong style="color:#154161">审核记录</strong><br>暂无处理记录，等待当前责任人核查来源与匹配依据。</div>
+          </section>
+        </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "department_manager");
+      if (role !== "department_manager" && role !== "business_manager") {
+        Prototype.deny("部门管理者或业务主管部门身份");
+        return;
+      }
+      var clues = [
+        { id: "ARCH-CLUE-2026-001", name: "教学能力比赛获奖公示线索", teacher: "林知夏", source: "学校官网公示", dimension: "成果荣誉", field: "获奖名称、获奖级别、发布时间", evidence: "公示姓名、所在学院及赛事信息与教师资料匹配", status: "待审核" },
+        { id: "ARCH-CLUE-2026-002", name: "行业兼职任职公示线索", teacher: "林知夏", source: "行业协会公开名单", dimension: "社会服务", field: "任职名称、任职机构、任期", evidence: "名单姓名及单位关联信息与教师资料匹配", status: "待审核" }
+      ];
+      var active = 0;
+      var isBusiness = role === "business_manager";
+
+      function renderRole() {
+        document.getElementById("scope-pill").textContent = isBusiness ? "授权业务范围 / 跨部门" : "智能制造学院";
+        document.getElementById("current-user").textContent = isBusiness ? "陈璐 · 业务主管部门" : "周明远 · 部门管理者";
+        document.getElementById("header-user").textContent = isBusiness ? "陈璐" : "周明远";
+        document.getElementById("header-avatar").textContent = isBusiness ? "陈" : "周";
+        document.getElementById("scope-copy").textContent = isBusiness ?
+          "核查授权业务范围内的公共来源信息，并按责任范围处理或转交。" :
+          "核查匹配到本部门教师的公共来源信息，形成可追溯处理结论。";
+        document.getElementById("scope-select").innerHTML = isBusiness ?
+          "<option>授权业务范围 / 跨部门</option><option>智能制造学院</option>" :
+          "<option>智能制造学院</option>";
+        document.getElementById("toggle-role").textContent = isBusiness ? "切换部门管理视图" : "切换业务主管视图";
+        document.getElementById("transfer").style.display = isBusiness ? "inline-flex" : "none";
+      }
+      function statusClass(status) {
+        return status === "已转候选" ? "success" : status === "已驳回" ? "danger" : status === "待补充" ? "info" : "warning";
+      }
+      function renderCounts() {
+        ["待审核", "已转候选", "已驳回", "待补充"].forEach(function (state, index) {
+          document.getElementById(["pending-total", "candidate-total", "rejected-total", "add-total"][index]).textContent =
+            clues.filter(function (item) { return item.status === state; }).length;
+        });
+      }
+      function renderList() {
+        document.getElementById("clue-list").innerHTML = clues.map(function (clue, index) {
+          return '<button type="button" class="list-item ' + (index === active ? "active" : "") + '" data-index="' + index + '">' +
+            '<span class="badge ' + statusClass(clue.status) + '">' + clue.status + '</span><h3>' + clue.name + "</h3>" +
+            '<div class="list-meta"><span>' + clue.teacher + "</span><span>" + clue.source + "</span><span>" + clue.dimension + "</span></div></button>";
+        }).join("");
+      }
+      function renderDetail() {
+        var clue = clues[active];
+        document.getElementById("detail-name").textContent = clue.name;
+        document.getElementById("detail-status").className = "badge " + statusClass(clue.status);
+        document.getElementById("detail-status").textContent = clue.status;
+        document.getElementById("detail-data").innerHTML =
+          "<dt>来源网站</dt><dd>" + clue.source + ' <button class="btn small" id="source-preview" type="button">查看原文</button></dd>' +
+          "<dt>匹配教师</dt><dd>" + clue.teacher + " · 智能制造学院</dd>" +
+          "<dt>关联维度</dt><dd>" + clue.dimension + "</dd>" +
+          "<dt>识别字段</dt><dd>" + clue.field + "</dd>" +
+          "<dt>匹配依据</dt><dd>" + clue.evidence + "</dd>";
+        document.getElementById("convert").disabled = clue.status === "已转候选";
+      }
+      function rerender() {
+        renderRole(); renderCounts(); renderList(); renderDetail();
+      }
+      function update(status, message) {
+        clues[active].status = status;
+        document.getElementById("history").innerHTML = "<strong style='color:#154161'>审核记录</strong><br>" +
+          (isBusiness ? "陈璐" : "周明远") + " · " + message + " · 刚刚";
+        rerender();
+      }
+
+      rerender();
+      document.getElementById("clue-list").addEventListener("click", function (event) {
+        var item = event.target.closest("[data-index]");
+        if (!item) return;
+        active = Number(item.dataset.index);
+        renderList(); renderDetail();
+      });
+      document.getElementById("toggle-role").addEventListener("click", function () {
+        isBusiness = !isBusiness;
+        rerender();
+      });
+      document.getElementById("filter-button").addEventListener("click", function () {
+        Prototype.toast("已按当前范围与状态筛选待处理线索");
+      });
+      document.getElementById("detail-data").addEventListener("click", function (event) {
+        if (event.target.id !== "source-preview") return;
+        var clue = clues[active];
+        Prototype.layer("公开来源预览", "<p><strong>" + clue.name + "</strong></p><p>来源：" + clue.source +
+          "<br>发布时间：2026-05-18<br>识别字段：" + clue.field + "</p>", "", true, event.target);
+      });
+      document.getElementById("convert").addEventListener("click", function (event) {
+        Prototype.layer("确认转为候选", "<p>已核对公开来源和匹配依据。确认后，该线索将进入候选确认流程，不会在此步骤成为正式档案。</p>",
+          '<button class="btn" type="button" data-close>取消</button><button class="btn primary" type="button" id="confirm-convert">确认转为候选</button>', false, event.currentTarget);
+      });
+      document.getElementById("layer").addEventListener("click", function (event) {
+        if (event.target.id === "confirm-convert") {
+          update("已转候选", "转为候选，等待后续确认");
+          Prototype.layer("已转为候选", "<p>该线索已进入候选确认流程，可继续核对依据；此时仍不是正式档案记录。</p>",
+            '<button class="btn primary" type="button" id="to-candidate">进入待确认数据页</button>', false, event.target);
+        }
+        if (event.target.id === "to-candidate") {
+          var target = new URL("02-P-002-待确认数据页.html", window.location.href);
+          target.searchParams.set("role", isBusiness ? "business_manager" : "department_manager");
+          target.searchParams.set("object", clues[active].id);
+          target.searchParams.set("journey", "J-05");
+          target.searchParams.set("state", "candidate");
+          window.location.href = target.toString();
+        }
+      });
+      document.getElementById("require-more").addEventListener("click", function (event) {
+        Prototype.layer("要求补充依据", "<p>填写需要补充的来源或匹配说明。该动作不会使线索进入正式档案。</p>",
+          '<button class="btn" type="button" data-close>取消</button><button class="btn primary" type="button" id="confirm-more">确认要求补充</button>', false, event.currentTarget);
+      });
+      document.getElementById("reject").addEventListener("click", function (event) {
+        Prototype.layer("驳回线索", "<p>当前公开信息与教师事实无法充分匹配。确认后将保留处理原因供追溯。</p>",
+          '<button class="btn" type="button" data-close>取消</button><button class="btn danger" type="button" id="confirm-reject">确认驳回</button>', false, event.currentTarget);
+      });
+      document.getElementById("transfer").addEventListener("click", function () {
+        Prototype.toast("已记录转交意图，责任范围变更需按后续流程确认");
+      });
+      document.getElementById("layer").addEventListener("click", function (event) {
+        if (event.target.id === "confirm-more") { Prototype.closeLayer(); update("待补充", "已要求补充来源依据"); }
+        if (event.target.id === "confirm-reject") { Prototype.closeLayer(); update("已驳回", "已驳回并记录原因"); }
+      });
+    });
+  </script>
+</body>
+</html>

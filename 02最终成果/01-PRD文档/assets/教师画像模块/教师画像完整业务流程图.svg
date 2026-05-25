@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}
+      .lane{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+      .lane-title{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .box{fill:#ffffff;stroke:#4f46e5;stroke-width:2;rx:8;ry:8}
+      .box-alt{fill:#eef2ff;stroke:#4f46e5;stroke-width:2;rx:8;ry:8}
+      .box-warn{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}
+      .box-ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}
+      .title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:26px;font-weight:700}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+  <text class="title" x="40" y="48">教师画像完整业务流程图</text>
+
+  <rect class="lane" x="40" y="80" width="1200" height="110"/>
+  <text class="lane-title" x="60" y="112">数据输入</text>
+  <rect class="box-alt" x="180" y="105" width="210" height="58"/>
+  <text class="text" x="235" y="131">成长档案数据</text>
+  <text class="small" x="220" y="151">8 个维度正式事实</text>
+  <rect class="box-alt" x="520" y="105" width="210" height="58"/>
+  <text class="text" x="575" y="131">模型配置</text>
+  <text class="small" x="550" y="151">指标权重 / 等级阈值</text>
+  <rect class="box-alt" x="860" y="105" width="210" height="58"/>
+  <text class="text" x="915" y="131">行动反馈</text>
+  <text class="small" x="895" y="151">培训 / 实践 / 教研结果</text>
+
+  <rect class="lane" x="40" y="220" width="1200" height="130"/>
+  <text class="lane-title" x="60" y="252">画像计算</text>
+  <rect class="box" x="160" y="260" width="170" height="62"/>
+  <text class="text" x="205" y="286">数据校验</text>
+  <text class="small" x="185" y="306">完整性 / 可信范围</text>
+  <rect class="box" x="420" y="260" width="170" height="62"/>
+  <text class="text" x="460" y="286">四维评分</text>
+  <text class="small" x="445" y="306">教学 / 教研 / 发展 / 服务</text>
+  <rect class="box" x="680" y="260" width="170" height="62"/>
+  <text class="text" x="720" y="286">短板识别</text>
+  <text class="small" x="710" y="306">低分维度 / 薄弱项</text>
+  <rect class="box" x="940" y="260" width="170" height="62"/>
+  <text class="text" x="980" y="286">建议生成</text>
+  <text class="small" x="965" y="306">培训 / 实践 / 教研</text>
+
+  <rect class="lane" x="40" y="380" width="1200" height="140"/>
+  <text class="lane-title" x="60" y="412">结果呈现</text>
+  <rect class="box-ok" x="150" y="430" width="190" height="62"/>
+  <text class="text" x="197" y="456">个人画像</text>
+  <text class="small" x="178" y="476">雷达图 / 等级 / 趋势</text>
+  <rect class="box-ok" x="410" y="430" width="190" height="62"/>
+  <text class="text" x="457" y="456">短板报告</text>
+  <text class="small" x="438" y="476">依据 / 更新时间</text>
+  <rect class="box-ok" x="670" y="430" width="190" height="62"/>
+  <text class="text" x="717" y="456">发展建议</text>
+  <text class="small" x="695" y="476">采纳 / 忽略 / 跳转</text>
+  <rect class="box-ok" x="930" y="430" width="190" height="62"/>
+  <text class="text" x="977" y="456">管理分析</text>
+  <text class="small" x="955" y="476">部门 / 校级 / 专项</text>
+
+  <rect class="lane" x="40" y="550" width="1200" height="150"/>
+  <text class="lane-title" x="60" y="582">行动转化与校准</text>
+  <rect class="box" x="190" y="600" width="210" height="62"/>
+  <text class="text" x="245" y="626">发展行动</text>
+  <text class="small" x="220" y="646">培训 / 实践 / 教研 / 成果</text>
+  <rect class="box" x="540" y="600" width="210" height="62"/>
+  <text class="text" x="595" y="626">结果回流</text>
+  <text class="small" x="572" y="646">沉淀到成长档案</text>
+  <rect class="box-warn" x="890" y="600" width="210" height="62"/>
+  <text class="text" x="945" y="626">持续校准</text>
+  <text class="small" x="920" y="646">触发重新计算画像</text>
+
+  <path class="arrow" d="M285 163 L245 260"/>
+  <path class="arrow" d="M625 163 L505 260"/>
+  <path class="arrow" d="M965 163 L505 260"/>
+  <path class="arrow" d="M330 291 L420 291"/>
+  <path class="arrow" d="M590 291 L680 291"/>
+  <path class="arrow" d="M850 291 L940 291"/>
+  <path class="arrow" d="M505 322 L245 430"/>
+  <path class="arrow" d="M765 322 L505 430"/>
+  <path class="arrow" d="M1025 322 L765 430"/>
+  <path class="arrow" d="M765 492 L295 600"/>
+  <path class="arrow" d="M400 631 L540 631"/>
+  <path class="arrow" d="M750 631 L890 631"/>
+  <path class="dash" d="M995 600 C1100 520,1130 390,1110 322"/>
+  <text class="small" x="1040" y="545">数据更新后回到计算</text>
+</svg>

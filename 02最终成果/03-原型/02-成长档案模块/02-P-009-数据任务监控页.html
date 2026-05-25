@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>数据任务监控 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+  <style>
+    .admin .metric.risk { border-color: #efc8ca; background: #fffafa; }
+    .admin .metric.live { border-color: #c9daf3; background: #fafdff; }
+    .mode-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
+    .task-status-note { font-size: 13px; margin-top: 9px; line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <div id="page" class="admin">
+    <aside class="admin-side" aria-label="系统管理导航">
+      <div class="brand"><span class="brand-mark">控</span>平台管理中心</div>
+      <p class="menu-label">运行保障</p>
+      <button class="menu-item" type="button">运行概览</button>
+      <button class="menu-item" type="button">配置与版本</button>
+      <button class="menu-item active" type="button">任务监控</button>
+      <p class="menu-label">安全与追溯</p>
+      <button class="menu-item" type="button">权限组织</button>
+      <button class="menu-item" type="button">审计与异常</button>
+    </aside>
+    <div class="admin-body">
+      <header class="env-bar">
+        <div class="row"><span class="env-chip">演示环境</span><strong>成长档案数据服务</strong><span class="muted">/ 任务监控</span></div>
+        <div class="row"><span class="muted">最近同步：2026-05-25 09:42</span><span class="avatar" style="--accent:#315286">孙</span><span>孙嘉禾</span></div>
+      </header>
+      <main class="admin-main">
+        <section class="spread mobile-stack">
+          <div>
+            <p class="eyebrow">运行保障 / 数据服务</p>
+            <h1 class="title">数据任务监控</h1>
+            <p class="subtitle">查看同步与解析任务执行情况，定位运行异常并执行受控处置。</p>
+          </div>
+          <button class="btn outline" type="button" id="export-record">导出当前记录</button>
+        </section>
+
+        <div class="mode-actions" aria-label="条件状态演示">
+          <span class="muted" style="padding:9px 3px">状态演示：</span>
+          <button class="btn small state-btn" type="button" data-state="running">运行中</button>
+          <button class="btn small state-btn" type="button" data-state="failed">失败定位</button>
+          <button class="btn small state-btn" type="button" data-state="success">成功</button>
+        </div>
+
+        <section class="metric-grid" aria-label="任务健康摘要">
+          <div class="metric risk"><span>失败任务</span><b id="metric-failed">0</b><span>优先定位原因</span></div>
+          <div class="metric live"><span>运行中</span><b id="metric-running">1</b><span>当前执行任务</span></div>
+          <div class="metric"><span>局部异常</span><b id="metric-warning">0</b><span>检查影响范围</span></div>
+          <div class="metric"><span>近期重试</span><b id="metric-retry">0</b><span>操作均留有记录</span></div>
+        </section>
+
+        <section class="card card-pad" style="margin-top:18px" aria-label="任务筛选">
+          <div class="filters">
+            <select class="field" aria-label="任务类型"><option>全部任务类型</option><option>数据同步</option><option>AI 解析</option><option>线索发现</option></select>
+            <select class="field" aria-label="运行状态"><option>重点状态</option><option>运行中</option><option>失败</option><option>成功</option></select>
+            <select class="field" aria-label="服务模块"><option>成长档案</option></select>
+            <input class="field" aria-label="任务关键词" placeholder="搜索任务名称或标识">
+            <button class="btn primary small" type="button" id="task-filter">筛选</button>
+          </div>
+        </section>
+
+        <div class="task-grid">
+          <section class="card table-card" aria-labelledby="table-heading">
+            <div class="card-pad" style="padding-bottom:10px">
+              <h2 class="section-heading" id="table-heading" style="margin:0">任务执行列表</h2>
+            </div>
+            <table class="task-table">
+              <thead>
+                <tr><th>任务名称</th><th>状态</th><th>最近运行</th><th>耗时</th><th>操作</th></tr>
+              </thead>
+              <tbody>
+                <tr class="selected">
+                  <td><strong>数据同步与业务任务日志</strong><br><span class="muted">TASK-SYNC-001 · 定时触发</span></td>
+                  <td><span class="badge info" id="task-badge"><span class="dot"></span>运行中</span></td>
+                  <td>05-25 09:42</td>
+                  <td id="duration">进行中</td>
+                  <td><button class="btn small" type="button" id="open-log">查看详情</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <aside class="card diagnostic" aria-labelledby="diagnostic-title">
+            <div class="spread">
+              <h2 class="section-heading" id="diagnostic-title" style="margin:0">执行诊断</h2>
+              <span class="badge info" id="detail-badge">运行中</span>
+            </div>
+            <p class="task-status-note muted" id="task-summary">正在执行成长档案数据同步，当前可查看运行轨迹。</p>
+            <div id="logs"></div>
+            <div class="divider"></div>
+            <div class="row" id="diagnostic-actions">
+              <button class="btn small" type="button" id="associated">查看关联异常</button>
+              <button class="btn primary small" type="button" id="retry" style="display:none">确认重试</button>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "admin");
+      if (role !== "admin") {
+        Prototype.deny("系统管理员身份");
+        return;
+      }
+      var state = Prototype.query("state", "running");
+      var configurations = {
+        running: {
+          name: "运行中", klass: "info", duration: "进行中", failed: "0", running: "1", warning: "0", retry: "0",
+          summary: "正在执行成长档案数据同步，当前可查看运行轨迹。",
+          steps: [
+            ["完成", "读取任务配置", "已加载数据同步任务参数与来源映射"],
+            ["完成", "连接数据源", "连接状态正常，准备读取新增数据"],
+            ["运行", "同步数据记录", "处理中，等待本轮任务完成"]
+          ]
+        },
+        failed: {
+          name: "失败", klass: "danger", duration: "02m 18s", failed: "1", running: "0", warning: "1", retry: "0",
+          summary: "本次执行未完成，请先核对失败步骤与影响范围，再决定是否重试。",
+          steps: [
+            ["完成", "读取任务配置", "任务参数与来源映射读取完成"],
+            ["完成", "连接数据源", "连接状态正常"],
+            ["失败", "解析来源字段", "字段映射校验未通过，影响本轮新增记录解析"]
+          ]
+        },
+        success: {
+          name: "成功", klass: "success", duration: "01m 46s", failed: "0", running: "0", warning: "0", retry: "0",
+          summary: "本次任务已完成，可查看执行轨迹与记录摘要。",
+          steps: [
+            ["完成", "读取任务配置", "任务参数读取完成"],
+            ["完成", "同步数据记录", "本轮执行已完成"],
+            ["完成", "记录运行结果", "执行记录已写入运行追踪"]
+          ]
+        },
+        retrying: {
+          name: "重试中", klass: "warning", duration: "进行中", failed: "0", running: "1", warning: "0", retry: "1",
+          summary: "已提交受控重试，原失败记录保留，新执行轨迹正在生成。",
+          steps: [
+            ["完成", "确认重试范围", "管理员孙嘉禾已确认本次重试"],
+            ["完成", "建立新执行记录", "原失败记录保留用于追溯"],
+            ["运行", "重新执行解析步骤", "正在处理，请稍候查看结果"]
+          ]
+        }
+      };
+
+      function displayStatus() {
+        var item = configurations[state] || configurations.running;
+        document.getElementById("task-badge").className = "badge " + item.klass;
+        document.getElementById("task-badge").innerHTML = '<span class="dot"></span>' + item.name;
+        document.getElementById("detail-badge").className = "badge " + item.klass;
+        document.getElementById("detail-badge").textContent = item.name;
+        document.getElementById("duration").textContent = item.duration;
+        document.getElementById("metric-failed").textContent = item.failed;
+        document.getElementById("metric-running").textContent = item.running;
+        document.getElementById("metric-warning").textContent = item.warning;
+        document.getElementById("metric-retry").textContent = item.retry;
+        document.getElementById("task-summary").textContent = item.summary;
+        document.getElementById("logs").innerHTML = item.steps.map(function (step) {
+          var failed = step[0] === "失败";
+          return '<div class="log-step"><span class="log-icon ' + (failed ? "fail" : "") + '">' +
+            (failed ? "!" : "✓") + '</span><div><b>' + step[1] + '</b><span class="muted">' + step[2] + "</span></div></div>";
+        }).join("");
+        document.getElementById("retry").style.display = state === "failed" ? "inline-flex" : "none";
+      }
+      function switchState(value) {
+        state = value;
+        Prototype.setState(value);
+        displayStatus();
+      }
+
+      displayStatus();
+      document.querySelectorAll(".state-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          switchState(button.dataset.state);
+        });
+      });
+      document.getElementById("task-filter").addEventListener("click", function () {
+        Prototype.toast("已按当前服务与重点状态更新任务列表");
+      });
+      document.getElementById("open-log").addEventListener("click", function (event) {
+        var item = configurations[state] || configurations.running;
+        Prototype.layer("任务详情与运行记录", "<p><strong>TASK-SYNC-001 · 数据同步与业务任务日志</strong></p><p>环境：演示环境<br>状态：" +
+          item.name + "<br>触发方式：定时触发<br>所属服务：成长档案数据服务</p><div class='callout info' style='margin-top:15px'><div><strong>留痕说明</strong><p>查看及后续处置均保留运行记录。</p></div></div>", "", true, event.currentTarget);
+      });
+      document.getElementById("associated").addEventListener("click", function (event) {
+        Prototype.layer("关联异常", "<p>当前执行可查看关联异常定位信息。本轮验证仅展示任务诊断入口，不扩展异常处理主页面。</p>", "", true, event.currentTarget);
+      });
+      document.getElementById("retry").addEventListener("click", function (event) {
+        Prototype.layer("确认重试任务", "<p><strong>TASK-SYNC-001 · 数据同步与业务任务日志</strong></p><p>当前环境：演示环境<br>失败原因：字段映射校验未通过<br>重试范围：本轮未完成的解析步骤<br>可能影响：将产生新的执行记录，原失败记录继续保留。</p>",
+          '<button class="btn" type="button" data-close>取消</button><button class="btn primary" type="button" id="confirm-retry">确认重试</button>', false, event.currentTarget);
+      });
+      document.getElementById("layer").addEventListener("click", function (event) {
+        if (event.target.id === "confirm-retry") {
+          Prototype.closeLayer();
+          switchState("retrying");
+          Prototype.toast("已提交重试，新执行记录已建立");
+        }
+      });
+      document.getElementById("export-record").addEventListener("click", function () {
+        Prototype.toast("当前运行记录已准备导出");
+      });
+    });
+  </script>
+</body>
+</html>

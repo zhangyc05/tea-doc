@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}
+      .lane{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+      .lane-title{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .box{fill:#ffffff;stroke:#0f766e;stroke-width:2;rx:8;ry:8}
+      .box-alt{fill:#ecfeff;stroke:#0f766e;stroke-width:2;rx:8;ry:8}
+      .box-warn{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}
+      .box-ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}
+      .title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:26px;font-weight:700}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+  <text class="title" x="40" y="48">教学反思完整业务流程图</text>
+
+  <rect class="lane" x="40" y="80" width="1200" height="110"/>
+  <text class="lane-title" x="60" y="112">触发来源</text>
+  <rect class="box-alt" x="180" y="105" width="170" height="58"/>
+  <text class="text" x="220" y="131">课后触发</text>
+  <text class="small" x="210" y="151">课堂结束后提醒</text>
+  <rect class="box-alt" x="430" y="105" width="170" height="58"/>
+  <text class="text" x="470" y="131">成绩触发</text>
+  <text class="small" x="458" y="151">成绩发布或波动</text>
+  <rect class="box-alt" x="680" y="105" width="170" height="58"/>
+  <text class="text" x="720" y="131">评教触发</text>
+  <text class="small" x="708" y="151">反馈发布后提醒</text>
+  <rect class="box-alt" x="930" y="105" width="170" height="58"/>
+  <text class="text" x="978" y="131">手动发起</text>
+  <text class="small" x="955" y="151">教师主动补充反思</text>
+
+  <rect class="lane" x="40" y="220" width="1200" height="120"/>
+  <text class="lane-title" x="60" y="252">任务与提醒</text>
+  <rect class="box" x="260" y="250" width="190" height="62"/>
+  <text class="text" x="310" y="276">生成反思任务</text>
+  <text class="small" x="292" y="296">按规则匹配课程和场景</text>
+  <rect class="box" x="570" y="250" width="190" height="62"/>
+  <text class="text" x="620" y="276">消息中心提醒</text>
+  <text class="small" x="604" y="296">待办 / 过期提醒</text>
+  <rect class="box" x="880" y="250" width="190" height="62"/>
+  <text class="text" x="930" y="276">进入反思页</text>
+  <text class="small" x="918" y="296">查看场景和素材</text>
+
+  <rect class="lane" x="40" y="370" width="1200" height="150"/>
+  <text class="lane-title" x="60" y="402">教师反思过程</text>
+  <rect class="box" x="130" y="420" width="170" height="62"/>
+  <text class="text" x="177" y="446">AI 回顾</text>
+  <text class="small" x="160" y="466">回顾教学场景</text>
+  <rect class="box" x="380" y="420" width="170" height="62"/>
+  <text class="text" x="427" y="446">AI 追问</text>
+  <text class="small" x="408" y="466">分析现象原因</text>
+  <rect class="box" x="630" y="420" width="170" height="62"/>
+  <text class="text" x="675" y="446">改进引导</text>
+  <text class="small" x="658" y="466">形成改进思路</text>
+  <rect class="box-warn" x="880" y="420" width="170" height="62"/>
+  <text class="text" x="925" y="446">手工反思</text>
+  <text class="small" x="908" y="466">AI 异常时可用</text>
+
+  <rect class="lane" x="40" y="550" width="1200" height="150"/>
+  <text class="lane-title" x="60" y="582">确认沉淀与复用</text>
+  <rect class="box" x="150" y="600" width="190" height="62"/>
+  <text class="text" x="197" y="626">生成报告初稿</text>
+  <text class="small" x="178" y="646">亮点 / 问题 / 建议</text>
+  <rect class="box-ok" x="430" y="600" width="190" height="62"/>
+  <text class="text" x="477" y="626">教师确认</text>
+  <text class="small" x="458" y="646">修改后正式保存</text>
+  <rect class="box-ok" x="710" y="600" width="190" height="62"/>
+  <text class="text" x="755" y="626">沉淀档案</text>
+  <text class="small" x="738" y="646">教研科研维度</text>
+  <rect class="box" x="990" y="600" width="190" height="62"/>
+  <text class="text" x="1037" y="626">分析复用</text>
+  <text class="small" x="1018" y="646">画像 / 成果线索</text>
+
+  <path class="arrow" d="M265 163 L355 250"/>
+  <path class="arrow" d="M515 163 L355 250"/>
+  <path class="arrow" d="M765 163 L355 250"/>
+  <path class="arrow" d="M1015 163 L975 250"/>
+  <path class="arrow" d="M450 281 L570 281"/>
+  <path class="arrow" d="M760 281 L880 281"/>
+  <path class="arrow" d="M975 312 L215 420"/>
+  <path class="arrow" d="M300 451 L380 451"/>
+  <path class="arrow" d="M550 451 L630 451"/>
+  <path class="arrow" d="M800 451 L245 600"/>
+  <path class="arrow" d="M965 482 L245 600"/>
+  <path class="arrow" d="M340 631 L430 631"/>
+  <path class="arrow" d="M620 631 L710 631"/>
+  <path class="arrow" d="M900 631 L990 631"/>
+  <path class="dash" d="M965 420 C980 365,990 335,975 312"/>
+  <text class="small" x="990" y="380">AI 不可用时降级</text>
+</svg>

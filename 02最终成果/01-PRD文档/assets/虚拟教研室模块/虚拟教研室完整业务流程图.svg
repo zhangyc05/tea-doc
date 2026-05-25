@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}
+      .lane{fill:#ffffff;stroke:#d7dee8;stroke-width:1}
+      .lane-title{fill:#334155;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:18px;font-weight:700}
+      .box{fill:#ffffff;stroke:#7c3aed;stroke-width:2;rx:8;ry:8}
+      .box-alt{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2;rx:8;ry:8}
+      .box-warn{fill:#fff7ed;stroke:#f59e0b;stroke-width:2;rx:8;ry:8}
+      .box-ok{fill:#ecfdf5;stroke:#10b981;stroke-width:2;rx:8;ry:8}
+      .text{fill:#1f2937;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:15px}
+      .small{fill:#475569;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px}
+      .title{fill:#111827;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:26px;font-weight:700}
+      .arrow{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:6 6;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+  <text class="title" x="40" y="48">虚拟教研室完整业务流程图</text>
+  <rect class="lane" x="40" y="80" width="1200" height="120"/>
+  <text class="lane-title" x="60" y="112">组织与活动</text>
+  <rect class="box-alt" x="160" y="120" width="180" height="58"/>
+  <text class="text" x="205" y="146">创建教研室</text>
+  <text class="small" x="190" y="166">成员 / 主题 / 权限</text>
+  <rect class="box" x="430" y="120" width="180" height="58"/>
+  <text class="text" x="475" y="146">发布活动</text>
+  <text class="small" x="455" y="166">主题 / 时间 / 范围</text>
+  <rect class="box" x="700" y="120" width="180" height="58"/>
+  <text class="text" x="745" y="146">教师报名</text>
+  <text class="small" x="730" y="166">报名 / 候补 / 提醒</text>
+  <rect class="box" x="970" y="120" width="180" height="58"/>
+  <text class="text" x="1015" y="146">活动开始</text>
+  <text class="small" x="1000" y="166">进入协作空间</text>
+
+  <rect class="lane" x="40" y="235" width="1200" height="135"/>
+  <text class="lane-title" x="60" y="267">在线协作</text>
+  <rect class="box" x="190" y="285" width="190" height="62"/>
+  <text class="text" x="237" y="311">文档协作</text>
+  <text class="small" x="215" y="331">多人编辑 / 版本留存</text>
+  <rect class="box" x="520" y="285" width="190" height="62"/>
+  <text class="text" x="567" y="311">讨论交流</text>
+  <text class="small" x="548" y="331">发言 / 观点 / 记录</text>
+  <rect class="box" x="850" y="285" width="190" height="62"/>
+  <text class="text" x="897" y="311">材料共享</text>
+  <text class="small" x="878" y="331">上传 / 下载 / 引用</text>
+
+  <rect class="lane" x="40" y="405" width="1200" height="130"/>
+  <text class="lane-title" x="60" y="437">归档沉淀</text>
+  <rect class="box-warn" x="150" y="455" width="190" height="62"/>
+  <text class="text" x="197" y="481">待归档</text>
+  <text class="small" x="178" y="501">活动结束后整理</text>
+  <rect class="box" x="430" y="455" width="190" height="62"/>
+  <text class="text" x="477" y="481">补充成果</text>
+  <text class="small" x="456" y="501">记录 / 材料 / 贡献</text>
+  <rect class="box-ok" x="710" y="455" width="190" height="62"/>
+  <text class="text" x="757" y="481">确认归档</text>
+  <text class="small" x="738" y="501">负责人确认完整</text>
+  <rect class="box-ok" x="990" y="455" width="190" height="62"/>
+  <text class="text" x="1037" y="481">成长档案</text>
+  <text class="small" x="1018" y="501">教研科研维度</text>
+
+  <rect class="lane" x="40" y="570" width="1200" height="120"/>
+  <text class="lane-title" x="60" y="602">复用与统计</text>
+  <rect class="box" x="250" y="615" width="200" height="58"/>
+  <text class="text" x="300" y="641">教师画像</text>
+  <text class="small" x="278" y="661">教研能力分析</text>
+  <rect class="box" x="540" y="615" width="200" height="58"/>
+  <text class="text" x="590" y="641">成果认定</text>
+  <text class="small" x="568" y="661">成果线索转化</text>
+  <rect class="box" x="830" y="615" width="200" height="58"/>
+  <text class="text" x="880" y="641">管理统计</text>
+  <text class="small" x="858" y="661">参与率 / 沉淀率</text>
+
+  <path class="arrow" d="M340 149 L430 149"/>
+  <path class="arrow" d="M610 149 L700 149"/>
+  <path class="arrow" d="M880 149 L970 149"/>
+  <path class="arrow" d="M1060 178 L285 285"/>
+  <path class="arrow" d="M380 316 L520 316"/>
+  <path class="arrow" d="M710 316 L850 316"/>
+  <path class="arrow" d="M945 347 L245 455"/>
+  <path class="arrow" d="M340 486 L430 486"/>
+  <path class="arrow" d="M620 486 L710 486"/>
+  <path class="arrow" d="M900 486 L990 486"/>
+  <path class="arrow" d="M1085 517 L350 615"/>
+  <path class="arrow" d="M1085 517 L640 615"/>
+  <path class="arrow" d="M1085 517 L930 615"/>
+  <path class="dash" d="M805 455 C785 405,760 370,710 347"/>
+  <text class="small" x="760" y="395">材料缺失则退回补充</text>
+</svg>

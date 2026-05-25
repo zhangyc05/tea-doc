@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>档案质量看板 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page" class="management">
+    <header class="manage-head">
+      <div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div>
+      <div class="head-right">
+        <div class="head-select">2025-2026 学年 第二学期 ▾</div>
+        <div class="head-user"><span class="head-avatar" id="header-avatar">陈</span><span id="header-user">陈璐</span> ▾</div>
+      </div>
+    </header>
+    <div class="manage-shell">
+      <aside class="manage-side" aria-label="管理业务导航">
+        <p class="menu-label">成长档案</p>
+        <button class="menu-item" type="button" id="side-manage">档案管理</button>
+        <button class="menu-item" type="button" id="side-clues">公开线索审核</button>
+        <button class="menu-item" type="button" id="side-rules">数据规则配置</button>
+        <button class="menu-item active" type="button">档案质量看板</button>
+        <p class="menu-label">业务分析</p>
+        <button class="menu-item" type="button">教师画像</button>
+        <button class="menu-item" type="button">培训与实践</button>
+        <button class="menu-item" type="button">管理摘要</button>
+      </aside>
+      <div class="manage-body">
+        <header class="context-bar">
+          <div class="row"><strong>成长档案</strong><span class="muted">/ 档案质量看板</span></div>
+          <div class="row"><span class="badge info" id="scope-pill">授权汇总视角</span><span id="current-user">陈璐 · 业务主管部门</span></div>
+        </header>
+        <main class="manage-main">
+          <section class="spread mobile-stack">
+            <div>
+              <p class="eyebrow">质量分析 / 成长档案</p>
+              <h1 class="title">档案质量看板</h1>
+              <p class="subtitle" id="scope-copy">查看已登记演示样本的档案状态构成，并从事实依据进入授权范围内的核查。</p>
+            </div>
+            <span class="snapshot-note"><span class="dot"></span>J-05 演示汇总快照</span>
+          </section>
+
+          <section class="analysis-note" aria-label="统计口径说明">
+            <div>
+              <strong>当前为已登记演示样本的事实汇总</strong>
+              <span>统计基点：2026-05-23 09:30 · 不代表全校总体质量评价，不生成评分或排名。</span>
+            </div>
+            <button class="btn outline small" type="button" id="show-basis">查看依据明细</button>
+          </section>
+
+          <section class="card card-pad" aria-label="质量分析筛选">
+            <div class="filters">
+              <select class="field" aria-label="统计范围"><option>已登记演示样本</option></select>
+              <select class="field" aria-label="档案维度"><option>全部档案维度</option><option>企业实践</option><option>成果荣誉</option></select>
+              <select class="field" aria-label="状态"><option>全部状态</option><option>待审核公开线索</option></select>
+              <button class="btn primary small" type="button" id="focus-clues">聚焦待审核线索</button>
+              <button class="btn small" type="button" id="show-empty">查看空筛选状态</button>
+              <button class="btn outline small" type="button" id="reset-summary">返回全部样本</button>
+            </div>
+          </section>
+
+          <section class="metric-grid manage-summary" aria-label="档案事实指标" id="metrics">
+            <div class="metric"><span>已入档记录</span><b id="record-count">5</b><span>有正式档案依据</span></div>
+            <div class="metric"><span>待确认材料</span><b id="pending-count">1</b><span>需进入确认流程</span></div>
+            <div class="metric"><span>待审核公开线索</span><b id="clue-count">2</b><span>需核查来源依据</span></div>
+            <div class="metric"><span>已登记异常</span><b id="exception-count">0</b><span>暂无具体对象</span></div>
+          </section>
+
+          <div class="analysis-grid">
+            <section class="card composition-card" aria-labelledby="chart-title">
+              <div class="composition-head">
+                <div>
+                  <h2 class="section-heading" id="chart-title" style="margin:0 0 6px">已登记演示样本状态构成</h2>
+                  <p class="muted">仅表达对象状态分布，不作为质量评分。</p>
+                </div>
+                <div class="composition-total" id="chart-total">8<small>相关事项</small></div>
+              </div>
+              <div id="chart-content">
+                <div class="composition-bar" id="composition-bar" aria-label="已入档记录 5 项，待确认材料 1 项，待审核公开线索 2 项">
+                  <span class="recorded" style="width:62.5%"></span>
+                  <span class="pending" style="width:12.5%"></span>
+                  <span class="clues" style="width:25%"></span>
+                </div>
+                <div class="legend-list">
+                  <div class="legend-row"><span class="legend-swatch recorded"></span><span>已入档记录</span><b>5</b></div>
+                  <div class="legend-row"><span class="legend-swatch pending"></span><span>待确认材料</span><b>1</b></div>
+                  <div class="legend-row"><span class="legend-swatch clues"></span><span>待审核公开线索</span><b>2</b></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="card table-section" aria-labelledby="evidence-title" style="margin-top:0">
+              <div class="table-head">
+                <div>
+                  <h2 class="section-heading" id="evidence-title" style="margin:0 0 5px">依据下钻明细</h2>
+                  <p class="muted" id="action-hint">主管可查看授权范围内的线索核查入口。</p>
+                </div>
+                <span class="badge info" id="view-mode">主管分析视图</span>
+              </div>
+              <div class="table-wrap">
+                <table class="analytics-table">
+                  <thead>
+                    <tr><th>状态类型</th><th>数量</th><th>依据摘要</th><th>查看</th></tr>
+                  </thead>
+                  <tbody id="evidence-rows"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "business_manager");
+      if (role !== "business_manager" && role !== "leader") {
+        Prototype.deny("业务主管部门或校级领导身份");
+        return;
+      }
+      var isLeader = role === "leader";
+      var currentState = Prototype.query("state", isLeader ? "leader-readonly" : "summary");
+
+      function showBasis(trigger) {
+        Prototype.layer(
+          "汇总依据说明",
+          "<p><strong>已入档记录 5</strong>：ARCH-REC-LIN-001 至 ARCH-REC-LIN-005。</p>" +
+          "<p><strong>待确认材料 1</strong>：DOC-2026-018，处于 J-05 管理快照的待确认状态。</p>" +
+          "<p><strong>待审核公开线索 2</strong>：ARCH-CLUE-2026-001、ARCH-CLUE-2026-002。</p>" +
+          "<p class='muted'>统计基点：2026-05-23 09:30。当前样本不代表全校总体质量评价。</p>",
+          '<button class="btn primary" type="button" data-close>知道了</button>',
+          true,
+          trigger
+        );
+      }
+      function showPending(trigger) {
+        Prototype.layer(
+          "待确认材料说明",
+          "<p><strong>DOC-2026-018</strong> 为林知夏的 2025 年企业岗位实践结项证明，在当前管理快照中处于待确认状态。</p>" +
+          "<p class='muted'>确认办理应由已登记的 02-P-002 待确认数据页承接；本看板仅查看事实，不执行入档。</p>",
+          '<button class="btn primary" type="button" data-close>知道了</button>',
+          false,
+          trigger
+        );
+      }
+      function showException(trigger) {
+        Prototype.layer(
+          "暂无已登记异常对象",
+          "<p>当前共享数据基线未登记具体异常事项，本看板仅如实显示异常数量为 0。</p>",
+          '<button class="btn primary" type="button" data-close>知道了</button>',
+          false,
+          trigger
+        );
+      }
+      function showLeaderClues(trigger) {
+        Prototype.layer(
+          "待审核公开线索说明",
+          "<p>当前包含两条待审核公开线索，来源为学校官网公示和行业协会公开名单。</p>" +
+          "<p class='muted'>校级领导为汇总只读视图，不进入单条线索审核办理。</p>",
+          '<button class="btn primary" type="button" data-close>知道了</button>',
+          false,
+          trigger
+        );
+      }
+      function goClues() {
+        var target = new URL("02-P-006-公开线索审核页.html", window.location.href);
+        target.searchParams.set("role", "business_manager");
+        target.searchParams.set("object", "ARCH-CLUE-2026-001");
+        target.searchParams.set("journey", "J-05");
+        window.location.href = target.toString();
+      }
+      function renderRole() {
+        document.getElementById("header-avatar").textContent = isLeader ? "王" : "陈";
+        document.getElementById("header-user").textContent = isLeader ? "王宁远" : "陈璐";
+        document.getElementById("scope-pill").textContent = isLeader ? "汇总只读视角" : "授权汇总视角";
+        document.getElementById("current-user").textContent = isLeader ? "王宁远 · 校级领导" : "陈璐 · 业务主管部门";
+        document.getElementById("scope-copy").textContent = isLeader ?
+          "查看已登记演示样本的状态构成与依据说明，当前为只读汇总视图。" :
+          "查看已登记演示样本的档案状态构成，并从事实依据进入授权范围内的核查。";
+        document.getElementById("view-mode").textContent = isLeader ? "领导只读视图" : "主管分析视图";
+        document.getElementById("action-hint").textContent = isLeader ?
+          "当前身份只读查看汇总依据，不提供审核处理入口。" :
+          "主管可查看授权范围内的线索核查入口。";
+        ["side-manage", "side-clues", "side-rules"].forEach(function (id) {
+          document.getElementById(id).style.display = isLeader ? "none" : "block";
+        });
+      }
+      function rowsHtml() {
+        return '<tr><td><strong>正式档案记录</strong><span class="muted">已入档事实</span></td><td><span class="table-number">5</span></td><td>教学工作、教研科研、企业实践、成果荣誉、个人发展各一条</td><td><button class="btn small" type="button" data-action="basis">查看构成</button></td></tr>' +
+          '<tr><td><strong>待确认材料</strong><span class="muted">待跟进事实</span></td><td><span class="table-number">1</span></td><td>林知夏 / DOC-2026-018 / 历史档案材料待确认</td><td><button class="btn small" type="button" data-action="pending">查看说明</button></td></tr>' +
+          '<tr id="clue-row"><td><strong>待审核公开线索</strong><span class="muted">来源待人工核查</span></td><td><span class="table-number">2</span></td><td>学校官网公示、行业协会公开名单 / 林知夏</td><td>' +
+          (isLeader ? '<button class="btn small" type="button" data-action="leader-clues">查看说明</button>' : '<button class="btn outline small" type="button" data-action="go-clues">查看线索</button>') +
+          '</td></tr><tr><td><strong>异常事项</strong><span class="muted">无登记对象</span></td><td>0</td><td>当前没有可下钻的具体异常事项</td><td><button class="btn small" type="button" data-action="exception">查看说明</button></td></tr>';
+      }
+      function renderState() {
+        var empty = currentState === "empty-filter";
+        var clueFocus = currentState === "clue-focus";
+        document.getElementById("record-count").textContent = empty ? "0" : "5";
+        document.getElementById("pending-count").textContent = empty ? "0" : "1";
+        document.getElementById("clue-count").textContent = empty ? "0" : "2";
+        document.getElementById("exception-count").textContent = "0";
+        document.getElementById("chart-total").innerHTML = empty ? '0<small>匹配事项</small>' : '8<small>相关事项</small>';
+        document.getElementById("chart-content").innerHTML = empty ?
+          '<div class="analysis-empty"><strong>当前筛选下暂无登记样本</strong><br>请调整状态或维度后查看已有事实汇总。</div>' :
+          '<div class="composition-bar ' + (clueFocus ? "focus" : "") + '" aria-label="已入档记录 5 项，待确认材料 1 项，待审核公开线索 2 项">' +
+          '<span class="recorded" style="width:62.5%"></span><span class="pending" style="width:12.5%"></span><span class="clues" style="width:25%"></span></div>' +
+          '<div class="legend-list"><div class="legend-row"><span class="legend-swatch recorded"></span><span>已入档记录</span><b>5</b></div>' +
+          '<div class="legend-row"><span class="legend-swatch pending"></span><span>待确认材料</span><b>1</b></div>' +
+          '<div class="legend-row"><span class="legend-swatch clues"></span><span>待审核公开线索' + (clueFocus ? " · 当前聚焦" : "") + '</span><b>2</b></div></div>';
+        document.getElementById("evidence-rows").innerHTML = empty ?
+          '<tr><td colspan="4"><div class="analysis-empty">当前筛选条件下没有已登记的依据明细。</div></td></tr>' :
+          rowsHtml();
+        if (clueFocus && !empty) {
+          document.getElementById("clue-row").style.background = "#f3faff";
+        }
+      }
+      function setState(state) {
+        currentState = state;
+        Prototype.setState(state);
+        renderState();
+      }
+
+      renderRole();
+      renderState();
+      document.getElementById("show-basis").addEventListener("click", function (event) { showBasis(event.currentTarget); });
+      document.getElementById("focus-clues").addEventListener("click", function () { setState("clue-focus"); });
+      document.getElementById("show-empty").addEventListener("click", function () { setState("empty-filter"); });
+      document.getElementById("reset-summary").addEventListener("click", function () { setState(isLeader ? "leader-readonly" : "summary"); });
+      document.getElementById("evidence-rows").addEventListener("click", function (event) {
+        var action = event.target.dataset.action;
+        if (action === "basis") showBasis(event.target);
+        if (action === "pending") showPending(event.target);
+        if (action === "exception") showException(event.target);
+        if (action === "leader-clues") showLeaderClues(event.target);
+        if (action === "go-clues") goClues();
+      });
+      document.getElementById("side-clues").addEventListener("click", goClues);
+    });
+  </script>
+</body>
+</html>
