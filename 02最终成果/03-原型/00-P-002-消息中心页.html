@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>消息中心 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="_prototype/prototype.css">
+</head>
+<body>
+  <div id="page"></div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "teacher");
+      var filter = "全部";
+      var active = 0;
+      var page = document.getElementById("page");
+      var roles = ["teacher", "department_manager", "business_manager", "school_leader", "admin"];
+      if (roles.indexOf(role) === -1) { Prototype.deny("平台已授权身份"); return; }
+      var messages = [
+        { id:"MSG-2026-104", role:"teacher", type:"待办", status:"未读", title:"企业实践材料待补充", object:"DOC-2026-018", module:"成长档案", target:"02-成长档案模块/02-P-003-材料上传页.html", journey:"J-01", state:"missing", desc:"请补充 2025 年企业岗位实践结项证明。" },
+        { id:"MSG-2026-101", role:"teacher", type:"通知", status:"已读", title:"成长档案事实更新提醒", object:"ARCH-2026-LIN-001", module:"成长档案", target:"02-成长档案模块/02-P-001-我的成长档案页.html", journey:"J-01", state:"", desc:"你的成长档案有新的正式事实或待核实线索。" },
+        { id:"MSG-2026-204", role:"department_manager", type:"待办", status:"未读", title:"林知夏材料待确认", object:"DOC-2026-018", module:"成长档案", target:"02-成长档案模块/02-P-002-待确认数据页.html", journey:"J-05", state:"pending", desc:"请核对林知夏提交的企业实践材料。" },
+        { id:"MSG-2026-206", role:"department_manager", type:"待办", status:"未读", title:"公开线索待审核", object:"ARCH-CLUE-2026-001", module:"成长档案", target:"02-成长档案模块/02-P-006-公开线索审核页.html", journey:"J-05", state:"", desc:"有公开来源线索需要人工核实。" },
+        { id:"MSG-2026-307", role:"business_manager", type:"待办", status:"未读", title:"候选线索存在匹配风险", object:"ARCH-CLUE-2026-001", module:"成长档案", target:"02-成长档案模块/02-P-007-异常数据处理页.html", journey:"J-05", state:"candidate-risk", desc:"候选线索需要业务主管部门判断责任范围。" },
+        { id:"MSG-2026-308", role:"business_manager", type:"通知", status:"已读", title:"档案质量样本已更新", object:"QUALITY-SNAPSHOT-001", module:"成长档案", target:"02-成长档案模块/02-P-010-档案质量看板.html", journey:"J-05", state:"", desc:"已登记样本的质量构成发生变化。" },
+        { id:"MSG-2026-310", role:"school_leader", type:"通知", status:"已读", title:"档案质量样本已更新", object:"QUALITY-SNAPSHOT-001", module:"成长档案", target:"02-成长档案模块/02-P-010-档案质量看板.html", journey:"J-05", state:"", desc:"可查看领导只读质量看板。" },
+        { id:"MSG-2026-408", role:"admin", type:"待办", status:"未读", title:"数据规则发布申请待处理", object:"RULE-CLUE-001", module:"系统治理", target:"02-成长档案模块/02-P-008-数据规则配置页.html", journey:"J-06", state:"submitted", desc:"业务主管部门提交了公开线索候选识别规则申请。" },
+        { id:"MSG-2026-409", role:"admin", type:"系统提醒", status:"未读", title:"公开来源同步任务失败", object:"TASK-SYNC-001", module:"系统治理", target:"02-成长档案模块/02-P-009-数据任务监控页.html", journey:"J-06", state:"failed", desc:"同步任务存在解析失败，请查看日志。" }
+      ];
+      function currentMessages() {
+        return messages.filter(function (m) { return m.role === role && (filter === "全部" || m.type === filter || (filter === "已读" && m.status === "已读")); });
+      }
+      function badge(type) {
+        if (type === "待办") return '<span class="badge warning">待办</span>';
+        if (type === "系统提醒") return '<span class="badge danger">系统提醒</span>';
+        return '<span class="badge info">通知</span>';
+      }
+      function shell() {
+        if (role === "teacher") {
+          page.className = "teacher";
+          page.innerHTML = '<header class="teacher-top"><div class="brand"><span class="brand-mark">育</span>教师发展平台</div><nav class="teacher-nav"><a href="00-P-001-全站入口与身份切换页.html">入口</a><a class="active" href="#">消息</a><a href="#">我的成长</a></nav><div class="user-pill"><span class="avatar">林</span><span>林知夏</span></div></header><main class="teacher-main" id="main"></main>';
+        } else if (role === "admin") {
+          page.className = "admin";
+          page.innerHTML = '<aside class="admin-side"><div class="brand"><span class="brand-mark">管</span>系统管理</div><p class="menu-label">公共</p><button class="menu-item active">消息中心</button><button class="menu-item">数据任务</button><button class="menu-item">规则配置</button></aside><div class="admin-body"><header class="env-bar"><div class="row"><span class="env-chip">生产环境</span><strong>消息中心</strong></div><div class="user-pill"><span class="avatar">孙</span><span>孙嘉禾</span></div></header><main class="admin-main" id="main"></main></div>';
+        } else {
+          var name = role === "department_manager" ? "周明远" : role === "business_manager" ? "陈璐" : "王宁远";
+          page.className = "management";
+          page.innerHTML = '<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div><div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">' + name.slice(0,1) + '</span><span>' + name + '</span> ▾</div></div></header><div class="manage-shell"><aside class="manage-side"><p class="menu-label">公共</p><button class="menu-item active">消息中心</button><button class="menu-item">我的待办</button><p class="menu-label">成长档案</p><button class="menu-item">质量看板</button><button class="menu-item">线索审核</button></aside><div class="manage-body"><header class="context-bar"><div class="row"><strong>公共能力</strong><span class="muted">/ 消息中心</span></div><div class="row"><span class="badge info">' + role + '</span><span>' + name + '</span></div></header><main class="manage-main" id="main"></main></div></div>';
+        }
+      }
+      function render() {
+        shell();
+        var list = currentMessages();
+        if (active >= list.length) active = 0;
+        var selected = list[active];
+        var unread = messages.filter(function (m) { return m.role === role && m.status === "未读"; }).length;
+        document.getElementById("main").innerHTML = '<section class="spread mobile-stack"><div><p class="eyebrow">公共能力 / 消息分发</p><h1 class="title">消息中心</h1><p class="subtitle">查看当前身份的通知和待办，并进入目标业务页面。消息中心不直接办理业务。</p></div><span class="snapshot-note"><span class="dot"></span>J-00 · 未读 ' + unread + '</span></section><section class="metric-grid manage-summary"><div class="metric"><span>当前消息</span><b>' + list.length + '</b><span>' + role + '</span></div><div class="metric"><span>未读</span><b>' + unread + '</b><span>标记已读不等于业务完成</span></div><div class="metric"><span>直接办理</span><b>0</b><span>只做入口分发</span></div><div class="metric"><span>参数透传</span><b>5</b><span>role/object/journey/state/from</span></div></section><section class="card card-pad"><div class="filters" id="filters"><button class="btn small ' + (filter === "全部" ? 'primary' : '') + '" data-filter="全部">全部</button><button class="btn small ' + (filter === "待办" ? 'primary' : '') + '" data-filter="待办">待办</button><button class="btn small ' + (filter === "通知" ? 'primary' : '') + '" data-filter="通知">通知</button><button class="btn small ' + (filter === "系统提醒" ? 'primary' : '') + '" data-filter="系统提醒">系统提醒</button><button class="btn small ' + (filter === "已读" ? 'primary' : '') + '" data-filter="已读">已读</button></div></section><div class="review-grid"><section class="card list-panel" id="msg-list">' + (list.length ? list.map(function (m, i) { return '<button class="list-item ' + (i === active ? 'active' : '') + '" type="button" data-msg-index="' + i + '">' + badge(m.type) + '<h3>' + m.title + '</h3><div class="list-meta"><span>' + m.id + '</span><span>' + m.module + '</span><span>' + m.status + '</span></div></button>'; }).join('') : '<div class="empty">当前筛选下暂无消息。</div>') + '</section>' + detail(selected) + '</div>';
+      }
+      function detail(m) {
+        if (!m) return '<section class="card card-pad"><div class="empty">请选择消息查看详情。</div></section>';
+        return '<section class="card"><div class="detail-panel"><div class="spread"><h2 class="section-heading" style="margin:0">' + m.title + '</h2>' + badge(m.type) + '</div><div class="divider"></div><dl class="details"><dt>消息 ID</dt><dd>' + m.id + '</dd><dt>来源模块</dt><dd>' + m.module + '</dd><dt>关联对象</dt><dd>' + m.object + '</dd><dt>目标页面</dt><dd>' + m.target + '</dd><dt>状态</dt><dd>' + m.status + '</dd></dl><div class="callout info" style="margin-top:16px"><div><strong>边界提示</strong><p>' + m.desc + ' 标记已读只改变消息状态，不改变业务对象状态。</p></div></div></div><div class="operation-bar"><button class="btn primary" id="go-target" type="button">进入办理页</button><button class="btn outline" id="mark-read" type="button">标记已读</button><button class="btn ghost" id="source-note" type="button">查看来源说明</button></div></section>';
+      }
+      function go(m) {
+        var target = new URL(m.target, window.location.href);
+        target.searchParams.set("role", role);
+        if (m.object && m.object.indexOf("QUALITY") !== 0) target.searchParams.set("object", m.object);
+        target.searchParams.set("journey", m.journey);
+        if (m.state) target.searchParams.set("state", m.state);
+        target.searchParams.set("from", "00-P-002");
+        window.location.href = target.toString();
+      }
+      render();
+      page.addEventListener("click", function (event) {
+        var filterBtn = event.target.closest("[data-filter]");
+        if (filterBtn) { filter = filterBtn.dataset.filter; active = 0; render(); return; }
+        var msgBtn = event.target.closest("[data-msg-index]");
+        if (msgBtn) { active = Number(msgBtn.dataset.msgIndex); render(); return; }
+        var list = currentMessages();
+        var selected = list[active];
+        if (!selected) return;
+        if (event.target.id === "go-target") go(selected);
+        if (event.target.id === "mark-read") { selected.status = "已读"; Prototype.toast("已标记为已读，业务状态未改变"); render(); }
+        if (event.target.id === "source-note") Prototype.layer("来源说明", "<p>来源模块：" + selected.module + "<br>关联对象：" + selected.object + "<br>目标页面：" + selected.target + "</p>", "", true, event.target);
+      });
+    });
+  </script>
+</body>
+</html>
