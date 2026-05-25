@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我的教师画像 - 教师综合发展平台</title>
+  <link rel="stylesheet" href="../_prototype/prototype.css">
+</head>
+<body>
+  <div id="page" class="teacher"></div>
+  <div id="layer" class="overlay hidden"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="../_prototype/prototype.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var role = Prototype.query("role", "teacher");
+      var profile = Prototype.query("object", "PROFILE-2026-LIN");
+      var journey = Prototype.query("journey", "J-03");
+      var page = document.getElementById("page");
+      if (role !== "teacher") { Prototype.deny("教师本人身份"); return; }
+      var dims = [
+        ["CAP-DIM-TEACHING", "教学能力", "优势能力", "课程建设、教学比赛、课堂改革依据较充分", "已确认依据 3 项", "success"],
+        ["CAP-DIM-PRACTICE", "实践能力", "待补充依据", "企业实践材料 DOC-2026-018 仍待确认", "待确认依据 1 项", "warning"],
+        ["CAP-DIM-RESEARCH", "教研能力", "部分依据不足", "教改项目与成果转化依据不足，建议后续补充", "依据不足 2 项", "info"],
+        ["CAP-DIM-SERVICE", "服务能力", "稳定积累", "行业服务和学生指导记录可追溯", "已确认依据 2 项", "success"]
+      ];
+      var active = 0;
+      function shell() {
+        page.innerHTML = '<header class="teacher-top"><div class="brand"><span class="brand-mark">育</span>教师发展平台</div><nav class="teacher-nav"><a href="../00-P-001-全站入口与身份切换页.html">入口</a><a href="../00-P-002-消息中心页.html?role=teacher">消息</a><a href="../02-成长档案模块/02-P-001-我的成长档案页.html?role=teacher&journey=J-01">成长档案</a><a class="active" href="#">教师画像</a></nav><div class="user-pill"><span class="avatar">林</span><span>林知夏<br><small class="muted">副教授</small></span></div></header><main class="teacher-main" id="main"></main>';
+      }
+      function dimCards() {
+        return dims.map(function (d, i) {
+          return '<button class="confirm-item ' + (i === active ? 'active' : '') + '" type="button" data-dim="' + i + '"><span class="badge ' + d[5] + '">' + d[2] + '</span><h3>' + d[1] + '</h3><p>' + d[4] + '<br>' + d[3] + '</p></button>';
+        }).join('');
+      }
+      function detail() {
+        var d = dims[active];
+        var pending = d[0] === "CAP-DIM-PRACTICE";
+        var actions = pending ? '<button class="btn primary" id="supplement" type="button">补充实践材料</button><button class="btn outline" id="open-archive" type="button">查看成长档案</button>' : '<button class="btn outline" id="evidence" type="button">查看画像依据</button><button class="btn ghost" id="training" type="button">查看发展建议</button>';
+        return '<section class="card"><div class="evidence-panel"><div class="spread"><span class="badge info">' + d[0] + '</span><span class="badge ' + d[5] + '">' + d[2] + '</span></div><h2>' + d[1] + '画像解释</h2><dl class="evidence-fields"><dt>画像对象</dt><dd>' + profile + '</dd><dt>当前教师</dt><dd>林知夏 · 智能制造学院</dd><dt>维度状态</dt><dd>' + d[2] + '</dd><dt>依据摘要</dt><dd>' + d[3] + '</dd><dt>依据边界</dt><dd>只使用已确认事实或明确待确认依据，不生成无依据综合分和排名。</dd></dl><div class="evidence-source"><strong>发展建议</strong><br>' + (pending ? '请先补充并确认企业实践材料，再将其作为实践能力画像依据。' : '建议结合已确认依据继续规划培训、实践或成果申报行动。') + '</div></div><div class="confirm-actions">' + actions + '</div><div class="process-note">画像建议仅作发展参考，不作为职称、绩效或聘期考核自动裁决。</div></section>';
+      }
+      function render() {
+        shell();
+        document.getElementById("main").innerHTML = '<section class="teacher-title spread mobile-stack"><div><p class="eyebrow">我的成长 / 教师画像</p><h1 class="title">我的教师画像</h1><p class="subtitle">查看本人画像概览、依据解释和发展行动建议。画像只基于已确认事实和明确待确认依据。</p></div><span class="snapshot-note"><span class="dot"></span>' + journey + ' · PROFILE-2026-LIN</span></section><section class="metric-grid"><div class="metric"><span>成长阶段</span><b style="font-size:22px">骨干发展期</b><span>依据能力清单表达</span></div><div class="metric"><span>优势能力</span><b>2</b><span>教学能力、服务能力</span></div><div class="metric"><span>待确认依据</span><b>1</b><span>DOC-2026-018</span></div><div class="metric"><span>排名/综合分</span><b>0</b><span>不展示无依据结论</span></div></section><section class="callout info"><div><strong>画像边界</strong><p>本页不展示教师排名、综合评分或自动裁决；待确认材料不会被当作已确认画像事实。</p></div></section><div class="confirm-grid"><section class="card confirm-queue"><div class="card-pad"><h2 class="section-heading" style="margin:0">能力维度</h2><p class="muted">选择维度查看依据和发展行动。</p></div>' + dimCards() + '</section>' + detail() + '</div>';
+      }
+      render();
+      page.addEventListener("click", function (event) {
+        var dim = event.target.closest("[data-dim]");
+        if (dim) { active = Number(dim.dataset.dim); render(); return; }
+        if (event.target.id === "supplement") {
+          var target = new URL("../02-成长档案模块/02-P-003-材料上传页.html", window.location.href);
+          target.searchParams.set("role", "teacher"); target.searchParams.set("object", "DOC-2026-018"); target.searchParams.set("journey", "J-03"); target.searchParams.set("state", "missing"); target.searchParams.set("from", "03-P-001"); window.location.href = target.toString();
+        }
+        if (event.target.id === "open-archive") { window.location.href = "../02-成长档案模块/02-P-001-我的成长档案页.html?role=teacher&object=ARCH-2026-LIN-001&journey=J-01&from=03-P-001"; }
+        if (event.target.id === "evidence") Prototype.layer("画像依据", "<p>本维度依据来自成长档案已确认事实、培训记录和成果记录。页面仅展示依据解释，不修改档案事实。</p>", "", true, event.target);
+        if (event.target.id === "training") Prototype.layer("发展建议", "<p>培训模块尚未创建页面，本处仅展示发展建议说明，不伪造报名或完成结果。</p>", '<button class="btn primary" type="button" data-close>知道了</button>', false, event.target);
+      });
+    });
+  </script>
+</body>
+</html>
