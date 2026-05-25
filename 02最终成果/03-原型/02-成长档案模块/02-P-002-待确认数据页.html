@@ -31,7 +31,6 @@
       var isTeacher = role === "teacher";
       var isBusiness = role === "business_manager";
       if (item[1] === "候选线索" && state === "pending") state = "candidate";
-
       function badge() {
         if (state === "confirmed") return '<span class="badge success">已确认入档</span>';
         if (state === "submitted") return '<span class="badge info">已提交待确认</span>';
@@ -39,61 +38,26 @@
         if (isTeacher) return '<span class="badge warning">待补充</span>';
         return '<span class="badge info">待确认</span>';
       }
-      function teacherShell() {
-        page.className = "teacher";
-        page.innerHTML = '<header class="teacher-top"><div class="brand"><span class="brand-mark">育</span>教师发展平台</div><nav class="teacher-nav"><a class="active" href="#">我的成长</a><a href="#">发展行动</a><a href="#">成果与评价</a><a href="#">消息</a></nav><div class="user-pill"><span class="avatar">林</span><span>林知夏<br><small class="muted">副教授</small></span></div></header><main class="teacher-main" id="main"></main>';
-      }
-      function manageShell() {
-        var person = isBusiness ? "陈璐" : "周明远";
-        var scope = isBusiness ? "授权业务范围 / 跨部门" : "智能制造学院";
-        page.className = "management";
-        page.innerHTML = '<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div><div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">' + person.slice(0,1) + '</span><span>' + person + '</span> ▾</div></div></header><div class="manage-shell"><aside class="manage-side"><p class="menu-label">成长档案</p><button class="menu-item">档案管理</button><button class="menu-item active">待确认数据</button><button class="menu-item">公开线索审核</button><button class="menu-item">异常数据处理</button><button class="menu-item">档案质量</button></aside><div class="manage-body"><header class="context-bar"><div class="row"><strong>成长档案</strong><span class="muted">/ 待确认数据</span></div><div class="row"><span class="badge info">' + scope + '</span><span>' + person + '</span></div></header><main class="manage-main" id="main"></main></div></div>';
-      }
-      function queue() {
-        return '<section class="card confirm-queue"><div class="card-pad"><h2 class="section-heading" style="margin:0">当前对象</h2></div><button type="button" class="confirm-item active">' + badge() + '<h3>' + item[0] + '</h3><p>林知夏 · ' + objectId + '<br>' + item[2] + '</p></button></section>';
-      }
-      function detail(actions) {
-        return '<section class="card"><div class="evidence-panel"><div class="spread"><span class="badge info">' + item[1] + '</span>' + badge() + '</div><h2>' + item[0] + '</h2><dl class="evidence-fields"><dt>对象 ID</dt><dd>' + objectId + '</dd><dt>关联教师</dt><dd>林知夏 · 智能制造学院</dd><dt>所属维度</dt><dd>' + item[2] + '</dd><dt>来源依据</dt><dd>' + item[3] + '</dd><dt>建议字段</dt><dd>' + item[4] + '</dd></dl><div class="evidence-source">当前信息来自已登记依据，需由对应身份完成补充或人工确认后，方可反映为正式档案更新。</div></div><div class="confirm-actions">' + actions + '</div><div class="process-note">关联档案：ARCH-2026-LIN-001 · 进入来源：' + item[5] + '</div></section>';
-      }
-      function title(copy) {
-        return '<section class="teacher-title spread mobile-stack"><div><p class="eyebrow">' + (isTeacher ? '我的成长 / 材料补充' : '材料确认 / 成长档案') + '</p><h1 class="title">待确认数据</h1><p class="subtitle">' + copy + '</p></div><span class="snapshot-note"><span class="dot"></span>' + journey + '</span></section>';
-      }
+      function teacherShell() { page.className = "teacher"; page.innerHTML = '<header class="teacher-top"><div class="brand"><span class="brand-mark">育</span>教师发展平台</div><nav class="teacher-nav"><a class="active" href="#">我的成长</a><a href="#">发展行动</a><a href="#">成果与评价</a><a href="#">消息</a></nav><div class="user-pill"><span class="avatar">林</span><span>林知夏<br><small class="muted">副教授</small></span></div></header><main class="teacher-main" id="main"></main>'; }
+      function manageShell() { var person = isBusiness ? "陈璐" : "周明远"; var scope = isBusiness ? "授权业务范围 / 跨部门" : "智能制造学院"; page.className = "management"; page.innerHTML = '<header class="manage-head"><div class="brand"><span class="manage-logo">教</span>教师综合发展平台</div><div class="head-right"><div class="head-select">2025-2026 学年 第二学期 ▾</div><div class="head-user"><span class="head-avatar">' + person.slice(0,1) + '</span><span>' + person + '</span> ▾</div></div></header><div class="manage-shell"><aside class="manage-side"><p class="menu-label">成长档案</p><button class="menu-item">档案管理</button><button class="menu-item active">待确认数据</button><button class="menu-item">公开线索审核</button><button class="menu-item">异常数据处理</button><button class="menu-item">档案质量</button></aside><div class="manage-body"><header class="context-bar"><div class="row"><strong>成长档案</strong><span class="muted">/ 待确认数据</span></div><div class="row"><span class="badge info">' + scope + '</span><span>' + person + '</span></div></header><main class="manage-main" id="main"></main></div></div>'; }
+      function queue() { return '<section class="card confirm-queue"><div class="card-pad"><h2 class="section-heading" style="margin:0">当前对象</h2></div><button type="button" class="confirm-item active">' + badge() + '<h3>' + item[0] + '</h3><p>林知夏 · ' + objectId + '<br>' + item[2] + '</p></button></section>'; }
+      function detail(actions) { return '<section class="card"><div class="evidence-panel"><div class="spread"><span class="badge info">' + item[1] + '</span>' + badge() + '</div><h2>' + item[0] + '</h2><dl class="evidence-fields"><dt>对象 ID</dt><dd>' + objectId + '</dd><dt>关联教师</dt><dd>林知夏 · 智能制造学院</dd><dt>所属维度</dt><dd>' + item[2] + '</dd><dt>来源依据</dt><dd>' + item[3] + '</dd><dt>建议字段</dt><dd>' + item[4] + '</dd></dl><div class="evidence-source">当前信息来自已登记依据，需由对应身份完成补充或人工确认后，方可反映为正式档案更新。</div></div><div class="confirm-actions">' + actions + '</div><div class="process-note">关联档案：ARCH-2026-LIN-001 · 进入来源：' + item[5] + '</div></section>'; }
+      function title(copy) { return '<section class="teacher-title spread mobile-stack"><div><p class="eyebrow">' + (isTeacher ? '我的成长 / 材料补充' : '材料确认 / 成长档案') + '</p><h1 class="title">待确认数据</h1><p class="subtitle">' + copy + '</p></div><span class="snapshot-note"><span class="dot"></span>' + journey + '</span></section>'; }
       function render() {
-        if (isTeacher) {
-          teacherShell();
-          document.getElementById("main").innerHTML = title("查看本人需要补充的依据材料，提交后进入人工确认流程。") + '<section class="callout ' + (state === "submitted" ? 'success' : 'warning') + '"><div><strong>' + (state === "submitted" ? '材料已提交，等待部门确认' : '企业实践材料仍待补充') + '</strong><p>' + (state === "submitted" ? '请等待部门管理者确认；本状态仍不等于正式入档。' : '请在截止时间前补充证明材料；本页不会代替部门确认流程。') + '</p></div></section><div class="confirm-grid">' + queue() + detail('<button class="btn primary" id="supplement-material" type="button">补充材料</button><button class="btn outline" id="preview-evidence" type="button">查看说明</button>') + '</div>';
-        } else {
-          manageShell();
-          var actions = state === "candidate" ? '<button class="btn outline" id="preview-evidence" type="button">查看来源依据</button><button class="btn" id="request-more" type="button">要求补充</button><button class="btn" id="transfer-exception" type="button">转异常</button>' : '<button class="btn primary" id="confirm-archive" type="button">确认入档</button><button class="btn outline" id="modify-confirm" type="button">修改后确认</button><button class="btn" id="reject-material" type="button">驳回</button><button class="btn" id="transfer-exception" type="button">转异常</button><button class="btn ghost" id="preview-evidence" type="button">查看依据</button>';
-          if (state === "confirmed") actions = '<button class="btn outline" id="preview-evidence" type="button">查看入档依据</button>';
-          document.getElementById("main").innerHTML = title("核对提交材料及字段建议，确认结果将反馈至教师成长档案。") + '<section class="callout ' + (state === "confirmed" ? 'success' : state === "candidate" ? 'warning' : 'info') + '"><div><strong>' + (state === "confirmed" ? '材料已确认入档' : state === "candidate" ? '候选数据尚未成为正式档案' : '材料确认待办') + '</strong><p>材料确认前不会更新正式档案；候选线索也不会直接入档。</p></div></section><div class="confirm-grid">' + queue() + detail(actions) + '</div>';
-        }
+        if (isTeacher) { teacherShell(); document.getElementById("main").innerHTML = title("查看本人需要补充的依据材料，提交后进入人工确认流程。") + '<section class="callout ' + (state === "submitted" ? 'success' : 'warning') + '"><div><strong>' + (state === "submitted" ? '材料已提交，等待部门确认' : '企业实践材料仍待补充') + '</strong><p>' + (state === "submitted" ? '请等待部门管理者确认；本状态仍不等于正式入档。' : '请在截止时间前补充证明材料；本页不会代替部门确认流程。') + '</p></div></section><div class="confirm-grid">' + queue() + detail('<button class="btn primary" id="supplement-material" type="button">补充材料</button><button class="btn outline" id="preview-evidence" type="button">查看说明</button>') + '</div>'; }
+        else { manageShell(); var actions = state === "candidate" ? '<button class="btn outline" id="preview-evidence" type="button">查看来源依据</button><button class="btn" id="request-more" type="button">要求补充</button><button class="btn" id="transfer-exception" type="button">转异常</button>' : '<button class="btn primary" id="confirm-archive" type="button">确认入档</button><button class="btn outline" id="modify-confirm" type="button">修改后确认</button><button class="btn" id="reject-material" type="button">驳回</button><button class="btn" id="transfer-exception" type="button">转异常</button><button class="btn ghost" id="preview-evidence" type="button">查看依据</button>'; if (state === "confirmed") actions = '<button class="btn outline" id="preview-evidence" type="button">查看入档依据</button>'; document.getElementById("main").innerHTML = title("核对提交材料及字段建议，确认结果将反馈至教师成长档案。") + '<section class="callout ' + (state === "confirmed" ? 'success' : state === "candidate" ? 'warning' : 'info') + '"><div><strong>' + (state === "confirmed" ? '材料已确认入档' : state === "candidate" ? '候选数据尚未成为正式档案' : '材料确认待办') + '</strong><p>材料确认前不会更新正式档案；候选线索也不会直接入档。</p></div></section><div class="confirm-grid">' + queue() + detail(actions) + '</div>'; }
       }
-      function goUpload() {
-        var target = new URL("02-P-003-材料上传页.html", window.location.href);
-        target.searchParams.set("role", "teacher");
-        target.searchParams.set("object", objectId);
-        target.searchParams.set("journey", journey);
-        target.searchParams.set("state", state === "submitted" ? "submitted" : "missing");
-        window.location.href = target.toString();
-      }
-      function preview(trigger) {
-        Prototype.layer("材料依据预览", "<p><strong>" + item[0] + "</strong></p><p>对象：" + objectId + "<br>来源：" + item[3] + "<br>字段建议：" + item[4] + "</p>", "", true, trigger);
-      }
+      function goUpload() { var target = new URL("02-P-003-材料上传页.html", window.location.href); target.searchParams.set("role", "teacher"); target.searchParams.set("object", objectId); target.searchParams.set("journey", journey); target.searchParams.set("state", state === "submitted" ? "submitted" : "missing"); window.location.href = target.toString(); }
+      function goException() { var target = new URL("02-P-007-异常数据处理页.html", window.location.href); target.searchParams.set("role", role); target.searchParams.set("object", objectId); target.searchParams.set("journey", "J-05"); target.searchParams.set("state", objectId.indexOf("ARCH-CLUE") === 0 ? "candidate-risk" : "conflict"); window.location.href = target.toString(); }
+      function preview(trigger) { Prototype.layer("材料依据预览", "<p><strong>" + item[0] + "</strong></p><p>对象：" + objectId + "<br>来源：" + item[3] + "<br>字段建议：" + item[4] + "</p>", "", true, trigger); }
       render();
       page.addEventListener("click", function (event) {
         if (event.target.id === "supplement-material") goUpload();
         if (event.target.id === "preview-evidence") preview(event.target);
-        if (event.target.id === "transfer-exception") Prototype.pendingPage("02-P-007", "异常数据处理页", objectId, journey, event.target);
+        if (event.target.id === "transfer-exception") goException();
         if (event.target.id === "request-more") Prototype.toast("已记录要求补充依据的处理意图，候选仍待确认");
         if (event.target.id === "reject-material") Prototype.toast("已记录驳回结果，材料仍处于待补充确认状态");
-        if (event.target.id === "confirm-archive" || event.target.id === "modify-confirm") {
-          currentState = "confirmed";
-          Prototype.setState("confirmed");
-          Prototype.toast("材料已确认入档，并保留本次人工处理依据");
-          state = "confirmed";
-          render();
-        }
+        if (event.target.id === "confirm-archive" || event.target.id === "modify-confirm") { Prototype.setState("confirmed"); Prototype.toast("材料已确认入档，并保留本次人工处理依据"); state = "confirmed"; render(); }
       });
     });
   </script>
