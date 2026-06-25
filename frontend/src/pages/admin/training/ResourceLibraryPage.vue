@@ -98,8 +98,6 @@ function openDetail(resource: TrainingResourceMockItem) {
       eyebrow="培训管理"
       title="资源库"
       description="管理培训资源本身的类型、来源、可用状态和信息完整度，不关联计划、需求匹配或覆盖教师。"
-      primary-action-text="新增资源"
-      secondary-action-text="导出资源"
     />
 
     <div class="mb-5 grid gap-4 md:grid-cols-4">
@@ -120,11 +118,7 @@ function openDetail(resource: TrainingResourceMockItem) {
         @search="handleSearch"
         @change="handleFilterChange"
         @reset="handleReset"
-      >
-        <template #actions>
-          <Button variant="outline">导出当前结果</Button>
-        </template>
-      </FilterBar>
+      />
     </div>
 
     <Card>
