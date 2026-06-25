@@ -29,6 +29,9 @@ const teacherStatusTextMap: Record<string, string> = {
   removed: '已移出',
   processing: '处理中',
   completed: '已完成',
+  available: '可查看',
+  incomplete: '待完善',
+  disabled: '已停用',
 }
 
 const adminStatusTextMap: Record<string, string> = {
@@ -44,6 +47,9 @@ const adminStatusTextMap: Record<string, string> = {
   recognized: '识别完成',
   draft: '草稿',
   published: '已发布',
+  available: '可用',
+  incomplete: '信息待完善',
+  disabled: '已停用',
 }
 
 const statusToneMap: Record<string, StatusTone> = {
@@ -52,6 +58,7 @@ const statusToneMap: Record<string, StatusTone> = {
   corrected: 'success',
   formal: 'success',
   published: 'success',
+  available: 'success',
   saved: 'info',
   recognized: 'info',
   recognizing: 'info',
@@ -59,8 +66,10 @@ const statusToneMap: Record<string, StatusTone> = {
   candidate: 'warning',
   pendingConfirm: 'warning',
   needSupplement: 'warning',
+  incomplete: 'warning',
   improvable: 'purple',
   abnormal: 'danger',
+  disabled: 'danger',
   correcting: 'warning',
   removed: 'neutral',
   reused: 'neutral',
@@ -72,7 +81,8 @@ const isTeacherScene = computed(() => props.scene === 'teacher' || props.scene =
 
 const label = computed(() => {
   const map = isTeacherScene.value ? teacherStatusTextMap : adminStatusTextMap
-  return map[props.status] ?? props.status
+  if (map[props.status]) return map[props.status]
+  return isTeacherScene.value ? '待处理' : props.status
 })
 
 const displayTone = computed<StatusTone>(() => props.tone ?? statusToneMap[props.status] ?? 'neutral')
