@@ -118,3 +118,31 @@
 未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
 自检：PageHeader 不承载业务列表，支持标题、说明、页头操作和返回事件。  
 下一步建议：T3.2 StatusBadge。
+
+---
+
+## T3.2｜StatusBadge
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 新增 `StatusBadge.vue`，统一承载业务状态展示。
+- 在 `StatusBadge.vue` 中区分管理端、教师端、手机端状态文案。
+- 更新 `components/common/index.ts`，导出 StatusBadge。
+- 将 `App.vue` 的预览态改为展示管理端与教师端状态映射。
+
+新增文件：
+
+- `frontend/src/components/common/StatusBadge.vue`
+
+修改文件：
+
+- `frontend/src/components/common/index.ts`
+- `frontend/src/App.vue`
+- `frontend/docs/ai-task-log.md`
+
+未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
+自检：教师端 `candidate` 显示为“待你确认”，管理端 `candidate` 显示为“候选数据”，避免教师端直接出现后台术语。  
+下一步建议：T3.3 StatCard。
