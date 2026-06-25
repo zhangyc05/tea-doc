@@ -123,19 +123,32 @@
 执行时间：2026-06-25  
 执行者：ChatGPT
 
-本次完成：
-
-- 新增 Vue Router 依赖。
-- 新增 `src/router/index.ts`、`admin.routes.ts`、`teacher.routes.ts`、`mobile.routes.ts`。
-- 接入首批管理端路由，统一使用 `/admin` 前缀。
-- 新增 `AdminPlaceholderPage.vue`，用于在正式页面开发前验证路由、Layout、菜单选中和面包屑。
-- 将 `main.ts` 挂载 router。
-- 将 `App.vue` 从组件预览态改为 `RouterView`。
-- 新增 `frontend/docs/page-route-map.md` 页面路由与执行台账。
-- 更新 `任务清理与待验证清单.md`，回收 Vue Router 和 App 预览态相关事项。
-
+本次完成：新增 Vue Router、路由入口、首批管理端路由、占位页、页面路由台账，并将 App.vue 改为 RouterView。  
 新增文件：`frontend/src/router/index.ts`、`frontend/src/router/admin.routes.ts`、`frontend/src/router/teacher.routes.ts`、`frontend/src/router/mobile.routes.ts`、`frontend/src/pages/admin/AdminPlaceholderPage.vue`、`frontend/docs/page-route-map.md`  
 修改文件：`frontend/package.json`、`frontend/src/main.ts`、`frontend/src/App.vue`、`frontend/docs/任务清理与待验证清单.md`、`frontend/docs/ai-task-log.md`  
-未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；具体页面仍为路由占位，尚未接入真实 mock 数据。  
-自检：App 预览态已回收；首批管理端路由已接入；页面台账已建立；教师 PC 与手机端路由文件已建立但尚为空数组。  
-下一步建议：T4.3 建立并完善页面映射文档，或直接进入 T5.1 资源库样板页并同步维护页面台账。
+未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；具体页面仍为路由占位。  
+下一步建议：T4.2 路由导航与工程回收。
+
+---
+
+## T4.2｜路由导航与工程回收
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 将 AdminSidebar 中已建立路由的菜单改为 RouterLink 跳转。
+- 对尚未建立路由的“企业实践管理”“虚拟教研”保持禁用，避免错误跳转。
+- 补齐 `/admin/training/records` 记录总览路由。
+- AdminLayout 支持从 route.meta 自动读取 pageTitle、breadcrumb、activeKey。
+- AdminPlaceholderPage 不再重复向 AdminLayout 传基础路由参数。
+- 新增 `src/mock/admin/training.ts`，建立培训管理 mock 基础结构。
+- 更新 `page-route-map.md`，补齐记录总览路由，并统一培训管理 mock 文件指向。
+- 更新 `任务清理与待验证清单.md`，回收侧边栏导航、Layout 参数和培训 mock 基础结构问题。
+
+新增文件：`frontend/src/mock/admin/training.ts`  
+修改文件：`frontend/src/components/layout/AdminSidebar.vue`、`frontend/src/router/admin.routes.ts`、`frontend/src/layouts/AdminLayout.vue`、`frontend/src/pages/admin/AdminPlaceholderPage.vue`、`frontend/docs/page-route-map.md`、`frontend/docs/任务清理与待验证清单.md`、`frontend/docs/ai-task-log.md`  
+未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；非培训模块 mock 数据仍待后续页面任务补齐。  
+自检：已建立路由菜单可跳转；Layout 可自动读取 route.meta；培训管理 mock 已集中到 `src/mock/admin/training.ts`。  
+下一步建议：T5.1 管理端｜培训管理｜资源库样板页。
