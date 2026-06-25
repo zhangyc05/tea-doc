@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
 const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
+const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -22,7 +23,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/training/resources',
     name: 'AdminTrainingResources',
-    component: AdminPlaceholderPage,
+    component: ResourceLibraryPage,
     meta: {
       title: '资源库',
       module: '培训管理',
