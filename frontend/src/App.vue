@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PageHeader, StatusBadge } from '@/components/common'
+import { PageHeader, StatCard, StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { Card, CardContent } from '@/components/ui'
 </script>
@@ -11,12 +11,18 @@ import { Card, CardContent } from '@/components/ui'
     :breadcrumb="['管理端', '布局预览']"
   >
     <PageHeader
-      eyebrow="T3.2 已完成"
-      title="StatusBadge 通用状态标签"
-      description="统一承载业务状态展示，并根据管理端、教师端、手机端场景完成文案转译。"
+      eyebrow="T3.3 已完成"
+      title="StatCard 通用统计卡"
+      description="统一承载当前页面业务对象的关键统计，数量保持克制，不为了丰富页面新增无依据统计。"
       primary-action-text="主要操作"
       secondary-action-text="次要操作"
     />
+
+    <div class="mb-5 grid gap-4 md:grid-cols-3">
+      <StatCard title="页头组件" value="1" description="用于统一页面标题、简短说明和右侧操作。" tone="primary" />
+      <StatCard title="状态组件" value="1" description="用于统一管理端与教师端状态文案。" tone="info" />
+      <StatCard title="统计卡组件" value="1" description="用于当前页面对象的关键统计展示。" trend="本次新增" tone="success" />
+    </div>
 
     <Card>
       <CardContent class="space-y-5 pt-6">
