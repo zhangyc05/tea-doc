@@ -5,14 +5,23 @@ import { cn } from '@/lib/utils'
 export const Input = defineComponent({
   name: 'Input',
   inheritAttrs: false,
-  setup(_, { attrs }) {
+  props: {
+    modelValue: {
+      type: [String, Number],
+      default: undefined,
+    },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { attrs, emit }) {
     return () =>
       h('input', {
         ...attrs,
+        value: props.modelValue,
         class: cn(
           'flex h-10 w-full rounded-md border border-card-border bg-card px-3 py-2 text-sm text-text-primary transition-colors placeholder:text-text-tertiary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50',
           attrs.class as string,
         ),
+        onInput: (event: Event) => emit('update:modelValue', (event.target as HTMLInputElement).value),
       })
   },
 })
