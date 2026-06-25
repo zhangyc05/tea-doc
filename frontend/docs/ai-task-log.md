@@ -56,3 +56,75 @@ build 结果：
 下一步建议：
 
 - 执行 T1.3：接入 shadcn-vue。
+
+---
+
+## 任务编号：T1.3
+
+任务名称：接入 shadcn-vue
+
+执行时间：2026-06-25
+
+执行者：ChatGPT
+
+本次完成：
+
+- 新增 `components.json`，建立 shadcn-vue 配置入口。
+- 新增 `src/lib/utils.ts`，提供 `cn` 工具函数。
+- 新增 `src/components/ui/` 下首批 UI 基础组件。
+- 新增统一导出入口 `src/components/ui/index.ts`。
+- 为 `package.json` 增加 shadcn-vue 组件所需的轻量工具依赖。
+- 将初始 `App.vue` 改为实际引入 `Button / Card / Badge`，验证基础组件导出路径。
+
+新增文件：
+
+- `frontend/components.json`
+- `frontend/src/lib/utils.ts`
+- `frontend/src/components/ui/button.ts`
+- `frontend/src/components/ui/badge.ts`
+- `frontend/src/components/ui/card.ts`
+- `frontend/src/components/ui/input.ts`
+- `frontend/src/components/ui/select.ts`
+- `frontend/src/components/ui/table.ts`
+- `frontend/src/components/ui/tabs.ts`
+- `frontend/src/components/ui/dialog.ts`
+- `frontend/src/components/ui/sheet.ts`
+- `frontend/src/components/ui/dropdown-menu.ts`
+- `frontend/src/components/ui/tooltip.ts`
+- `frontend/src/components/ui/popover.ts`
+- `frontend/src/components/ui/separator.ts`
+- `frontend/src/components/ui/breadcrumb.ts`
+- `frontend/src/components/ui/index.ts`
+
+修改文件：
+
+- `frontend/package.json`
+- `frontend/src/App.vue`
+- `frontend/docs/ai-task-log.md`
+
+未完成：
+
+- 未执行 `npx shadcn-vue@latest init/add`，当前连接器无法运行 CLI。
+- 未执行 `npm install`。
+- 未执行 `npm run build`。
+- 当前 UI 组件为按 shadcn-vue 组织方式手工落地的基础可维护版本，复杂交互组件后续可在具备 CLI 环境时替换为官方生成版本。
+
+待确认：
+
+- 无。
+
+build 结果：
+
+- 未运行。当前 GitHub 连接器无法直接在仓库环境中执行 Node 构建命令。
+
+自检结果：
+
+- `components.json` 已存在。
+- `src/components/ui/` 已存在并包含首批组件。
+- `Button`、`Card`、`Badge` 已在 `App.vue` 中引入使用。
+- `Sheet` 已在 `src/components/ui/index.ts` 中导出。
+- 未引入 Element Plus、Ant Design Vue、Naive UI 等大型 UI 组件库。
+
+下一步建议：
+
+- 执行 T2.1：实现 AdminLayout。
