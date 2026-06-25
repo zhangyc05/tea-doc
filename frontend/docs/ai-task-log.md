@@ -173,3 +173,32 @@
 未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
 自检：StatCard 只做展示容器，不写入具体业务结论；预览页未超过 4 个统计卡。  
 下一步建议：T3.4 FilterBar。
+
+---
+
+## T3.4｜FilterBar
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 新增 `FilterBar.vue`，统一承载搜索框、必要筛选项、重置按钮和右侧操作区。
+- 更新 `components/common/index.ts`，导出 FilterBar。
+- 将 `App.vue` 的预览态改为展示 3 个筛选项，不超过规则上限。
+- 修复 `Input` 组件，使其支持 `v-model`，保证 FilterBar 可以正常使用输入控件。
+
+新增文件：
+
+- `frontend/src/components/common/FilterBar.vue`
+
+修改文件：
+
+- `frontend/src/components/common/index.ts`
+- `frontend/src/components/ui/input.ts`
+- `frontend/src/App.vue`
+- `frontend/docs/ai-task-log.md`
+
+未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
+自检：FilterBar 最多渲染前 5 个筛选项，搜索框在左侧，右侧支持操作插槽；预览页只展示 3 个筛选项。  
+下一步建议：T3.5 DetailSheet。
