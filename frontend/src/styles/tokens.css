@@ -57,14 +57,14 @@
   --radius-full: 999px;
 
   /* 阴影 */
-  --shadow-card: 0 4px 14px rgba(31, 41, 51, 0.05);
+  --shadow-card: 0 3px 12px rgba(31, 41, 51, 0.045);
   --shadow-card-hover: 0 8px 24px rgba(31, 41, 51, 0.08);
   --shadow-floating: 0 12px 32px rgba(31, 41, 51, 0.14);
 
   /* 页面尺寸 */
   --admin-sidebar-width: 224px;
-  --admin-topbar-height: 60px;
-  --admin-content-max-width: 1280px;
+  --admin-topbar-height: 56px;
+  --admin-content-max-width: 1240px;
 
   --teacher-pc-content-max-width: 1280px;
 
