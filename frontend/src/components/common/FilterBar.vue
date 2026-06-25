@@ -79,7 +79,7 @@ function handleReset() {
             v-if="filter.type === 'select'"
             v-model="values[filter.key]"
             :aria-label="filter.label"
-            @update:model-value="emitChange"
+            @update:modelValue="emitChange"
           >
             <SelectItem value="">{{ filter.placeholder || '全部' }}</SelectItem>
             <SelectItem v-for="option in filter.options || []" :key="option.value" :value="option.value">
@@ -92,7 +92,7 @@ function handleReset() {
             v-model="values[filter.key]"
             type="date"
             :aria-label="filter.label"
-            @input="emitChange"
+            @update:modelValue="emitChange"
           />
 
           <Input
