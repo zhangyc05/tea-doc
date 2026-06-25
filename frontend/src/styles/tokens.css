@@ -1,0 +1,85 @@
+:root {
+  /* 品牌主色 */
+  --color-primary: #2FBF9B;
+  --color-primary-hover: #22A889;
+  --color-primary-light: #E8F7F2;
+  --color-primary-soft: #F2FBF8;
+
+  /* 页面背景 */
+  --color-page-bg: #F6F8F7;
+  --color-page-bg-soft: #F8FAF9;
+
+  /* 卡片 */
+  --color-card-bg: #FFFFFF;
+  --color-card-border: #E5EAE7;
+  --color-card-border-soft: #EEF2EF;
+
+  /* 文本 */
+  --color-text-primary: #1F2933;
+  --color-text-secondary: #5B6670;
+  --color-text-tertiary: #8A949E;
+  --color-text-disabled: #B7C0C8;
+
+  /* 分割线 */
+  --color-divider: #E8EDEB;
+
+  /* 状态色 */
+  --color-success: #2FBF71;
+  --color-success-bg: #EAF8F0;
+
+  --color-warning: #F5A623;
+  --color-warning-bg: #FFF6E5;
+
+  --color-danger: #E85D5D;
+  --color-danger-bg: #FDECEC;
+
+  --color-info: #4A90E2;
+  --color-info-bg: #EAF3FE;
+
+  --color-purple: #8B5CF6;
+  --color-purple-bg: #F2EEFF;
+
+  --color-neutral: #6B7280;
+  --color-neutral-bg: #F3F4F6;
+
+  /* 能力画像固定色 */
+  --color-ability-teaching: #4A90E2;
+  --color-ability-research: #F5A623;
+  --color-ability-practice: #7ED321;
+  --color-ability-service: #BD10E0;
+
+  /* 圆角 */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 999px;
+
+  /* 阴影 */
+  --shadow-card: 0 4px 14px rgba(31, 41, 51, 0.05);
+  --shadow-card-hover: 0 8px 24px rgba(31, 41, 51, 0.08);
+  --shadow-floating: 0 12px 32px rgba(31, 41, 51, 0.14);
+
+  /* 页面尺寸 */
+  --admin-sidebar-width: 224px;
+  --admin-topbar-height: 60px;
+  --admin-content-max-width: 1280px;
+
+  --teacher-pc-content-max-width: 1280px;
+
+  --mobile-design-width: 390px;
+  --mobile-tabbar-height: 64px;
+
+  /* 字号 */
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.75;
+}
