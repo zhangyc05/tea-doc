@@ -7,7 +7,7 @@
 | 任务编号 | 页面中文名 | 页面路由 | Vue 文件路径 | 所属端 | 所属模块 | 对应效果图路径 | 所属 Layout | 依赖组件 | mock 文件 | 页面状态 | 验收状态 | 备注 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | T5.0 | 管理端｜培训管理｜记录总览 | `/admin/training/records` | `src/pages/admin/AdminPlaceholderPage.vue` | 管理端 PC | 培训管理 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, StatusBadge | `src/mock/admin/training.ts` | 未开始 | 未验收 | 当前为路由占位 |
-| T5.1 | 管理端｜培训管理｜资源库 | `/admin/training/resources` | `src/pages/admin/training/ResourceLibraryPage.vue` | 管理端 PC | 培训管理 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, FilterBar, StatusBadge, DetailSheet, TrainingResourceDetailSheet | `src/mock/admin/training.ts` | 已完成静态结构 | 待视觉验收 | 首个样板页；已从路由占位切换为真实页面 |
+| T5.1 | 管理端｜培训管理｜资源库 | `/admin/training/resources` | `src/pages/admin/training/ResourceLibraryPage.vue` | 管理端 PC | 培训管理 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, FilterBar, StatusBadge, DetailSheet, TrainingResourceDetailSheet | `src/mock/admin/training.ts` | 复盘修正完成 | 待视觉验收 | 已收敛页头文案与筛选项，资源库只围绕资源本身 |
 | T5.2 | 管理端｜培训管理｜需求管理 | `/admin/training/demands` | `src/pages/admin/AdminPlaceholderPage.vue` | 管理端 PC | 培训管理 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, StatusBadge | `src/mock/admin/training.ts` | 未开始 | 未验收 | 第二个标准页；当前为路由占位 |
 | T5.3 | 管理端｜培训管理｜申请处理 | `/admin/training/applications` | `src/pages/admin/AdminPlaceholderPage.vue` | 管理端 PC | 培训管理 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, StatusBadge | `src/mock/admin/training.ts` | 未开始 | 未验收 | 轻量申请处理；当前为路由占位 |
 | T5.4 | 管理端｜分析报告｜卡片页 | `/admin/reports` | `src/pages/admin/AdminPlaceholderPage.vue` | 管理端 PC | 分析报告 | 待补充真实路径 | AdminLayout | PageHeader, StatCard, StatusBadge | 待建立 | 未开始 | 未验收 | AI 报告生成入口；当前为路由占位 |
@@ -26,5 +26,5 @@
 3. AdminSidebar 已接入 RouterLink，已建立路由的菜单可直接跳转。
 4. AdminLayout 已支持从 route.meta 自动读取标题、面包屑和菜单选中状态。
 5. 教师 PC 与手机端路由文件已建立，占位为空数组。
-6. T5.1 资源库已切换为真实页面，其他页面仍为路由占位。
+6. T5.1 资源库已切换为真实页面并完成复盘修正，其他页面仍为路由占位。
 ```
