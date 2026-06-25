@@ -128,3 +128,64 @@ build 结果：
 下一步建议：
 
 - 执行 T2.1：实现 AdminLayout。
+
+---
+
+## 任务编号：T2.1
+
+任务名称：实现 AdminLayout
+
+执行时间：2026-06-25
+
+执行者：ChatGPT
+
+本次完成：
+
+- 新增 `AdminLayout.vue`，建立管理端页面壳。
+- 新增浅色 `AdminSidebar.vue`，承载管理端左侧导航。
+- 新增 `AdminTopbar.vue`，承载顶部栏。
+- 新增 `AppBreadcrumb.vue`，承载面包屑。
+- 新增 `FloatingAIAssistant.vue`，承载右下角 AI 助理入口。
+- 将 `App.vue` 切换为 AdminLayout 预览态，用于在路由建立前查看管理端壳。
+
+新增文件：
+
+- `frontend/src/layouts/AdminLayout.vue`
+- `frontend/src/components/layout/AdminSidebar.vue`
+- `frontend/src/components/layout/AdminTopbar.vue`
+- `frontend/src/components/layout/AppBreadcrumb.vue`
+- `frontend/src/components/layout/FloatingAIAssistant.vue`
+
+修改文件：
+
+- `frontend/src/App.vue`
+- `frontend/docs/ai-task-log.md`
+
+未完成：
+
+- 未执行 `npm install`。
+- 未执行 `npm run build`。
+- 尚未建立 Vue Router，因此 AdminLayout 当前通过 `App.vue` 预览，不是正式路由承载。
+
+待确认：
+
+- 无。
+
+build 结果：
+
+- 未运行。当前 GitHub 连接器无法直接在仓库环境中执行 Node 构建命令。
+
+自检结果：
+
+- 管理端左侧导航为浅色。
+- 顶部栏高度使用 `--admin-topbar-height`。
+- 侧边栏宽度使用 `--admin-sidebar-width`。
+- 内容区最大宽度使用 `--admin-content-max-width`。
+- 已包含面包屑区域。
+- 已包含右下角 AI 助理入口。
+- 未引入无关业务字段。
+- 未出现黑色、深蓝、深灰重后台风格。
+
+下一步建议：
+
+- 执行 T3.1：PageHeader。
