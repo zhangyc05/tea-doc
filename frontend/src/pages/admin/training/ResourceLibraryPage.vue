@@ -43,18 +43,6 @@ const filters = [
     placeholder: '全部状态',
     options: Object.entries(trainingResourceStatusText).map(([value, label]) => ({ value, label })),
   },
-  {
-    key: 'source',
-    label: '来源',
-    type: 'select' as const,
-    placeholder: '全部来源',
-    options: [
-      { value: '校内建设', label: '校内建设' },
-      { value: '外部机构', label: '外部机构' },
-      { value: '企业合作', label: '企业合作' },
-      { value: '公开课程', label: '公开课程' },
-    ],
-  },
 ]
 
 const filteredResources = computed(() => {
@@ -67,9 +55,8 @@ const filteredResources = computed(() => {
       : true
     const matchesType = values.type ? resource.type === values.type : true
     const matchesStatus = values.status ? resource.status === values.status : true
-    const matchesSource = values.source ? resource.source === values.source : true
 
-    return matchesKeyword && matchesType && matchesStatus && matchesSource
+    return matchesKeyword && matchesType && matchesStatus
   })
 })
 
@@ -97,7 +84,7 @@ function openDetail(resource: TrainingResourceMockItem) {
     <PageHeader
       eyebrow="培训管理"
       title="资源库"
-      description="管理培训资源本身的类型、来源、可用状态和信息完整度，不关联计划、需求匹配或覆盖教师。"
+      description="管理培训资源本身的类型、提供方、适用方向、可用状态和信息完整度。"
     />
 
     <div class="mb-5 grid gap-4 md:grid-cols-4">
