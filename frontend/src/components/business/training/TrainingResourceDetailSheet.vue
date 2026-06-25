@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { DetailSheet, StatusBadge } from '@/components/common'
 import type { TrainingResourceMockItem } from '@/mock/admin/training'
-import { trainingResourceTypeText } from '@/mock/admin/training'
+import {
+  trainingResourceDirectionText,
+  trainingResourceLevelText,
+  trainingResourceSourceText,
+} from '@/mock/admin/training'
 
 const props = withDefaults(
   defineProps<{
@@ -22,7 +26,7 @@ const emit = defineEmits<{
   <DetailSheet
     :open="open"
     title="资源详情"
-    description="查看培训资源的基础信息、适用方向和信息完整度。"
+    description="查看培训资源的方向、级别、机构、对象和状态。"
     width="md"
     mode="view"
     @update:open="emit('update:open', $event)"
@@ -37,43 +41,38 @@ const emit = defineEmits<{
 
       <div class="grid gap-3 sm:grid-cols-2">
         <div class="rounded-lg border border-card-border bg-card p-4">
-          <p class="text-sm text-text-secondary">资源类型</p>
-          <p class="mt-1 font-medium text-text-primary">{{ trainingResourceTypeText[props.resource.type] }}</p>
+          <p class="text-sm text-text-secondary">培训方向</p>
+          <p class="mt-1 font-medium text-text-primary">{{ trainingResourceDirectionText[props.resource.direction] }}</p>
         </div>
         <div class="rounded-lg border border-card-border bg-card p-4">
-          <p class="text-sm text-text-secondary">可用状态</p>
+          <p class="text-sm text-text-secondary">资源状态</p>
           <div class="mt-2">
             <StatusBadge :status="props.resource.status" scene="admin" />
           </div>
         </div>
         <div class="rounded-lg border border-card-border bg-card p-4">
-          <p class="text-sm text-text-secondary">提供方</p>
-          <p class="mt-1 font-medium text-text-primary">{{ props.resource.provider }}</p>
+          <p class="text-sm text-text-secondary">级别 / 学时</p>
+          <p class="mt-1 font-medium text-text-primary">{{ trainingResourceLevelText[props.resource.level] }} / {{ props.resource.hours }}学时</p>
         </div>
         <div class="rounded-lg border border-card-border bg-card p-4">
-          <p class="text-sm text-text-secondary">更新时间</p>
-          <p class="mt-1 font-medium text-text-primary">{{ props.resource.updatedAt }}</p>
+          <p class="text-sm text-text-secondary">资源来源</p>
+          <p class="mt-1 font-medium text-text-primary">{{ trainingResourceSourceText[props.resource.source] }}</p>
         </div>
       </div>
 
       <div class="rounded-lg border border-card-border bg-card p-4">
-        <p class="text-sm text-text-secondary">适用方向</p>
-        <p class="mt-1 font-medium text-text-primary">{{ props.resource.direction }}</p>
+        <p class="text-sm text-text-secondary">培训机构</p>
+        <p class="mt-1 font-medium text-text-primary">{{ props.resource.institution }}</p>
+      </div>
+
+      <div class="rounded-lg border border-card-border bg-card p-4">
+        <p class="text-sm text-text-secondary">适合对象</p>
+        <p class="mt-1 font-medium text-text-primary">{{ props.resource.audience }}</p>
       </div>
 
       <div class="rounded-lg border border-card-border bg-card p-4">
         <p class="text-sm text-text-secondary">资源说明</p>
         <p class="mt-2 text-sm leading-relaxed text-text-primary">{{ props.resource.description }}</p>
-      </div>
-
-      <div class="rounded-lg border border-card-border bg-card p-4">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-text-secondary">信息完整度</span>
-          <span class="font-medium text-text-primary">{{ props.resource.completeness }}%</span>
-        </div>
-        <div class="mt-3 h-2 rounded-full bg-page-soft">
-          <div class="h-2 rounded-full bg-primary" :style="{ width: `${props.resource.completeness}%` }" />
-        </div>
       </div>
     </div>
 

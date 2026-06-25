@@ -1,34 +1,34 @@
 :root {
   /* 品牌主色 */
-  --color-primary: #2FBF9B;
-  --color-primary-hover: #22A889;
-  --color-primary-light: #E8F7F2;
-  --color-primary-soft: #F2FBF8;
+  --color-primary: #0B63F6;
+  --color-primary-hover: #004BD6;
+  --color-primary-light: #DDEAFF;
+  --color-primary-soft: #EAF2FF;
 
   /* 页面背景 */
-  --color-page-bg: #F6F8F7;
-  --color-page-bg-soft: #F8FAF9;
+  --color-page-bg: #F7FAFF;
+  --color-page-bg-soft: #F8FAFE;
 
   /* 卡片 */
   --color-card-bg: #FFFFFF;
-  --color-card-border: #E5EAE7;
-  --color-card-border-soft: #EEF2EF;
+  --color-card-border: #E5ECF8;
+  --color-card-border-soft: #EDF3FC;
 
   /* 文本 */
-  --color-text-primary: #1F2933;
-  --color-text-secondary: #5B6670;
-  --color-text-tertiary: #8A949E;
-  --color-text-disabled: #B7C0C8;
+  --color-text-primary: #07122F;
+  --color-text-secondary: #53627A;
+  --color-text-tertiary: #8A96AB;
+  --color-text-disabled: #B8C2D2;
 
   /* 分割线 */
-  --color-divider: #E8EDEB;
+  --color-divider: #E8EEF8;
 
   /* 状态色 */
   --color-success: #2FBF71;
   --color-success-bg: #EAF8F0;
 
-  --color-warning: #F5A623;
-  --color-warning-bg: #FFF6E5;
+  --color-warning: #F59E2E;
+  --color-warning-bg: #FFF3E4;
 
   --color-danger: #E85D5D;
   --color-danger-bg: #FDECEC;
@@ -57,14 +57,14 @@
   --radius-full: 999px;
 
   /* 阴影 */
-  --shadow-card: 0 3px 12px rgba(31, 41, 51, 0.045);
-  --shadow-card-hover: 0 8px 24px rgba(31, 41, 51, 0.08);
-  --shadow-floating: 0 12px 32px rgba(31, 41, 51, 0.14);
+  --shadow-card: 0 6px 18px rgba(15, 35, 80, 0.04);
+  --shadow-card-hover: 0 12px 28px rgba(15, 35, 80, 0.08);
+  --shadow-floating: 0 12px 32px rgba(15, 35, 80, 0.16);
 
   /* 页面尺寸 */
-  --admin-sidebar-width: 224px;
-  --admin-topbar-height: 56px;
-  --admin-content-max-width: 1240px;
+  --admin-sidebar-width: 248px;
+  --admin-topbar-height: 68px;
+  --admin-content-max-width: 1480px;
 
   --teacher-pc-content-max-width: 1280px;
 

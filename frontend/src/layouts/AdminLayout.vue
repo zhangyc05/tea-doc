@@ -36,10 +36,10 @@ const resolvedBreadcrumb = computed(() => {
     <div class="flex min-w-0 flex-1 flex-col">
       <AdminTopbar />
 
-      <main class="flex-1 px-8 py-5">
+      <main class="flex-1 px-5 py-5 2xl:px-6">
         <div class="w-full max-w-[var(--admin-content-max-width)]">
-          <AppBreadcrumb :items="resolvedBreadcrumb" />
-          <section class="mt-4">
+          <AppBreadcrumb class="sr-only" :items="resolvedBreadcrumb" />
+          <section>
             <slot />
           </section>
         </div>
