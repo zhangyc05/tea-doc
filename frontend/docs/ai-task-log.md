@@ -149,18 +149,29 @@
 执行时间：2026-06-25  
 执行者：ChatGPT
 
-本次完成：
-
-- 扩展 `src/mock/admin/training.ts`，导出 `trainingResourceStats` 和 `trainingResources`。
-- 创建 `TrainingResourceDetailSheet.vue`，作为资源详情业务抽屉组件。
-- 创建 `ResourceLibraryPage.vue`，接入 PageHeader、StatCard、FilterBar、StatusBadge 和资源详情抽屉。
-- 将 `/admin/training/resources` 路由从占位页切换到真实资源库页面。
-- 更新 StatusBadge，补齐资源库状态映射，并为教师端未知状态增加安全兜底。
-- 更新 `page-route-map.md`，将 T5.1 标记为已完成静态结构 / 待视觉验收。
-- 移除未实现的新增/导出类空操作，避免页面出现无效按钮。
-
+本次完成：创建资源库真实页面、资源详情业务抽屉、资源库 mock 数据，并将 `/admin/training/resources` 路由从占位页切换到真实页面。  
 新增文件：`frontend/src/components/business/training/TrainingResourceDetailSheet.vue`、`frontend/src/pages/admin/training/ResourceLibraryPage.vue`  
 修改文件：`frontend/src/mock/admin/training.ts`、`frontend/src/components/common/StatusBadge.vue`、`frontend/src/router/admin.routes.ts`、`frontend/docs/page-route-map.md`、`frontend/docs/ai-task-log.md`  
 未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；对应效果图路径仍待补充；页面仍待视觉验收。  
-自检：统计卡只围绕资源本身；资源类型为校内建设、外部机构、企业合作、公开课程；未出现“涉及计划 / 匹配需求 / 覆盖教师 / 推荐命中”；状态标签使用 StatusBadge；mock 数据集中管理。  
 下一步建议：回顾 T5.1 是否符合页面规划，确认后进入 T5.2 管理端｜培训管理｜需求管理。
+
+---
+
+## T5.1-REVIEW｜资源库样板页复盘与必要修正
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 页头说明改为正向表达，只说明资源库管理资源本身的类型、提供方、适用方向、可用状态和信息完整度。
+- 筛选项从 3 个收敛为 2 个，保留资源类型和可用状态，移除与资源类型重复的来源筛选。
+- 删除资源 mock 中重复的 `source` 字段，避免后续误把来源筛选加回来。
+- 将“信息待完善”统计说明从“来源信息”改为“提供方信息”。
+- 更新 `page-route-map.md`，将 T5.1 标记为“复盘修正完成 / 待视觉验收”。
+- 复查禁用口径，未检索到“涉及计划 / 匹配需求 / 覆盖教师 / 推荐命中”。
+
+修改文件：`frontend/src/pages/admin/training/ResourceLibraryPage.vue`、`frontend/src/mock/admin/training.ts`、`frontend/docs/page-route-map.md`、`frontend/docs/ai-task-log.md`  
+未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；页面仍待视觉验收。  
+自检：资源库统计和筛选均聚焦资源本身；未保留重复筛选；无无效操作按钮；mock 字段与页面展示一致。  
+下一步建议：T5.2 管理端｜培训管理｜需求管理。
