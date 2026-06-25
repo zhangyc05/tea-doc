@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DetailSheet, StatusBadge } from '@/components/common'
 import type { TrainingResourceMockItem } from '@/mock/admin/training'
-import { trainingResourceStatusText, trainingResourceTypeText } from '@/mock/admin/training'
+import { trainingResourceTypeText } from '@/mock/admin/training'
 
 const props = withDefaults(
   defineProps<{
