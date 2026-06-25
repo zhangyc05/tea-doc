@@ -136,19 +136,31 @@
 执行时间：2026-06-25  
 执行者：ChatGPT
 
-本次完成：
-
-- 将 AdminSidebar 中已建立路由的菜单改为 RouterLink 跳转。
-- 对尚未建立路由的“企业实践管理”“虚拟教研”保持禁用，避免错误跳转。
-- 补齐 `/admin/training/records` 记录总览路由。
-- AdminLayout 支持从 route.meta 自动读取 pageTitle、breadcrumb、activeKey。
-- AdminPlaceholderPage 不再重复向 AdminLayout 传基础路由参数。
-- 新增 `src/mock/admin/training.ts`，建立培训管理 mock 基础结构。
-- 更新 `page-route-map.md`，补齐记录总览路由，并统一培训管理 mock 文件指向。
-- 更新 `任务清理与待验证清单.md`，回收侧边栏导航、Layout 参数和培训 mock 基础结构问题。
-
+本次完成：将 AdminSidebar 改为 RouterLink 跳转，补齐记录总览路由，AdminLayout 自动读取 route.meta，并新增培训管理 mock 基础结构。  
 新增文件：`frontend/src/mock/admin/training.ts`  
 修改文件：`frontend/src/components/layout/AdminSidebar.vue`、`frontend/src/router/admin.routes.ts`、`frontend/src/layouts/AdminLayout.vue`、`frontend/src/pages/admin/AdminPlaceholderPage.vue`、`frontend/docs/page-route-map.md`、`frontend/docs/任务清理与待验证清单.md`、`frontend/docs/ai-task-log.md`  
 未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；非培训模块 mock 数据仍待后续页面任务补齐。  
-自检：已建立路由菜单可跳转；Layout 可自动读取 route.meta；培训管理 mock 已集中到 `src/mock/admin/training.ts`。  
 下一步建议：T5.1 管理端｜培训管理｜资源库样板页。
+
+---
+
+## T5.1｜管理端｜培训管理｜资源库样板页
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 扩展 `src/mock/admin/training.ts`，导出 `trainingResourceStats` 和 `trainingResources`。
+- 创建 `TrainingResourceDetailSheet.vue`，作为资源详情业务抽屉组件。
+- 创建 `ResourceLibraryPage.vue`，接入 PageHeader、StatCard、FilterBar、StatusBadge 和资源详情抽屉。
+- 将 `/admin/training/resources` 路由从占位页切换到真实资源库页面。
+- 更新 StatusBadge，补齐资源库状态映射，并为教师端未知状态增加安全兜底。
+- 更新 `page-route-map.md`，将 T5.1 标记为已完成静态结构 / 待视觉验收。
+- 移除未实现的新增/导出类空操作，避免页面出现无效按钮。
+
+新增文件：`frontend/src/components/business/training/TrainingResourceDetailSheet.vue`、`frontend/src/pages/admin/training/ResourceLibraryPage.vue`  
+修改文件：`frontend/src/mock/admin/training.ts`、`frontend/src/components/common/StatusBadge.vue`、`frontend/src/router/admin.routes.ts`、`frontend/docs/page-route-map.md`、`frontend/docs/ai-task-log.md`  
+未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；对应效果图路径仍待补充；页面仍待视觉验收。  
+自检：统计卡只围绕资源本身；资源类型为校内建设、外部机构、企业合作、公开课程；未出现“涉及计划 / 匹配需求 / 覆盖教师 / 推荐命中”；状态标签使用 StatusBadge；mock 数据集中管理。  
+下一步建议：回顾 T5.1 是否符合页面规划，确认后进入 T5.2 管理端｜培训管理｜需求管理。
