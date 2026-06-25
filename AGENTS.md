@@ -1,312 +1,122 @@
 # AGENTS.md
+## 1. 项目说明
 
-This file provides guidance to Codex when working in this repository.
+本仓库用于教师综合发展平台前端页面实现。
 
-## Project Overview
-
-This repository contains the frontend for a teacher development platform. The active app is under `frontend/` and is built with Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, and shadcn-vue style base components.
-
-The product includes three intended surfaces:
-
-- Admin PC
-- Teacher PC
-- Teacher mobile
-
-At the current stage, the implemented real page is the admin training resource library. Most other admin routes are placeholders.
-
-## Current Source of Truth
-
-For frontend implementation work, use the high-fidelity implementation docs under:
+当前前端工程位于：
 
 ```txt
-frontend/docs/hifi-implementation/
+frontend/
 ```
 
-Read them in this order:
+后续 AI / Codex / 开发助手进入项目后，应优先阅读高保真还原执行文档，而不是根据已有页面代码自行推断页面结构。
+
+## 2. 唯一执行入口
+
+后续前端页面任务只读取：
+
+```txt
+frontend/docs/hifi-implementation/README.md
+```
+
+该目录下文档是当前前端页面还原的唯一执行依据。
+
+阅读顺序：
+>>>>>>> 69941acb80f6cb0f315deff0abbbfe9f5f3a991c
 
 ```txt
 1. README.md
 2. 00-执行总入口.md
 3. 01-当前工程基础.md
-4. Task-specific documents:
-   - 02-效果图识别规则.md
-   - 03-组件提炼规则.md
-   - 04-页面还原规则.md
-   - 05-本地截图验收规则.md
-   - 06-资源库页面重构任务清单.md
-   - 07-页面路由与验收台账.md
+4. 按任务需要阅读 02-07 的对应文档
 ```
 
-Do not infer current requirements from older paths or historical notes. In particular, `delivery-html/01-frontend-implementation/AI执行文档体系/`, `frontend/docs/ai-task-log.md`, and `frontend/docs/page-route-map.md` are not the current execution references in this workspace.
+## 3. 固定执行流程
 
-## Tech Stack
+页面开发必须遵循：
 
-- Framework: Vue 3 with Composition API and `<script setup>`
-- Build tool: Vite
-- Language: TypeScript
-- Styling: Tailwind CSS plus CSS Variables design tokens
-- UI base components: shadcn-vue style components
-- Routing: Vue Router
-- Utility convention: use `cn()` from `src/lib/utils.ts` for class merging when components need class composition
+```txt
+效果图识别
+→ 页面区域拆解
+→ 组件提炼
+→ Vue 实现
+→ 本地截图对比
+→ 修正验收
+```
 
-## Development Commands
+页面完成标准不是“能运行”，而是“本地运行截图与目标效果图结构、密度、视觉层级基本一致”。
 
-Run commands from `frontend/`:
+## 4. 组件原则
+
+组件必须从目标效果图中提炼。
+
+不得先凭经验设计通用组件，再用组件拼页面。
+
+已有组件可以复用，但必须先判断是否符合目标效果图。
+
+如果已有组件无法表达目标效果图结构，应新增业务组件或升级组件。
+
+## 5. 当前工程基础
+
+可复用工程基础包括：
+
+```txt
+Vue 3
+Vite
+TypeScript
+Vue Router
+Tailwind CSS
+CSS Variables 设计 token
+```
+
+当前可复用目录包括：
+
+```txt
+frontend/src/router/
+frontend/src/layouts/
+frontend/src/components/
+frontend/src/mock/
+```
+
+当前资源库页面路由：
+
+```txt
+/admin/training/resources
+```
+
+本地启动：
 
 ```bash
+cd frontend
 npm install
 npm run dev
-npm run typecheck
-npm run build
-npm run preview
 ```
 
-For code changes, run both before claiming completion:
+## 6. 当前优先任务
 
-```bash
-npm run typecheck
-npm run build
-```
-
-For documentation-only changes, these checks are not normally required unless the edit also changes code, routes, config, or generated artifacts.
-
-## Active Project Structure
+当前优先任务是资源库页面按目标效果图重构，并作为管理端页面基准。
 
 ```txt
-frontend/
-├── package.json
-├── index.html
-├── vite.config.ts
-├── tsconfig.json
-├── tailwind.config.ts
-├── postcss.config.js
-├── components.json
-├── docs/
-│   └── hifi-implementation/
-└── src/
-    ├── App.vue
-    ├── main.ts
-    ├── components/
-    │   ├── ui/
-    │   ├── layout/
-    │   ├── common/
-    │   └── business/
-    ├── layouts/
-    ├── pages/
-    ├── router/
-    ├── mock/
-    ├── lib/
-    └── styles/
+frontend/docs/hifi-implementation/06-资源库页面重构任务清单.md
 ```
+资源库页面未通过本地截图验收前，不进入需求管理、申请处理、记录总览等同类页面开发。
 
-Key implemented files:
+## 7. 提交与记录
 
-```txt
-frontend/src/router/index.ts
-frontend/src/router/admin.routes.ts
-frontend/src/router/teacher.routes.ts
-frontend/src/router/mobile.routes.ts
-frontend/src/layouts/AdminLayout.vue
-frontend/src/pages/admin/training/ResourceLibraryPage.vue
-frontend/src/mock/admin/training.ts
-frontend/src/styles/tokens.css
-```
-
-## Component Layers
-
-Use the existing layering:
-
-1. `src/components/ui/`: base UI primitives such as Button, Card, Table, Input, Select, Sheet, Dialog.
-2. `src/components/layout/`: app layout pieces such as AdminSidebar, AdminTopbar, AppBreadcrumb, FloatingAIAssistant.
-3. `src/components/common/`: reusable business components such as PageHeader, StatCard, FilterBar, StatusBadge, DetailSheet.
-4. `src/components/business/`: module-specific business components.
-
-Prefer existing components and patterns before adding new abstractions.
-
-## Design Tokens and Visual Rules
-
-Design tokens live in:
-
-```txt
-frontend/src/styles/tokens.css
-```
-
-Use Tailwind classes mapped to tokens where possible:
-
-```txt
-bg-primary
-text-text-primary
-border-card-border
-bg-page
-bg-card
-```
-
-Important values include:
-
-- `--color-primary`: brand color
-- `--color-page-bg`: page background
-- `--color-card-bg`: card background
-- `--color-card-border`: card border
-- `--color-text-primary`: primary text
-- `--admin-content-max-width`: admin content width
-
-Visual principles:
-
-- Admin PC: light, clean, professional; do not make it a dark heavy backend.
-- Teacher-facing surfaces: use positive user-facing wording; do not expose internal terms such as "候选数据".
-- Mobile: mobile-first, based around the 390px design width.
-
-## High-Fidelity Page Workflow
-
-Current frontend page work must follow the high-fidelity workflow:
-
-```txt
-1. Identify the target screenshot/design.
-2. Break down page regions.
-3. Extract page-specific components.
-4. Confirm data fields and mock structure.
-5. Implement or adjust Vue files.
-6. Run locally and capture a screenshot.
-7. Compare with the target screenshot.
-8. Fix differences.
-9. Update the route and validation ledger.
-```
-
-Do not mark a page complete just because it runs. Completion means the local screenshot is structurally and visually close to the target image.
-
-## Current Page Status
-
-The current real page is:
-
-```txt
-Page: 管理端｜培训管理｜资源库
-Route: /admin/training/resources
-Vue file: frontend/src/pages/admin/training/ResourceLibraryPage.vue
-Mock file: frontend/src/mock/admin/training.ts
-Ledger: frontend/docs/hifi-implementation/07-页面路由与验收台账.md
-```
-
-Important current status:
-
-- The resource library page is the admin benchmark page.
-- The ledger currently treats it as needing high-fidelity reconstruction and screenshot correction.
-- Do not start same-family admin pages such as training demands, applications, or records until the resource library benchmark page passes visual validation.
-
-## Routing Rules
-
-Routes are organized under:
-
-```txt
-frontend/src/router/index.ts
-frontend/src/router/admin.routes.ts
-frontend/src/router/teacher.routes.ts
-frontend/src/router/mobile.routes.ts
-```
-
-Every route should include complete `meta` information:
-
-```ts
-{
-  path: '/admin/training/resources',
-  component: ResourceLibraryPage,
-  meta: {
-    title: '资源库',
-    module: '培训管理',
-    layout: 'admin',
-    menuKey: 'training-resources',
-    breadcrumb: ['管理端', '培训管理', '资源库'],
-  },
-}
-```
-
-`AdminLayout` reads route meta for active menu and breadcrumbs. Prefer route meta over manual page props when possible.
-
-## Mock Data Rules
-
-Mock data belongs under `frontend/src/mock/` and should be grouped by module.
-
-Current active mock file:
-
-```txt
-frontend/src/mock/admin/training.ts
-```
-
-Rules:
-
-- Keep mock fields aligned with the target screenshot and page display.
-- Do not add fields only to make a page look fuller.
-- Keep large mock datasets out of Vue page files.
-
-For the resource library page, do not add these unsupported concepts:
-
-```txt
-需求匹配结果
-涉及计划统计
-覆盖教师统计
-推荐命中
-评价结论
-AI 正式结论
-```
-
-Allowed resource-level statistics include:
-
-```txt
-资源数量
-资源来源分布
-培训级别分布
-资源状态分布
-资源完整度
-更新时间
-```
-
-## Documentation Updates
-
-For frontend page work, update the current high-fidelity ledger when status changes:
+代码修改后应同步更新：
 
 ```txt
 frontend/docs/hifi-implementation/07-页面路由与验收台账.md
 ```
 
-If working specifically on the resource library benchmark, also keep the task checklist aligned:
+涉及执行规则、组件提炼、页面验收标准变化时，应更新 `frontend/docs/hifi-implementation/` 下对应小文档。
+
+## 8. 禁止事项
 
 ```txt
-frontend/docs/hifi-implementation/06-资源库页面重构任务清单.md
+1. 禁止跳过效果图识别直接写页面。
+2. 禁止只做工程骨架就标记页面完成。
+3. 禁止新增无业务必要的字段、按钮或模块。
+4. 禁止页面出现未实现但看起来可点击的空操作。
+5. 禁止在样板页未通过截图验收前继续开发后续同类页面。
 ```
-
-Do not create or update obsolete task logs unless the user explicitly asks for them.
-
-## Quality Checklist
-
-For code changes:
-
-- `npm run typecheck` passes.
-- `npm run build` succeeds.
-- Route meta is complete when routes are added or changed.
-- Mock data is centralized and matches the page.
-- Status text uses `StatusBadge` where applicable.
-- No unsupported business fields or formal AI conclusions are introduced.
-- Relevant high-fidelity ledger entries are updated.
-
-For visual page work:
-
-- Target screenshot/design has been identified.
-- Page regions and components have been extracted before implementation.
-- Local screenshot comparison has been performed.
-- The ledger status reflects the actual validation state.
-
-## Git Notes
-
-The repository may already have user changes. Do not revert unrelated changes.
-
-Default branch guidance in older docs may mention direct commits to `main`, but do not commit unless the user explicitly asks for a commit.
-
-## Useful Local References
-
-- High-fidelity docs: `frontend/docs/hifi-implementation/`
-- Current route ledger: `frontend/docs/hifi-implementation/07-页面路由与验收台账.md`
-- Resource library task checklist: `frontend/docs/hifi-implementation/06-资源库页面重构任务清单.md`
-- Design tokens: `frontend/src/styles/tokens.css`
-- Tailwind config: `frontend/tailwind.config.ts`
-- shadcn-vue config: `frontend/components.json`
-- Admin routes: `frontend/src/router/admin.routes.ts`
-- Current real page: `frontend/src/pages/admin/training/ResourceLibraryPage.vue`
