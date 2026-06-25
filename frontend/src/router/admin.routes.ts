@@ -8,6 +8,18 @@ export const adminRoutes: RouteRecordRaw[] = [
     redirect: '/admin/training/resources',
   },
   {
+    path: '/admin/training/records',
+    name: 'AdminTrainingRecords',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '记录总览',
+      module: '培训管理',
+      layout: 'admin',
+      menuKey: 'training-records',
+      breadcrumb: ['管理端', '培训管理', '记录总览'],
+    },
+  },
+  {
     path: '/admin/training/resources',
     name: 'AdminTrainingResources',
     component: AdminPlaceholderPage,
