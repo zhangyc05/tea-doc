@@ -27,22 +27,22 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <header class="mb-6 flex flex-col gap-4 border-b border-card-border pb-5 md:flex-row md:items-end md:justify-between">
+  <header class="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
     <div class="min-w-0">
       <button
         v-if="showBack"
         type="button"
-        class="mb-3 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+        class="mb-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
         @click="emit('back')"
       >
         ← 返回
       </button>
 
-      <p v-if="eyebrow" class="mb-2 text-sm font-medium text-primary">
+      <p v-if="eyebrow" class="mb-2 text-sm font-semibold text-primary">
         {{ eyebrow }}
       </p>
 
-      <h1 class="m-0 text-2xl font-semibold leading-tight text-text-primary">
+      <h1 class="m-0 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-text-primary">
         {{ title }}
       </h1>
 

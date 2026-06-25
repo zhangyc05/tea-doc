@@ -23,7 +23,6 @@ const props = withDefaults(
 const route = useRoute()
 
 const resolvedActiveKey = computed(() => props.activeKey || String(route.meta.menuKey ?? 'training-resources'))
-const resolvedPageTitle = computed(() => props.pageTitle || String(route.meta.title ?? '管理端工作台'))
 const resolvedBreadcrumb = computed(() => {
   if (props.breadcrumb?.length) return props.breadcrumb
   return Array.isArray(route.meta.breadcrumb) ? (route.meta.breadcrumb as string[]) : ['管理端']
@@ -35,12 +34,12 @@ const resolvedBreadcrumb = computed(() => {
     <AdminSidebar :active-key="resolvedActiveKey" />
 
     <div class="flex min-w-0 flex-1 flex-col">
-      <AdminTopbar :title="resolvedPageTitle" />
+      <AdminTopbar />
 
-      <main class="flex-1 px-8 py-6">
-        <div class="mx-auto w-full max-w-[var(--admin-content-max-width)]">
+      <main class="flex-1 px-8 py-5">
+        <div class="w-full max-w-[var(--admin-content-max-width)]">
           <AppBreadcrumb :items="resolvedBreadcrumb" />
-          <section class="mt-5">
+          <section class="mt-4">
             <slot />
           </section>
         </div>
