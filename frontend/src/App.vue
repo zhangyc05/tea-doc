@@ -1,7 +1,36 @@
 <script setup lang="ts">
-import { PageHeader, StatCard, StatusBadge } from '@/components/common'
+import { FilterBar, PageHeader, StatCard, StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Card, CardContent } from '@/components/ui'
+import { Button, Card, CardContent } from '@/components/ui'
+
+const previewFilters = [
+  {
+    key: 'type',
+    label: '组件类型',
+    type: 'select' as const,
+    placeholder: '全部类型',
+    options: [
+      { label: '页头组件', value: 'header' },
+      { label: '状态组件', value: 'status' },
+      { label: '统计组件', value: 'stat' },
+    ],
+  },
+  {
+    key: 'status',
+    label: '组件状态',
+    type: 'select' as const,
+    placeholder: '全部状态',
+    options: [
+      { label: '已完成', value: 'completed' },
+      { label: '待完善', value: 'improvable' },
+    ],
+  },
+  {
+    key: 'date',
+    label: '更新时间',
+    type: 'date' as const,
+  },
+]
 </script>
 
 <template>
@@ -11,9 +40,9 @@ import { Card, CardContent } from '@/components/ui'
     :breadcrumb="['管理端', '布局预览']"
   >
     <PageHeader
-      eyebrow="T3.3 已完成"
-      title="StatCard 通用统计卡"
-      description="统一承载当前页面业务对象的关键统计，数量保持克制，不为了丰富页面新增无依据统计。"
+      eyebrow="T3.4 已完成"
+      title="FilterBar 通用筛选栏"
+      description="统一承载搜索、必要筛选项和右侧操作区，筛选条件保持克制，不超过 5 个。"
       primary-action-text="主要操作"
       secondary-action-text="次要操作"
     />
@@ -21,7 +50,15 @@ import { Card, CardContent } from '@/components/ui'
     <div class="mb-5 grid gap-4 md:grid-cols-3">
       <StatCard title="页头组件" value="1" description="用于统一页面标题、简短说明和右侧操作。" tone="primary" />
       <StatCard title="状态组件" value="1" description="用于统一管理端与教师端状态文案。" tone="info" />
-      <StatCard title="统计卡组件" value="1" description="用于当前页面对象的关键统计展示。" trend="本次新增" tone="success" />
+      <StatCard title="筛选组件" value="1" description="用于搜索和必要筛选项展示。" trend="本次新增" tone="success" />
+    </div>
+
+    <div class="mb-5">
+      <FilterBar search-placeholder="搜索组件名称" :filters="previewFilters">
+        <template #actions>
+          <Button variant="outline">导出当前结果</Button>
+        </template>
+      </FilterBar>
     </div>
 
     <Card>
