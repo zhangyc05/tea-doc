@@ -10,12 +10,10 @@ const route = useRoute()
 
 const title = computed(() => String(route.meta.title ?? '管理端页面'))
 const moduleName = computed(() => String(route.meta.module ?? '管理端'))
-const menuKey = computed(() => String(route.meta.menuKey ?? 'home'))
-const breadcrumb = computed(() => (Array.isArray(route.meta.breadcrumb) ? (route.meta.breadcrumb as string[]) : ['管理端']))
 </script>
 
 <template>
-  <AdminLayout :active-key="menuKey" :page-title="title" :breadcrumb="breadcrumb">
+  <AdminLayout>
     <PageHeader
       eyebrow="路由已建立"
       :title="title"
