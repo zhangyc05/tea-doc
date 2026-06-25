@@ -55,25 +55,26 @@ function handleReset() {
 </script>
 
 <template>
-  <section class="rounded-xl border border-card-border bg-card p-4 shadow-card">
-    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex min-w-0 flex-1 flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
-        <div class="flex w-full min-w-[240px] max-w-sm items-center gap-2">
+  <section class="rounded-2xl border border-card-border bg-card px-5 py-4 shadow-card">
+    <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+      <div class="flex min-w-0 flex-1 flex-col gap-3 md:flex-row md:flex-wrap md:items-end">
+        <div class="flex w-full min-w-[320px] max-w-md items-center gap-2">
           <Input
             v-model="keyword"
             type="search"
+            class="h-10"
             :placeholder="searchPlaceholder"
             @keyup.enter="handleSearch"
           />
-          <Button variant="secondary" @click="handleSearch">搜索</Button>
+          <Button variant="secondary" class="min-w-16" @click="handleSearch">搜索</Button>
         </div>
 
         <label
           v-for="filter in filters.slice(0, 5)"
           :key="filter.key"
-          class="flex min-w-[180px] flex-col gap-1 text-sm text-text-secondary"
+          class="flex min-w-[176px] flex-col gap-1.5 text-sm text-text-secondary"
         >
-          <span>{{ filter.label }}</span>
+          <span class="text-xs font-medium text-text-secondary">{{ filter.label }}</span>
 
           <Select
             v-if="filter.type === 'select'"
