@@ -146,3 +146,30 @@
 未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
 自检：教师端 `candidate` 显示为“待你确认”，管理端 `candidate` 显示为“候选数据”，避免教师端直接出现后台术语。  
 下一步建议：T3.3 StatCard。
+
+---
+
+## T3.3｜StatCard
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 新增 `StatCard.vue`，统一承载统计卡展示。
+- 更新 `components/common/index.ts`，导出 StatCard。
+- 将 `App.vue` 的预览态改为展示 3 张 StatCard，不超过规则上限。
+
+新增文件：
+
+- `frontend/src/components/common/StatCard.vue`
+
+修改文件：
+
+- `frontend/src/components/common/index.ts`
+- `frontend/src/App.vue`
+- `frontend/docs/ai-task-log.md`
+
+未完成：未执行 `npm install`、`npm run build`；尚未建立 Vue Router。  
+自检：StatCard 只做展示容器，不写入具体业务结论；预览页未超过 4 个统计卡。  
+下一步建议：T3.4 FilterBar。
