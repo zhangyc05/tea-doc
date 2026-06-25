@@ -20,7 +20,6 @@ export interface TrainingResourceMockItem {
   direction: string
   description: string
   completeness: number
-  source: string
   updatedAt: string
 }
 
@@ -65,7 +64,6 @@ export const trainingResources: TrainingResourceMockItem[] = [
     direction: '项目化课程设计',
     description: '围绕智能制造专业课程，帮助教师完成项目化教学任务设计、课堂组织和过程评价设计。',
     completeness: 96,
-    source: '校内建设',
     updatedAt: '2026-06-20',
   },
   {
@@ -77,7 +75,6 @@ export const trainingResources: TrainingResourceMockItem[] = [
     direction: '企业项目转化',
     description: '结合企业真实生产项目，训练教师将企业任务转化为课程项目和学生实践任务。',
     completeness: 92,
-    source: '企业合作',
     updatedAt: '2026-06-18',
   },
   {
@@ -89,7 +86,6 @@ export const trainingResources: TrainingResourceMockItem[] = [
     direction: '数字化教学',
     description: '提供数字化教学工具使用、在线课程组织和课堂数据分析的公开课程资源。',
     completeness: 68,
-    source: '公开课程',
     updatedAt: '2026-06-12',
   },
   {
@@ -101,7 +97,6 @@ export const trainingResources: TrainingResourceMockItem[] = [
     direction: '双师实践能力',
     description: '面向需要强化企业实践经历和产业认知的教师，提供集中培训和案例研讨。',
     completeness: 88,
-    source: '外部机构',
     updatedAt: '2026-06-10',
   },
 ]
