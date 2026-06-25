@@ -4,12 +4,12 @@ import { defineComponent, h, type PropType } from 'vue'
 import { cn } from '@/lib/utils'
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default: 'bg-primary text-white hover:bg-primary-hover',
-        secondary: 'bg-primary-soft text-text-primary hover:bg-primary-light',
+        secondary: 'bg-primary-soft text-primary hover:bg-primary-light',
         outline: 'border border-card-border bg-card text-text-primary hover:bg-page-soft',
         ghost: 'bg-transparent text-text-secondary hover:bg-primary-soft hover:text-text-primary',
         danger: 'bg-danger text-white hover:opacity-90',
