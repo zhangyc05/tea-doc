@@ -120,7 +120,7 @@ export const trainingResourceStats: TrainingResourceStat[] = [
     key: 'incomplete',
     title: '信息待完善',
     value: trainingResources.filter((resource) => resource.status === 'incomplete').length,
-    description: '需要补充说明、方向或来源信息。',
+    description: '需要补充说明、适用方向或提供方信息。',
     tone: 'warning',
   },
   {
