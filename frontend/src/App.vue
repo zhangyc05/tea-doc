@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import PageHeader from '@/components/common/PageHeader.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui'
+import { Card, CardContent } from '@/components/ui'
 </script>
 
 <template>
@@ -9,32 +10,31 @@ import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from
     page-title="管理端布局预览"
     :breadcrumb="['管理端', '布局预览']"
   >
-    <div class="space-y-5">
-      <Card>
-        <CardHeader>
-          <Badge class="w-max">T2.1 已完成</Badge>
-          <CardTitle>AdminLayout 管理端布局</CardTitle>
-          <CardDescription>
-            当前已建立浅色侧边栏、顶部栏、面包屑、内容区和右下角 AI 助理入口。
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div class="grid gap-4 md:grid-cols-3">
-            <div class="rounded-lg border border-card-border bg-primary-soft p-4">
-              <p class="text-sm text-text-secondary">侧边栏</p>
-              <p class="mt-2 font-semibold text-text-primary">浅色导航</p>
-            </div>
-            <div class="rounded-lg border border-card-border bg-page-soft p-4">
-              <p class="text-sm text-text-secondary">顶部栏</p>
-              <p class="mt-2 font-semibold text-text-primary">60px 高度</p>
-            </div>
-            <div class="rounded-lg border border-card-border bg-card p-4">
-              <p class="text-sm text-text-secondary">内容区</p>
-              <p class="mt-2 font-semibold text-text-primary">最大宽度 1280px</p>
-            </div>
+    <PageHeader
+      eyebrow="T3.1 已完成"
+      title="PageHeader 通用页头"
+      description="统一承载页面标题、简短说明和右侧操作，后续管理端主页面应优先复用。"
+      primary-action-text="主要操作"
+      secondary-action-text="次要操作"
+    />
+
+    <Card>
+      <CardContent class="pt-6">
+        <div class="grid gap-4 md:grid-cols-3">
+          <div class="rounded-lg border border-card-border bg-primary-soft p-4">
+            <p class="text-sm text-text-secondary">页面标题</p>
+            <p class="mt-2 font-semibold text-text-primary">统一层级</p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <div class="rounded-lg border border-card-border bg-page-soft p-4">
+            <p class="text-sm text-text-secondary">说明文案</p>
+            <p class="mt-2 font-semibold text-text-primary">简短克制</p>
+          </div>
+          <div class="rounded-lg border border-card-border bg-card p-4">
+            <p class="text-sm text-text-secondary">操作按钮</p>
+            <p class="mt-2 font-semibold text-text-primary">右侧承载</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   </AdminLayout>
 </template>
