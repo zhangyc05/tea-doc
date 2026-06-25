@@ -33,11 +33,11 @@ const toneClass = computed(() => {
 </script>
 
 <template>
-  <article class="rounded-xl border border-card-border bg-card p-5 shadow-card">
+  <article class="rounded-2xl border border-card-border bg-card px-5 py-4 shadow-card">
     <div class="flex items-start justify-between gap-4">
       <div class="min-w-0">
-        <p class="text-sm text-text-secondary">{{ title }}</p>
-        <p class="mt-2 text-2xl font-semibold leading-tight text-text-primary">{{ value }}</p>
+        <p class="text-sm font-medium text-text-secondary">{{ title }}</p>
+        <p class="mt-2 text-[28px] font-semibold leading-none tracking-[-0.03em] text-text-primary">{{ value }}</p>
       </div>
       <span v-if="trend" class="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium" :class="toneClass">
         {{ trend }}
