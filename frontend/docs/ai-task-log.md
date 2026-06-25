@@ -162,16 +162,32 @@
 执行时间：2026-06-25  
 执行者：ChatGPT
 
-本次完成：
-
-- 页头说明改为正向表达，只说明资源库管理资源本身的类型、提供方、适用方向、可用状态和信息完整度。
-- 筛选项从 3 个收敛为 2 个，保留资源类型和可用状态，移除与资源类型重复的来源筛选。
-- 删除资源 mock 中重复的 `source` 字段，避免后续误把来源筛选加回来。
-- 将“信息待完善”统计说明从“来源信息”改为“提供方信息”。
-- 更新 `page-route-map.md`，将 T5.1 标记为“复盘修正完成 / 待视觉验收”。
-- 复查禁用口径，未检索到“涉及计划 / 匹配需求 / 覆盖教师 / 推荐命中”。
-
+本次完成：收敛页头说明、删除重复来源筛选、删除 mock 重复 source 字段，并将 T5.1 标记为“复盘修正完成 / 待视觉验收”。  
 修改文件：`frontend/src/pages/admin/training/ResourceLibraryPage.vue`、`frontend/src/mock/admin/training.ts`、`frontend/docs/page-route-map.md`、`frontend/docs/ai-task-log.md`  
 未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；页面仍待视觉验收。  
-自检：资源库统计和筛选均聚焦资源本身；未保留重复筛选；无无效操作按钮；mock 字段与页面展示一致。  
 下一步建议：T5.2 管理端｜培训管理｜需求管理。
+
+---
+
+## T5.1-HIFI｜资源库样板页高保真视觉修正
+
+执行时间：2026-06-25  
+执行者：ChatGPT
+
+本次完成：
+
+- 移除顶部栏重复页面标题，只保留右侧系统消息与用户入口。
+- 管理端内容区从居中模板页改为左对齐，减少大屏下的空白感。
+- 调整 AdminLayout 顶部间距和内容最大宽度。
+- 调整 PageHeader 的标题层级、间距和底部分隔方式。
+- 调整 StatCard 的高度、圆角、数字层级和阴影。
+- 修复 Button 中文换行问题，避免“搜索”被压成竖排。
+- 调整 FilterBar 的横向布局、搜索框宽度、标签样式和整体密度。
+- 调整 Card、Table 的圆角、阴影、表头、行高和分割线节奏。
+- 微调 AdminSidebar 的选中态、圆角和菜单节奏。
+- 微调 ResourceLibraryPage 的列表卡片内边距和表格容器。
+- 更新 `page-route-map.md`，将 T5.1 标记为“高保真修正完成 / 待本地视觉复核”。
+
+修改文件：`frontend/src/components/layout/AdminTopbar.vue`、`frontend/src/layouts/AdminLayout.vue`、`frontend/src/components/common/PageHeader.vue`、`frontend/src/components/common/StatCard.vue`、`frontend/src/components/ui/button.ts`、`frontend/src/components/common/FilterBar.vue`、`frontend/src/components/ui/card.ts`、`frontend/src/components/ui/table.ts`、`frontend/src/styles/tokens.css`、`frontend/src/components/layout/AdminSidebar.vue`、`frontend/src/pages/admin/training/ResourceLibraryPage.vue`、`frontend/docs/page-route-map.md`、`frontend/docs/ai-task-log.md`  
+未完成：未执行 `npm install`、`npm run typecheck`、`npm run build`；需要本地刷新页面截图后继续视觉复核。  
+下一步建议：本地拉取最新代码，重新打开 `/admin/training/resources` 截图复核。
