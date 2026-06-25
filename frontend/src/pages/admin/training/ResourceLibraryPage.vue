@@ -108,8 +108,8 @@ function openDetail(resource: TrainingResourceMockItem) {
       />
     </div>
 
-    <Card>
-      <CardContent class="pt-6">
+    <Card class="overflow-hidden">
+      <CardContent class="p-5">
         <div class="mb-4 flex items-center justify-between gap-3">
           <div>
             <h2 class="text-base font-semibold text-text-primary">资源列表</h2>
@@ -162,7 +162,7 @@ function openDetail(resource: TrainingResourceMockItem) {
           </TableBody>
         </Table>
 
-        <div v-if="filteredResources.length === 0" class="rounded-lg border border-card-border bg-page-soft p-8 text-center text-sm text-text-secondary">
+        <div v-if="filteredResources.length === 0" class="rounded-xl border border-card-border bg-page-soft p-8 text-center text-sm text-text-secondary">
           暂无符合条件的资源。
         </div>
       </CardContent>
