@@ -45,7 +45,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 function itemClass(active: boolean) {
   return active
-    ? 'bg-primary-soft font-medium text-primary'
+    ? 'bg-primary-soft font-semibold text-primary'
     : 'text-text-secondary hover:bg-page-soft hover:text-text-primary'
 }
 
@@ -59,16 +59,16 @@ function childClass(active: boolean) {
 <template>
   <aside class="sticky top-0 flex h-screen w-[var(--admin-sidebar-width)] shrink-0 flex-col border-r border-card-border bg-card">
     <div class="border-b border-card-border px-5 py-5">
-      <p class="text-xs font-medium text-primary">教师综合发展平台</p>
-      <h1 class="mt-1 text-lg font-semibold text-text-primary">管理端</h1>
+      <p class="text-xs font-semibold text-primary">教师综合发展平台</p>
+      <h1 class="mt-2 text-lg font-semibold leading-none text-text-primary">管理端</h1>
     </div>
 
-    <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-      <div v-for="item in navItems" :key="item.key" class="space-y-1">
+    <nav class="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
+      <div v-for="item in navItems" :key="item.key" class="space-y-1.5">
         <RouterLink
           v-if="item.to"
           :to="item.to"
-          class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors"
+          class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition-colors"
           :class="itemClass(isActive(item, activeKey))"
         >
           <span>{{ item.label }}</span>
@@ -78,8 +78,8 @@ function childClass(active: boolean) {
           v-else
           type="button"
           disabled
-          class="flex w-full cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-text-disabled"
-          :class="isActive(item, activeKey) ? 'bg-primary-soft font-medium text-primary' : ''"
+          class="flex w-full cursor-not-allowed items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-text-disabled"
+          :class="isActive(item, activeKey) ? 'bg-primary-soft font-semibold text-primary' : ''"
         >
           <span>{{ item.label }}</span>
         </button>
@@ -89,7 +89,7 @@ function childClass(active: boolean) {
             v-for="child in item.children"
             :key="child.key"
             :to="child.to || item.to || '/admin/training/resources'"
-            class="block w-full rounded-md px-3 py-2 text-left text-sm transition-colors"
+            class="block w-full rounded-lg px-3 py-2 text-left text-sm transition-colors"
             :class="childClass(child.key === activeKey)"
           >
             {{ child.label }}
