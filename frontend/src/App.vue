@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { FilterBar, PageHeader, StatCard, StatusBadge } from '@/components/common'
+import { ref } from 'vue'
+
+import { DetailSheet, FilterBar, PageHeader, StatCard, StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { Button, Card, CardContent } from '@/components/ui'
+
+const sheetOpen = ref(false)
 
 const previewFilters = [
   {
@@ -40,23 +44,24 @@ const previewFilters = [
     :breadcrumb="['管理端', '布局预览']"
   >
     <PageHeader
-      eyebrow="T3.4 已完成"
-      title="FilterBar 通用筛选栏"
-      description="统一承载搜索、必要筛选项和右侧操作区，筛选条件保持克制，不超过 5 个。"
-      primary-action-text="主要操作"
+      eyebrow="T3.5 已完成"
+      title="DetailSheet 通用详情抽屉"
+      description="统一承载详情、编辑和确认类轻量内容，从右侧覆盖页面，不改变主页面左右布局。"
+      primary-action-text="打开抽屉"
       secondary-action-text="次要操作"
+      @primary-action="sheetOpen = true"
     />
 
     <div class="mb-5 grid gap-4 md:grid-cols-3">
       <StatCard title="页头组件" value="1" description="用于统一页面标题、简短说明和右侧操作。" tone="primary" />
-      <StatCard title="状态组件" value="1" description="用于统一管理端与教师端状态文案。" tone="info" />
-      <StatCard title="筛选组件" value="1" description="用于搜索和必要筛选项展示。" trend="本次新增" tone="success" />
+      <StatCard title="筛选组件" value="1" description="用于搜索和必要筛选项展示。" tone="info" />
+      <StatCard title="抽屉组件" value="1" description="用于轻量详情、编辑和确认。" trend="本次新增" tone="success" />
     </div>
 
     <div class="mb-5">
       <FilterBar search-placeholder="搜索组件名称" :filters="previewFilters">
         <template #actions>
-          <Button variant="outline">导出当前结果</Button>
+          <Button variant="outline" @click="sheetOpen = true">查看详情</Button>
         </template>
       </FilterBar>
     </div>
@@ -88,5 +93,24 @@ const previewFilters = [
         </div>
       </CardContent>
     </Card>
+
+    <DetailSheet
+      v-model:open="sheetOpen"
+      title="组件详情"
+      description="用于验证 DetailSheet 的右侧覆盖、内容滚动和底部固定操作区。"
+      width="md"
+      mode="view"
+    >
+      <div class="space-y-4">
+        <div class="rounded-lg border border-card-border bg-page-soft p-4">
+          <p class="text-sm text-text-secondary">组件名称</p>
+          <p class="mt-1 font-medium text-text-primary">DetailSheet</p>
+        </div>
+        <div class="rounded-lg border border-card-border bg-page-soft p-4">
+          <p class="text-sm text-text-secondary">适用范围</p>
+          <p class="mt-1 text-sm leading-relaxed text-text-primary">适用于详情、编辑、确认类轻量内容，不用于承载复杂主页面。</p>
+        </div>
+      </div>
+    </DetailSheet>
   </AdminLayout>
 </template>
