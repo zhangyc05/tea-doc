@@ -13,6 +13,31 @@
         <p class="empty-message">请从左侧选择要查看的内容</p>
       </div>
 
+      <!-- Project profile content -->
+      <ProjectProfilePanel
+        v-else-if="selectedContent?.type === 'project-profile'"
+        :profile="selectedContent.data.profile"
+        :recipes="selectedContent.data.recipes"
+      />
+
+      <!-- Page patterns content -->
+      <PagePatternsPanel
+        v-else-if="selectedContent?.type === 'page-patterns'"
+        :patterns="selectedContent.data"
+      />
+
+      <!-- Anti-patterns content -->
+      <AntiPatternList
+        v-else-if="selectedContent?.type === 'anti-patterns'"
+        :items="selectedContent.data"
+      />
+
+      <!-- Quality checklist content -->
+      <QualityChecklist
+        v-else-if="selectedContent?.type === 'quality-checklist'"
+        :groups="selectedContent.data"
+      />
+
       <!-- Colors content -->
       <ColorPalette
         v-else-if="selectedContent?.type === 'colors'"
@@ -49,10 +74,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { NavItem } from '@/lib/design-system/types'
+import AntiPatternList from './AntiPatternList.vue'
 import ColorPalette from './ColorPalette.vue'
-import TypographyScale from './TypographyScale.vue'
-import SizeSystem from './SizeSystem.vue'
 import ComponentShowcase from './ComponentShowcase.vue'
+import PagePatternsPanel from './PagePatternsPanel.vue'
+import ProjectProfilePanel from './ProjectProfilePanel.vue'
+import QualityChecklist from './QualityChecklist.vue'
+import SizeSystem from './SizeSystem.vue'
+import TypographyScale from './TypographyScale.vue'
 
 // Props
 interface Props {
