@@ -1,5 +1,6 @@
 // frontend/src/pages/design-system/content/navigation.ts
 import type { NavItem } from '@/lib/design-system/types'
+import { componentShowcases, componentsByCategory } from './components'
 
 export const navigationItems: NavItem[] = [
   {
@@ -39,17 +40,48 @@ export const navigationItems: NavItem[] = [
     ]
   },
   {
-    id: 'ui-components',
-    title: '🧩 UI 组件库',
+    id: 'components',
+    title: '组件展示',
+    icon: '🧩',
     children: [
       {
-        id: 'basic-components',
+        id: 'components-basic',
         title: '基础组件',
         content: {
           type: 'components',
           title: '基础组件',
-          description: 'shadcn-vue 基础组件展示',
-          data: null // 将在组件中动态提取
+          description: 'shadcn-vue 基础 UI 组件展示和使用说明',
+          data: componentsByCategory['基础组件']
+        }
+      },
+      {
+        id: 'components-data',
+        title: '数据展示',
+        content: {
+          type: 'components',
+          title: '数据展示',
+          description: '数据展示相关组件',
+          data: componentsByCategory['数据展示']
+        }
+      },
+      {
+        id: 'components-feedback',
+        title: '反馈组件',
+        content: {
+          type: 'components',
+          title: '反馈组件',
+          description: '用户反馈相关组件（Phase 2 继续实现）',
+          data: [] // Phase 2 暂时留空
+        }
+      },
+      {
+        id: 'components-business',
+        title: '业务组件',
+        content: {
+          type: 'components',
+          title: '业务组件',
+          description: '项目业务组件展示（Phase 2 继续实现）',
+          data: [] // Phase 2 暂时留空
         }
       }
     ]

@@ -9,11 +9,54 @@ export interface NavItem {
   content?: ContentModule
 }
 
-// 组件展示结构
+// 组件展示配置
 export interface ComponentShowcase {
   name: string
   category: string
   description?: string
+  variants?: string[]
+  examples: ComponentExample[]
+  props?: PropDefinition[]
+  events?: EventDefinition[]
+  slots?: SlotDefinition[]
+}
+
+// 组件示例
+export interface ComponentExample {
+  title: string
+  description?: string
+  code: string
+  props?: Record<string, any>
+}
+
+// Props 定义
+export interface PropDefinition {
+  name: string
+  type: string
+  default?: string
+  description: string
+  required?: boolean
+}
+
+// Events 定义
+export interface EventDefinition {
+  name: string
+  description: string
+}
+
+// Slots 定义
+export interface SlotDefinition {
+  name: string
+  description: string
+}
+
+// 组件预览状态
+export interface PreviewState {
+  variant?: string
+  size?: string
+  disabled?: boolean
+  loading?: boolean
+  [key: string]: any
 }
 
 // 指南信息结构
