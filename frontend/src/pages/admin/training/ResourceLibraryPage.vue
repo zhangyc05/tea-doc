@@ -357,7 +357,7 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
                 <span>结构</span>
               </div>
 
-              <section class="distribution-section">
+              <section class="distribution-section source-section">
                 <h3>资源来源分布</h3>
                 <div class="distribution-list">
                   <div v-for="item in resourceSourceDistribution" :key="item.key" class="distribution-item">
@@ -409,7 +409,7 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .resource-page {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 26px;
 }
 
 .resource-hero,
@@ -418,16 +418,17 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .list-card,
 .overview-card {
   border: 1px solid var(--color-card-border);
-  border-radius: 18px;
+  border-radius: 24px;
   background: var(--color-card-bg);
   box-shadow: var(--shadow-card);
 }
 
 .resource-hero {
+  min-height: 260px;
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px;
+  padding: 36px 34px;
   overflow: hidden;
 }
 
@@ -438,81 +439,87 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .hero-eyebrow {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 18px;
   color: var(--color-primary);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .hero-eyebrow i {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: var(--radius-full);
   background: var(--color-primary);
 }
 
 .resource-hero h1 {
-  margin: 0 0 10px;
+  margin: 0 0 20px;
   color: var(--color-text-primary);
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.15;
 }
 
 .resource-hero p {
-  max-width: 760px;
+  max-width: 980px;
   margin: 0;
   color: var(--color-text-secondary);
-  font-size: 14px;
+  font-size: 17px;
+  font-weight: 600;
   line-height: 1.7;
 }
 
 .hero-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 28px;
 }
 
 .hero-tags span {
-  padding: 6px 10px;
+  padding: 8px 14px;
   border-radius: var(--radius-full);
   background: var(--color-primary-light);
   color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .hero-actions {
   display: flex;
   flex: none;
   align-items: flex-start;
-  gap: 10px;
+  gap: 14px;
 }
 
 .hero-primary,
 .hero-secondary {
-  height: 40px;
-  border-radius: 10px;
+  height: 54px;
+  min-width: 118px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 22px;
 }
 
 .stat-card {
   position: relative;
+  min-height: 178px;
   overflow: hidden;
 }
 
 .stat-card::before {
   content: '';
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
+  inset: 8px auto 8px 0;
+  width: 5px;
+  border-radius: 0 999px 999px 0;
   background: var(--color-primary);
 }
 
@@ -529,7 +536,7 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 }
 
 .stat-card-content {
-  padding: 20px;
+  padding: 30px 28px;
 }
 
 .stat-head {
@@ -541,13 +548,13 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 
 .stat-head span {
   color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .stat-head i {
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   border-radius: var(--radius-full);
   background: var(--color-primary);
 }
@@ -567,33 +574,34 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .stat-value {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  margin-top: 12px;
+  gap: 5px;
+  margin-top: 20px;
 }
 
 .stat-value strong {
   color: var(--color-text-primary);
-  font-size: 31px;
-  line-height: 1;
+  font-size: 44px;
+  line-height: 0.9;
 }
 
 .stat-value span {
-  padding-bottom: 2px;
+  padding-bottom: 4px;
   color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .stat-card p {
-  margin: 10px 0 0;
+  margin: 18px 0 0;
   color: var(--color-text-tertiary);
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .resource-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 316px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 26px;
   align-items: start;
 }
 
@@ -602,13 +610,18 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
+}
+
+.filter-card,
+.overview-card {
+  min-height: 386px;
 }
 
 .filter-content,
 .list-content,
 .overview-content {
-  padding: 20px;
+  padding: 28px;
 }
 
 .filter-title-row,
@@ -623,36 +636,39 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .filter-title-row h2,
 .list-title-row h2,
 .overview-head h2 {
-  margin: 0 0 6px;
+  margin: 0 0 12px;
   color: var(--color-text-primary);
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 26px;
+  font-weight: 900;
 }
 
 .filter-title-row p,
 .list-title-row p,
 .overview-head p {
+  max-width: 690px;
   margin: 0;
   color: var(--color-text-secondary);
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.7;
 }
 
 .filter-summary,
 .overview-head > span {
   flex: none;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: var(--radius-full);
   background: var(--color-primary-light);
   color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .quick-status-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 18px;
+  gap: 12px;
+  margin-top: 26px;
 }
 
 .quick-status-row button,
@@ -664,11 +680,11 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 }
 
 .quick-status-row button {
-  height: 34px;
-  padding: 0 13px;
+  height: 48px;
+  padding: 0 20px;
   border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .quick-status-row button.active {
@@ -698,24 +714,39 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 .filter-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
+  gap: 18px;
+  margin-top: 26px;
 }
 
 .filter-grid label {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   color: var(--color-text-primary);
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.filter-grid :deep(select),
+.search-row :deep(input) {
+  height: 54px;
+  border-radius: 12px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .search-row {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto auto;
-  gap: 10px;
-  margin-top: 16px;
+  grid-template-columns: minmax(420px, 1fr) 82px 82px;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.search-row :deep(button) {
+  height: 54px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .table-shell {
@@ -908,28 +939,32 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 }
 
 .distribution-section {
-  margin-top: 18px;
-  padding: 14px;
+  margin-top: 22px;
+  padding: 24px;
   border: 1px solid var(--color-card-border);
-  border-radius: 14px;
+  border-radius: 20px;
   background: var(--color-card-bg);
 }
 
+.source-section {
+  min-height: 232px;
+}
+
 .distribution-section h3 {
-  margin: 0 0 12px;
+  margin: 0 0 20px;
   color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 900;
 }
 
 .distribution-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
 }
 
 .distribution-list.compact {
-  gap: 8px;
+  gap: 12px;
 }
 
 .distribution-item {
@@ -938,26 +973,28 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
   gap: 10px;
   align-items: center;
   color: var(--color-text-secondary);
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .distribution-item > div {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .distribution-item i {
   flex: none;
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
   border-radius: var(--radius-full);
 }
 
 .distribution-item strong {
   color: var(--color-text-primary);
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 900;
 }
 
 .dot-primary {
