@@ -72,6 +72,64 @@ export interface GuideSection {
   content: string
 }
 
+// 项目级风格画像
+export interface ProjectDesignProfile {
+  productName: string
+  styleName: string
+  productType: string
+  positioning: string
+  audience: string[]
+  coreMood: string[]
+  designPrinciples: string[]
+  visualRules: {
+    color: string[]
+    layout: string[]
+    motion: string[]
+    content: string[]
+  }
+  recommendedStyles: string[]
+  forbiddenStyles: string[]
+}
+
+// 风格组合方案
+export interface StyleRecipe {
+  name: string
+  style: string
+  reason: string
+  usage: string[]
+  guardrails: string[]
+}
+
+// 反模式
+export interface AntiPattern {
+  id: string
+  title: string
+  category: string
+  risk: string
+  avoid: string[]
+  instead: string
+}
+
+// 页面模式
+export interface PagePattern {
+  id: string
+  name: string
+  appliesTo: string[]
+  purpose: string
+  structure: string[]
+  density: string
+  rules: string[]
+  avoid: string[]
+  exampleRoutes?: string[]
+}
+
+// 交付检查清单
+export interface QualityChecklistGroup {
+  title: string
+  description: string
+  items: string[]
+}
+
 // 内容模块类型 - 使用判别联合类型确保类型安全
 export type ContentModule =
   | { type: 'colors'; title: string; description?: string; data: ColorToken[] | null }
@@ -79,6 +137,10 @@ export type ContentModule =
   | { type: 'spacing'; title: string; description?: string; data: SizeToken[] | null }
   | { type: 'components'; title: string; description?: string; data: ComponentShowcase[] | null }
   | { type: 'guides'; title: string; description?: string; data: GuideInfo | null }
+  | { type: 'project-profile'; title: string; description?: string; data: { profile: ProjectDesignProfile; recipes: StyleRecipe[] } }
+  | { type: 'page-patterns'; title: string; description?: string; data: PagePattern[] }
+  | { type: 'anti-patterns'; title: string; description?: string; data: AntiPattern[] }
+  | { type: 'quality-checklist'; title: string; description?: string; data: QualityChecklistGroup[] }
 
 // 颜色 Token 结构
 export interface ColorToken {
@@ -108,7 +170,7 @@ export interface SearchIndex {
   title: string
   content: string
   keywords: string[]
-  category: 'colors' | 'components' | 'guides' | 'tokens'
+  category: 'colors' | 'components' | 'guides' | 'tokens' | 'style' | 'patterns' | 'quality'
   path: string
 }
 
