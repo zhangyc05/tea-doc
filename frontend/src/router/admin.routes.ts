@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
 const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
+const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -129,14 +130,26 @@ export const adminRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/admin/ability-list/base',
+    name: 'AdminAbilityListBase',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '基准模板',
+      module: '能力清单',
+      layout: 'admin',
+      menuKey: 'ability-list-base',
+      breadcrumb: ['管理端', '能力清单', '基准模板'],
+    },
+  },
+  {
     path: '/admin/ability-list/execution',
     name: 'AdminAbilityListExecution',
-    component: AdminPlaceholderPage,
+    component: AbilityListExecutionPage,
     meta: {
       title: '执行版',
       module: '能力清单',
       layout: 'admin',
-      menuKey: 'ability-list',
+      menuKey: 'ability-list-execution',
       breadcrumb: ['管理端', '能力清单', '执行版'],
     },
   },
