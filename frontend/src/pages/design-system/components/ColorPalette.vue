@@ -1,5 +1,13 @@
 <template>
   <div class="color-palette">
+    <!-- Empty State -->
+    <div v-if="colorCategories.length === 0" class="empty-state">
+      <div class="empty-icon">🎨</div>
+      <h3 class="empty-title">暂无颜色 Token</h3>
+      <p class="empty-description">未检测到 CSS 变量定义的颜色 Token</p>
+    </div>
+
+    <!-- Color Categories -->
     <div v-for="category in colorCategories" :key="category.name" class="color-category">
       <h3 class="category-title">{{ category.name }}</h3>
       <p class="category-description">{{ category.description }}</p>
@@ -7,7 +15,7 @@
       <div class="color-grid">
         <ColorCard
           v-for="color in category.colors"
-          :key="color.variable"
+          :key="color.name"
           :color="color"
         />
       </div>
@@ -16,75 +24,105 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ColorCard from './ColorCard.vue'
-
-interface Color {
-  name: string
-  value: string
-  variable: string
-}
+import { extractColorTokens } from '@/lib/design-system/tokens'
+import type { ColorToken } from '@/lib/design-system/types'
 
 interface ColorCategory {
   name: string
   description: string
-  colors: Color[]
+  colors: ColorToken[]
 }
 
-// Primary Colors
-const primaryColors: Color[] = [
-  { name: 'Primary', value: '#2FBF9B', variable: '--color-primary' },
-  { name: 'Primary Dark', value: '#28A688', variable: '--color-primary-dark' },
-  { name: 'Primary Light', value: '#4DD4B5', variable: '--color-primary-light' }
-]
+const colorCategories = ref<ColorCategory[]>([])
 
-// Neutral Colors
-const neutralColors: Color[] = [
-  { name: 'Background', value: '#F7F9FC', variable: '--color-page-bg' },
-  { name: 'Card Background', value: '#FFFFFF', variable: '--color-card-bg' },
-  { name: 'Text Primary', value: '#1A1A1A', variable: '--color-text-primary' },
-  { name: 'Text Secondary', value: '#6B7280', variable: '--color-text-secondary' },
-  { name: 'Text Tertiary', value: '#9CA3AF', variable: '--color-text-tertiary' },
-  { name: 'Border', value: '#E5E7EB', variable: '--color-card-border' }
-]
+// Color categorization logic
+const categorizeColors = (colors: ColorToken[]): ColorCategory[] => {
+  const categories: ColorCategory[] = []
 
-// Semantic Colors
-const semanticColors: Color[] = [
-  { name: 'Success', value: '#10B981', variable: '--color-success' },
-  { name: 'Warning', value: '#F59E0B', variable: '--color-warning' },
-  { name: 'Error', value: '#EF4444', variable: '--color-error' },
-  { name: 'Info', value: '#3B82F6', variable: '--color-info' }
-]
-
-// Admin Colors
-const adminColors: Color[] = [
-  { name: 'Admin Primary', value: '#2FBF9B', variable: '--color-admin-primary' },
-  { name: 'Admin Background', value: '#F0F9F6', variable: '--color-admin-bg' },
-  { name: 'Admin Border', value: '#E8F3F0', variable: '--color-admin-border' }
-]
-
-const colorCategories = ref<ColorCategory[]>([
-  {
-    name: '品牌色',
-    description: '主要品牌颜色，用于强调和重要操作',
-    colors: primaryColors
-  },
-  {
-    name: '中性色',
-    description: '用于文本、背景和边框的基础颜色',
-    colors: neutralColors
-  },
-  {
-    name: '语义色',
-    description: '用于表示不同状态的语义颜色',
-    colors: semanticColors
-  },
-  {
-    name: '管理端专用色',
-    description: '管理端界面专用颜色',
-    colors: adminColors
+  // Brand colors (primary related)
+  const brandColors = colors.filter(c =>
+    c.name.includes('primary') ||
+    c.name.includes('brand')
+  )
+  if (brandColors.length > 0) {
+    categories.push({
+      name: '品牌色',
+      description: '主要品牌颜色，用于强调和重要操作',
+      colors: brandColors
+    })
   }
-])
+
+  // Neutral colors (text, background, border)
+  const neutralColors = colors.filter(c =>
+    c.name.includes('text') ||
+    c.name.includes('bg') ||
+    c.name.includes('background') ||
+    c.name.includes('border') ||
+    c.name.includes('card')
+  )
+  if (neutralColors.length > 0) {
+    categories.push({
+      name: '中性色',
+      description: '用于文本、背景和边框的基础颜色',
+      colors: neutralColors
+    })
+  }
+
+  // Semantic colors (success, warning, error, info, danger)
+  const semanticColors = colors.filter(c =>
+    c.name.includes('success') ||
+    c.name.includes('warning') ||
+    c.name.includes('error') ||
+    c.name.includes('danger') ||
+    c.name.includes('info')
+  )
+  if (semanticColors.length > 0) {
+    categories.push({
+      name: '语义色',
+      description: '用于表示不同状态的语义颜色',
+      colors: semanticColors
+    })
+  }
+
+  // Admin specific colors
+  const adminColors = colors.filter(c => c.name.includes('admin'))
+  if (adminColors.length > 0) {
+    categories.push({
+      name: '管理端专用色',
+      description: '管理端界面专用颜色',
+      colors: adminColors
+    })
+  }
+
+  // Any remaining colors
+  const otherColors = colors.filter(c =>
+    !brandColors.includes(c) &&
+    !neutralColors.includes(c) &&
+    !semanticColors.includes(c) &&
+    !adminColors.includes(c)
+  )
+  if (otherColors.length > 0) {
+    categories.push({
+      name: '其他颜色',
+      description: '其他用途的颜色',
+      colors: otherColors
+    })
+  }
+
+  return categories
+}
+
+onMounted(() => {
+  try {
+    const extractedColors = extractColorTokens()
+    colorCategories.value = categorizeColors(extractedColors)
+  } catch (error) {
+    console.error('Failed to extract color tokens:', error)
+    colorCategories.value = []
+  }
+})
 </script>
 
 <style scoped>
@@ -92,6 +130,34 @@ const colorCategories = ref<ColorCategory[]>([
   display: flex;
   flex-direction: column;
   gap: 48px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.empty-description {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
 }
 
 .color-category {

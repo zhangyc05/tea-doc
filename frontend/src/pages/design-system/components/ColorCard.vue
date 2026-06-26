@@ -3,7 +3,7 @@
     <div
       class="color-swatch"
       :style="{ backgroundColor: color.value }"
-      @click="copyToClipboard"
+      @click="handleCopy"
     >
       <div class="copy-overlay">
         <span class="copy-icon">📋</span>
@@ -13,36 +13,33 @@
     <div class="color-info">
       <div class="color-name">{{ color.name }}</div>
       <div class="color-value">{{ color.value }}</div>
-      <div class="color-variable">{{ color.variable }}</div>
+      <div class="color-variable">--color-{{ color.name }}</div>
+      <div v-if="color.description" class="color-description">{{ color.description }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-
-interface Color {
-  name: string
-  value: string
-  variable: string
-}
+import { copyToClipboard } from '@/lib/design-system/utils'
+import type { ColorToken } from '@/lib/design-system/types'
 
 interface Props {
-  color: Color
+  color: ColorToken
 }
 
 const props = defineProps<Props>()
 const copied = ref(false)
 
-const copyToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(props.color.value)
+const handleCopy = async () => {
+  const success = await copyToClipboard(props.color.value)
+  if (success) {
     copied.value = true
     setTimeout(() => {
       copied.value = false
     }, 2000)
-  } catch (err) {
-    console.error('Failed to copy color:', err)
+  } else {
+    console.error('Failed to copy color:', props.color.name)
   }
 }
 </script>
@@ -113,5 +110,12 @@ const copyToClipboard = async () => {
   font-size: 11px;
   color: var(--color-text-tertiary);
   font-family: monospace;
+}
+
+.color-description {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
 }
 </style>
