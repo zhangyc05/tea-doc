@@ -3,7 +3,7 @@
     <div class="preview-header">
       <div>
         <h3 class="preview-title">组件效果</h3>
-        <p class="preview-subtitle">优先查看真实界面效果，代码与接口说明下沉。</p>
+        <p class="preview-subtitle">优先看真实页面中的呈现方式，代码与接口说明下沉。</p>
       </div>
       <div class="preview-controls" v-if="component?.variants && component.variants.length > 0">
         <Button
@@ -20,7 +20,9 @@
     </div>
 
     <div class="preview-area">
-      <slot :state="previewState"></slot>
+      <div class="preview-stage">
+        <slot :state="previewState"></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +68,7 @@ const updateVariant = (variant: string): void => {
   align-items: flex-start;
   gap: 16px;
   padding: 18px 20px;
-  background: var(--color-page-bg-soft);
+  background: var(--color-card-bg);
   border-bottom: 1px solid var(--color-card-border);
 }
 
@@ -98,13 +100,16 @@ const updateVariant = (variant: string): void => {
 }
 
 .preview-area {
-  min-height: 160px;
-  padding: 28px;
-  background:
-    linear-gradient(90deg, rgba(229, 236, 248, 0.45) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(229, 236, 248, 0.45) 1px, transparent 1px),
-    var(--color-card-bg);
-  background-size: 24px 24px;
+  min-height: 220px;
+  padding: 32px;
+  background: linear-gradient(180deg, var(--color-page-bg-soft) 0%, var(--color-page-bg) 100%);
+}
+
+.preview-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 170px;
 }
 
 @media (max-width: 768px) {
