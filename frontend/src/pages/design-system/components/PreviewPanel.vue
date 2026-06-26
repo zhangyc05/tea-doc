@@ -1,14 +1,17 @@
 <template>
   <div class="preview-panel">
     <div class="preview-header">
-      <h3 class="preview-title">{{ component?.name || '组件预览' }}</h3>
+      <div>
+        <h3 class="preview-title">组件效果</h3>
+        <p class="preview-subtitle">优先查看真实界面效果，代码与接口说明下沉。</p>
+      </div>
       <div class="preview-controls" v-if="component?.variants && component.variants.length > 0">
         <Button
           v-for="variant in component.variants"
           :key="variant"
           variant="outline"
           size="sm"
-          :class="cn({ active: previewState.variant === variant })"
+          :class="{ active: previewState.variant === variant }"
           @click="updateVariant(variant)"
         >
           {{ variant }}
@@ -16,16 +19,8 @@
       </div>
     </div>
 
-    <div class="preview-content">
-      <div class="preview-area">
-        <slot :state="previewState"></slot>
-      </div>
-      <div class="preview-info">
-        <div class="preview-state">
-          <h4>当前状态</h4>
-          <pre>{{ JSON.stringify(previewState, null, 2) }}</pre>
-        </div>
-      </div>
+    <div class="preview-area">
+      <slot :state="previewState"></slot>
     </div>
   </div>
 </template>
@@ -33,7 +28,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { Button } from '@/components/ui'
-import { cn } from '@/lib/utils'
 import type { ComponentShowcase, PreviewState } from '@/lib/design-system/types'
 
 interface Props {
@@ -42,19 +36,16 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Preview state - only initialize with variant
 const previewState = ref<PreviewState>({
   variant: props.component?.variants?.[0]
 })
 
-// Reset preview state when component changes
 watch(() => props.component, (newComponent) => {
   previewState.value = {
     variant: newComponent?.variants?.[0]
   }
 }, { immediate: false })
 
-// Update variant
 const updateVariant = (variant: string): void => {
   previewState.value.variant = variant
 }
@@ -62,31 +53,34 @@ const updateVariant = (variant: string): void => {
 
 <style scoped>
 .preview-panel {
-  @apply border border-card-border rounded-lg overflow-hidden;
+  overflow: hidden;
   background: var(--color-card-bg);
-  transition: all 0.2s ease;
-}
-
-.preview-panel:hover {
-  @apply shadow-md;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .preview-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: var(--color-page-bg);
-  border-bottom: 1px solid var(--color-card-border);
+  align-items: flex-start;
   gap: 16px;
+  padding: 18px 20px;
+  background: var(--color-page-bg-soft);
+  border-bottom: 1px solid var(--color-card-border);
 }
 
 .preview-title {
-  margin: 0;
+  margin: 0 0 6px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 1;
+}
+
+.preview-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
 }
 
 .preview-controls {
@@ -94,112 +88,36 @@ const updateVariant = (variant: string): void => {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .preview-controls :deep(.button.active) {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
-}
-
-.preview-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  color: #fff;
 }
 
 .preview-area {
-  padding: 20px;
-  background: var(--color-card-bg);
-  min-height: 120px;
+  min-height: 160px;
+  padding: 28px;
+  background:
+    linear-gradient(90deg, rgba(229, 236, 248, 0.45) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(229, 236, 248, 0.45) 1px, transparent 1px),
+    var(--color-card-bg);
+  background-size: 24px 24px;
 }
 
-.preview-info {
-  padding: 16px 20px;
-  background: var(--color-card-bg);
-  border-top: 1px solid var(--color-card-border);
-}
-
-.preview-state {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.preview-state h4 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.preview-state pre {
-  margin: 0;
-  padding: 12px;
-  background: var(--color-page-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--color-text-primary);
-  overflow-x: auto;
-  white-space: pre;
-}
-
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .preview-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
   }
 
   .preview-controls {
-    width: 100%;
+    justify-content: flex-start;
   }
 
   .preview-area {
-    padding: 16px;
-    min-height: 100px;
-  }
-
-  .preview-info {
-    padding: 12px 16px;
-  }
-
-  .preview-state h4 {
-    font-size: 13px;
-  }
-
-  .preview-state pre {
-    font-size: 11px;
-    padding: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .preview-title {
-    font-size: 14px;
-  }
-
-  .preview-area {
-    padding: 12px;
-    min-height: 80px;
-  }
-
-  .preview-info {
-    padding: 10px 12px;
-  }
-
-  .preview-state h4 {
-    font-size: 13px;
-  }
-
-  .preview-state pre {
-    font-size: 10px;
-    padding: 8px;
+    padding: 18px;
   }
 }
 </style>
