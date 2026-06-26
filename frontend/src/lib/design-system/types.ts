@@ -9,13 +9,33 @@ export interface NavItem {
   content?: ContentModule
 }
 
-// 内容模块类型
-export interface ContentModule {
-  type: 'colors' | 'typography' | 'spacing' | 'components' | 'guides'
-  title: string
+// 组件展示结构
+export interface ComponentShowcase {
+  name: string
+  category: string
   description?: string
-  data: any
 }
+
+// 指南信息结构
+export interface GuideInfo {
+  title: string
+  content: string
+  sections?: GuideSection[]
+}
+
+// 指南章节结构
+export interface GuideSection {
+  title: string
+  content: string
+}
+
+// 内容模块类型 - 使用判别联合类型确保类型安全
+export type ContentModule =
+  | { type: 'colors'; title: string; description?: string; data: ColorToken[] | null }
+  | { type: 'typography'; title: string; description?: string; data: FontToken[] | null }
+  | { type: 'spacing'; title: string; description?: string; data: SizeToken[] | null }
+  | { type: 'components'; title: string; description?: string; data: ComponentShowcase[] | null }
+  | { type: 'guides'; title: string; description?: string; data: GuideInfo | null }
 
 // 颜色 Token 结构
 export interface ColorToken {
