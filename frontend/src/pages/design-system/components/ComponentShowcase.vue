@@ -10,7 +10,7 @@
         <div>
           <p class="eyebrow">组件效果</p>
           <h2>{{ category }}</h2>
-          <p>优先查看组件在教师综合发展平台中的真实效果，代码和接口说明默认下沉。</p>
+          <p>先看组件在真实页面里的完成效果，代码和接口说明默认下沉。</p>
         </div>
         <span class="count-badge">{{ filteredComponents.length }} 个样板</span>
       </section>
@@ -170,11 +170,7 @@ const filteredComponents = computed(() => {
 })
 
 const hasApiInfo = (component: ComponentShowcase) => {
-  return Boolean(
-    component.props?.length ||
-    component.events?.length ||
-    component.slots?.length
-  )
+  return Boolean(component.props?.length || component.events?.length || component.slots?.length)
 }
 
 const renderExampleComponent = (component: ComponentShowcase, example: ComponentExample) => {
@@ -311,31 +307,56 @@ const badgeLabelByVariant = (variant: string) => {
   return labels[variant] || '状态'
 }
 
+const isAdminScene = (scene: string) => scene === 'admin' || scene === '管理端'
+
 const renderTaskCard = (scene: string) => {
-  const isAdmin = scene === 'admin'
-  return h('div', { class: 'task-card-sample' }, [
-    h('div', { class: 'task-card-main' }, [
+  const isAdmin = isAdminScene(scene)
+  const meta = isAdmin
+    ? [
+        ['处理对象', '智能制造学院'],
+        ['来源', '部门导入材料'],
+        ['当前状态', '待核验']
+      ]
+    : [
+        ['来源', '部门导入培训名单'],
+        ['预计用时', '约 1 分钟'],
+        ['后续去向', '进入待审核']
+      ]
+
+  return h('div', { class: ['task-card-sample', isAdmin ? 'is-admin' : 'is-teacher'] }, [
+    h('div', { class: 'task-card-top' }, [
       h('span', { class: 'status-pill warning' }, isAdmin ? '待部门处理' : '待你确认'),
-      h('h3', isAdmin ? '3 条候选数据待核验' : '确认一条培训证书'),
-      h('p', isAdmin ? '来源为部门导入材料，需核对教师归属和字段完整性。' : '系统已帮您识别，请确认是否属于本人。'),
-      h('div', { class: 'task-meta' }, [
-        h('span', isAdmin ? '对象：智能制造学院' : '来源：部门导入培训名单'),
-        h('span', isAdmin ? '状态：待核验' : '预计用时：约 1 分钟')
-      ])
+      h('span', { class: 'soft-label' }, isAdmin ? '审核队列' : '建议先处理')
     ]),
-    h(Button, { variant: 'primary' as any }, () => isAdmin ? '去核验' : '去确认')
+    h('div', { class: 'task-card-main' }, [
+      h('h3', isAdmin ? '3 条候选数据待核验' : '确认一条培训证书'),
+      h('p', isAdmin ? '核对教师归属、字段完整性和来源可信度后，再进入正式入档流程。' : '系统已帮您识别培训证书，请确认是否属于本人；确认后会进入部门审核。')
+    ]),
+    h('div', { class: 'task-meta-grid' }, meta.map(([label, value]) =>
+      h('div', { class: 'meta-cell' }, [
+        h('span', label),
+        h('strong', value)
+      ])
+    )),
+    h('div', { class: 'task-card-footer' }, [
+      h(Button, { variant: 'outline' as any }, () => isAdmin ? '查看来源' : '查看识别依据'),
+      h(Button, { variant: 'primary' as any }, () => isAdmin ? '去核验' : '去确认')
+    ])
   ])
 }
 
 const renderStatSummaryCards = () => {
   const stats = [
-    ['待确认记录', '26', '需要教师或部门确认'],
-    ['正式入档', '1,284', '可用于画像和报告'],
-    ['材料待完善', '18', '缺证书或来源说明']
+    ['待确认记录', '26', '需要教师或部门确认', 'warning'],
+    ['正式入档', '1,284', '可用于画像和报告', 'success'],
+    ['材料待完善', '18', '缺证书或来源说明', 'info']
   ]
-  return h('div', { class: 'stat-card-grid' }, stats.map(([title, value, desc]) =>
-    h('div', { class: 'stat-card-sample' }, [
-      h('span', title),
+  return h('div', { class: 'stat-card-grid' }, stats.map(([title, value, desc, tone]) =>
+    h('div', { class: ['stat-card-sample', `tone-${tone}`] }, [
+      h('div', { class: 'stat-card-head' }, [
+        h('span', title),
+        h('i')
+      ]),
       h('strong', value),
       h('p', desc)
     ])
@@ -344,14 +365,22 @@ const renderStatSummaryCards = () => {
 
 const renderFilterToolbar = () => {
   return h('div', { class: 'filter-toolbar-sample' }, [
-    h('div', { class: 'filter-search' }, [
-      h(Input, { placeholder: '搜索教师、课程、成果或材料' })
+    h('div', { class: 'filter-toolbar-head' }, [
+      h('div', [
+        h('strong', '筛选记录'),
+        h('span', '搜索与状态筛选统一放在一个区域')
+      ]),
+      h(Button, { variant: 'primary' as any }, () => '导入资料')
     ]),
-    h('button', { class: 'filter-chip active' }, '全部'),
-    h('button', { class: 'filter-chip' }, '待确认'),
-    h('button', { class: 'filter-chip' }, '正式'),
-    h('button', { class: 'filter-chip' }, '异常'),
-    h(Button, { variant: 'primary' as any }, () => '导入资料')
+    h('div', { class: 'filter-toolbar-body' }, [
+      h('div', { class: 'filter-search' }, [
+        h(Input, { placeholder: '搜索教师、课程、成果或材料' })
+      ]),
+      h('button', { class: 'filter-chip active' }, '全部'),
+      h('button', { class: 'filter-chip' }, '待确认'),
+      h('button', { class: 'filter-chip' }, '正式'),
+      h('button', { class: 'filter-chip' }, '异常')
+    ])
   ])
 }
 
@@ -371,6 +400,7 @@ const renderProfileSummaryCard = () => {
       renderAbilityBar('实践', 79),
       renderAbilityBar('服务', 72)
     ]),
+    h('div', { class: 'profile-insight' }, '支持方向：优先补齐企业实践转化成果，继续发挥课程建设优势。'),
     h('div', { class: 'profile-actions' }, [
       h(Button, { variant: 'primary' as any }, () => '查看画像'),
       h(Button, { variant: 'outline' as any }, () => '查看依据')
@@ -394,9 +424,9 @@ const renderArchiveFactCard = () => {
     ]),
     h('p', '来源：教务项目系统｜确认时间：2026-06-18｜维度：教研科研'),
     h('div', { class: 'archive-grid' }, [
-      h('span', '课程级别：省级'),
-      h('span', '本人角色：课程负责人'),
-      h('span', '可用于：能力画像 / 岗位对照 / 个人报告')
+      h('span', [h('em', '课程级别'), h('strong', '省级')]),
+      h('span', [h('em', '本人角色'), h('strong', '课程负责人')]),
+      h('span', [h('em', '可用于'), h('strong', '画像 / 岗位对照 / 报告')])
     ]),
     h('div', { class: 'profile-actions' }, [
       h(Button, { variant: 'outline' as any }, () => '查看来源'),
@@ -584,7 +614,7 @@ const renderArchiveFactCard = () => {
 
 .example-visual {
   padding: 20px;
-  background: var(--color-card-bg);
+  background: var(--color-page-bg-soft);
 }
 
 .code-details,
@@ -655,9 +685,7 @@ const renderArchiveFactCard = () => {
 .button-sample-row,
 .badge-sample-row,
 .input-sample,
-.filter-toolbar-sample,
-.profile-actions,
-.task-meta {
+.profile-actions {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -674,11 +702,11 @@ const renderArchiveFactCard = () => {
 .input-sample {
   align-items: stretch;
   flex-direction: column;
-  max-width: 520px;
+  width: min(520px, 100%);
 }
 
 .sample-card {
-  max-width: 520px;
+  width: min(520px, 100%);
 }
 
 .card-content-sample {
@@ -708,69 +736,160 @@ const renderArchiveFactCard = () => {
   color: var(--color-info);
 }
 
+.soft-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .task-card-sample,
 .profile-card-sample,
 .archive-card-sample {
-  max-width: 720px;
-  padding: 20px;
+  position: relative;
+  width: min(720px, 100%);
+  padding: 22px;
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(11, 99, 246, 0.08);
 }
 
-.task-card-sample {
+.task-card-sample::before,
+.profile-card-sample::before,
+.archive-card-sample::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  border-radius: 18px 0 0 18px;
+  background: var(--color-primary);
+}
+
+.task-card-sample.is-admin::before {
+  background: var(--color-warning);
+}
+
+.task-card-top,
+.task-card-footer,
+.profile-card-header,
+.archive-card-title {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
-  align-items: center;
+  gap: 16px;
+  align-items: flex-start;
 }
 
 .task-card-main h3,
 .profile-card-header h3,
 .archive-card-title h3 {
-  margin: 10px 0 8px;
+  margin: 14px 0 8px;
   color: var(--color-text-primary);
-  font-size: 18px;
+  font-size: 19px;
+  line-height: 1.35;
 }
 
 .task-card-main p,
 .archive-card-sample p {
-  margin: 0 0 12px;
+  margin: 0;
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-.task-meta {
+.task-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.meta-cell {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-page-bg-soft);
+}
+
+.meta-cell span,
+.archive-grid em {
+  display: block;
+  margin-bottom: 5px;
   color: var(--color-text-tertiary);
   font-size: 12px;
+  font-style: normal;
+}
+
+.meta-cell strong,
+.archive-grid strong {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.task-card-footer {
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .stat-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  max-width: 780px;
+  width: min(840px, 100%);
 }
 
 .stat-card-sample {
-  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   background: var(--color-card-bg);
   box-shadow: var(--shadow-card);
 }
 
-.stat-card-sample span {
+.stat-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-card-head span {
   color: var(--color-text-secondary);
   font-size: 13px;
+  font-weight: 700;
+}
+
+.stat-card-head i {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+}
+
+.stat-card-sample.tone-warning .stat-card-head i {
+  background: var(--color-warning);
+}
+
+.stat-card-sample.tone-success .stat-card-head i {
+  background: var(--color-success);
+}
+
+.stat-card-sample.tone-info .stat-card-head i {
+  background: var(--color-info);
 }
 
 .stat-card-sample strong {
   display: block;
-  margin: 8px 0 6px;
+  margin: 12px 0 6px;
   color: var(--color-text-primary);
-  font-size: 28px;
+  font-size: 30px;
+  line-height: 1;
 }
 
 .stat-card-sample p {
@@ -780,11 +899,40 @@ const renderArchiveFactCard = () => {
 }
 
 .filter-toolbar-sample {
-  max-width: 980px;
-  padding: 16px;
+  width: min(980px, 100%);
+  padding: 18px;
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   background: var(--color-card-bg);
+  box-shadow: var(--shadow-card);
+}
+
+.filter-toolbar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filter-toolbar-head strong {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: 16px;
+}
+
+.filter-toolbar-head span {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.filter-toolbar-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .filter-search {
@@ -809,30 +957,31 @@ const renderArchiveFactCard = () => {
   border-color: var(--color-primary-light);
 }
 
-.profile-card-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
 .profile-card-header p {
   margin: 0;
   color: var(--color-text-secondary);
+  line-height: 1.7;
 }
 
 .profile-score {
+  min-width: 110px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--color-primary-light);
 }
 
 .profile-score strong {
   color: var(--color-primary);
   font-size: 34px;
+  line-height: 1;
 }
 
 .profile-score span {
-  color: var(--color-text-tertiary);
+  margin-top: 4px;
+  color: var(--color-text-secondary);
   font-size: 12px;
 }
 
@@ -866,8 +1015,17 @@ const renderArchiveFactCard = () => {
   background: var(--color-primary);
 }
 
+.profile-insight {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-page-bg-soft);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .archive-card-title {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -876,15 +1034,13 @@ const renderArchiveFactCard = () => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin: 14px 0 16px;
+  margin: 16px 0 18px;
 }
 
 .archive-grid span {
-  padding: 10px;
+  padding: 12px;
   border-radius: var(--radius-md);
   background: var(--color-page-bg-soft);
-  color: var(--color-text-secondary);
-  font-size: 13px;
 }
 
 .preview-placeholder {
@@ -894,7 +1050,8 @@ const renderArchiveFactCard = () => {
 @media (max-width: 1080px) {
   .example-grid,
   .stat-card-grid,
-  .archive-grid {
+  .archive-grid,
+  .task-meta-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -902,8 +1059,10 @@ const renderArchiveFactCard = () => {
 @media (max-width: 768px) {
   .showcase-intro,
   .showcase-header,
-  .task-card-sample,
-  .profile-card-header {
+  .task-card-top,
+  .task-card-footer,
+  .profile-card-header,
+  .filter-toolbar-head {
     flex-direction: column;
     align-items: flex-start;
   }
