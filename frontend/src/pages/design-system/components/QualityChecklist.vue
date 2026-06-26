@@ -76,7 +76,7 @@ defineProps<{
   height: 18px;
   margin-top: 2px;
   border-radius: var(--radius-full);
-  background: var(--color-success-light);
+  background: var(--color-success-bg);
   color: var(--color-success);
   font-size: 12px;
   font-weight: 700;
