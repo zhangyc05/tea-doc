@@ -4,7 +4,7 @@ import { antiPatterns } from '@/lib/design-system/anti-patterns'
 import { pagePatterns } from '@/lib/design-system/page-patterns'
 import { projectDesignProfile, styleRecipes } from '@/lib/design-system/profile'
 import { qualityChecklist } from '@/lib/design-system/quality-checklist'
-import { componentShowcases, componentsByCategory } from './components'
+import { componentsByCategory } from './components'
 
 export const navigationItems: NavItem[] = [
   {
@@ -57,6 +57,52 @@ export const navigationItems: NavItem[] = [
     ]
   },
   {
+    id: 'components',
+    title: '组件效果',
+    children: [
+      {
+        id: 'components-business',
+        title: '业务组件样板',
+        content: {
+          type: 'components',
+          title: '业务组件样板',
+          description: '围绕教师综合发展平台沉淀的真实业务组件效果，用于后续页面转 Vue 时复用。',
+          data: componentsByCategory['业务组件']
+        }
+      },
+      {
+        id: 'components-basic',
+        title: '基础组件',
+        content: {
+          type: 'components',
+          title: '基础组件',
+          description: '按钮、输入框等基础 UI 组件的效果预览。',
+          data: componentsByCategory['基础组件']
+        }
+      },
+      {
+        id: 'components-data',
+        title: '数据展示',
+        content: {
+          type: 'components',
+          title: '数据展示',
+          description: '卡片、徽章等数据展示组件的效果预览。',
+          data: componentsByCategory['数据展示']
+        }
+      },
+      {
+        id: 'components-feedback',
+        title: '反馈组件',
+        content: {
+          type: 'components',
+          title: '反馈组件',
+          description: '反馈、空状态、提示等组件后续补充。',
+          data: []
+        }
+      }
+    ]
+  },
+  {
     id: 'design-tokens',
     title: '设计规范',
     children: [
@@ -88,52 +134,6 @@ export const navigationItems: NavItem[] = [
           title: '尺寸系统',
           description: '包含圆角、阴影和间距规范',
           data: null
-        }
-      }
-    ]
-  },
-  {
-    id: 'components',
-    title: '组件展示',
-    children: [
-      {
-        id: 'components-basic',
-        title: '基础组件',
-        content: {
-          type: 'components',
-          title: '基础组件',
-          description: 'shadcn-vue 基础 UI 组件展示和使用说明',
-          data: componentsByCategory['基础组件']
-        }
-      },
-      {
-        id: 'components-data',
-        title: '数据展示',
-        content: {
-          type: 'components',
-          title: '数据展示',
-          description: '数据展示相关组件',
-          data: componentsByCategory['数据展示']
-        }
-      },
-      {
-        id: 'components-feedback',
-        title: '反馈组件',
-        content: {
-          type: 'components',
-          title: '反馈组件',
-          description: '用户反馈相关组件（Phase 2 继续实现）',
-          data: []
-        }
-      },
-      {
-        id: 'components-business',
-        title: '业务组件',
-        content: {
-          type: 'components',
-          title: '业务组件',
-          description: '项目业务组件展示（Phase 2 继续实现）',
-          data: []
         }
       }
     ]
