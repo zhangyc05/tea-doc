@@ -56,7 +56,7 @@ defineProps<{
   width: fit-content;
   padding: 4px 8px;
   border-radius: var(--radius-full);
-  background: var(--color-warning-light);
+  background: var(--color-warning-bg);
   color: var(--color-warning);
   font-size: 12px;
   font-weight: 600;
