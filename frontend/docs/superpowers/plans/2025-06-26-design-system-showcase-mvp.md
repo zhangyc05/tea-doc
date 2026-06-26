@@ -10,6 +10,118 @@
 
 ---
 
+## Chunk 0: 环境准备
+
+### Task 0.1: 安装和配置测试框架
+
+**Files:**
+- Modify: `frontend/package.json`
+- Create: `frontend/vitest.config.ts`
+
+- [ ] **Step 1: Install Vitest and testing utilities**
+
+Run: `cd frontend && npm install --save-dev vitest @vue/test-utils jsdom`
+Expected: Packages installed successfully
+
+- [ ] **Step 2: Create Vitest configuration**
+
+```typescript
+// frontend/vitest.config.ts
+import { defineConfig } from 'vitest/config'
+import vue from '@vitejs/plugin-vue'
+import { fileURLToPath } from 'node:url'
+
+export default defineConfig({
+  plugins: [vue()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
+})
+```
+
+- [ ] **Step 3: Create test setup file**
+
+```typescript
+// frontend/src/test/setup.ts
+import { vi } from 'vitest'
+
+// Mock window.matchMedia for responsive utilities
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+})
+```
+
+- [ ] **Step 4: Update package.json with test script**
+
+Modify `frontend/package.json`, add to scripts section:
+```json
+"test": "vitest",
+"test:ui": "vitest --ui",
+"test:coverage": "vitest --coverage"
+```
+
+- [ ] **Step 5: Verify Vitest configuration**
+
+Run: `cd frontend && npm run test -- --run`
+Expected: Vitest runs successfully (no tests found yet, but no errors)
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add frontend/package.json frontend/vitest.config.ts frontend/src/test/setup.ts
+git commit -m "test(design-system): add Vitest configuration and setup"
+```
+
+### Task 0.2: 验证项目环境
+
+**Files:**
+- Test: Project dependencies and configuration
+
+- [ ] **Step 1: Check project dependencies**
+
+Run: `cd frontend && npm list vue vite typescript tailwindcss`
+Expected: All core dependencies are installed
+
+- [ ] **Step 2: Verify project builds successfully**
+
+Run: `cd frontend && npm run typecheck && npm run build`
+Expected: No errors and successful build
+
+- [ ] **Step 3: Create environment checklist**
+
+Create: `frontend/.env.development`
+```bash
+# Development environment variables
+VITE_APP_ENV=development
+VITE_APP_VERSION=1.0.0
+```
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add frontend/.env.development
+git commit -m "chore(design-system): add development environment configuration"
+```
+
+---
+
 ## Chunk 1: 基础工具函数和类型定义
 
 ### Task 1.1: 创建 TypeScript 类型定义文件
@@ -655,6 +767,16 @@ git commit -m "feat(design-system): add navigation configuration data"
     <div v-if="copySuccess" class="copy-toast">
       已复制: {{ copySuccess }}
     </div>
+
+    <!-- 空状态 -->
+    <div v-if="colors.length === 0" class="no-data">
+      <svg class="no-data-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+      </svg>
+      <p>未找到颜色 Token</p>
+      <p class="no-data-hint">请确保 tokens.css 文件中定义了颜色变量</p>
+    </div>
   </div>
 </template>
 
@@ -673,7 +795,13 @@ const colors = ref<ColorToken[]>([])
 const copySuccess = ref('')
 
 onMounted(() => {
-  colors.value = extractColorTokens()
+  try {
+    colors.value = extractColorTokens()
+  } catch (error) {
+    console.error('Failed to extract color tokens:', error)
+    // 提供降级方案
+    colors.value = []
+  }
 })
 
 // 颜色分类
@@ -769,6 +897,12 @@ const handleCopy = async (value: string) => {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.no-data-hint {
+  font-size: 12px;
+  color: var(--color-text-disabled);
+  margin-top: 8px;
 }
 </style>
 ```
@@ -1504,14 +1638,32 @@ git commit -m "feat(design-system): add sidebar navigation component with expand
 
       <!-- 无选中内容 -->
       <div v-else class="placeholder">
-        <p>请从左侧选择要查看的内容</p>
+        <div class="placeholder-content">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <p>请从左侧选择要查看的内容</p>
+        </div>
+      </div>
+
+      <!-- 空状态处理 -->
+      <div v-else-if="isEmptyContent" class="empty-state">
+        <div class="empty-content">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <p>暂无内容</p>
+        </div>
       </div>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { NavItem } from '@/lib/design-system/types'
 import ColorPalette from './ColorPalette.vue'
 import TypographyScale from './TypographyScale.vue'
@@ -1522,6 +1674,22 @@ const props = defineProps<{
 }>()
 
 const selectedContent = ref(props.selectedItem?.content)
+
+// 检查内容是否为空
+const isEmptyContent = computed(() => {
+  if (!selectedContent.value) return true
+  // 根据不同类型检查内容是否为空
+  switch (selectedContent.value.type) {
+    case 'colors':
+      return false // 会在组件内部检查
+    case 'typography':
+      return false
+    case 'spacing':
+      return false
+    default:
+      return true
+  }
+})
 
 watch(() => props.selectedItem, (newItem) => {
   selectedContent.value = newItem?.content
@@ -1560,13 +1728,49 @@ watch(() => props.selectedItem, (newItem) => {
   padding: 32px;
 }
 
-.placeholder {
+.placeholder,
+.empty-state {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 400px;
   color: var(--color-text-tertiary);
   font-size: 14px;
+}
+
+.placeholder-content,
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.placeholder-content svg,
+.empty-content svg {
+  color: var(--color-text-disabled);
+}
+
+.empty-content p {
+  margin: 0;
+}
+
+/* 无数据状态 */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.no-data-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  color: var(--color-text-disabled);
 }
 </style>
 ```
@@ -1716,6 +1920,41 @@ const navigateToAdmin = () => {
   display: flex;
   flex: 1;
   overflow: hidden;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .page-layout {
+    flex-direction: column;
+  }
+
+  .design-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-card-border);
+  }
+
+  .design-content {
+    height: calc(100vh - 260px); /* header + sidebar height */
+  }
+
+  .page-header {
+    padding: 0 16px;
+  }
+
+  .content-body {
+    padding: 16px;
+  }
+
+  .color-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .radius-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
 }
 </style>
 ```
