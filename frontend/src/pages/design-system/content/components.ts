@@ -113,19 +113,19 @@ export const componentShowcases: ComponentShowcase[] = [
     name: '待办事项卡',
     category: '业务组件',
     description: '用于教师端首页、全部待办和消息跳转后的业务提醒。必须是一件具体可执行的事。',
-    variants: ['teacher', 'admin'],
+    variants: ['教师端', '管理端'],
     examples: [
       {
         title: '教师端优先待办',
         description: '用于教师进入平台后优先处理。',
         code: '<TaskCard title="确认一条培训证书" status="待你确认" />',
-        props: { scene: 'teacher' }
+        props: { scene: '教师端' }
       },
       {
         title: '管理端待处理记录',
         description: '用于管理端审核队列或处理列表。',
         code: '<TaskCard title="3 条候选数据待核验" status="待部门处理" />',
-        props: { scene: 'admin' }
+        props: { scene: '管理端' }
       }
     ],
     props: []
