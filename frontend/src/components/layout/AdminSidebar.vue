@@ -20,24 +20,19 @@ withDefaults(
 
 const navItems: AdminNavItem[] = [
   { key: 'home', label: '首页', to: '/admin/training/resources', icon: '⌂' },
-  { key: 'ability-list', label: '能力清单', to: '/admin/ability-list/execution', icon: '▣' },
-  { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: '◎' },
-  { key: 'reflection', label: '教学反思', icon: '▤' },
   {
-    key: 'training',
-    label: '培训管理',
-    to: '/admin/training/resources',
-    icon: '◆',
+    key: 'ability-list',
+    label: '能力清单',
+    to: '/admin/ability-list/execution',
+    icon: '▦',
     children: [
-      { key: 'training-plans', label: '计划管理', to: '/admin/training/records' },
-      { key: 'training-demands', label: '需求管理', to: '/admin/training/demands' },
-      { key: 'training-resources', label: '资源库', to: '/admin/training/resources' },
-      { key: 'training-applications', label: '申请处理', to: '/admin/training/applications' },
-      { key: 'training-records', label: '记录总览', to: '/admin/training/records' },
+      { key: 'ability-list-base', label: '基准模板', to: '/admin/ability-list/base' },
+      { key: 'ability-list-execution', label: '执行版', to: '/admin/ability-list/execution' },
     ],
   },
-  { key: 'practice', label: '企业实践', icon: '♙' },
-  { key: 'virtual-research', label: '虚拟教研', icon: '⚙' },
+  { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: '▣' },
+  { key: 'activity', label: '发展活动', icon: '▤' },
+  { key: 'ability-profile', label: '能力画像', to: '/admin/ability-profile/school', icon: '◉' },
   { key: 'reports', label: '分析报告', to: '/admin/reports', icon: '▥' },
   { key: 'system', label: '系统管理', icon: '⚙' },
 ]
