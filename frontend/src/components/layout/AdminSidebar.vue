@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import { computed, ref } from 'vue'
 	import { RouterLink } from 'vue-router'
 
 	interface AdminNavItem {
@@ -63,31 +62,10 @@
 	  if (item.key === activeKey) return true
 	  return item.children?.some((child) => child.key === activeKey) ?? false
 	}
-
-	// 悬停状态管理（用于折叠时临时展开）
-	const isHovered = ref(false)
-
-	// 计算侧边栏宽度样式
-	const sidebarWidth = computed(() => {
-	  if (isHovered.value && props.collapsed) {
-		return 'var(--admin-sidebar-width)' // 悬停时临时展开
-	  }
-	  return props.collapsed ? '80px' : 'var(--admin-sidebar-width)'
-	})
-
-	const handleToggle = () => {
-	  emit('toggle')
-	}
 </script>
 
 <template>
-	<aside
-		class="admin-sidebar"
-		:class="{ collapsed: collapsed, hovered: isHovered }"
-		:style="{ width: sidebarWidth }"
-		@mouseenter="isHovered = true"
-		@mouseleave="isHovered = false"
-	>
+	<aside class="admin-sidebar" :class="{ collapsed: collapsed }">
 		<div class="sidebar-brand">
 			<div class="brand-main">
 				<div class="brand-mark">
@@ -96,13 +74,13 @@
 						<path d="M11 11.5h10M11 16h10M13 20.5h6" />
 					</svg>
 				</div>
-				<h1 v-show="!collapsed || isHovered">教师综合发展</h1>
+				<h1 v-show="!collapsed">教师综合发展</h1>
 			</div>
 
-			<button class="sidebar-toggle" type="button" aria-label="收起侧栏" title="收起侧栏" @click="handleToggle">
+			<button class="sidebar-toggle" type="button" :aria-label="collapsed ? '展开侧栏' : '收起侧栏'" @click="emit('toggle')">
 				<svg viewBox="0 0 20 20" aria-hidden="true">
 					<rect x="3" y="3" width="14" height="14" rx="4" />
-					<path :d="collapsed ? 'M9 4.5v11' : 'M4 9.5h11'" />
+					<path :d="collapsed ? 'M13 4.5v11M10 4.5v11M7 4.5v11' : 'M4 9.5h11M4 13.5h11'" />
 				</svg>
 			</button>
 		</div>
@@ -114,6 +92,7 @@
 					:to="item.to"
 					class="nav-item"
 					:class="{ active: isActive(item, activeKey), disabled: !item.to }"
+					:title="collapsed ? item.label : undefined"
 				>
 					<span class="nav-leading">
 						<span class="nav-icon" :class="`icon-${item.icon}`">
@@ -130,9 +109,9 @@
 								<path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
 							</svg>
 						</span>
-						<span v-show="!collapsed || isHovered" class="nav-label">{{ item.label }}</span>
+						<span v-show="!collapsed" class="nav-label">{{ item.label }}</span>
 					</span>
-					<span v-if="item.children" v-show="!collapsed || isHovered" class="nav-arrow" aria-hidden="true">
+					<span v-if="item.children" v-show="!collapsed" class="nav-arrow" aria-hidden="true">
 						<svg viewBox="0 0 16 16">
 							<path d="M4 10 8 6l4 4" />
 						</svg>
@@ -142,11 +121,11 @@
 				<button v-else type="button" disabled class="nav-item disabled">
 					<span class="nav-leading">
 						<span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14v12H5zM8 11h8M8 15h5" /></svg></span>
-						<span v-show="!collapsed || isHovered" class="nav-label">{{ item.label }}</span>
+						<span v-show="!collapsed" class="nav-label">{{ item.label }}</span>
 					</span>
 				</button>
 
-				<div v-if="item.children && (!collapsed || isHovered)" class="sub-nav">
+				<div v-if="item.children && !collapsed" class="sub-nav">
 					<RouterLink
 						v-for="child in item.children"
 						:key="child.key"
@@ -167,12 +146,18 @@
 		position: sticky;
 		top: 0;
 		display: flex;
+		width: var(--admin-sidebar-width);
 		height: 100vh;
 		flex-shrink: 0;
 		flex-direction: column;
 		border-right: 1px solid var(--color-card-border);
 		background: rgba(255, 255, 255, 0.98);
 		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* 折叠状态 */
+	.admin-sidebar.collapsed {
+		width: 80px;
 	}
 
 	.sidebar-brand {
@@ -183,6 +168,12 @@
 		gap: 12px;
 		border-bottom: 1px solid var(--color-card-border);
 		padding: 0 18px 0 24px;
+		transition: padding 0.3s ease;
+	}
+
+	.admin-sidebar.collapsed .sidebar-brand {
+		padding: 0 12px 0 24px;
+		justify-content: center;
 	}
 
 	.brand-main {
@@ -190,6 +181,11 @@
 		min-width: 0;
 		align-items: center;
 		gap: 12px;
+		transition: gap 0.3s ease;
+	}
+
+	.admin-sidebar.collapsed .brand-main {
+		gap: 0;
 	}
 
 	.brand-mark {
@@ -202,7 +198,6 @@
 		border-radius: 11px;
 		background: #eef5ff;
 		color: var(--color-primary);
-		flex-shrink: 0;
 	}
 
 	.brand-mark svg {
@@ -224,7 +219,15 @@
 		line-height: 1;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		opacity: 1;
 		transition: opacity 0.2s ease;
+	}
+
+	/* 隐藏标题而不是用v-show，确保平滑过渡 */
+	.admin-sidebar.collapsed .sidebar-brand h1 {
+		opacity: 0;
+		width: 0;
+		margin: 0;
 	}
 
 	.sidebar-toggle {
@@ -262,6 +265,11 @@
 		flex: 1;
 		overflow-y: auto;
 		padding: 24px 16px 18px;
+		transition: padding 0.3s ease;
+	}
+
+	.admin-sidebar.collapsed .sidebar-nav {
+		padding: 24px 12px 18px;
 	}
 
 	.nav-group + .nav-group {
@@ -283,7 +291,7 @@
 		font-size: 15px;
 		font-weight: 800;
 		text-decoration: none;
-		transition: 0.18s ease;
+		transition: all 0.18s ease;
 	}
 
 	.nav-item:hover {
@@ -308,11 +316,21 @@
 		opacity: 0.58;
 	}
 
+	.admin-sidebar.collapsed .nav-item {
+		justify-content: center;
+		padding: 0;
+	}
+
 	.nav-leading {
 		display: inline-flex;
 		min-width: 0;
 		align-items: center;
 		gap: 12px;
+		transition: gap 0.3s ease;
+	}
+
+	.admin-sidebar.collapsed .nav-leading {
+		gap: 0;
 	}
 
 	.nav-icon {
@@ -336,7 +354,14 @@
 	}
 
 	.nav-label {
+		opacity: 1;
 		transition: opacity 0.2s ease;
+	}
+
+	.admin-sidebar.collapsed .nav-label {
+		opacity: 0;
+		width: 0;
+		overflow: hidden;
 	}
 
 	.nav-arrow {
@@ -362,6 +387,11 @@
 	.sub-nav {
 		position: relative;
 		margin: 4px 0 0 24px;
+		padding: 0;
+	}
+
+	.admin-sidebar.collapsed .sub-nav {
+		margin: 0;
 		padding: 0;
 	}
 
@@ -394,53 +424,5 @@
 
 	.sub-item strong {
 		font-weight: 800;
-	}
-
-	/* 折叠状态样式 */
-	.admin-sidebar.collapsed .nav-item {
-		justify-content: center;
-		padding: 0;
-	}
-
-	.admin-sidebar.collapsed .nav-leading {
-		gap: 0;
-		justify-content: center;
-	}
-
-	.admin-sidebar.collapsed .sidebar-nav {
-		padding: 24px 12px 18px;
-	}
-
-	.admin-sidebar.collapsed .sidebar-brand {
-		padding: 0 12px 0 24px;
-		justify-content: center;
-	}
-
-	.admin-sidebar.collapsed .brand-main {
-		gap: 0;
-	}
-
-	/* 悬停时临时展开 */
-	.admin-sidebar.collapsed.hovered .nav-item {
-		justify-content: space-between;
-		padding: 0 14px;
-	}
-
-	.admin-sidebar.collapsed.hovered .nav-leading {
-		gap: 12px;
-		justify-content: flex-start;
-	}
-
-	.admin-sidebar.collapsed.hovered .sidebar-nav {
-		padding: 24px 16px 18px;
-	}
-
-	.admin-sidebar.collapsed.hovered .sidebar-brand {
-		padding: 0 18px 0 24px;
-		justify-content: space-between;
-	}
-
-	.admin-sidebar.collapsed.hovered .brand-main {
-		gap: 12px;
 	}
 </style>
