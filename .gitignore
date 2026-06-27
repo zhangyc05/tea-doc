@@ -1,6 +1,7 @@
 # 依赖
 frontend/node_modules/
 node_modules/
+qwen36_35b_gguf/
 
 # 构建输出
 frontend/dist/
