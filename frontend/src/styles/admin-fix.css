@@ -1,0 +1,16 @@
+.badge-status,
+.status-badge.badge-success,
+.enabled-badge.badge-success {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.ability-tree-child.active,
+.execution-page .tree-child.active {
+  box-shadow: inset 1px 0 0 var(--color-primary);
+}
