@@ -90,6 +90,8 @@ const indicators = [
   <AdminLayout active-key="ability-list-execution">
     <div class="execution-page">
       <section class="execution-hero">
+        <div class="hero-art" aria-hidden="true"></div>
+
         <div class="hero-content">
           <div class="hero-emblem">
             <div class="hero-icon">
@@ -233,45 +235,87 @@ const indicators = [
 
 .execution-hero {
   position: relative;
-  min-height: clamp(140px, 9.5vw, 170px);
+  min-height: clamp(168px, 12.8vw, 246px);
   overflow: hidden;
   border-radius: 14px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 251, 255, 0.92) 100%),
-    url('@/images/hero-art.png');
-  background-size: auto, 400px;
-  background-position: 0 0, center;
-  background-repeat: no-repeat, repeat;
+    radial-gradient(circle at 38% 72%, rgba(11, 99, 246, 0.08) 0, transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #f8fbff 42%, #eaf5ff 100%);
+}
+
+.execution-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.98) 34%,
+    rgba(255, 255, 255, 0.74) 49%,
+    rgba(255, 255, 255, 0.18) 66%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  content: '';
+}
+
+.execution-hero::after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  width: min(360px, 36%);
+  height: 120px;
+  pointer-events: none;
+  background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
+  background-size: 12px 12px;
+  opacity: 0.26;
+  content: '';
+}
+
+.hero-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: min(74%, 980px);
+  background-image: url('@/images/hero-art.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: cover;
+  opacity: 0.98;
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
-  gap: clamp(14px, 0.9vw, 18px);
-  padding: clamp(14px, 1.2vw, 20px) 0 clamp(12px, 1.0vw, 18px) clamp(16px, 1.4vw, 20px);
+  max-width: min(760px, 58%);
+  gap: clamp(16px, 1.05vw, 24px);
+  padding: clamp(22px, 1.75vw, 34px) 0 clamp(20px, 1.55vw, 30px) clamp(22px, 1.75vw, 34px);
 }
 
 .hero-emblem {
   flex: none;
-  padding-top: clamp(1px, 0.1vw, 2px);
+  padding-top: clamp(2px, 0.25vw, 5px);
 }
 
 .hero-icon {
   display: flex;
-  width: clamp(44px, 2.9vw, 54px);
-  height: clamp(44px, 2.9vw, 54px);
+  width: clamp(52px, 3.45vw, 66px);
+  height: clamp(52px, 3.45vw, 66px);
   align-items: center;
   justify-content: center;
-  border: clamp(6px, 0.4vw, 8px) solid rgba(255, 255, 255, 0.85);
+  border: clamp(7px, 0.5vw, 10px) solid rgba(255, 255, 255, 0.88);
   border-radius: 50%;
   background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
-  box-shadow: 0 10px 20px rgba(11, 99, 246, 0.24);
+  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.24);
 }
 
 .hero-icon svg {
-  width: clamp(20px, 1.3vw, 26px);
-  height: clamp(20px, 1.3vw, 26px);
+  width: clamp(24px, 1.65vw, 32px);
+  height: clamp(24px, 1.65vw, 32px);
   fill: none;
   stroke: #fff;
   stroke-width: 2.2;
@@ -281,51 +325,44 @@ const indicators = [
 
 .hero-main {
   min-width: 0;
-  padding-top: clamp(2px, 0.15vw, 4px);
+  padding-top: clamp(2px, 0.25vw, 6px);
 }
 
 .hero-title-row {
   display: flex;
   align-items: center;
-  gap: clamp(8px, 0.5vw, 12px);
-  margin-bottom: clamp(12px, 0.9vw, 16px);
+  gap: clamp(10px, 0.72vw, 14px);
+  margin-bottom: clamp(16px, 1.25vw, 24px);
 }
 
 .hero-title-row h1 {
-  max-width: 760px;
+  max-width: 680px;
   margin: 0;
   color: #07122f;
-  font-size: clamp(18px, 1.2vw, 22px);
+  font-size: clamp(22px, 1.55vw, 30px);
   font-weight: 950;
   letter-spacing: -0.7px;
-  line-height: 1.18;
+  line-height: 1.16;
 }
 
 .status-badge {
   display: inline-flex;
   flex: none;
   align-items: center;
-  height: clamp(20px, 1.2vw, 24px);
-  padding: 0 clamp(8px, 0.55vw, 10px);
+  height: clamp(22px, 1.35vw, 27px);
+  padding: 0 clamp(9px, 0.65vw, 12px);
   border-radius: 999px;
   background: #dff7e9;
   color: #0d9f58;
-  font-size: clamp(10px, 0.6vw, 12px);
+  font-size: clamp(11px, 0.66vw, 13px);
   font-weight: 900;
 }
 
 .hero-meta-grid {
   display: grid;
-  grid-template-columns: minmax(160px, 1.45fr) minmax(90px, 0.72fr) minmax(120px, 0.95fr);
-  gap: clamp(12px, 1.0vw, 20px);
-  margin-bottom: clamp(12px, 0.9vw, 16px);
-}
-
-.hero-meta-item:not(.source-item) {
-  display: flex;
-  align-items: baseline;
-  gap: clamp(6px, 0.45vw, 10px);
-  flex-wrap: wrap;
+  grid-template-columns: minmax(210px, 1.45fr) minmax(112px, 0.72fr) minmax(170px, 0.95fr);
+  gap: clamp(18px, 1.35vw, 26px);
+  margin-bottom: clamp(18px, 1.25vw, 24px);
 }
 
 .hero-meta-item {
@@ -335,46 +372,41 @@ const indicators = [
 
 .hero-meta-item + .hero-meta-item::before {
   position: absolute;
-  left: calc(clamp(12px, 1.0vw, 20px) / -2);
-  top: 3px;
+  left: calc(clamp(18px, 1.35vw, 26px) / -2);
+  top: 2px;
   width: 1px;
-  height: clamp(36px, 2.4vw, 44px);
+  height: clamp(42px, 2.8vw, 54px);
   background: #d9e4f2;
   content: '';
 }
 
-.hero-meta-item.source-item {
-  gap: clamp(8px, 0.6vw, 12px);
-}
-
-.hero-meta-item.source-item p,
-.hero-meta-item:not(.source-item) p {
-  margin: 0;
+.hero-meta-item p {
+  margin: 0 0 7px;
   color: #697890;
-  font-size: clamp(11px, 0.65vw, 13px);
+  font-size: clamp(12px, 0.72vw, 14px);
   font-weight: 700;
 }
 
 .hero-meta-item strong {
+  display: block;
   color: #07122f;
-  font-size: clamp(12px, 0.7vw, 14px);
+  font-size: clamp(13px, 0.82vw, 15px);
   font-weight: 900;
   white-space: nowrap;
-  display: inline;
 }
 
 .hero-meta-item a {
   display: inline-flex;
-  margin: 0;
+  margin-top: 10px;
   color: var(--color-primary);
-  font-size: clamp(12px, 0.7vw, 13px);
+  font-size: clamp(13px, 0.78vw, 14px);
   font-weight: 900;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: clamp(14px, 1.0vw, 20px);
+  gap: clamp(18px, 1.25vw, 26px);
 }
 
 .primary-action,
@@ -389,21 +421,21 @@ const indicators = [
 
 .primary-action {
   display: inline-flex;
-  height: clamp(34px, 2.2vw, 40px);
+  height: clamp(38px, 2.55vw, 48px);
   align-items: center;
-  gap: clamp(5px, 0.4vw, 8px);
-  padding: 0 clamp(14px, 1.0vw, 20px);
+  gap: clamp(6px, 0.45vw, 9px);
+  padding: 0 clamp(16px, 1.15vw, 24px);
   border-radius: 7px;
   background: linear-gradient(135deg, #0b63f6 0%, #0055e6 100%);
-  box-shadow: 0 10px 18px rgba(11, 99, 246, 0.22);
+  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.22);
   color: #fff;
-  font-size: clamp(12px, 0.75vw, 14px);
+  font-size: clamp(13px, 0.8vw, 15px);
   font-weight: 900;
 }
 
 .primary-action svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -413,7 +445,7 @@ const indicators = [
 
 .link-action {
   color: var(--color-primary);
-  font-size: clamp(12px, 0.75vw, 14px);
+  font-size: clamp(13px, 0.8vw, 15px);
   font-weight: 900;
 }
 
@@ -604,7 +636,7 @@ const indicators = [
 .indicator-title-wrap h2 {
   margin: 0 0 clamp(4px, 0.4vw, 6px);
   color: #07122f;
-  font-size: clamp(17px, 1.0vw, 19px);
+  font-size: clamp(17px, 1vw, 19px);
   font-weight: 950;
 }
 
@@ -745,6 +777,30 @@ const indicators = [
 }
 
 @media (max-width: 1440px) {
+  .execution-hero {
+    min-height: clamp(160px, 12vw, 210px);
+  }
+
+  .hero-art {
+    width: min(68%, 760px);
+    background-position: right center;
+  }
+
+  .execution-hero::before {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.98) 38%,
+      rgba(255, 255, 255, 0.72) 54%,
+      rgba(255, 255, 255, 0.22) 70%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  .hero-content {
+    max-width: 62%;
+  }
+
   .hero-title-row h1 {
     max-width: 560px;
   }
@@ -755,6 +811,14 @@ const indicators = [
 }
 
 @media (max-width: 1280px) {
+  .hero-art {
+    opacity: 0.34;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
   .work-area {
     grid-template-columns: 1fr;
   }
