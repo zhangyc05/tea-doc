@@ -268,7 +268,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 .sub-nav {
   position: relative;
-  margin: 7px 0 0 clamp(42px, 3vw, 52px);
+  margin: 7px 0 0 clamp(32px, 2.2vw, 42px) !important;
   padding: 2px 0 4px clamp(16px, 1vw, 20px);
 }
 

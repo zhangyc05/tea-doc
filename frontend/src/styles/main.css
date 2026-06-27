@@ -52,19 +52,3 @@
   }
 }
 
-@layer components {
-  .admin-sidebar .sub-nav {
-    margin-left: 28px;
-    padding-left: 0;
-  }
-
-  .admin-sidebar .sub-nav::before,
-  .admin-sidebar .sub-dot {
-    display: none;
-  }
-
-  .admin-sidebar .sub-item {
-    gap: 0;
-    padding-left: 12px;
-  }
-}
