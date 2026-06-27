@@ -79,8 +79,9 @@
 
 			<button class="sidebar-toggle" type="button" :aria-label="collapsed ? '展开侧栏' : '收起侧栏'" @click="emit('toggle')">
 				<svg viewBox="0 0 20 20" aria-hidden="true">
-					<rect x="3" y="3" width="14" height="14" rx="4" />
-					<path :d="collapsed ? 'M13 4.5v11M10 4.5v11M7 4.5v11' : 'M4 9.5h11M4 13.5h11'" />
+					<rect x="2" y="2" width="16" height="16" rx="4" fill="none" stroke="currentColor" />
+					<path v-if="collapsed" d="M7 10h6M7 6h6M7 14h6" stroke-linecap="round" />
+					<path v-else d="M13 6v8M9 10h6" stroke-linecap="round" />
 				</svg>
 			</button>
 		</div>
