@@ -61,10 +61,12 @@
   --shadow-card-hover: 0 16px 36px rgba(15, 35, 80, 0.1);
   --shadow-floating: 0 14px 36px rgba(15, 35, 80, 0.18);
 
-  /* 页面尺寸：管理端按 1920×1080 效果图口径校准 */
-  --admin-sidebar-width: 330px;
-  --admin-topbar-height: 90px;
-  --admin-content-max-width: 1518px;
+  /* 管理端响应式尺寸：1920 是视觉参考，14 寸笔记本是主力办公口径 */
+  --admin-sidebar-width: clamp(248px, 15vw, 300px);
+  --admin-topbar-height: clamp(68px, 4.4vw, 82px);
+  --admin-content-max-width: 1480px;
+  --admin-page-gutter-x: clamp(18px, 1.45vw, 28px);
+  --admin-page-gutter-y: clamp(16px, 1.25vw, 24px);
 
   --teacher-pc-content-max-width: 1280px;
 
