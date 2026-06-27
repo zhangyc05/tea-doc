@@ -239,7 +239,7 @@ const indicators = [
 
 .execution-hero {
   position: relative;
-  min-height: clamp(178px, 13.4vw, 248px);
+  min-height: clamp(174px, 12vw, 220px);
   overflow: hidden;
   border-radius: 14px;
   background:
@@ -268,12 +268,12 @@ const indicators = [
   left: 0;
   bottom: 0;
   z-index: 1;
-  width: min(280px, 24%);
-  height: 84px;
+  width: min(260px, 22%);
+  height: 78px;
   pointer-events: none;
   background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
   background-size: 12px 12px;
-  opacity: 0.1;
+  opacity: 0.08;
   content: '';
 }
 
@@ -283,7 +283,7 @@ const indicators = [
   right: 0;
   bottom: 0;
   z-index: 0;
-  width: min(72%, 960px);
+  width: min(68%, 900px);
   background-image: url('@/images/hero-art.png');
   background-repeat: no-repeat;
   background-position: right center;
@@ -295,14 +295,16 @@ const indicators = [
   position: relative;
   z-index: 2;
   display: flex;
-  max-width: min(940px, 68%);
+  min-height: clamp(174px, 12vw, 220px);
+  max-width: min(900px, 64%);
+  align-items: center;
   gap: clamp(14px, 0.95vw, 20px);
-  padding: clamp(24px, 1.8vw, 34px) 0 clamp(20px, 1.5vw, 30px) clamp(24px, 1.75vw, 34px);
+  padding: 0 0 0 clamp(24px, 1.75vw, 34px);
 }
 
 .hero-emblem {
   flex: none;
-  padding-top: clamp(1px, 0.18vw, 4px);
+  padding-top: 0;
 }
 
 .hero-icon {
@@ -328,17 +330,19 @@ const indicators = [
 }
 
 .hero-main {
+  display: flex;
   min-width: 0;
   flex: 1;
-  padding-top: 2px;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hero-heading-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: clamp(22px, 1.55vw, 30px);
-  margin-bottom: clamp(16px, 1.15vw, 22px);
+  gap: clamp(18px, 1.25vw, 26px);
+  margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 
 .hero-title-group {
@@ -387,11 +391,13 @@ const indicators = [
   display: flex;
   max-width: 100%;
   align-items: center;
-  gap: clamp(18px, 1.35vw, 28px);
+  gap: clamp(16px, 1.15vw, 24px);
+  border: 1px solid rgba(218, 229, 246, 0.56);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.44);
-  padding: clamp(8px, 0.62vw, 12px) 0;
-  backdrop-filter: blur(2px);
+  background: rgba(255, 255, 255, 0.62);
+  padding: clamp(8px, 0.58vw, 11px) clamp(12px, 0.9vw, 16px);
+  box-shadow: 0 8px 18px rgba(18, 42, 84, 0.03);
+  backdrop-filter: blur(3px);
 }
 
 .summary-item {
@@ -445,7 +451,7 @@ const indicators = [
   flex: none;
   align-items: center;
   gap: clamp(10px, 0.7vw, 14px);
-  padding-top: 2px;
+  padding-top: 0;
 }
 
 .primary-action,
@@ -833,11 +839,11 @@ const indicators = [
 
 @media (max-width: 1440px) {
   .execution-hero {
-    min-height: clamp(172px, 12.4vw, 220px);
+    min-height: clamp(168px, 11.7vw, 210px);
   }
 
   .hero-art {
-    width: min(66%, 760px);
+    width: min(64%, 720px);
     background-position: right center;
   }
 
@@ -845,23 +851,25 @@ const indicators = [
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.99) 36%,
-      rgba(255, 255, 255, 0.82) 52%,
+      rgba(255, 255, 255, 0.99) 38%,
+      rgba(255, 255, 255, 0.84) 54%,
       rgba(255, 255, 255, 0.28) 70%,
       rgba(255, 255, 255, 0) 100%
     );
   }
 
   .hero-content {
-    max-width: 72%;
+    min-height: clamp(168px, 11.7vw, 210px);
+    max-width: 68%;
   }
 
   .hero-heading-row {
-    gap: 18px;
+    gap: 16px;
+    margin-bottom: 12px;
   }
 
   .hero-title-row h1 {
-    font-size: clamp(21px, 1.38vw, 25px);
+    font-size: clamp(21px, 1.35vw, 25px);
   }
 
   .primary-action {
@@ -884,6 +892,7 @@ const indicators = [
 
   .hero-heading-row {
     flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
   }
 
