@@ -14,7 +14,7 @@ withDefaults(
     activeKey?: string
   }>(),
   {
-    activeKey: 'training-resources',
+    activeKey: 'home',
   },
 )
 
@@ -31,8 +31,10 @@ const navItems: AdminNavItem[] = [
     ],
   },
   { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: 'archive' },
-  { key: 'activity', label: '发展活动', icon: 'activity' },
   { key: 'ability-profile', label: '能力画像', to: '/admin/ability-profile/school', icon: 'profile' },
+  { key: 'reflection', label: '教学反思', to: '/admin/reflection', icon: 'reflection' },
+  { key: 'practice', label: '企业实践', to: '/admin/practice', icon: 'practice' },
+  { key: 'virtual-lab', label: '虚拟教研室', to: '/admin/virtual-lab', icon: 'lab' },
   { key: 'reports', label: '分析报告', to: '/admin/reports', icon: 'report' },
   { key: 'system', label: '系统管理', icon: 'system' },
 ]
@@ -69,7 +71,9 @@ function isActive(item: AdminNavItem, activeKey: string) {
                 <path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
                 <path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
                 <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
-                <path v-else-if="item.icon === 'activity'" d="M5 7h14v12H5zM8 11h8M8 15h5" />
+                <path v-else-if="item.icon === 'reflection'" d="M9 5h6v3H9zM7 9h10v2H7zM5 13h14v2H5zM6 17h12v2H6z" />
+                <path v-else-if="item.icon === 'practice'" d="M5 5h14v14H5zM7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM13 13h4v4h-4z" />
+                <path v-else-if="item.icon === 'lab'" d="M12 3 8 7l3 3-5 7h12l-5-7 3-3-4-4z" />
                 <path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
                 <path v-else-if="item.icon === 'report'" d="M6 19V5h12v14H6Zm3-3V9m3 7v-5m3 5v-8" />
                 <path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
