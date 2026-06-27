@@ -64,10 +64,10 @@ const breadcrumbItems = computed(() => {
   height: var(--admin-topbar-height);
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: clamp(16px, 1.25vw, 24px);
   border-bottom: 1px solid var(--color-card-border);
   background: rgba(255, 255, 255, 0.96);
-  padding: 0 34px 0 44px;
+  padding: 0 clamp(22px, 1.8vw, 34px) 0 clamp(24px, 2.3vw, 44px);
   backdrop-filter: blur(14px);
 }
 
@@ -75,9 +75,9 @@ const breadcrumbItems = computed(() => {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 16px;
+  gap: clamp(10px, 0.8vw, 16px);
   color: #34435f;
-  font-size: 18px;
+  font-size: clamp(15px, 0.95vw, 18px);
   font-weight: 700;
 }
 
@@ -101,29 +101,29 @@ const breadcrumbItems = computed(() => {
   display: flex;
   flex: none;
   align-items: center;
-  gap: 18px;
+  gap: clamp(12px, 0.9vw, 18px);
 }
 
 .scope-button {
   display: inline-flex;
-  height: 48px;
-  min-width: 154px;
+  height: clamp(40px, 2.5vw, 48px);
+  min-width: clamp(118px, 8vw, 154px);
   align-items: center;
   justify-content: space-between;
   border: 1px solid #d6e1f2;
   border-radius: 10px;
   background: #fff;
-  padding: 0 20px;
+  padding: 0 clamp(14px, 1vw, 20px);
   color: var(--color-text-primary);
   font-family: inherit;
-  font-size: 16px;
+  font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 800;
   box-shadow: 0 4px 12px rgba(16, 40, 90, 0.03);
   cursor: pointer;
 }
 
 .year-button {
-  min-width: 180px;
+  min-width: clamp(136px, 9.4vw, 180px);
 }
 
 .scope-button svg,
@@ -140,8 +140,8 @@ const breadcrumbItems = computed(() => {
 .message-button {
   position: relative;
   display: inline-flex;
-  width: 42px;
-  height: 42px;
+  width: clamp(38px, 2.2vw, 42px);
+  height: clamp(38px, 2.2vw, 42px);
   align-items: center;
   justify-content: center;
   border: 0;
@@ -151,8 +151,8 @@ const breadcrumbItems = computed(() => {
 }
 
 .message-button svg {
-  width: 26px;
-  height: 26px;
+  width: clamp(23px, 1.35vw, 26px);
+  height: clamp(23px, 1.35vw, 26px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.9;
@@ -165,8 +165,8 @@ const breadcrumbItems = computed(() => {
   right: -2px;
   top: -2px;
   display: inline-flex;
-  min-width: 22px;
-  height: 22px;
+  min-width: 20px;
+  height: 20px;
   align-items: center;
   justify-content: center;
   border: 2px solid #fff;
@@ -174,7 +174,7 @@ const breadcrumbItems = computed(() => {
   background: #f43f45;
   padding: 0 5px;
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 900;
   line-height: 1;
@@ -183,16 +183,16 @@ const breadcrumbItems = computed(() => {
 .user-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(8px, 0.55vw, 10px);
   color: var(--color-text-primary);
-  font-size: 16px;
+  font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 900;
 }
 
 .avatar {
   display: flex;
-  width: 42px;
-  height: 42px;
+  width: clamp(38px, 2.2vw, 42px);
+  height: clamp(38px, 2.2vw, 42px);
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
@@ -202,9 +202,8 @@ const breadcrumbItems = computed(() => {
   font-weight: 900;
 }
 
-@media (max-width: 980px) {
-  .scope-button,
-  .message-button {
+@media (max-width: 1180px) {
+  .scope-button {
     display: none;
   }
 }
