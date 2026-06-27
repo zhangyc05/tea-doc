@@ -6,4 +6,6 @@ import { RouterView } from 'vue-router'
   <RouterView />
 </template>
 
-<style src="./styles/admin-fix.css"></style>
+<style>
+/* 全局样式已在 main.css 中引入 */
+</style>
