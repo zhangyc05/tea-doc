@@ -305,13 +305,13 @@ const indicators = [
 .hero-emblem {
   flex: none;
   padding-top: 0;
-  transform: translateY(clamp(-12px, -0.65vw, -8px));
+  transform: translateY(-24px);
 }
 
 .hero-icon {
   display: flex;
-  width: clamp(60px, 3.8vw, 72px);
-  height: clamp(60px, 3.8vw, 72px);
+  width: clamp(65px, 3.8vw, 72px);
+  height: clamp(65px, 3.8vw, 72px);
   align-items: center;
   justify-content: center;
   border: clamp(8px, 0.55vw, 10px) solid rgba(255, 255, 255, 0.92);
