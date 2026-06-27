@@ -51,3 +51,43 @@
     min-height: 100vh;
   }
 }
+
+@layer components {
+  .admin-sidebar .nav-group.expanded > .nav-item.active {
+    border: 1px solid #dfebfb;
+    background: #f4f8ff;
+    color: var(--color-primary);
+    box-shadow: none;
+  }
+
+  .admin-sidebar .nav-item {
+    height: 44px;
+    border-radius: 9px;
+    font-size: 15px;
+    box-shadow: none;
+  }
+
+  .admin-sidebar .sub-nav {
+    margin: 5px 0 0 42px;
+    padding: 0;
+  }
+
+  .admin-sidebar .sub-nav::before,
+  .admin-sidebar .sub-dot {
+    display: none;
+  }
+
+  .admin-sidebar .sub-item {
+    height: 34px;
+    border-radius: 8px;
+    padding: 0 14px;
+    color: #7a879b;
+    font-size: 14px;
+  }
+
+  .admin-sidebar .sub-item.active {
+    background: #edf4ff;
+    color: var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+}
