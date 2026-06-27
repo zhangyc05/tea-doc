@@ -361,12 +361,12 @@
 		stroke-linejoin: round;
 	}
 
-	/* Tooltip 样式 - 黑底白字 */
+	/* Tooltip 样式 - 黑底白字，优化位置避免遮挡 */
 	.nav-tooltip {
 		position: absolute;
-		left: calc(100% + 12px);
+		left: calc(100% + 16px);
 		top: 50%;
-		z-index: 50;
+		z-index: 1000;
 		display: none;
 		transform: translateY(-50%);
 		border-radius: 8px;
@@ -379,6 +379,8 @@
 		white-space: nowrap;
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
 		pointer-events: none;
+		transition: opacity 0.16s ease, transform 0.16s ease;
+		opacity: 0;
 	}
 
 	/* Tooltip 小三角 */
@@ -393,10 +395,12 @@
 		content: '';
 	}
 
-	/* hover 时显示 tooltip */
+	/* hover 时显示 tooltip - 延迟显示避免误触 */
 	.admin-sidebar.collapsed .nav-item:hover .nav-tooltip,
 	.admin-sidebar.collapsed .sidebar-toggle:hover .nav-tooltip {
 		display: inline-flex;
+		opacity: 1;
+		transition-delay: 0.1s;
 	}
 
 	/* 二级菜单 */
