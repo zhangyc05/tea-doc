@@ -305,6 +305,7 @@ const indicators = [
 .hero-emblem {
   flex: none;
   padding-top: 0;
+  transform: translateY(clamp(-12px, -0.65vw, -8px));
 }
 
 .hero-icon {
