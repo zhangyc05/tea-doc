@@ -19,96 +19,278 @@ withDefaults(
 )
 
 const navItems: AdminNavItem[] = [
-  { key: 'home', label: '首页', to: '/admin/training/resources', icon: '⌂' },
+  { key: 'home', label: '首页', to: '/admin/training/resources', icon: 'home' },
   {
     key: 'ability-list',
     label: '能力清单',
     to: '/admin/ability-list/execution',
-    icon: '▦',
+    icon: 'list',
     children: [
       { key: 'ability-list-base', label: '基准模板', to: '/admin/ability-list/base' },
       { key: 'ability-list-execution', label: '执行版', to: '/admin/ability-list/execution' },
     ],
   },
-  { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: '▣' },
-  { key: 'activity', label: '发展活动', icon: '▤' },
-  { key: 'ability-profile', label: '能力画像', to: '/admin/ability-profile/school', icon: '◉' },
-  { key: 'reports', label: '分析报告', to: '/admin/reports', icon: '▥' },
-  { key: 'system', label: '系统管理', icon: '⚙' },
+  { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: 'archive' },
+  { key: 'activity', label: '发展活动', icon: 'activity' },
+  { key: 'ability-profile', label: '能力画像', to: '/admin/ability-profile/school', icon: 'profile' },
+  { key: 'reports', label: '分析报告', to: '/admin/reports', icon: 'report' },
+  { key: 'system', label: '系统管理', icon: 'system' },
 ]
 
 function isActive(item: AdminNavItem, activeKey: string) {
   if (item.key === activeKey) return true
   return item.children?.some((child) => child.key === activeKey) ?? false
 }
-
-function itemClass(active: boolean) {
-  return active
-    ? 'bg-primary font-semibold text-white shadow-card'
-    : 'text-[#44567A] hover:bg-primary-soft hover:text-primary'
-}
-
-function childClass(active: boolean) {
-  return active
-    ? 'bg-primary-soft font-semibold text-primary'
-    : 'text-[#52627F] hover:bg-primary-soft hover:text-primary'
-}
 </script>
 
 <template>
-  <aside class="sticky top-0 flex h-screen w-[var(--admin-sidebar-width)] shrink-0 flex-col border-r border-card-border bg-card">
-    <div class="flex h-[68px] items-center gap-3 border-b border-card-border px-5">
-      <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-primary-light bg-primary-soft text-lg font-bold text-primary">
-        盾
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
+          <path d="M11 11.5h10M11 16h10M13 20.5h6" />
+        </svg>
       </div>
-      <h1 class="text-lg font-semibold leading-none text-text-primary">教师综合发展平台</h1>
+      <h1>教师综合发展平台</h1>
     </div>
 
-    <nav class="flex-1 space-y-2 overflow-y-auto px-3 py-5">
-      <div v-for="item in navItems" :key="item.key" class="space-y-2">
+    <nav class="sidebar-nav">
+      <div v-for="item in navItems" :key="item.key" class="nav-group">
         <RouterLink
           v-if="item.to"
           :to="item.to"
-          class="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-sm transition-colors"
-          :class="itemClass(isActive(item, activeKey))"
+          class="nav-item"
+          :class="{ active: isActive(item, activeKey), disabled: !item.to }"
         >
-          <span class="flex min-w-0 items-center gap-3">
-            <span class="flex h-5 w-5 shrink-0 items-center justify-center text-base leading-none">{{ item.icon }}</span>
+          <span class="nav-leading">
+            <span class="nav-icon" :class="`icon-${item.icon}`">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
+                <path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
+                <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
+                <path v-else-if="item.icon === 'activity'" d="M5 7h14v12H5zM8 11h8M8 15h5" />
+                <path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
+                <path v-else-if="item.icon === 'report'" d="M6 19V5h12v14H6Zm3-3V9m3 7v-5m3 5v-8" />
+                <path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
+              </svg>
+            </span>
             <span>{{ item.label }}</span>
           </span>
-          <span v-if="item.children" class="text-xs">⌃</span>
+          <span v-if="item.children" class="nav-arrow">⌃</span>
         </RouterLink>
 
-        <button
-          v-else
-          type="button"
-          disabled
-          class="flex w-full cursor-not-allowed items-center justify-between rounded-md px-3 py-2.5 text-left text-sm text-text-disabled"
-          :class="isActive(item, activeKey) ? 'bg-primary-soft font-semibold text-primary' : ''"
-        >
-          <span class="flex min-w-0 items-center gap-3">
-            <span class="flex h-5 w-5 shrink-0 items-center justify-center text-base leading-none">{{ item.icon }}</span>
+        <button v-else type="button" disabled class="nav-item disabled">
+          <span class="nav-leading">
+            <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14v12H5zM8 11h8M8 15h5" /></svg></span>
             <span>{{ item.label }}</span>
           </span>
         </button>
 
-        <div v-if="item.children" class="space-y-1 pl-7">
+        <div v-if="item.children" class="sub-nav">
           <RouterLink
             v-for="child in item.children"
             :key="child.key"
             :to="child.to || item.to || '/admin/training/resources'"
-            class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors"
-            :class="childClass(child.key === activeKey)"
+            class="sub-item"
+            :class="{ active: child.key === activeKey }"
           >
-            <span class="h-1.5 w-1.5 rounded-full" :class="child.key === activeKey ? 'bg-primary' : 'bg-[#9AA8BF]'" />
-            <span>{{ child.label }}</span>
+            <span />
+            <strong>{{ child.label }}</strong>
           </RouterLink>
         </div>
       </div>
     </nav>
 
-    <div class="border-t border-card-border px-5 py-4 text-sm font-medium text-[#334467]">
-      ‹ 收起菜单
+    <div class="collapse-entry">
+      <span>≪</span>
+      <strong>收起菜单</strong>
     </div>
   </aside>
 </template>
+
+<style scoped>
+.admin-sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  width: var(--admin-sidebar-width);
+  height: 100vh;
+  flex-shrink: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--color-card-border);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.sidebar-brand {
+  display: flex;
+  height: var(--admin-topbar-height);
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-card-border);
+  padding: 0 34px;
+}
+
+.brand-mark {
+  display: flex;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eaf2ff;
+  color: var(--color-primary);
+}
+
+.brand-mark svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-brand h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 54px 18px 24px;
+}
+
+.nav-group + .nav-group {
+  margin-top: 14px;
+}
+
+.nav-item {
+  display: flex;
+  width: 100%;
+  height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  padding: 0 20px;
+  color: #1e2b45;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: 0.18s ease;
+}
+
+.nav-item:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, #0b63f6 0%, #0760ed 100%);
+  box-shadow: 0 12px 24px rgba(11, 99, 246, 0.2);
+  color: #fff;
+}
+
+.nav-item.disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.nav-leading {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.nav-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-arrow {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.sub-nav {
+  margin: 12px 0 0 54px;
+}
+
+.sub-item {
+  display: flex;
+  height: 48px;
+  align-items: center;
+  gap: 18px;
+  border-radius: 8px;
+  padding: 0 18px;
+  color: #66748d;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sub-item span {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: #9ba9bf;
+}
+
+.sub-item.active {
+  background: #e9f2ff;
+  color: var(--color-primary);
+}
+
+.sub-item.active span {
+  background: var(--color-primary);
+}
+
+.sub-item strong {
+  font-weight: 800;
+}
+
+.collapse-entry {
+  display: flex;
+  height: 100px;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--color-card-border);
+  padding: 0 34px;
+  color: #263856;
+  font-size: 17px;
+}
+
+.collapse-entry span {
+  color: #426089;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.collapse-entry strong {
+  font-weight: 900;
+}
+</style>
