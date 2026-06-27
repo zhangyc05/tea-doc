@@ -52,3 +52,416 @@
   }
 }
 
+/* ==================== 管理端通用样式类 ==================== */
+
+/* Hero 区域通用样式 */
+.admin-hero {
+  position: relative;
+  min-height: var(--admin-hero-height-default);
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 42%, #eaf5ff 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.admin-hero-compact {
+  min-height: var(--admin-hero-height-compact);
+}
+
+.admin-hero-spacious {
+  min-height: var(--admin-hero-height-spacious);
+}
+
+/* 卡片通用样式 */
+.admin-card {
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card-bg);
+  box-shadow: var(--shadow-card);
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 0.6vw, 12px);
+  margin-bottom: clamp(10px, 0.7vw, 14px);
+}
+
+.admin-card-icon {
+  display: inline-flex;
+  width: clamp(24px, 1.4vw, 28px);
+  height: clamp(24px, 1.4vw, 28px);
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.admin-card-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.admin-card-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(15px, 0.9vw, 17px);
+  font-weight: 900;
+}
+
+/* 按钮通用样式 */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 0.4vw, 8px);
+  height: clamp(36px, 2.2vw, 42px);
+  padding: 0 clamp(14px, 0.9vw, 18px);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  box-shadow: 0 10px 20px rgba(11, 99, 246, 0.18);
+  color: #fff;
+  font-size: clamp(13px, 0.75vw, 14px);
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 12px 24px rgba(11, 99, 246, 0.24);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(36px, 2.2vw, 42px);
+  padding: 0 clamp(12px, 0.85vw, 16px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--color-primary);
+  font-size: clamp(13px, 0.75vw, 14px);
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.16s ease;
+}
+
+.btn-secondary:hover {
+  background: #fff;
+  border-color: var(--color-primary);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: clamp(34px, 2.1vw, 40px);
+  padding: 0 clamp(12px, 0.8vw, 16px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--color-primary);
+  font-size: clamp(12px, 0.7vw, 14px);
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(16, 40, 90, 0.04);
+  transition: all 0.16s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 18px rgba(16, 40, 90, 0.08);
+}
+
+.btn-link {
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: clamp(13px, 0.75vw, 14px);
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.16s ease;
+}
+
+.btn-link:hover {
+  opacity: 0.8;
+}
+
+/* 状态徽章通用样式 */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  height: clamp(20px, 1.2vw, 24px);
+  padding: 0 clamp(8px, 0.55vw, 11px);
+  border-radius: var(--radius-full);
+  font-size: clamp(11px, 0.65vw, 12px);
+  font-weight: 900;
+}
+
+.badge-success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.badge-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.badge-info {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.badge-primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* 工作区域网格布局 */
+.admin-work-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 20%) minmax(0, 1fr);
+  gap: clamp(16px, 1.1vw, 20px);
+}
+
+.admin-work-grid-sidebar-auto {
+  grid-template-columns: auto 1fr;
+}
+
+.admin-work-grid-single {
+  grid-template-columns: 1fr;
+}
+
+/* 摘要条带样式 */
+.admin-summary-strip {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: clamp(14px, 1vw, 18px);
+  border: 1px solid var(--color-card-border-soft);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.7);
+  padding: clamp(8px, 0.55vw, 11px) clamp(12px, 0.85vw, 16px);
+  box-shadow: 0 6px 16px rgba(18, 42, 84, 0.03);
+  backdrop-filter: blur(3px);
+}
+
+.admin-summary-item {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.admin-summary-item + .admin-summary-item::before {
+  display: inline-flex;
+  width: 4px;
+  height: 4px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--color-text-tertiary);
+  margin-right: clamp(2px, 0.2vw, 4px);
+  content: '';
+}
+
+.admin-summary-label {
+  color: var(--color-text-secondary);
+  font-size: clamp(11px, 0.65vw, 12px);
+  font-weight: 800;
+}
+
+.admin-summary-value {
+  color: var(--color-text-primary);
+  font-size: clamp(12px, 0.7vw, 14px);
+  font-weight: 950;
+}
+
+.admin-summary-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: clamp(12px, 0.7vw, 14px);
+  font-weight: 950;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.admin-summary-link:hover {
+  text-decoration: underline;
+}
+
+/* 表格通用样式 */
+.admin-table-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.admin-table th {
+  height: clamp(40px, 2.4vw, 46px);
+  background: var(--color-primary-soft);
+  color: var(--color-text-primary);
+  font-size: clamp(12px, 0.7vw, 14px);
+  font-weight: 950;
+  text-align: left;
+}
+
+.admin-table th,
+.admin-table td {
+  border-right: 1px solid var(--color-card-border);
+  padding: 0 clamp(10px, 0.75vw, 14px);
+}
+
+.admin-table th:last-child,
+.admin-table td:last-child {
+  border-right: 0;
+}
+
+.admin-table td {
+  height: clamp(42px, 2.6vw, 50px);
+  border-top: 1px solid var(--color-card-border);
+  color: var(--color-text-primary);
+  font-size: clamp(12px, 0.7vw, 14px);
+  font-weight: 750;
+}
+
+.admin-table .primary-text {
+  color: var(--color-text-primary);
+  font-weight: 950;
+}
+
+/* 能力树结构样式 */
+.ability-tree {
+  padding-top: 2px;
+}
+
+.ability-tree-group + .ability-tree-group {
+  margin-top: clamp(6px, 0.45vw, 8px);
+}
+
+.ability-tree-row {
+  display: flex;
+  height: clamp(36px, 2.2vw, 40px);
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-primary);
+  font-size: clamp(14px, 0.85vw, 15px);
+  font-weight: 850;
+}
+
+.ability-tree-symbol {
+  display: inline-flex;
+  width: clamp(22px, 1.4vw, 24px);
+  height: clamp(22px, 1.4vw, 24px);
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+}
+
+.ability-tree-symbol svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ability-tree-children {
+  position: relative;
+  margin: 2px 0 4px 12px;
+  padding-left: 24px;
+}
+
+.ability-tree-children::before {
+  position: absolute;
+  left: 12px;
+  top: 2px;
+  bottom: 6px;
+  width: 1px;
+  border-radius: var(--radius-full);
+  background: var(--color-divider);
+  content: '';
+}
+
+.ability-tree-child {
+  display: flex;
+  height: clamp(28px, 1.8vw, 32px);
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0 clamp(10px, 0.7vw, 12px);
+  color: var(--color-text-secondary);
+  font-size: clamp(13px, 0.75vw, 14px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.ability-tree-child:hover {
+  color: var(--color-primary);
+  background: #f7faff;
+}
+
+.ability-tree-child.active {
+  margin-left: -6px;
+  margin-right: clamp(30px, 3vw, 40px);
+  padding-left: clamp(10px, 0.7vw, 12px);
+  background: var(--color-ability-tree-child);
+  color: var(--color-primary);
+  box-shadow: inset var(--border-inset-thin);
+}
+
+/* 响应式辅助类 */
+@media (max-width: 1440px) {
+  .admin-work-grid {
+    grid-template-columns: minmax(240px, 22%) 1fr;
+  }
+}
+
+@media (max-width: 1280px) {
+  .admin-work-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-summary-strip {
+    flex-wrap: wrap;
+  }
+}
+

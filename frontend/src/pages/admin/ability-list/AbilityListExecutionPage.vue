@@ -89,7 +89,7 @@ const indicators = [
 <template>
   <AdminLayout active-key="ability-list-execution">
     <div class="execution-page">
-      <section class="execution-hero">
+      <section class="execution-hero admin-hero">
         <div class="hero-art" aria-hidden="true"></div>
 
         <div class="hero-content">
@@ -108,32 +108,32 @@ const indicators = [
               <div class="hero-title-group">
                 <div class="hero-title-row">
                   <h1>2026 年度教师能力清单执行版</h1>
-                  <span class="status-badge">已发布</span>
+                  <span class="status-badge badge-success">已发布</span>
                 </div>
                 <p class="hero-subtitle">当前周期正在使用的教师能力清单</p>
               </div>
 
               <div class="hero-actions">
-                <button class="primary-action">
+                <button class="primary-action btn-primary">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
                 </button>
-                <button class="secondary-action">历史版本</button>
+                <button class="secondary-action btn-secondary">历史版本</button>
               </div>
             </div>
 
-            <div class="hero-summary-strip">
-              <div class="summary-item source-item">
-                <span>基准模版</span>
-                <button class="template-link">职业院校教师能力清单 V1.0</button>
+            <div class="hero-summary-strip admin-summary-strip">
+              <div class="summary-item admin-summary-item source-item">
+                <span class="admin-summary-label">基准模版</span>
+                <button class="admin-summary-link template-link">职业院校教师能力清单 V1.0</button>
               </div>
-              <div class="summary-item">
-                <span>适用范围</span>
-                <strong>全校教师</strong>
+              <div class="summary-item admin-summary-item">
+                <span class="admin-summary-label">适用范围</span>
+                <strong class="admin-summary-value">全校教师</strong>
               </div>
-              <div class="summary-item">
-                <span>最近更新</span>
-                <strong>2026-06-08 20:30</strong>
+              <div class="summary-item admin-summary-item">
+                <span class="admin-summary-label">最近更新</span>
+                <strong class="admin-summary-value">2026-06-08 20:30</strong>
               </div>
             </div>
           </div>
@@ -141,29 +141,29 @@ const indicators = [
       </section>
 
       <section class="work-area">
-        <aside class="structure-card panel-card">
-          <header class="card-heading">
-            <span class="card-icon structure-icon">
+        <aside class="structure-card admin-card">
+          <header class="card-heading admin-card-header">
+            <span class="card-icon admin-card-icon structure-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 8 4-8 4-8-4 8-4Zm8 8-8 4-8-4m16 4-8 4-8-4" /></svg>
             </span>
-            <strong>能力结构</strong>
+            <strong class="admin-card-title">能力结构</strong>
           </header>
 
           <div class="ability-tree">
-            <div v-for="node in abilityTree" :key="node.id" class="tree-group">
-              <div class="tree-row" :class="[`color-${node.color}`, { expanded: node.children.length }]">
-                <span class="tree-symbol">
+            <div v-for="node in abilityTree" :key="node.id" class="ability-tree-group">
+              <div class="tree-row ability-tree-row" :class="[`color-${node.color}`, { expanded: node.children.length }]">
+                <span class="tree-symbol ability-tree-symbol">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" /></svg>
                 </span>
                 <span>{{ node.label }}</span>
                 <em>›</em>
               </div>
 
-              <div v-if="node.children.length" class="tree-children">
+              <div v-if="node.children.length" class="tree-children ability-tree-children">
                 <div
                   v-for="child in node.children"
                   :key="child"
-                  class="tree-child"
+                  class="tree-child ability-tree-child"
                   :class="{ active: child === '教学设计与实施' }"
                 >
                   <strong>{{ child }}</strong>
@@ -173,20 +173,20 @@ const indicators = [
           </div>
         </aside>
 
-        <section class="indicator-card panel-card">
-          <header class="indicator-header">
+        <section class="indicator-card admin-card">
+          <header class="indicator-header admin-card-header">
             <div class="indicator-title-wrap">
-              <span class="card-icon indicator-icon">
+              <span class="card-icon admin-card-icon indicator-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h6v14H5zM13 5h6v14h-6zM7 9h2m6 0h2" /></svg>
               </span>
               <div>
-                <h2>教学能力 / 教学设计与实施</h2>
+                <h2 class="admin-card-title">教学能力 / 教学设计与实施</h2>
               </div>
             </div>
           </header>
 
-          <div class="indicator-table-wrap">
-            <table class="indicator-table">
+          <div class="indicator-table-wrap admin-table-container">
+            <table class="indicator-table admin-table">
               <thead>
                 <tr>
                   <th>指标名称</th>
@@ -201,14 +201,14 @@ const indicators = [
               </thead>
               <tbody>
                 <tr v-for="row in indicators" :key="row.name">
-                  <td class="name-cell">{{ row.name }}</td>
+                  <td class="name-cell primary-text">{{ row.name }}</td>
                   <td>{{ row.novice }}</td>
                   <td>{{ row.competent }}</td>
                   <td>{{ row.backbone }}</td>
                   <td>{{ row.master }}</td>
                   <td>{{ row.rule }}</td>
-                  <td><span class="enabled-badge">已启用</span></td>
-                  <td><button class="edit-link">编辑</button></td>
+                  <td><span class="enabled-badge badge-success">已启用</span></td>
+                  <td><button class="edit-link btn-link">编辑</button></td>
                 </tr>
               </tbody>
             </table>
@@ -228,23 +228,7 @@ const indicators = [
   gap: clamp(14px, 1vw, 18px);
 }
 
-.execution-hero,
-.panel-card {
-  border: 1px solid #dce7f7;
-  background: #fff;
-  box-shadow: 0 14px 34px rgba(17, 42, 89, 0.07);
-}
-
-.execution-hero {
-  position: relative;
-  min-height: clamp(174px, 12vw, 220px);
-  overflow: hidden;
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at 38% 72%, rgba(11, 99, 246, 0.08) 0, transparent 30%),
-    linear-gradient(135deg, #ffffff 0%, #f8fbff 42%, #eaf5ff 100%);
-}
-
+/* 页面特有样式：Hero 背景艺术 */
 .execution-hero::before {
   position: absolute;
   inset: 0;
@@ -293,7 +277,7 @@ const indicators = [
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: clamp(174px, 12vw, 220px);
+  min-height: var(--admin-hero-height-default);
   max-width: min(900px, 64%);
   align-items: center;
   gap: clamp(18px, 1.2vw, 26px);
@@ -314,7 +298,7 @@ const indicators = [
   justify-content: center;
   border: clamp(8px, 0.55vw, 10px) solid rgba(255, 255, 255, 0.92);
   border-radius: 50%;
-  background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
+  background: linear-gradient(145deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
   box-shadow: 0 14px 28px rgba(11, 99, 246, 0.24);
 }
 
@@ -357,7 +341,7 @@ const indicators = [
 
 .hero-title-row h1 {
   margin: 0;
-  color: #07122f;
+  color: var(--color-text-primary);
   font-size: clamp(22px, 1.45vw, 28px);
   font-weight: 950;
   letter-spacing: -0.55px;
@@ -365,84 +349,12 @@ const indicators = [
   white-space: nowrap;
 }
 
-.status-badge {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  height: clamp(22px, 1.25vw, 26px);
-  padding: 0 clamp(9px, 0.6vw, 12px);
-  border-radius: 999px;
-  background: #dff7e9;
-  color: #0d9f58;
-  font-size: clamp(11px, 0.62vw, 12px);
-  font-weight: 900;
-}
-
 .hero-subtitle {
   margin: 0;
-  color: #65758f;
+  color: var(--color-text-secondary);
   font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 700;
   line-height: 1.4;
-}
-
-.hero-summary-strip {
-  display: flex;
-  max-width: 100%;
-  align-items: center;
-  gap: clamp(16px, 1.15vw, 24px);
-  border: 1px solid rgba(218, 229, 246, 0.56);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.62);
-  padding: clamp(8px, 0.58vw, 11px) clamp(12px, 0.9vw, 16px);
-  box-shadow: 0 8px 18px rgba(18, 42, 84, 0.03);
-  backdrop-filter: blur(3px);
-}
-
-.summary-item {
-  display: inline-flex;
-  position: relative;
-  min-width: 0;
-  align-items: center;
-  gap: 9px;
-  white-space: nowrap;
-}
-
-.summary-item + .summary-item::before {
-  display: inline-flex;
-  width: 4px;
-  height: 4px;
-  flex: none;
-  border-radius: 999px;
-  background: #b5c5dc;
-  margin-right: clamp(2px, 0.3vw, 6px);
-  content: '';
-}
-
-.summary-item span {
-  color: #6b7b94;
-  font-size: clamp(12px, 0.7vw, 13px);
-  font-weight: 800;
-}
-
-.summary-item strong,
-.template-link {
-  color: #07122f;
-  font-size: clamp(13px, 0.78vw, 15px);
-  font-weight: 950;
-  white-space: nowrap;
-}
-
-.template-link {
-  border: 0;
-  background: transparent;
-  padding: 0;
-  color: var(--color-primary);
-  cursor: pointer;
-}
-
-.template-link:hover {
-  text-decoration: underline;
 }
 
 .hero-actions {
@@ -453,33 +365,9 @@ const indicators = [
   padding-top: 0;
 }
 
-.primary-action,
-.secondary-action,
-.outline-action,
-.link-action,
-.edit-link {
-  border: 0;
-  background: transparent;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.primary-action {
-  display: inline-flex;
-  height: clamp(38px, 2.4vw, 46px);
-  align-items: center;
-  gap: clamp(6px, 0.45vw, 9px);
-  padding: 0 clamp(16px, 1.1vw, 22px);
-  border-radius: 7px;
-  background: linear-gradient(135deg, #0b63f6 0%, #0055e6 100%);
-  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.22);
-  color: #fff;
-  font-size: clamp(13px, 0.78vw, 14px);
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.primary-action svg {
+/* 按钮图标特殊样式 */
+.primary-action svg,
+.secondary-action svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -489,206 +377,16 @@ const indicators = [
   stroke-linejoin: round;
 }
 
-.secondary-action {
-  display: inline-flex;
-  height: clamp(38px, 2.4vw, 46px);
-  align-items: center;
-  border: 1px solid rgba(190, 207, 232, 0.9);
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.72);
-  padding: 0 clamp(13px, 0.9vw, 18px);
-  color: var(--color-primary);
-  font-size: clamp(13px, 0.78vw, 14px);
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.link-action {
-  color: var(--color-primary);
-  font-size: clamp(13px, 0.78vw, 14px);
-  font-weight: 900;
-}
-
+/* 工作区域 */
 .work-area {
   display: grid;
   grid-template-columns: minmax(270px, 21.5%) minmax(0, 1fr);
   gap: clamp(18px, 1.25vw, 24px);
 }
 
-.panel-card {
-  border-radius: 14px;
-}
-
 .structure-card {
   min-height: clamp(280px, 18vw, 340px);
   padding: clamp(18px, 1.2vw, 22px) clamp(16px, 1.1vw, 20px);
-}
-
-.card-heading,
-.indicator-header {
-  display: flex;
-  align-items: flex-start;
-}
-
-.card-heading {
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.card-heading strong {
-  color: #07122f;
-  font-size: 17px;
-  font-weight: 900;
-}
-
-.card-icon {
-  display: inline-flex;
-  flex: none;
-  width: clamp(26px, 1.5vw, 30px);
-  height: clamp(26px, 1.5vw, 30px);
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: #eaf2ff;
-  color: var(--color-primary);
-}
-
-.card-icon svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.ability-tree {
-  padding-top: 2px;
-}
-
-.tree-group + .tree-group {
-  margin-top: clamp(6px, 0.5vw, 10px);
-}
-
-.tree-row,
-.tree-child {
-  display: flex;
-  align-items: center;
-  color: #101c34;
-  font-weight: 900;
-}
-
-.tree-row {
-  height: 40px;
-  gap: 12px;
-  color: #101c34;
-  font-size: 15px;
-  font-weight: 850;
-}
-
-.tree-row em {
-  margin-left: auto;
-  color: #7c8ca3;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 800;
-}
-
-.tree-symbol {
-  display: inline-flex;
-  width: 26px;
-  height: 26px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #eef5ff;
-}
-
-.tree-symbol svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.color-blue .tree-symbol {
-  background: #f0f7ff;
-  color: var(--color-primary);
-}
-
-.color-teaching-blue .tree-symbol {
-  background: #d0e8ff;
-  color: var(--color-primary);
-}
-
-.color-orange .tree-symbol {
-  background: #fff5e6;
-  color: var(--color-warning);
-}
-
-.color-green .tree-symbol {
-  background: #ecf9f2;
-  color: var(--color-success);
-}
-
-.color-purple .tree-symbol {
-  background: #f4efff;
-  color: var(--color-purple);
-}
-
-.tree-children {
-  position: relative;
-  margin: 2px 0 4px 13px;
-  padding-left: 28px;
-}
-
-.tree-children::before {
-  position: absolute;
-  left: 13px;
-  top: 2px;
-  bottom: 8px;
-  width: 1px;
-  border-radius: 999px;
-  background: #e4ecf7;
-  content: '';
-}
-
-.tree-child {
-  position: relative;
-  display: flex;
-  height: 32px;
-  align-items: center;
-  border-radius: 7px;
-  padding-right: 12px;
-  color: #66758c;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.tree-child span {
-  display: none;
-}
-
-.tree-child strong {
-  font-weight: 750;
-}
-
-.tree-child:not(.active):hover {
-  color: var(--color-primary);
-  background: #f7faff;
-}
-
-.tree-child.active {
-  margin-left: -8px;
-  margin-right: 40px;
-  padding-left: 12px;
-  background: #f2f7ff;
-  color: var(--color-primary);
-  box-shadow: inset 1px 0 0 var(--color-primary);
 }
 
 .indicator-card {
@@ -710,150 +408,99 @@ const indicators = [
 
 .indicator-title-wrap h2 {
   margin: 0 0 clamp(4px, 0.4vw, 6px);
-  color: #07122f;
+  color: var(--color-text-primary);
   font-size: clamp(17px, 1vw, 19px);
   font-weight: 950;
 }
 
-.indicator-title-wrap p {
-  max-width: 760px;
-  margin: 0;
-  color: #62728a;
-  font-size: clamp(12px, 0.7vw, 13px);
-  font-weight: 600;
-  line-height: 1.55;
-}
-
-.outline-action {
-  display: inline-flex;
-  flex: none;
-  height: clamp(36px, 2.2vw, 42px);
-  align-items: center;
-  gap: 6px;
-  padding: 0 clamp(12px, 0.9vw, 16px);
-  border: 1px solid #d8e4f4;
-  border-radius: 9px;
-  background: #fff;
-  color: var(--color-primary);
-  font-size: clamp(12px, 0.7vw, 14px);
-  font-weight: 900;
-  box-shadow: 0 6px 16px rgba(16, 40, 90, 0.04);
-}
-
-.outline-action svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.indicator-table-wrap {
-  overflow-x: auto;
-  overflow-y: hidden;
-  border: 1px solid #dce7f7;
-  border-radius: 8px;
-  background: #fff;
-}
-
-.indicator-table {
-  width: 100%;
-  min-width: 880px;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.indicator-table th {
-  height: clamp(42px, 2.5vw, 48px);
-  background: #f3f8ff;
-  color: #253653;
-  font-size: clamp(13px, 0.78vw, 15px);
-  font-weight: 950;
-  text-align: left;
-}
-
-.indicator-table th,
-.indicator-table td {
-  border-right: 1px solid #dfe8f6;
-  padding: 0 clamp(12px, 0.95vw, 18px);
-}
-
-.indicator-table th:last-child,
-.indicator-table td:last-child {
-  border-right: 0;
-}
-
-.indicator-table td {
-  height: clamp(45px, 2.8vw, 53px);
-  border-top: 1px solid #e5edf8;
-  color: #253653;
-  font-size: clamp(13px, 0.78vw, 15px);
-  font-weight: 750;
-}
-
-.indicator-table .name-cell {
-  color: #07122f;
-  font-weight: 950;
-}
-
-.indicator-table th:first-child,
-.indicator-table td:first-child {
+/* 表格列宽定义 */
+.admin-table th:first-child,
+.admin-table td:first-child {
   width: 25%;
 }
 
-.indicator-table th:nth-child(2),
-.indicator-table td:nth-child(2),
-.indicator-table th:nth-child(3),
-.indicator-table td:nth-child(3),
-.indicator-table th:nth-child(4),
-.indicator-table td:nth-child(4),
-.indicator-table th:nth-child(5),
-.indicator-table td:nth-child(5) {
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2),
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3),
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4),
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
   width: 9.5%;
   text-align: center;
 }
 
-.indicator-table th:nth-child(6),
-.indicator-table td:nth-child(6) {
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
   width: 17%;
   text-align: center;
 }
 
-.indicator-table th:nth-child(7),
-.indicator-table td:nth-child(7) {
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) {
   width: 10%;
   text-align: center;
 }
 
-.indicator-table th:nth-child(8),
-.indicator-table td:nth-child(8) {
+.admin-table th:nth-child(8),
+.admin-table td:nth-child(8) {
   width: 10%;
   text-align: center;
 }
 
-.enabled-badge {
-  display: inline-flex;
-  align-items: center;
-  height: clamp(26px, 1.55vw, 30px);
-  padding: 0 clamp(11px, 0.68vw, 13px);
-  border-radius: 7px;
-  background: #dff7e9;
-  color: #12a764;
-  font-size: clamp(12px, 0.72vw, 14px);
-  font-weight: 950;
+/* 能力树特有样式 */
+.tree-row em {
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
 }
 
-.edit-link {
+.tree-child strong {
+  font-weight: 750;
+}
+
+/* 能力树颜色变体 */
+.color-blue .ability-tree-symbol {
+  background: var(--color-ability-basic);
   color: var(--color-primary);
-  font-size: clamp(13px, 0.78vw, 15px);
-  font-weight: 950;
 }
 
+.color-teaching-blue .ability-tree-symbol {
+  background: var(--color-ability-teaching-light);
+  color: var(--color-primary);
+}
+
+.color-orange .ability-tree-symbol {
+  background: #fff5e6;
+  color: var(--color-warning);
+}
+
+.color-green .ability-tree-symbol {
+  background: #ecf9f2;
+  color: var(--color-success);
+}
+
+.color-purple .ability-tree-symbol {
+  background: #f4efff;
+  color: var(--color-purple);
+}
+
+.tree-child.active {
+  margin-left: -8px;
+  margin-right: 40px;
+  padding-left: 12px;
+  background: var(--color-ability-tree-child);
+  color: var(--color-primary);
+  box-shadow: var(--border-inset-thin);
+}
+
+/* 响应式 */
 @media (max-width: 1440px) {
   .execution-hero {
-    min-height: clamp(168px, 11.7vw, 210px);
+    min-height: var(--admin-hero-height-compact);
   }
 
   .hero-art {
@@ -873,7 +520,7 @@ const indicators = [
   }
 
   .hero-content {
-    min-height: clamp(168px, 11.7vw, 210px);
+    min-height: var(--admin-hero-height-compact);
     max-width: 68%;
   }
 
@@ -884,14 +531,6 @@ const indicators = [
 
   .hero-title-row h1 {
     font-size: clamp(21px, 1.35vw, 25px);
-  }
-
-  .primary-action {
-    padding: 0 16px;
-  }
-
-  .secondary-action {
-    padding: 0 14px;
   }
 }
 
@@ -908,10 +547,6 @@ const indicators = [
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-  }
-
-  .hero-summary-strip {
-    flex-wrap: wrap;
   }
 
   .work-area {

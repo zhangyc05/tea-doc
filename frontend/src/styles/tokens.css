@@ -48,6 +48,12 @@
   --color-ability-practice: #7ED321;
   --color-ability-service: #BD10E0;
 
+  /* 能力结构卡片专用色 */
+  --color-ability-basic: #f0f7ff;        /* 基本能力 - 极浅蓝 */
+  --color-ability-teaching-light: #d0e8ff; /* 教学能力 - 浅蓝 */
+  --color-ability-tree-child: #f2f7ff;    /* 能力树子项背景 */
+  --color-ability-tree-inset: var(--color-primary); /* 能力树内嵌边框色 */
+
   /* 圆角 */
   --radius-xs: 4px;
   --radius-sm: 6px;
@@ -61,12 +67,21 @@
   --shadow-card-hover: 0 16px 36px rgba(15, 35, 80, 0.1);
   --shadow-floating: 0 14px 36px rgba(15, 35, 80, 0.18);
 
+  /* 内嵌边框（用于能力树等精细装饰） */
+  --border-inset-thin: 1px solid var(--color-ability-tree-inset);
+  --border-inset-medium: 2px solid var(--color-ability-tree-inset);
+
   /* 管理端响应式尺寸：1920 是视觉参考，14 寸笔记本是主力办公口径 */
   --admin-sidebar-width: clamp(248px, 15vw, 300px);
   --admin-topbar-height: clamp(68px, 4.4vw, 82px);
   --admin-content-max-width: 1480px;
   --admin-page-gutter-x: clamp(18px, 1.45vw, 28px);
   --admin-page-gutter-y: clamp(16px, 1.25vw, 24px);
+
+  /* 管理端 Hero 区域尺寸 */
+  --admin-hero-height-compact: clamp(140px, 9.5vw, 170px);   /* 紧凑型 Hero */
+  --admin-hero-height-default: clamp(174px, 12vw, 220px);    /* 默认 Hero */
+  --admin-hero-height-spacious: clamp(246px, 17.2vw, 330px); /* 宽敞型 Hero */
 
   --teacher-pc-content-max-width: 1280px;
 
