@@ -110,7 +110,7 @@ const indicators = [
                   <h1>2026 年度教师能力清单执行版</h1>
                   <span class="status-badge">已发布</span>
                 </div>
-                <p class="hero-subtitle">当前周期正在使用的教师能力清单执行口径</p>
+                <p class="hero-subtitle">当前周期正在使用的教师能力清单</p>
               </div>
 
               <div class="hero-actions">
