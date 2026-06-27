@@ -292,9 +292,9 @@ const indicators = [
 .execution-page {
   display: flex;
   width: 100%;
-  min-height: calc(1080px - var(--admin-topbar-height) - 24px);
+  min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
   flex-direction: column;
-  gap: 18px;
+  gap: clamp(14px, 1vw, 18px);
 }
 
 .page-intro {
@@ -302,16 +302,16 @@ const indicators = [
 }
 
 .local-breadcrumb {
-  margin-bottom: 10px;
+  margin-bottom: clamp(6px, 0.55vw, 10px);
   color: #30415f;
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 800;
 }
 
 .page-intro p {
   margin: 0;
   color: #53627a;
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   line-height: 1.6;
 }
 
@@ -325,8 +325,8 @@ const indicators = [
 .execution-hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 690px;
-  min-height: 330px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 42%);
+  min-height: clamp(246px, 17.2vw, 330px);
   overflow: hidden;
   border-radius: 14px;
   background:
@@ -350,30 +350,30 @@ const indicators = [
   position: relative;
   z-index: 1;
   display: flex;
-  gap: 34px;
-  padding: 48px 0 42px 44px;
+  gap: clamp(24px, 1.75vw, 34px);
+  padding: clamp(30px, 2.5vw, 48px) 0 clamp(28px, 2.2vw, 42px) clamp(30px, 2.3vw, 44px);
 }
 
 .hero-emblem {
   flex: none;
-  padding-top: 8px;
+  padding-top: clamp(4px, 0.4vw, 8px);
 }
 
 .hero-icon {
   display: flex;
-  width: 86px;
-  height: 86px;
+  width: clamp(68px, 4.5vw, 86px);
+  height: clamp(68px, 4.5vw, 86px);
   align-items: center;
   justify-content: center;
-  border: 12px solid rgba(255, 255, 255, 0.85);
+  border: clamp(9px, 0.62vw, 12px) solid rgba(255, 255, 255, 0.85);
   border-radius: 50%;
   background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
   box-shadow: 0 18px 34px rgba(11, 99, 246, 0.24);
 }
 
 .hero-icon svg {
-  width: 42px;
-  height: 42px;
+  width: clamp(32px, 2.2vw, 42px);
+  height: clamp(32px, 2.2vw, 42px);
   fill: none;
   stroke: #fff;
   stroke-width: 2.2;
@@ -383,42 +383,44 @@ const indicators = [
 
 .hero-main {
   min-width: 0;
-  padding-top: 12px;
+  padding-top: clamp(6px, 0.62vw, 12px);
 }
 
 .hero-title-row {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 34px;
+  gap: clamp(12px, 0.95vw, 18px);
+  margin-bottom: clamp(22px, 1.75vw, 34px);
 }
 
 .hero-title-row h1 {
+  max-width: 760px;
   margin: 0;
   color: #07122f;
-  font-size: 34px;
+  font-size: clamp(25px, 1.8vw, 34px);
   font-weight: 950;
-  letter-spacing: -0.8px;
-  line-height: 1.2;
+  letter-spacing: -0.7px;
+  line-height: 1.18;
 }
 
 .status-badge {
   display: inline-flex;
+  flex: none;
   align-items: center;
-  height: 30px;
-  padding: 0 15px;
+  height: clamp(26px, 1.55vw, 30px);
+  padding: 0 clamp(12px, 0.8vw, 15px);
   border-radius: 999px;
   background: #dff7e9;
   color: #0d9f58;
-  font-size: 14px;
+  font-size: clamp(12px, 0.72vw, 14px);
   font-weight: 900;
 }
 
 .hero-meta-grid {
   display: grid;
-  grid-template-columns: 280px 170px 220px;
-  gap: 36px;
-  margin-bottom: 34px;
+  grid-template-columns: minmax(210px, 1.45fr) minmax(120px, 0.72fr) minmax(160px, 0.95fr);
+  gap: clamp(20px, 1.85vw, 36px);
+  margin-bottom: clamp(22px, 1.75vw, 34px);
 }
 
 .hero-meta-item {
@@ -428,41 +430,41 @@ const indicators = [
 
 .hero-meta-item + .hero-meta-item::before {
   position: absolute;
-  left: -22px;
+  left: calc(clamp(20px, 1.85vw, 36px) / -2);
   top: 4px;
   width: 1px;
-  height: 64px;
+  height: clamp(52px, 3.35vw, 64px);
   background: #d9e4f2;
   content: '';
 }
 
 .hero-meta-item p {
-  margin: 0 0 9px;
+  margin: 0 0 clamp(6px, 0.45vw, 9px);
   color: #697890;
-  font-size: 15px;
+  font-size: clamp(13px, 0.8vw, 15px);
   font-weight: 700;
 }
 
 .hero-meta-item strong {
   display: block;
   color: #07122f;
-  font-size: 16px;
+  font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 900;
   white-space: nowrap;
 }
 
 .hero-meta-item a {
   display: inline-flex;
-  margin-top: 15px;
+  margin-top: clamp(10px, 0.8vw, 15px);
   color: var(--color-primary);
-  font-size: 15px;
+  font-size: clamp(14px, 0.8vw, 15px);
   font-weight: 900;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: clamp(22px, 1.85vw, 36px);
 }
 
 .primary-action,
@@ -477,15 +479,15 @@ const indicators = [
 
 .primary-action {
   display: inline-flex;
-  height: 56px;
+  height: clamp(44px, 2.9vw, 56px);
   align-items: center;
-  gap: 12px;
-  padding: 0 30px;
+  gap: clamp(8px, 0.62vw, 12px);
+  padding: 0 clamp(20px, 1.55vw, 30px);
   border-radius: 7px;
   background: linear-gradient(135deg, #0b63f6 0%, #0055e6 100%);
   box-shadow: 0 16px 28px rgba(11, 99, 246, 0.22);
   color: #fff;
-  font-size: 16px;
+  font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 900;
 }
 
@@ -501,7 +503,7 @@ const indicators = [
 
 .link-action {
   color: var(--color-primary);
-  font-size: 16px;
+  font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 900;
 }
 
@@ -518,8 +520,8 @@ const indicators = [
 
 .work-area {
   display: grid;
-  grid-template-columns: 322px minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: minmax(270px, 21.5%) minmax(0, 1fr);
+  gap: clamp(18px, 1.25vw, 24px);
 }
 
 .panel-card {
@@ -527,8 +529,8 @@ const indicators = [
 }
 
 .structure-card {
-  min-height: 510px;
-  padding: 28px 26px;
+  min-height: clamp(418px, 26.6vw, 510px);
+  padding: clamp(22px, 1.45vw, 28px) clamp(20px, 1.35vw, 26px);
 }
 
 .card-heading,
@@ -538,21 +540,21 @@ const indicators = [
 }
 
 .card-heading {
-  gap: 16px;
-  margin-bottom: 22px;
+  gap: clamp(12px, 0.85vw, 16px);
+  margin-bottom: clamp(16px, 1.15vw, 22px);
 }
 
 .card-heading strong {
   color: #07122f;
-  font-size: 20px;
+  font-size: clamp(18px, 1.05vw, 20px);
   font-weight: 950;
 }
 
 .card-icon {
   display: inline-flex;
   flex: none;
-  width: 32px;
-  height: 32px;
+  width: clamp(30px, 1.7vw, 32px);
+  height: clamp(30px, 1.7vw, 32px);
   align-items: center;
   justify-content: center;
   border-radius: 8px;
@@ -575,7 +577,7 @@ const indicators = [
 }
 
 .tree-group + .tree-group {
-  margin-top: 10px;
+  margin-top: clamp(6px, 0.5vw, 10px);
 }
 
 .tree-row,
@@ -587,9 +589,9 @@ const indicators = [
 }
 
 .tree-row {
-  height: 43px;
-  gap: 16px;
-  font-size: 16px;
+  height: clamp(37px, 2.25vw, 43px);
+  gap: clamp(12px, 0.85vw, 16px);
+  font-size: clamp(15px, 0.85vw, 16px);
 }
 
 .tree-row em {
@@ -601,8 +603,8 @@ const indicators = [
 
 .tree-symbol {
   display: inline-flex;
-  width: 29px;
-  height: 29px;
+  width: clamp(26px, 1.5vw, 29px);
+  height: clamp(26px, 1.5vw, 29px);
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -638,7 +640,7 @@ const indicators = [
 .tree-children {
   position: relative;
   margin: 4px 0 2px 13px;
-  padding-left: 37px;
+  padding-left: clamp(32px, 1.95vw, 37px);
 }
 
 .tree-children::before {
@@ -654,11 +656,11 @@ const indicators = [
 
 .tree-child {
   position: relative;
-  height: 43px;
-  gap: 18px;
+  height: clamp(36px, 2.25vw, 43px);
+  gap: clamp(13px, 0.85vw, 18px);
   border-radius: 9px;
   color: #5b6a83;
-  font-size: 15px;
+  font-size: clamp(14px, 0.8vw, 15px);
 }
 
 .tree-child span {
@@ -684,26 +686,26 @@ const indicators = [
 }
 
 .indicator-card {
-  min-height: 510px;
-  padding: 26px 26px 32px;
+  min-height: clamp(418px, 26.6vw, 510px);
+  padding: clamp(22px, 1.35vw, 26px) clamp(22px, 1.35vw, 26px) clamp(24px, 1.65vw, 32px);
 }
 
 .indicator-header {
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 22px;
+  margin-bottom: clamp(16px, 1.15vw, 22px);
 }
 
 .indicator-title-wrap {
   display: flex;
   min-width: 0;
-  gap: 16px;
+  gap: clamp(12px, 0.85vw, 16px);
 }
 
 .indicator-title-wrap h2 {
-  margin: 0 0 10px;
+  margin: 0 0 clamp(6px, 0.52vw, 10px);
   color: #07122f;
-  font-size: 22px;
+  font-size: clamp(19px, 1.15vw, 22px);
   font-weight: 950;
 }
 
@@ -711,23 +713,23 @@ const indicators = [
   max-width: 760px;
   margin: 0;
   color: #62728a;
-  font-size: 14px;
+  font-size: clamp(13px, 0.75vw, 14px);
   font-weight: 600;
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .outline-action {
   display: inline-flex;
   flex: none;
-  height: 48px;
+  height: clamp(40px, 2.5vw, 48px);
   align-items: center;
   gap: 8px;
-  padding: 0 20px;
+  padding: 0 clamp(15px, 1.05vw, 20px);
   border: 1px solid #d8e4f4;
   border-radius: 9px;
   background: #fff;
   color: var(--color-primary);
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 900;
   box-shadow: 0 6px 16px rgba(16, 40, 90, 0.04);
 }
@@ -743,7 +745,8 @@ const indicators = [
 }
 
 .indicator-table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   border: 1px solid #dce7f7;
   border-radius: 8px;
   background: #fff;
@@ -751,15 +754,16 @@ const indicators = [
 
 .indicator-table {
   width: 100%;
+  min-width: 880px;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
 .indicator-table th {
-  height: 48px;
+  height: clamp(42px, 2.5vw, 48px);
   background: #f3f8ff;
   color: #253653;
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 950;
   text-align: left;
 }
@@ -767,7 +771,7 @@ const indicators = [
 .indicator-table th,
 .indicator-table td {
   border-right: 1px solid #dfe8f6;
-  padding: 0 18px;
+  padding: 0 clamp(12px, 0.95vw, 18px);
 }
 
 .indicator-table th:last-child,
@@ -776,10 +780,10 @@ const indicators = [
 }
 
 .indicator-table td {
-  height: 53px;
+  height: clamp(45px, 2.8vw, 53px);
   border-top: 1px solid #e5edf8;
   color: #253653;
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 750;
 }
 
@@ -790,7 +794,7 @@ const indicators = [
 
 .indicator-table th:first-child,
 .indicator-table td:first-child {
-  width: 235px;
+  width: 25%;
 }
 
 .indicator-table th:nth-child(2),
@@ -801,44 +805,58 @@ const indicators = [
 .indicator-table td:nth-child(4),
 .indicator-table th:nth-child(5),
 .indicator-table td:nth-child(5) {
-  width: 95px;
+  width: 9.5%;
   text-align: center;
 }
 
 .indicator-table th:nth-child(6),
 .indicator-table td:nth-child(6) {
-  width: 170px;
+  width: 17%;
   text-align: center;
 }
 
 .indicator-table th:nth-child(7),
 .indicator-table td:nth-child(7) {
-  width: 110px;
+  width: 10%;
   text-align: center;
 }
 
 .indicator-table th:nth-child(8),
 .indicator-table td:nth-child(8) {
-  width: 92px;
+  width: 10%;
   text-align: center;
 }
 
 .enabled-badge {
   display: inline-flex;
   align-items: center;
-  height: 30px;
-  padding: 0 13px;
+  height: clamp(26px, 1.55vw, 30px);
+  padding: 0 clamp(11px, 0.68vw, 13px);
   border-radius: 7px;
   background: #dff7e9;
   color: #12a764;
-  font-size: 14px;
+  font-size: clamp(12px, 0.72vw, 14px);
   font-weight: 950;
 }
 
 .edit-link {
   color: var(--color-primary);
-  font-size: 15px;
+  font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 950;
+}
+
+@media (max-width: 1440px) {
+  .execution-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 36%);
+  }
+
+  .hero-title-row h1 {
+    max-width: 560px;
+  }
+
+  .hero-meta-grid {
+    grid-template-columns: minmax(190px, 1.45fr) minmax(108px, 0.72fr) minmax(150px, 0.95fr);
+  }
 }
 
 @media (max-width: 1280px) {
@@ -852,6 +870,11 @@ const indicators = [
 
   .work-area {
     grid-template-columns: 1fr;
+  }
+
+  .structure-card,
+  .indicator-card {
+    min-height: auto;
   }
 }
 </style>
