@@ -58,7 +58,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
     </div>
 
     <nav class="sidebar-nav">
-      <div v-for="item in navItems" :key="item.key" class="nav-group">
+      <div v-for="item in navItems" :key="item.key" class="nav-group" :class="{ expanded: item.children && isActive(item, activeKey) }">
         <RouterLink
           v-if="item.to"
           :to="item.to"
@@ -81,7 +81,11 @@ function isActive(item: AdminNavItem, activeKey: string) {
             </span>
             <span>{{ item.label }}</span>
           </span>
-          <span v-if="item.children" class="nav-arrow">⌃</span>
+          <span v-if="item.children" class="nav-arrow" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M4 10 8 6l4 4" />
+            </svg>
+          </span>
         </RouterLink>
 
         <button v-else type="button" disabled class="nav-item disabled">
@@ -99,7 +103,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
             class="sub-item"
             :class="{ active: child.key === activeKey }"
           >
-            <span />
+            <span class="sub-dot" />
             <strong>{{ child.label }}</strong>
           </RouterLink>
         </div>
@@ -172,13 +176,17 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .nav-group + .nav-group {
-  margin-top: clamp(9px, 0.7vw, 14px);
+  margin-top: clamp(8px, 0.58vw, 12px);
+}
+
+.nav-group.expanded {
+  margin-bottom: clamp(4px, 0.38vw, 8px);
 }
 
 .nav-item {
   display: flex;
   width: 100%;
-  height: clamp(46px, 3vw, 58px);
+  height: clamp(46px, 2.75vw, 54px);
   align-items: center;
   justify-content: space-between;
   border: 0;
@@ -187,7 +195,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
   padding: 0 clamp(15px, 1vw, 20px);
   color: #1e2b45;
   font-family: inherit;
-  font-size: clamp(15px, 0.95vw, 18px);
+  font-size: clamp(15px, 0.95vw, 17px);
   font-weight: 800;
   text-decoration: none;
   transition: 0.18s ease;
@@ -236,40 +244,79 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .nav-arrow {
-  font-size: 15px;
-  font-weight: 900;
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.nav-arrow svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sub-nav {
-  margin: 8px 0 0 clamp(42px, 3vw, 54px);
+  position: relative;
+  margin: 7px 0 0 clamp(42px, 3vw, 52px);
+  padding: 2px 0 4px clamp(16px, 1vw, 20px);
+}
+
+.sub-nav::before {
+  position: absolute;
+  left: 5px;
+  top: 4px;
+  bottom: 8px;
+  width: 1px;
+  border-radius: 999px;
+  background: #d8e5f6;
+  content: '';
 }
 
 .sub-item {
   display: flex;
-  height: clamp(38px, 2.5vw, 48px);
+  height: clamp(34px, 2.15vw, 38px);
   align-items: center;
-  gap: clamp(12px, 0.95vw, 18px);
+  gap: 10px;
   border-radius: 8px;
-  padding: 0 clamp(14px, 0.95vw, 18px);
-  color: #66748d;
-  font-size: clamp(14px, 0.9vw, 17px);
+  padding: 0 clamp(11px, 0.75vw, 14px);
+  color: #748198;
+  font-size: clamp(14px, 0.85vw, 15px);
   font-weight: 700;
   text-decoration: none;
+  transition: 0.16s ease;
 }
 
-.sub-item span {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  background: #9ba9bf;
+.sub-item + .sub-item {
+  margin-top: 4px;
 }
 
-.sub-item.active {
-  background: #e9f2ff;
+.sub-item:hover {
+  background: rgba(234, 242, 255, 0.68);
   color: var(--color-primary);
 }
 
-.sub-item.active span {
+.sub-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+}
+
+.sub-item.active {
+  background: #eaf2ff;
+  color: var(--color-primary);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.sub-item.active .sub-dot {
   background: var(--color-primary);
 }
 
