@@ -48,13 +48,22 @@ function isActive(item: AdminNavItem, activeKey: string) {
 <template>
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
-          <path d="M11 11.5h10M11 16h10M13 20.5h6" />
-        </svg>
+      <div class="brand-main">
+        <div class="brand-mark">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
+            <path d="M11 11.5h10M11 16h10M13 20.5h6" />
+          </svg>
+        </div>
+        <h1>教师综合发展平台</h1>
       </div>
-      <h1>教师综合发展平台</h1>
+
+      <button class="sidebar-toggle" type="button" aria-label="收起侧栏" title="收起侧栏">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="3" y="3" width="14" height="14" rx="4" />
+          <path d="M9 4.5v11" />
+        </svg>
+      </button>
     </div>
 
     <nav class="sidebar-nav">
@@ -103,17 +112,11 @@ function isActive(item: AdminNavItem, activeKey: string) {
             class="sub-item"
             :class="{ active: child.key === activeKey }"
           >
-            <span class="sub-dot" />
             <strong>{{ child.label }}</strong>
           </RouterLink>
         </div>
       </div>
     </nav>
-
-    <div class="collapse-entry">
-      <span>≪</span>
-      <strong>收起菜单</strong>
-    </div>
   </aside>
 </template>
 
@@ -134,86 +137,125 @@ function isActive(item: AdminNavItem, activeKey: string) {
   display: flex;
   height: var(--admin-topbar-height);
   align-items: center;
-  gap: clamp(12px, 0.85vw, 16px);
+  justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid var(--color-card-border);
-  padding: 0 clamp(20px, 1.75vw, 34px);
+  padding: 0 18px 0 24px;
+}
+
+.brand-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
 }
 
 .brand-mark {
   display: flex;
-  width: clamp(38px, 2.35vw, 46px);
-  height: clamp(38px, 2.35vw, 46px);
+  width: 38px;
+  height: 38px;
+  flex: none;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: #eaf2ff;
+  border-radius: 11px;
+  background: #eef5ff;
   color: var(--color-primary);
 }
 
 .brand-mark svg {
-  width: clamp(28px, 1.75vw, 34px);
-  height: clamp(28px, 1.75vw, 34px);
+  width: 27px;
+  height: 27px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.3;
+  stroke-width: 2.15;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .sidebar-brand h1 {
   margin: 0;
+  overflow: hidden;
   color: var(--color-text-primary);
-  font-size: clamp(16px, 1.02vw, 20px);
+  font-size: 17px;
   font-weight: 900;
   line-height: 1;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidebar-toggle {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d7dfea;
+  border-radius: 8px;
+  background: #fff;
+  color: #8795aa;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #f7f9ff;
+  color: var(--color-primary);
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sidebar-nav {
   flex: 1;
   overflow-y: auto;
-  padding: clamp(26px, 2.7vw, 52px) clamp(14px, 0.95vw, 18px) 22px;
+  padding: 24px 16px 18px;
 }
 
 .nav-group + .nav-group {
-  margin-top: clamp(8px, 0.58vw, 12px);
-}
-
-.nav-group.expanded {
-  margin-bottom: clamp(4px, 0.38vw, 8px);
+  margin-top: 6px;
 }
 
 .nav-item {
   display: flex;
   width: 100%;
-  height: clamp(46px, 2.75vw, 54px);
+  height: 42px;
   align-items: center;
   justify-content: space-between;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
-  padding: 0 clamp(15px, 1vw, 20px);
-  color: #1e2b45;
+  padding: 0 14px;
+  color: #263856;
   font-family: inherit;
-  font-size: clamp(15px, 0.95vw, 17px);
+  font-size: 15px;
   font-weight: 800;
   text-decoration: none;
   transition: 0.18s ease;
 }
 
 .nav-item:hover {
-  background: var(--color-primary-soft);
+  background: #f5f8ff;
   color: var(--color-primary);
 }
 
 .nav-item.active {
-  background: var(--color-primary-soft);
+  background: #eaf2ff;
   color: var(--color-primary);
 }
 
+/* 父级展开态：能力清单只表达展开，不抢当前页焦点 */
 .nav-group.expanded > .nav-item.active {
-  background: #eaf2ff;
+  background: #f7faff;
   color: var(--color-primary);
+  box-shadow: none;
 }
 
 .nav-item.disabled {
@@ -225,13 +267,13 @@ function isActive(item: AdminNavItem, activeKey: string) {
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: clamp(13px, 0.9vw, 18px);
+  gap: 12px;
 }
 
 .nav-icon {
   display: inline-flex;
-  width: clamp(21px, 1.25vw, 24px);
-  height: clamp(21px, 1.25vw, 24px);
+  width: 20px;
+  height: 20px;
   align-items: center;
   justify-content: center;
   color: currentColor;
@@ -249,19 +291,19 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 .nav-arrow {
   display: inline-flex;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   align-items: center;
   justify-content: center;
-  opacity: 0.9;
+  opacity: 0.72;
 }
 
 .nav-arrow svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.4;
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -274,29 +316,24 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 .sub-item {
   display: flex;
-  height: 30px;
+  height: 32px;
   align-items: center;
-  gap: 0;
-  border-radius: 8px;
-  padding: 0 12px;
-  color: #748198;
-  font-size: clamp(13px, 0.75vw, 14px);
+  border-radius: 6px;
+  padding: 0 10px;
+  color: #7d899b;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   transition: 0.16s ease;
 }
 
 .sub-item + .sub-item {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .sub-item:hover {
-  background: rgba(234, 242, 255, 0.68);
+  background: #f6f9ff;
   color: var(--color-primary);
-}
-
-.sub-dot {
-  display: none;
 }
 
 .sub-item.active {
@@ -304,32 +341,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
   color: var(--color-primary);
 }
 
-.sub-item.active .sub-dot {
-  display: none;
-}
-
 .sub-item strong {
   font-weight: 800;
-}
-
-.collapse-entry {
-  display: flex;
-  height: clamp(76px, 5.2vw, 100px);
-  align-items: center;
-  gap: clamp(14px, 1vw, 20px);
-  border-top: 1px solid var(--color-card-border);
-  padding: 0 clamp(22px, 1.75vw, 34px);
-  color: #263856;
-  font-size: clamp(15px, 0.9vw, 17px);
-}
-
-.collapse-entry span {
-  color: #426089;
-  font-size: clamp(20px, 1.25vw, 24px);
-  font-weight: 900;
-}
-
-.collapse-entry strong {
-  font-weight: 900;
 }
 </style>
