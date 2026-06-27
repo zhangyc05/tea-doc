@@ -108,7 +108,7 @@ const indicators = [
               <div class="hero-title-group">
                 <div class="hero-title-row">
                   <h1>2026 年度教师能力清单执行版</h1>
-                  <span class="status-badge badge-success">已发布</span>
+                  <span class="badge-status badge-success">已发布</span>
                 </div>
                 <p class="hero-subtitle">当前周期正在使用的教师能力清单</p>
               </div>
@@ -207,7 +207,7 @@ const indicators = [
                   <td>{{ row.backbone }}</td>
                   <td>{{ row.master }}</td>
                   <td>{{ row.rule }}</td>
-                  <td><span class="enabled-badge badge-success">已启用</span></td>
+                  <td><span class="badge-status badge-success">已启用</span></td>
                   <td><button class="edit-link btn-link">编辑</button></td>
                 </tr>
               </tbody>
@@ -494,7 +494,7 @@ const indicators = [
   padding-left: 12px;
   background: var(--color-ability-tree-child);
   color: var(--color-primary);
-  box-shadow: var(--border-inset-thin);
+  box-shadow: inset 1px 0 0 var(--color-primary);
 }
 
 /* 响应式 */

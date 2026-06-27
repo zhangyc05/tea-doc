@@ -206,9 +206,7 @@
 }
 
 /* 状态徽章通用样式 */
-.badge-status,
-.status-badge,
-.enabled-badge {
+.badge-status {
   display: inline-flex;
   align-items: center;
   height: clamp(20px, 1.2vw, 24px);
@@ -441,8 +439,7 @@
   background: #f7faff;
 }
 
-.ability-tree-child.active,
-.execution-page .tree-child.active {
+.ability-tree-child.active {
   margin-left: -6px;
   margin-right: clamp(30px, 3vw, 40px);
   padding-left: clamp(10px, 0.7vw, 12px);
