@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { adminRoutes } from './admin.routes'
-import { designSystemRoutes } from './design-system.routes'
 import { mobileRoutes } from './mobile.routes'
 import { teacherRoutes } from './teacher.routes'
 
@@ -12,7 +11,6 @@ export const router = createRouter({
       path: '/',
       redirect: '/admin/training/resources',
     },
-    ...designSystemRoutes, // 添加设计系统路由
     ...adminRoutes,
     ...teacherRoutes,
     ...mobileRoutes,
