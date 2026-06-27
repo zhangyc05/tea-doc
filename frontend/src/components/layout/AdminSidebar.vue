@@ -207,9 +207,13 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, #0b63f6 0%, #0760ed 100%);
-  box-shadow: 0 12px 24px rgba(11, 99, 246, 0.2);
-  color: #fff;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.nav-group.expanded > .nav-item.active {
+  background: #eaf2ff;
+  color: var(--color-primary);
 }
 
 .nav-item.disabled {
@@ -268,26 +272,15 @@ function isActive(item: AdminNavItem, activeKey: string) {
   padding: 2px 0 4px clamp(16px, 1vw, 20px);
 }
 
-.sub-nav::before {
-  position: absolute;
-  left: 5px;
-  top: 4px;
-  bottom: 8px;
-  width: 1px;
-  border-radius: 999px;
-  background: #d8e5f6;
-  content: '';
-}
-
 .sub-item {
   display: flex;
-  height: clamp(34px, 2.15vw, 38px);
+  height: clamp(28px, 1.8vw, 32px);
   align-items: center;
   gap: 10px;
   border-radius: 8px;
   padding: 0 clamp(11px, 0.75vw, 14px);
   color: #748198;
-  font-size: clamp(14px, 0.85vw, 15px);
+  font-size: clamp(13px, 0.75vw, 14px);
   font-weight: 700;
   text-decoration: none;
   transition: 0.16s ease;
@@ -303,21 +296,22 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .sub-dot {
-  width: 6px;
-  height: 6px;
+  width: 0;
+  height: 0;
   flex: none;
   border-radius: var(--radius-full);
   background: transparent;
+  opacity: 0;
 }
 
 .sub-item.active {
   background: #eaf2ff;
   color: var(--color-primary);
-  box-shadow: inset 3px 0 0 var(--color-primary);
 }
 
 .sub-item.active .sub-dot {
-  background: var(--color-primary);
+  background: transparent;
+  opacity: 0;
 }
 
 .sub-item strong {
