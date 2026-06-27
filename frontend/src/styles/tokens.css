@@ -57,14 +57,14 @@
   --radius-full: 999px;
 
   /* 阴影 */
-  --shadow-card: 0 6px 18px rgba(15, 35, 80, 0.04);
-  --shadow-card-hover: 0 12px 28px rgba(15, 35, 80, 0.08);
-  --shadow-floating: 0 12px 32px rgba(15, 35, 80, 0.16);
+  --shadow-card: 0 10px 30px rgba(15, 35, 80, 0.06);
+  --shadow-card-hover: 0 16px 36px rgba(15, 35, 80, 0.1);
+  --shadow-floating: 0 14px 36px rgba(15, 35, 80, 0.18);
 
-  /* 页面尺寸 */
-  --admin-sidebar-width: 248px;
-  --admin-topbar-height: 68px;
-  --admin-content-max-width: 1480px;
+  /* 页面尺寸：管理端按 1920×1080 效果图口径校准 */
+  --admin-sidebar-width: 330px;
+  --admin-topbar-height: 90px;
+  --admin-content-max-width: 1518px;
 
   --teacher-pc-content-max-width: 1280px;
 
