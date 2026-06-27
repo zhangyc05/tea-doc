@@ -7,10 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
@@ -22,13 +19,10 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@vue/test-utils": "^2.4.11",
     "autoprefixer": "^10.4.21",
-    "jsdom": "^29.1.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
-    "vitest": "^4.1.9",
     "vue-tsc": "^2.2.10"
   }
 }
