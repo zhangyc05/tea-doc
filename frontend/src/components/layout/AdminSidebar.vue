@@ -66,24 +66,44 @@
 <template>
 	<aside class="admin-sidebar" :class="{ collapsed: props.collapsed }">
 		<div class="sidebar-brand">
+			<div class="brand-main">
+				<div class="brand-mark" :title="props.collapsed ? '教师综合发展' : undefined">
+					<svg viewBox="0 0 32 32" aria-hidden="true">
+						<path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
+						<path d="M11 11.5h10M11 16h10M13 20.5h6" />
+					</svg>
+				</div>
+				<h1 v-if="!props.collapsed">教师综合发展</h1>
+			</div>
+
 			<button
+				v-if="!props.collapsed"
 				class="sidebar-toggle"
 				type="button"
-				:aria-label="props.collapsed ? '打开边栏' : '收起边栏'"
-				:title="props.collapsed ? '打开边栏' : '收起边栏'"
+				aria-label="收起边栏"
+				title="收起边栏"
 				@click="emit('toggle')"
 			>
 				<svg viewBox="0 0 20 20" aria-hidden="true">
 					<rect x="3" y="3" width="14" height="14" rx="4" />
 					<path d="M9 4.5v11" />
 				</svg>
-				<span class="nav-tooltip">{{ props.collapsed ? '打开边栏' : '收起边栏' }}</span>
 			</button>
-
-			<div v-if="!props.collapsed" class="brand-main">
-				<h1>教师综合发展</h1>
-			</div>
 		</div>
+
+		<button
+			v-if="props.collapsed"
+			class="rail-toggle"
+			type="button"
+			aria-label="打开边栏"
+			title="打开边栏"
+			@click="emit('toggle')"
+		>
+			<svg viewBox="0 0 20 20" aria-hidden="true">
+				<rect x="3" y="3" width="14" height="14" rx="4" />
+				<path d="M9 4.5v11" />
+			</svg>
+		</button>
 
 		<nav class="sidebar-nav">
 			<div v-for="item in navItems" :key="item.key" class="nav-group" :class="{ expanded: item.children && isActive(item, activeKey) }">
@@ -93,6 +113,7 @@
 					:to="item.to"
 					class="nav-item"
 					:class="{ active: isActive(item, activeKey), disabled: !item.to }"
+					:title="props.collapsed ? item.label : undefined"
 				>
 					<span class="nav-leading">
 						<span class="nav-icon" :class="`icon-${item.icon}`">
@@ -117,11 +138,16 @@
 							<path d="M4 10 8 6l4 4" />
 						</svg>
 					</span>
-					<span v-if="props.collapsed" class="nav-tooltip">{{ item.label }}</span>
 				</RouterLink>
 
 				<!-- 无路由的一级菜单（如系统管理） -->
-				<button v-else type="button" disabled class="nav-item disabled">
+				<button
+					v-else
+					type="button"
+					disabled
+					class="nav-item disabled"
+					:title="props.collapsed ? item.label : undefined"
+				>
 					<span class="nav-leading">
 						<span class="nav-icon">
 							<svg viewBox="0 0 24 24" aria-hidden="true">
@@ -130,7 +156,6 @@
 						</span>
 						<span v-if="!props.collapsed" class="nav-label">{{ item.label }}</span>
 					</span>
-					<span v-if="props.collapsed" class="nav-tooltip">{{ item.label }}</span>
 				</button>
 
 				<!-- 二级菜单（只在展开态显示） -->
@@ -178,7 +203,7 @@
 		padding: 0 18px;
 	}
 
-	/* 收起态品牌区：只显示控制按钮，居中对齐 */
+	/* 收起态品牌区：居中对齐 */
 	.admin-sidebar.collapsed .sidebar-brand {
 		justify-content: center;
 		padding: 0;
@@ -189,6 +214,28 @@
 		min-width: 0;
 		align-items: center;
 		gap: 12px;
+	}
+
+	.brand-mark {
+		display: flex;
+		width: 38px;
+		height: 38px;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		border-radius: 11px;
+		background: #eef5ff;
+		color: var(--color-primary);
+	}
+
+	.brand-mark svg {
+		width: 27px;
+		height: 27px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.15;
+		stroke-linecap: round;
+		stroke-linejoin: round;
 	}
 
 	.brand-main h1 {
@@ -202,7 +249,7 @@
 		white-space: nowrap;
 	}
 
-	/* 顶部控制按钮 - 第一个按钮就是侧栏控制 */
+	/* 顶部控制按钮 - 展开态显示 */
 	.sidebar-toggle {
 		position: relative;
 		display: inline-flex;
@@ -229,6 +276,38 @@
 	.sidebar-toggle svg {
 		width: 16px;
 		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	/* Rail 状态的打开按钮 */
+	.rail-toggle {
+		display: flex;
+		width: 48px;
+		height: 48px;
+		margin: 12px auto 0;
+		align-items: center;
+		justify-content: center;
+		border: 0;
+		border-radius: 12px;
+		background: transparent;
+		color: #263856;
+		transition:
+			background 0.16s ease,
+			color 0.16s ease;
+	}
+
+	.rail-toggle:hover {
+		background: #f2f7ff;
+		color: var(--color-primary);
+	}
+
+	.rail-toggle svg {
+		width: 18px;
+		height: 18px;
 		fill: none;
 		stroke: currentColor;
 		stroke-width: 1.8;
@@ -361,48 +440,6 @@
 		stroke-linejoin: round;
 	}
 
-	/* Tooltip 样式 - 黑底白字，优化位置避免遮挡 */
-	.nav-tooltip {
-		position: absolute;
-		left: calc(100% + 16px);
-		top: 50%;
-		z-index: 1000;
-		display: none;
-		transform: translateY(-50%);
-		border-radius: 8px;
-		background: rgba(18, 18, 18, 0.94);
-		color: #fff;
-		font-size: 13px;
-		font-weight: 700;
-		line-height: 1;
-		padding: 9px 11px;
-		white-space: nowrap;
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
-		pointer-events: none;
-		transition: opacity 0.16s ease, transform 0.16s ease;
-		opacity: 0;
-	}
-
-	/* Tooltip 小三角 */
-	.nav-tooltip::before {
-		position: absolute;
-		left: -4px;
-		top: 50%;
-		width: 8px;
-		height: 8px;
-		transform: translateY(-50%) rotate(45deg);
-		background: rgba(18, 18, 18, 0.94);
-		content: '';
-	}
-
-	/* hover 时显示 tooltip - 延迟显示避免误触 */
-	.admin-sidebar.collapsed .nav-item:hover .nav-tooltip,
-	.admin-sidebar.collapsed .sidebar-toggle:hover .nav-tooltip {
-		display: inline-flex;
-		opacity: 1;
-		transition-delay: 0.1s;
-	}
-
 	/* 二级菜单 */
 	.sub-nav {
 		position: relative;
@@ -444,7 +481,7 @@
 	/* 收起态隐藏不需要的元素 */
 	.admin-sidebar.collapsed .nav-label,
 	.admin-sidebar.collapsed .nav-arrow,
-	.admin-sidebar.collapsed .brand-main,
+	.admin-sidebar.collapsed .brand-main h1,
 	.admin-sidebar.collapsed .sub-nav {
 		display: none;
 	}
