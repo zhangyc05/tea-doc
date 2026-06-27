@@ -104,37 +104,37 @@ const indicators = [
           </div>
 
           <div class="hero-main">
-            <div class="hero-title-row">
-              <h1>2026 年度教师能力清单执行版</h1>
-              <span class="status-badge">已发布</span>
-            </div>
-
-            <p class="hero-subtitle">当前周期正在使用的教师能力清单执行口径</p>
-
-            <div class="hero-info-stack">
-              <div class="hero-source-row">
-                <span class="meta-label">来源母版</span>
-                <strong>职业院校教师能力清单 V1.0</strong>
-                <a>查看母版 ›</a>
+            <div class="hero-heading-row">
+              <div class="hero-title-group">
+                <div class="hero-title-row">
+                  <h1>2026 年度教师能力清单执行版</h1>
+                  <span class="status-badge">已发布</span>
+                </div>
+                <p class="hero-subtitle">当前周期正在使用的教师能力清单执行口径</p>
               </div>
-              <div class="hero-meta-row">
-                <div class="hero-meta-chip">
-                  <span>适用范围</span>
-                  <strong>全校教师</strong>
-                </div>
-                <div class="hero-meta-chip">
-                  <span>最近更新</span>
-                  <strong>2026-06-08 20:30</strong>
-                </div>
+
+              <div class="hero-actions">
+                <button class="primary-action">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
+                  派生下一周期执行版
+                </button>
+                <button class="secondary-action">历史版本</button>
               </div>
             </div>
 
-            <div class="hero-actions">
-              <button class="primary-action">
-                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
-                派生下一周期执行版
-              </button>
-              <button class="link-action">查看历史版本 ›</button>
+            <div class="hero-summary-strip">
+              <div class="summary-item source-item">
+                <span>来源母版</span>
+                <button class="template-link">职业院校教师能力清单 V1.0</button>
+              </div>
+              <div class="summary-item">
+                <span>适用范围</span>
+                <strong>全校教师</strong>
+              </div>
+              <div class="summary-item">
+                <span>最近更新</span>
+                <strong>2026-06-08 20:30</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -268,12 +268,12 @@ const indicators = [
   left: 0;
   bottom: 0;
   z-index: 1;
-  width: min(330px, 30%);
-  height: 96px;
+  width: min(280px, 24%);
+  height: 84px;
   pointer-events: none;
   background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
   background-size: 12px 12px;
-  opacity: 0.14;
+  opacity: 0.1;
   content: '';
 }
 
@@ -295,7 +295,7 @@ const indicators = [
   position: relative;
   z-index: 2;
   display: flex;
-  max-width: min(720px, 56%);
+  max-width: min(940px, 68%);
   gap: clamp(14px, 0.95vw, 20px);
   padding: clamp(24px, 1.8vw, 34px) 0 clamp(20px, 1.5vw, 30px) clamp(24px, 1.75vw, 34px);
 }
@@ -329,7 +329,20 @@ const indicators = [
 
 .hero-main {
   min-width: 0;
+  flex: 1;
   padding-top: 2px;
+}
+
+.hero-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(22px, 1.55vw, 30px);
+  margin-bottom: clamp(16px, 1.15vw, 22px);
+}
+
+.hero-title-group {
+  min-width: 0;
 }
 
 .hero-title-row {
@@ -340,13 +353,13 @@ const indicators = [
 }
 
 .hero-title-row h1 {
-  max-width: 620px;
   margin: 0;
   color: #07122f;
   font-size: clamp(22px, 1.45vw, 28px);
   font-weight: 950;
   letter-spacing: -0.55px;
   line-height: 1.16;
+  white-space: nowrap;
 }
 
 .status-badge {
@@ -363,77 +376,80 @@ const indicators = [
 }
 
 .hero-subtitle {
-  margin: 0 0 clamp(13px, 0.85vw, 16px);
+  margin: 0;
   color: #65758f;
   font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 700;
   line-height: 1.4;
 }
 
-.hero-info-stack {
-  display: inline-flex;
-  min-width: min(100%, 590px);
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: clamp(14px, 1vw, 20px);
-  border: 1px solid rgba(216, 228, 244, 0.7);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.72);
-  padding: clamp(10px, 0.7vw, 13px) clamp(13px, 0.9vw, 17px);
-  box-shadow: 0 8px 20px rgba(18, 42, 84, 0.035);
-  backdrop-filter: blur(4px);
-}
-
-.hero-source-row,
-.hero-meta-row,
-.hero-meta-chip {
+.hero-summary-strip {
   display: flex;
+  max-width: 100%;
   align-items: center;
+  gap: clamp(18px, 1.35vw, 28px);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.44);
+  padding: clamp(8px, 0.62vw, 12px) 0;
+  backdrop-filter: blur(2px);
 }
 
-.hero-source-row {
+.summary-item {
+  display: inline-flex;
+  position: relative;
   min-width: 0;
-  gap: 12px;
-}
-
-.meta-label,
-.hero-meta-chip span {
-  color: #6b7b94;
-  font-size: clamp(12px, 0.7vw, 13px);
-  font-weight: 800;
+  align-items: center;
+  gap: 9px;
   white-space: nowrap;
 }
 
-.hero-source-row strong,
-.hero-meta-chip strong {
+.summary-item + .summary-item::before {
+  display: inline-flex;
+  width: 4px;
+  height: 4px;
+  flex: none;
+  border-radius: 999px;
+  background: #b5c5dc;
+  margin-right: clamp(2px, 0.3vw, 6px);
+  content: '';
+}
+
+.summary-item span {
+  color: #6b7b94;
+  font-size: clamp(12px, 0.7vw, 13px);
+  font-weight: 800;
+}
+
+.summary-item strong,
+.template-link {
   color: #07122f;
   font-size: clamp(13px, 0.78vw, 15px);
   font-weight: 950;
   white-space: nowrap;
 }
 
-.hero-source-row a {
+.template-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
   color: var(--color-primary);
-  font-size: clamp(12px, 0.72vw, 14px);
-  font-weight: 900;
-  white-space: nowrap;
+  cursor: pointer;
 }
 
-.hero-meta-row {
-  gap: clamp(22px, 1.55vw, 30px);
-}
-
-.hero-meta-chip {
-  gap: 10px;
+.template-link:hover {
+  text-decoration: underline;
 }
 
 .hero-actions {
   display: flex;
+  flex: none;
   align-items: center;
-  gap: clamp(18px, 1.1vw, 24px);
+  gap: clamp(10px, 0.7vw, 14px);
+  padding-top: 2px;
 }
 
 .primary-action,
+.secondary-action,
 .outline-action,
 .link-action,
 .edit-link {
@@ -455,6 +471,7 @@ const indicators = [
   color: #fff;
   font-size: clamp(13px, 0.78vw, 14px);
   font-weight: 900;
+  white-space: nowrap;
 }
 
 .primary-action svg {
@@ -465,6 +482,20 @@ const indicators = [
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.secondary-action {
+  display: inline-flex;
+  height: clamp(38px, 2.4vw, 46px);
+  align-items: center;
+  border: 1px solid rgba(190, 207, 232, 0.9);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0 clamp(13px, 0.9vw, 18px);
+  color: var(--color-primary);
+  font-size: clamp(13px, 0.78vw, 14px);
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .link-action {
@@ -806,7 +837,7 @@ const indicators = [
   }
 
   .hero-art {
-    width: min(68%, 760px);
+    width: min(66%, 760px);
     background-position: right center;
   }
 
@@ -822,15 +853,23 @@ const indicators = [
   }
 
   .hero-content {
-    max-width: 62%;
+    max-width: 72%;
+  }
+
+  .hero-heading-row {
+    gap: 18px;
   }
 
   .hero-title-row h1 {
-    max-width: 540px;
+    font-size: clamp(21px, 1.38vw, 25px);
   }
 
-  .hero-info-stack {
-    min-width: min(100%, 560px);
+  .primary-action {
+    padding: 0 16px;
+  }
+
+  .secondary-action {
+    padding: 0 14px;
   }
 }
 
@@ -843,8 +882,13 @@ const indicators = [
     max-width: 100%;
   }
 
-  .hero-info-stack {
-    min-width: min(100%, 620px);
+  .hero-heading-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-summary-strip {
+    flex-wrap: wrap;
   }
 
   .work-area {
