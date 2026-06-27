@@ -68,6 +68,7 @@
 
   /* 管理端响应式尺寸：1920 是视觉参考，14 寸笔记本是主力办公口径 */
   --admin-sidebar-width: clamp(248px, 15vw, 300px);
+  --admin-sidebar-collapsed-width: 72px;
   --admin-topbar-height: clamp(68px, 4.4vw, 82px);
   --admin-content-max-width: 1480px;
   --admin-page-gutter-x: clamp(18px, 1.45vw, 28px);
