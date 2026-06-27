@@ -1,5 +1,4 @@
 @import './tokens.css';
-@import './admin-responsive.css';
 
 @tailwind base;
 @tailwind components;
