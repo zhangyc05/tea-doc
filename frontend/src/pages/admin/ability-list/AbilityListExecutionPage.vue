@@ -89,11 +89,6 @@ const indicators = [
 <template>
   <AdminLayout active-key="ability-list-execution">
     <div class="execution-page">
-      <section class="page-intro">
-        <div class="local-breadcrumb">能力清单 / 执行版</div>
-        <p>查看当前周期正在使用的能力清单，并可进入调整配置或派生下一周期执行版。</p>
-      </section>
-
       <section class="execution-hero">
         <div class="hero-content">
           <div class="hero-emblem">
@@ -136,70 +131,6 @@ const indicators = [
               <button class="link-action">查看历史版本 ›</button>
             </div>
           </div>
-        </div>
-
-        <div class="hero-illustration" aria-hidden="true">
-          <svg viewBox="0 0 640 312" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="heroPanel" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#F7FBFF" />
-                <stop offset="0.44" stop-color="#EAF4FF" />
-                <stop offset="1" stop-color="#D9EAFF" />
-              </linearGradient>
-              <linearGradient id="blueArrow" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0" stop-color="#0E63EA" />
-                <stop offset="0.58" stop-color="#2B87FF" />
-                <stop offset="1" stop-color="#8CC3FF" />
-              </linearGradient>
-              <linearGradient id="greenArrow" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0" stop-color="#1BBF93" />
-                <stop offset="0.64" stop-color="#39D2A8" />
-                <stop offset="1" stop-color="#7EE8C8" />
-              </linearGradient>
-              <linearGradient id="bookPage" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#FFFFFF" />
-                <stop offset="1" stop-color="#CFE4FF" />
-              </linearGradient>
-              <filter id="heroShadow" x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#0B63F6" flood-opacity="0.24" />
-              </filter>
-            </defs>
-
-            <rect width="640" height="312" fill="url(#heroPanel)" />
-            <path d="M60 245C154 176 224 179 314 236C396 288 498 270 624 159V312H60Z" fill="#D9EAFF" opacity="0.76" />
-            <path d="M126 272c85-94 171-104 258-30 75 64 159 55 253-35" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.62" />
-            <circle cx="168" cy="64" r="30" fill="#fff" opacity="0.45" />
-            <circle cx="330" cy="92" r="10" fill="#fff" opacity="0.72" />
-            <circle cx="548" cy="142" r="18" fill="#fff" opacity="0.48" />
-
-            <g opacity="0.42">
-              <path d="M130 58h4M152 58h4M174 58h4M196 58h4M218 58h4M130 76h4M152 76h4M174 76h4M196 76h4M218 76h4M130 94h4M152 94h4M174 94h4M196 94h4M218 94h4" stroke="#94BDF7" stroke-width="3" stroke-linecap="round" />
-            </g>
-
-            <g opacity="0.72">
-              <ellipse v-for="i in 16" :key="`drop-${i}`" :cx="82 + i * 24" :cy="202 + (i % 4) * 15" rx="5.5" ry="16" fill="#57BCE8" :opacity="0.36 + (i % 4) * 0.08" />
-            </g>
-            <g opacity="0.62">
-              <ellipse v-for="i in 24" :key="`leaf-${i}`" :cx="88 + i * 20" :cy="222 - (i % 6) * 15" rx="7" ry="21" fill="#5EAEE7" :transform="`rotate(${-36 + (i % 7) * 12} ${88 + i * 20} ${222 - (i % 6) * 15})`" />
-              <ellipse v-for="i in 16" :key="`leaf-green-${i}`" :cx="120 + i * 26" :cy="208 - (i % 5) * 18" rx="7" ry="21" fill="#45CFA7" :transform="`rotate(${-30 + (i % 5) * 15} ${120 + i * 26} ${208 - (i % 5) * 18})`" />
-            </g>
-
-            <g filter="url(#heroShadow)">
-              <path d="M366 252h44V117h38L388 43l-60 74h38z" fill="url(#blueArrow)" />
-              <path d="M492 252h48V84h42L516 20l-66 64h42z" fill="url(#greenArrow)" />
-            </g>
-            <g opacity="0.58">
-              <path d="M440 252h24V164h22l-34-43-34 43h22z" fill="#8AB7F2" />
-              <path d="M562 252h22V176h20l-31-39-31 39h20z" fill="#9ACBFF" />
-            </g>
-
-            <g filter="url(#heroShadow)">
-              <path d="M250 239c47-27 101-27 162 0v42c-61-23-115-23-162 0z" fill="url(#bookPage)" />
-              <path d="M412 239c61-27 115-27 162 0v42c-47-23-101-23-162 0z" fill="url(#bookPage)" />
-              <path d="M407 235h12v50h-12z" fill="#8AB6F6" />
-              <path d="M262 248c42-14 84-14 126 0M435 248c42-14 84-14 126 0M268 264c36-12 75-12 114 0M441 264c37-12 75-12 113 0" fill="none" stroke="#A9C9F6" stroke-width="3" stroke-linecap="round" opacity="0.75" />
-            </g>
-          </svg>
         </div>
       </section>
 
@@ -248,10 +179,6 @@ const indicators = [
                 <p>聚焦教学目标设计、教学过程组织与实施，提升课堂教学质量与学生学习成效。</p>
               </div>
             </div>
-            <button class="outline-action">
-              <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 16A7 7 0 1 0 9 2a7 7 0 0 0 0 14Zm0-4v-3m0-3h.01" /></svg>
-              指标说明
-            </button>
           </header>
 
           <div class="indicator-table-wrap">
@@ -297,24 +224,6 @@ const indicators = [
   gap: clamp(14px, 1vw, 18px);
 }
 
-.page-intro {
-  padding: 0 2px;
-}
-
-.local-breadcrumb {
-  margin-bottom: clamp(6px, 0.55vw, 10px);
-  color: #30415f;
-  font-size: clamp(13px, 0.78vw, 15px);
-  font-weight: 800;
-}
-
-.page-intro p {
-  margin: 0;
-  color: #53627a;
-  font-size: clamp(13px, 0.78vw, 15px);
-  line-height: 1.6;
-}
-
 .execution-hero,
 .panel-card {
   border: 1px solid #dce7f7;
@@ -324,56 +233,45 @@ const indicators = [
 
 .execution-hero {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 42%);
-  min-height: clamp(246px, 17.2vw, 330px);
+  min-height: clamp(140px, 9.5vw, 170px);
   overflow: hidden;
   border-radius: 14px;
   background:
-    radial-gradient(circle at 34% 72%, rgba(11, 99, 246, 0.08) 0, transparent 32%),
-    linear-gradient(135deg, #ffffff 0%, #f6fbff 48%, #eaf5ff 100%);
-}
-
-.execution-hero::before {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 360px;
-  height: 150px;
-  background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
-  background-size: 12px 12px;
-  opacity: 0.34;
-  content: '';
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 251, 255, 0.92) 100%),
+    url('@/images/hero-art.png');
+  background-size: auto, 400px;
+  background-position: 0 0, center;
+  background-repeat: no-repeat, repeat;
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
   display: flex;
-  gap: clamp(24px, 1.75vw, 34px);
-  padding: clamp(30px, 2.5vw, 48px) 0 clamp(28px, 2.2vw, 42px) clamp(30px, 2.3vw, 44px);
+  gap: clamp(14px, 0.9vw, 18px);
+  padding: clamp(14px, 1.2vw, 20px) 0 clamp(12px, 1.0vw, 18px) clamp(16px, 1.4vw, 20px);
 }
 
 .hero-emblem {
   flex: none;
-  padding-top: clamp(4px, 0.4vw, 8px);
+  padding-top: clamp(1px, 0.1vw, 2px);
 }
 
 .hero-icon {
   display: flex;
-  width: clamp(68px, 4.5vw, 86px);
-  height: clamp(68px, 4.5vw, 86px);
+  width: clamp(44px, 2.9vw, 54px);
+  height: clamp(44px, 2.9vw, 54px);
   align-items: center;
   justify-content: center;
-  border: clamp(9px, 0.62vw, 12px) solid rgba(255, 255, 255, 0.85);
+  border: clamp(6px, 0.4vw, 8px) solid rgba(255, 255, 255, 0.85);
   border-radius: 50%;
   background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
-  box-shadow: 0 18px 34px rgba(11, 99, 246, 0.24);
+  box-shadow: 0 10px 20px rgba(11, 99, 246, 0.24);
 }
 
 .hero-icon svg {
-  width: clamp(32px, 2.2vw, 42px);
-  height: clamp(32px, 2.2vw, 42px);
+  width: clamp(20px, 1.3vw, 26px);
+  height: clamp(20px, 1.3vw, 26px);
   fill: none;
   stroke: #fff;
   stroke-width: 2.2;
@@ -383,21 +281,21 @@ const indicators = [
 
 .hero-main {
   min-width: 0;
-  padding-top: clamp(6px, 0.62vw, 12px);
+  padding-top: clamp(2px, 0.15vw, 4px);
 }
 
 .hero-title-row {
   display: flex;
   align-items: center;
-  gap: clamp(12px, 0.95vw, 18px);
-  margin-bottom: clamp(22px, 1.75vw, 34px);
+  gap: clamp(8px, 0.5vw, 12px);
+  margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 
 .hero-title-row h1 {
   max-width: 760px;
   margin: 0;
   color: #07122f;
-  font-size: clamp(25px, 1.8vw, 34px);
+  font-size: clamp(18px, 1.2vw, 22px);
   font-weight: 950;
   letter-spacing: -0.7px;
   line-height: 1.18;
@@ -407,20 +305,27 @@ const indicators = [
   display: inline-flex;
   flex: none;
   align-items: center;
-  height: clamp(26px, 1.55vw, 30px);
-  padding: 0 clamp(12px, 0.8vw, 15px);
+  height: clamp(20px, 1.2vw, 24px);
+  padding: 0 clamp(8px, 0.55vw, 10px);
   border-radius: 999px;
   background: #dff7e9;
   color: #0d9f58;
-  font-size: clamp(12px, 0.72vw, 14px);
+  font-size: clamp(10px, 0.6vw, 12px);
   font-weight: 900;
 }
 
 .hero-meta-grid {
   display: grid;
-  grid-template-columns: minmax(210px, 1.45fr) minmax(120px, 0.72fr) minmax(160px, 0.95fr);
-  gap: clamp(20px, 1.85vw, 36px);
-  margin-bottom: clamp(22px, 1.75vw, 34px);
+  grid-template-columns: minmax(160px, 1.45fr) minmax(90px, 0.72fr) minmax(120px, 0.95fr);
+  gap: clamp(12px, 1.0vw, 20px);
+  margin-bottom: clamp(12px, 0.9vw, 16px);
+}
+
+.hero-meta-item:not(.source-item) {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(6px, 0.45vw, 10px);
+  flex-wrap: wrap;
 }
 
 .hero-meta-item {
@@ -430,41 +335,46 @@ const indicators = [
 
 .hero-meta-item + .hero-meta-item::before {
   position: absolute;
-  left: calc(clamp(20px, 1.85vw, 36px) / -2);
-  top: 4px;
+  left: calc(clamp(12px, 1.0vw, 20px) / -2);
+  top: 3px;
   width: 1px;
-  height: clamp(52px, 3.35vw, 64px);
+  height: clamp(36px, 2.4vw, 44px);
   background: #d9e4f2;
   content: '';
 }
 
-.hero-meta-item p {
-  margin: 0 0 clamp(6px, 0.45vw, 9px);
+.hero-meta-item.source-item {
+  gap: clamp(8px, 0.6vw, 12px);
+}
+
+.hero-meta-item.source-item p,
+.hero-meta-item:not(.source-item) p {
+  margin: 0;
   color: #697890;
-  font-size: clamp(13px, 0.8vw, 15px);
+  font-size: clamp(11px, 0.65vw, 13px);
   font-weight: 700;
 }
 
 .hero-meta-item strong {
-  display: block;
   color: #07122f;
-  font-size: clamp(14px, 0.85vw, 16px);
+  font-size: clamp(12px, 0.7vw, 14px);
   font-weight: 900;
   white-space: nowrap;
+  display: inline;
 }
 
 .hero-meta-item a {
   display: inline-flex;
-  margin-top: clamp(10px, 0.8vw, 15px);
+  margin: 0;
   color: var(--color-primary);
-  font-size: clamp(14px, 0.8vw, 15px);
+  font-size: clamp(12px, 0.7vw, 13px);
   font-weight: 900;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: clamp(22px, 1.85vw, 36px);
+  gap: clamp(14px, 1.0vw, 20px);
 }
 
 .primary-action,
@@ -479,15 +389,15 @@ const indicators = [
 
 .primary-action {
   display: inline-flex;
-  height: clamp(44px, 2.9vw, 56px);
+  height: clamp(34px, 2.2vw, 40px);
   align-items: center;
-  gap: clamp(8px, 0.62vw, 12px);
-  padding: 0 clamp(20px, 1.55vw, 30px);
+  gap: clamp(5px, 0.4vw, 8px);
+  padding: 0 clamp(14px, 1.0vw, 20px);
   border-radius: 7px;
   background: linear-gradient(135deg, #0b63f6 0%, #0055e6 100%);
-  box-shadow: 0 16px 28px rgba(11, 99, 246, 0.22);
+  box-shadow: 0 10px 18px rgba(11, 99, 246, 0.22);
   color: #fff;
-  font-size: clamp(14px, 0.85vw, 16px);
+  font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 900;
 }
 
@@ -503,19 +413,8 @@ const indicators = [
 
 .link-action {
   color: var(--color-primary);
-  font-size: clamp(14px, 0.85vw, 16px);
+  font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 900;
-}
-
-.hero-illustration {
-  position: relative;
-  min-width: 0;
-}
-
-.hero-illustration svg {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 .work-area {
@@ -529,8 +428,8 @@ const indicators = [
 }
 
 .structure-card {
-  min-height: clamp(418px, 26.6vw, 510px);
-  padding: clamp(22px, 1.45vw, 28px) clamp(20px, 1.35vw, 26px);
+  min-height: clamp(280px, 18vw, 340px);
+  padding: clamp(18px, 1.2vw, 22px) clamp(16px, 1.1vw, 20px);
 }
 
 .card-heading,
@@ -540,21 +439,21 @@ const indicators = [
 }
 
 .card-heading {
-  gap: clamp(12px, 0.85vw, 16px);
-  margin-bottom: clamp(16px, 1.15vw, 22px);
+  gap: clamp(10px, 0.7vw, 14px);
+  margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 
 .card-heading strong {
   color: #07122f;
-  font-size: clamp(18px, 1.05vw, 20px);
+  font-size: clamp(16px, 0.95vw, 18px);
   font-weight: 950;
 }
 
 .card-icon {
   display: inline-flex;
   flex: none;
-  width: clamp(30px, 1.7vw, 32px);
-  height: clamp(30px, 1.7vw, 32px);
+  width: clamp(26px, 1.5vw, 30px);
+  height: clamp(26px, 1.5vw, 30px);
   align-items: center;
   justify-content: center;
   border-radius: 8px;
@@ -563,8 +462,8 @@ const indicators = [
 }
 
 .card-icon svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.3;
@@ -686,26 +585,26 @@ const indicators = [
 }
 
 .indicator-card {
-  min-height: clamp(418px, 26.6vw, 510px);
-  padding: clamp(22px, 1.35vw, 26px) clamp(22px, 1.35vw, 26px) clamp(24px, 1.65vw, 32px);
+  min-height: clamp(280px, 18vw, 340px);
+  padding: clamp(18px, 1.2vw, 22px) clamp(18px, 1.2vw, 22px) clamp(20px, 1.4vw, 26px);
 }
 
 .indicator-header {
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: clamp(16px, 1.15vw, 22px);
+  gap: 16px;
+  margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 
 .indicator-title-wrap {
   display: flex;
   min-width: 0;
-  gap: clamp(12px, 0.85vw, 16px);
+  gap: clamp(10px, 0.7vw, 14px);
 }
 
 .indicator-title-wrap h2 {
-  margin: 0 0 clamp(6px, 0.52vw, 10px);
+  margin: 0 0 clamp(4px, 0.4vw, 6px);
   color: #07122f;
-  font-size: clamp(19px, 1.15vw, 22px);
+  font-size: clamp(17px, 1.0vw, 19px);
   font-weight: 950;
 }
 
@@ -713,7 +612,7 @@ const indicators = [
   max-width: 760px;
   margin: 0;
   color: #62728a;
-  font-size: clamp(13px, 0.75vw, 14px);
+  font-size: clamp(12px, 0.7vw, 13px);
   font-weight: 600;
   line-height: 1.55;
 }
@@ -721,22 +620,22 @@ const indicators = [
 .outline-action {
   display: inline-flex;
   flex: none;
-  height: clamp(40px, 2.5vw, 48px);
+  height: clamp(36px, 2.2vw, 42px);
   align-items: center;
-  gap: 8px;
-  padding: 0 clamp(15px, 1.05vw, 20px);
+  gap: 6px;
+  padding: 0 clamp(12px, 0.9vw, 16px);
   border: 1px solid #d8e4f4;
   border-radius: 9px;
   background: #fff;
   color: var(--color-primary);
-  font-size: clamp(13px, 0.78vw, 15px);
+  font-size: clamp(12px, 0.7vw, 14px);
   font-weight: 900;
   box-shadow: 0 6px 16px rgba(16, 40, 90, 0.04);
 }
 
 .outline-action svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -846,10 +745,6 @@ const indicators = [
 }
 
 @media (max-width: 1440px) {
-  .execution-hero {
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 36%);
-  }
-
   .hero-title-row h1 {
     max-width: 560px;
   }
@@ -860,14 +755,6 @@ const indicators = [
 }
 
 @media (max-width: 1280px) {
-  .execution-hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-illustration {
-    display: none;
-  }
-
   .work-area {
     grid-template-columns: 1fr;
   }
