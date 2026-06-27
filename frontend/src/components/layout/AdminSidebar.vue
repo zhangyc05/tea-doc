@@ -67,7 +67,7 @@
 	<aside class="admin-sidebar" :class="{ collapsed: props.collapsed }">
 		<div class="sidebar-brand">
 			<div class="brand-main">
-				<div class="brand-mark" :title="props.collapsed ? '教师综合发展' : undefined">
+				<div class="brand-mark" :data-tooltip="props.collapsed ? '教师综合发展' : undefined">
 					<svg viewBox="0 0 32 32" aria-hidden="true">
 						<path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
 						<path d="M11 11.5h10M11 16h10M13 20.5h6" />
@@ -93,10 +93,10 @@
 
 		<button
 			v-if="props.collapsed"
-			class="rail-toggle"
+			class="rail-toggle tooltip-host"
 			type="button"
 			aria-label="打开边栏"
-			title="打开边栏"
+			data-tooltip="打开边栏"
 			@click="emit('toggle')"
 		>
 			<svg viewBox="0 0 20 20" aria-hidden="true">
@@ -111,9 +111,9 @@
 				<RouterLink
 					v-if="item.to"
 					:to="item.to"
-					class="nav-item"
+					class="nav-item tooltip-host"
 					:class="{ active: isActive(item, activeKey), disabled: !item.to }"
-					:title="props.collapsed ? item.label : undefined"
+					:data-tooltip="props.collapsed ? item.label : undefined"
 				>
 					<span class="nav-leading">
 						<span class="nav-icon" :class="`icon-${item.icon}`">
@@ -144,9 +144,10 @@
 				<button
 					v-else
 					type="button"
-					disabled
-					class="nav-item disabled"
-					:title="props.collapsed ? item.label : undefined"
+					class="nav-item disabled tooltip-host"
+					aria-disabled="true"
+					tabindex="-1"
+					:data-tooltip="props.collapsed ? item.label : undefined"
 				>
 					<span class="nav-leading">
 						<span class="nav-icon">
@@ -187,6 +188,8 @@
 		border-right: 1px solid var(--color-card-border);
 		background: rgba(255, 255, 255, 0.98);
 		transition: width 0.18s ease;
+		overflow: visible;
+		z-index: 30;
 	}
 
 	/* 收起态：窄侧栏 Rail */
@@ -324,6 +327,7 @@
 	/* 收起态导航区 */
 	.admin-sidebar.collapsed .sidebar-nav {
 		padding: 18px 10px;
+			overflow: visible;
 	}
 
 	.nav-group + .nav-group {
@@ -485,4 +489,52 @@
 	.admin-sidebar.collapsed .sub-nav {
 		display: none;
 	}
+
+		/* Tooltip 样式 - data-tooltip + CSS 伪元素 */
+		.admin-sidebar.collapsed .tooltip-host,
+		.admin-sidebar.collapsed .brand-mark {
+			position: relative;
+		}
+
+		.admin-sidebar.collapsed .tooltip-host[data-tooltip]::after,
+		.admin-sidebar.collapsed .brand-mark[data-tooltip]::after {
+			position: absolute;
+			left: calc(100% + 12px);
+			top: 50%;
+			z-index: 1000;
+			display: none;
+			transform: translateY(-50%);
+			border-radius: 8px;
+			background: rgba(18, 18, 18, 0.94);
+			color: #fff;
+			padding: 9px 11px;
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 1;
+			white-space: nowrap;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+			pointer-events: none;
+			content: attr(data-tooltip);
+		}
+
+		.admin-sidebar.collapsed .tooltip-host[data-tooltip]::before,
+		.admin-sidebar.collapsed .brand-mark[data-tooltip]::before {
+			position: absolute;
+			left: calc(100% + 8px);
+			top: 50%;
+			z-index: 1001;
+			display: none;
+			width: 8px;
+			height: 8px;
+			transform: translateY(-50%) rotate(45deg);
+			background: rgba(18, 18, 18, 0.94);
+			content: '';
+		}
+
+		.admin-sidebar.collapsed .tooltip-host[data-tooltip]:hover::after,
+		.admin-sidebar.collapsed .tooltip-host[data-tooltip]:hover::before,
+		.admin-sidebar.collapsed .brand-mark[data-tooltip]:hover::after,
+		.admin-sidebar.collapsed .brand-mark[data-tooltip]:hover::before {
+			display: block;
+		}
 </style>
