@@ -30,14 +30,14 @@ const resolvedBreadcrumb = computed(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-page text-text-primary">
+  <div class="admin-layout">
     <AdminSidebar :active-key="resolvedActiveKey" />
 
-    <div class="flex min-w-0 flex-1 flex-col">
+    <div class="admin-frame">
       <AdminTopbar />
 
-      <main class="flex-1 px-5 py-5 2xl:px-6">
-        <div class="w-full max-w-[var(--admin-content-max-width)]">
+      <main class="admin-main">
+        <div class="admin-content-shell">
           <AppBreadcrumb class="sr-only" :items="resolvedBreadcrumb" />
           <section>
             <slot />
@@ -49,3 +49,39 @@ const resolvedBreadcrumb = computed(() => {
     <FloatingAIAssistant scene="admin" />
   </div>
 </template>
+
+<style scoped>
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-page-bg);
+  color: var(--color-text-primary);
+}
+
+.admin-frame {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.admin-main {
+  flex: 1;
+  padding: var(--admin-page-gutter-y) var(--admin-page-gutter-x);
+}
+
+.admin-content-shell {
+  width: 100%;
+  max-width: var(--admin-content-max-width);
+}
+
+@media (max-width: 1280px) {
+  .admin-main {
+    overflow-x: auto;
+  }
+
+  .admin-content-shell {
+    min-width: 980px;
+  }
+}
+</style>
