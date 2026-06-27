@@ -298,7 +298,7 @@ const indicators = [
   min-height: clamp(174px, 12vw, 220px);
   max-width: min(900px, 64%);
   align-items: center;
-  gap: clamp(14px, 0.95vw, 20px);
+  gap: clamp(18px, 1.2vw, 26px);
   padding: 0 0 0 clamp(24px, 1.75vw, 34px);
 }
 
@@ -309,19 +309,19 @@ const indicators = [
 
 .hero-icon {
   display: flex;
-  width: clamp(46px, 2.95vw, 56px);
-  height: clamp(46px, 2.95vw, 56px);
+  width: clamp(60px, 3.8vw, 72px);
+  height: clamp(60px, 3.8vw, 72px);
   align-items: center;
   justify-content: center;
-  border: clamp(6px, 0.45vw, 8px) solid rgba(255, 255, 255, 0.9);
+  border: clamp(8px, 0.55vw, 10px) solid rgba(255, 255, 255, 0.92);
   border-radius: 50%;
   background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
-  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.22);
+  box-shadow: 0 14px 28px rgba(11, 99, 246, 0.24);
 }
 
 .hero-icon svg {
-  width: clamp(22px, 1.45vw, 28px);
-  height: clamp(22px, 1.45vw, 28px);
+  width: clamp(26px, 1.7vw, 30px);
+  height: clamp(26px, 1.7vw, 30px);
   fill: none;
   stroke: #fff;
   stroke-width: 2.2;
