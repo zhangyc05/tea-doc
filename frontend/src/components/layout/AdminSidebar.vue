@@ -126,15 +126,15 @@ function isActive(item: AdminNavItem, activeKey: string) {
   display: flex;
   height: var(--admin-topbar-height);
   align-items: center;
-  gap: 16px;
+  gap: clamp(12px, 0.85vw, 16px);
   border-bottom: 1px solid var(--color-card-border);
-  padding: 0 34px;
+  padding: 0 clamp(20px, 1.75vw, 34px);
 }
 
 .brand-mark {
   display: flex;
-  width: 46px;
-  height: 46px;
+  width: clamp(38px, 2.35vw, 46px);
+  height: clamp(38px, 2.35vw, 46px);
   align-items: center;
   justify-content: center;
   border-radius: 12px;
@@ -143,8 +143,8 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .brand-mark svg {
-  width: 34px;
-  height: 34px;
+  width: clamp(28px, 1.75vw, 34px);
+  height: clamp(28px, 1.75vw, 34px);
   fill: none;
   stroke: currentColor;
   stroke-width: 2.3;
@@ -155,7 +155,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
 .sidebar-brand h1 {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 20px;
+  font-size: clamp(16px, 1.02vw, 20px);
   font-weight: 900;
   line-height: 1;
   white-space: nowrap;
@@ -164,26 +164,26 @@ function isActive(item: AdminNavItem, activeKey: string) {
 .sidebar-nav {
   flex: 1;
   overflow-y: auto;
-  padding: 54px 18px 24px;
+  padding: clamp(26px, 2.7vw, 52px) clamp(14px, 0.95vw, 18px) 22px;
 }
 
 .nav-group + .nav-group {
-  margin-top: 14px;
+  margin-top: clamp(9px, 0.7vw, 14px);
 }
 
 .nav-item {
   display: flex;
   width: 100%;
-  height: 58px;
+  height: clamp(46px, 3vw, 58px);
   align-items: center;
   justify-content: space-between;
   border: 0;
   border-radius: 10px;
   background: transparent;
-  padding: 0 20px;
+  padding: 0 clamp(15px, 1vw, 20px);
   color: #1e2b45;
   font-family: inherit;
-  font-size: 18px;
+  font-size: clamp(15px, 0.95vw, 18px);
   font-weight: 800;
   text-decoration: none;
   transition: 0.18s ease;
@@ -209,21 +209,21 @@ function isActive(item: AdminNavItem, activeKey: string) {
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: 18px;
+  gap: clamp(13px, 0.9vw, 18px);
 }
 
 .nav-icon {
   display: inline-flex;
-  width: 24px;
-  height: 24px;
+  width: clamp(21px, 1.25vw, 24px);
+  height: clamp(21px, 1.25vw, 24px);
   align-items: center;
   justify-content: center;
   color: currentColor;
 }
 
 .nav-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  height: 100%;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -237,18 +237,18 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .sub-nav {
-  margin: 12px 0 0 54px;
+  margin: 8px 0 0 clamp(42px, 3vw, 54px);
 }
 
 .sub-item {
   display: flex;
-  height: 48px;
+  height: clamp(38px, 2.5vw, 48px);
   align-items: center;
-  gap: 18px;
+  gap: clamp(12px, 0.95vw, 18px);
   border-radius: 8px;
-  padding: 0 18px;
+  padding: 0 clamp(14px, 0.95vw, 18px);
   color: #66748d;
-  font-size: 17px;
+  font-size: clamp(14px, 0.9vw, 17px);
   font-weight: 700;
   text-decoration: none;
 }
@@ -275,18 +275,18 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 .collapse-entry {
   display: flex;
-  height: 100px;
+  height: clamp(76px, 5.2vw, 100px);
   align-items: center;
-  gap: 20px;
+  gap: clamp(14px, 1vw, 20px);
   border-top: 1px solid var(--color-card-border);
-  padding: 0 34px;
+  padding: 0 clamp(22px, 1.75vw, 34px);
   color: #263856;
-  font-size: 17px;
+  font-size: clamp(15px, 0.9vw, 17px);
 }
 
 .collapse-entry span {
   color: #426089;
-  font-size: 24px;
+  font-size: clamp(20px, 1.25vw, 24px);
   font-weight: 900;
 }
 
