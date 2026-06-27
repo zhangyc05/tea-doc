@@ -268,17 +268,17 @@ function isActive(item: AdminNavItem, activeKey: string) {
 
 .sub-nav {
   position: relative;
-  margin: 7px 0 0 clamp(32px, 2.2vw, 42px) !important;
-  padding: 2px 0 4px clamp(16px, 1vw, 20px);
+  margin: 4px 0 0 24px;
+  padding: 0;
 }
 
 .sub-item {
   display: flex;
-  height: clamp(28px, 1.8vw, 32px);
+  height: 30px;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   border-radius: 8px;
-  padding: 0 clamp(11px, 0.75vw, 14px);
+  padding: 0 12px;
   color: #748198;
   font-size: clamp(13px, 0.75vw, 14px);
   font-weight: 700;
@@ -296,22 +296,16 @@ function isActive(item: AdminNavItem, activeKey: string) {
 }
 
 .sub-dot {
-  width: 0;
-  height: 0;
-  flex: none;
-  border-radius: var(--radius-full);
-  background: transparent;
-  opacity: 0;
+  display: none;
 }
 
 .sub-item.active {
-  background: #eaf2ff;
+  background: #f2f7ff;
   color: var(--color-primary);
 }
 
 .sub-item.active .sub-dot {
-  background: transparent;
-  opacity: 0;
+  display: none;
 }
 
 .sub-item strong {
