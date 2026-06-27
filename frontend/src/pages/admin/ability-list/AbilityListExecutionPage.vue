@@ -11,7 +11,7 @@ const abilityTree = [
   {
     id: 'teaching',
     label: '教学能力',
-    color: 'blue',
+    color: 'teaching-blue',
     children: ['教学设计与实施', '教学资源开发', '教学评价与反馈', '教学创新与改进'],
   },
   {
@@ -166,7 +166,6 @@ const indicators = [
                   class="tree-child"
                   :class="{ active: child === '教学设计与实施' }"
                 >
-                  <span></span>
                   <strong>{{ child }}</strong>
                 </div>
               </div>
@@ -533,14 +532,14 @@ const indicators = [
 }
 
 .card-heading {
-  gap: clamp(10px, 0.7vw, 14px);
-  margin-bottom: clamp(12px, 0.9vw, 16px);
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .card-heading strong {
   color: #07122f;
-  font-size: clamp(16px, 0.95vw, 18px);
-  font-weight: 950;
+  font-size: 17px;
+  font-weight: 900;
 }
 
 .card-icon {
@@ -582,32 +581,34 @@ const indicators = [
 }
 
 .tree-row {
-  height: clamp(37px, 2.25vw, 43px);
-  gap: clamp(12px, 0.85vw, 16px);
-  font-size: clamp(15px, 0.85vw, 16px);
+  height: 40px;
+  gap: 12px;
+  color: #101c34;
+  font-size: 15px;
+  font-weight: 850;
 }
 
 .tree-row em {
   margin-left: auto;
-  color: #0c2448;
+  color: #7c8ca3;
+  font-size: 16px;
   font-style: normal;
-  font-weight: 950;
+  font-weight: 800;
 }
 
 .tree-symbol {
   display: inline-flex;
-  width: clamp(26px, 1.5vw, 29px);
-  height: clamp(26px, 1.5vw, 29px);
+  width: 26px;
+  height: 26px;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #e7f2ff;
-  color: var(--color-primary);
+  background: #eef5ff;
 }
 
 .tree-symbol svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -615,67 +616,80 @@ const indicators = [
   stroke-linejoin: round;
 }
 
+.color-blue .tree-symbol {
+  background: #f0f7ff;
+  color: var(--color-primary);
+}
+
+.color-teaching-blue .tree-symbol {
+  background: #d0e8ff;
+  color: var(--color-primary);
+}
+
 .color-orange .tree-symbol {
-  background: #fff2dd;
+  background: #fff5e6;
   color: var(--color-warning);
 }
 
 .color-green .tree-symbol {
-  background: #e8f8ef;
+  background: #ecf9f2;
   color: var(--color-success);
 }
 
 .color-purple .tree-symbol {
-  background: #f1ebff;
+  background: #f4efff;
   color: var(--color-purple);
 }
 
 .tree-children {
   position: relative;
-  margin: 4px 0 2px 13px;
-  padding-left: clamp(32px, 1.95vw, 37px);
+  margin: 2px 0 4px 13px;
+  padding-left: 28px;
 }
 
 .tree-children::before {
   position: absolute;
-  left: 14px;
-  top: -4px;
-  bottom: 18px;
+  left: 13px;
+  top: 2px;
+  bottom: 8px;
   width: 1px;
   border-radius: 999px;
-  background: #d8e5f6;
+  background: #e4ecf7;
   content: '';
 }
 
 .tree-child {
   position: relative;
-  height: clamp(36px, 2.25vw, 43px);
-  gap: clamp(13px, 0.85vw, 18px);
-  border-radius: 9px;
-  color: #5b6a83;
-  font-size: clamp(14px, 0.8vw, 15px);
+  display: flex;
+  height: 32px;
+  align-items: center;
+  border-radius: 7px;
+  padding-right: 12px;
+  color: #66758c;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .tree-child span {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #a1adc0;
-}
-
-.tree-child.active {
-  margin-left: -12px;
-  padding-left: 14px;
-  background: #eaf2ff;
-  color: var(--color-primary);
-}
-
-.tree-child.active span {
-  background: var(--color-primary);
+  display: none;
 }
 
 .tree-child strong {
-  font-weight: 900;
+  font-weight: 750;
+}
+
+.tree-child:not(.active):hover {
+  color: var(--color-primary);
+  background: #f7faff;
+}
+
+.tree-child.active {
+  margin-left: -8px;
+  margin-right: 40px;
+  padding-left: 12px;
+  background: #f2f7ff;
+  color: var(--color-primary);
+  box-shadow: inset 1px 0 0 var(--color-primary);
 }
 
 .indicator-card {
