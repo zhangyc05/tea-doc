@@ -109,19 +109,23 @@ const indicators = [
               <span class="status-badge">已发布</span>
             </div>
 
-            <div class="hero-meta-grid">
-              <div class="hero-meta-item source-item">
-                <p>来源母版</p>
+            <p class="hero-subtitle">当前周期正在使用的教师能力清单执行口径</p>
+
+            <div class="hero-info-stack">
+              <div class="hero-source-row">
+                <span class="meta-label">来源母版</span>
                 <strong>职业院校教师能力清单 V1.0</strong>
                 <a>查看母版 ›</a>
               </div>
-              <div class="hero-meta-item">
-                <p>适用范围</p>
-                <strong>全校教师</strong>
-              </div>
-              <div class="hero-meta-item">
-                <p>最近更新</p>
-                <strong>2026-06-08 20:30</strong>
+              <div class="hero-meta-row">
+                <div class="hero-meta-chip">
+                  <span>适用范围</span>
+                  <strong>全校教师</strong>
+                </div>
+                <div class="hero-meta-chip">
+                  <span>最近更新</span>
+                  <strong>2026-06-08 20:30</strong>
+                </div>
               </div>
             </div>
 
@@ -235,7 +239,7 @@ const indicators = [
 
 .execution-hero {
   position: relative;
-  min-height: clamp(168px, 12.8vw, 246px);
+  min-height: clamp(178px, 13.4vw, 248px);
   overflow: hidden;
   border-radius: 14px;
   background:
@@ -251,9 +255,9 @@ const indicators = [
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.98) 34%,
-    rgba(255, 255, 255, 0.74) 49%,
-    rgba(255, 255, 255, 0.18) 66%,
+    rgba(255, 255, 255, 0.99) 30%,
+    rgba(255, 255, 255, 0.86) 45%,
+    rgba(255, 255, 255, 0.36) 62%,
     rgba(255, 255, 255, 0) 100%
   );
   content: '';
@@ -264,12 +268,12 @@ const indicators = [
   left: 0;
   bottom: 0;
   z-index: 1;
-  width: min(360px, 36%);
-  height: 120px;
+  width: min(330px, 30%);
+  height: 96px;
   pointer-events: none;
   background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
   background-size: 12px 12px;
-  opacity: 0.26;
+  opacity: 0.14;
   content: '';
 }
 
@@ -279,43 +283,43 @@ const indicators = [
   right: 0;
   bottom: 0;
   z-index: 0;
-  width: min(74%, 980px);
+  width: min(72%, 960px);
   background-image: url('@/images/hero-art.png');
   background-repeat: no-repeat;
   background-position: right center;
   background-size: cover;
-  opacity: 0.98;
+  opacity: 0.96;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
   display: flex;
-  max-width: min(760px, 58%);
-  gap: clamp(16px, 1.05vw, 24px);
-  padding: clamp(22px, 1.75vw, 34px) 0 clamp(20px, 1.55vw, 30px) clamp(22px, 1.75vw, 34px);
+  max-width: min(720px, 56%);
+  gap: clamp(14px, 0.95vw, 20px);
+  padding: clamp(24px, 1.8vw, 34px) 0 clamp(20px, 1.5vw, 30px) clamp(24px, 1.75vw, 34px);
 }
 
 .hero-emblem {
   flex: none;
-  padding-top: clamp(2px, 0.25vw, 5px);
+  padding-top: clamp(1px, 0.18vw, 4px);
 }
 
 .hero-icon {
   display: flex;
-  width: clamp(52px, 3.45vw, 66px);
-  height: clamp(52px, 3.45vw, 66px);
+  width: clamp(46px, 2.95vw, 56px);
+  height: clamp(46px, 2.95vw, 56px);
   align-items: center;
   justify-content: center;
-  border: clamp(7px, 0.5vw, 10px) solid rgba(255, 255, 255, 0.88);
+  border: clamp(6px, 0.45vw, 8px) solid rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   background: linear-gradient(145deg, #0b63f6 0%, #287eff 100%);
-  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.24);
+  box-shadow: 0 12px 22px rgba(11, 99, 246, 0.22);
 }
 
 .hero-icon svg {
-  width: clamp(24px, 1.65vw, 32px);
-  height: clamp(24px, 1.65vw, 32px);
+  width: clamp(22px, 1.45vw, 28px);
+  height: clamp(22px, 1.45vw, 28px);
   fill: none;
   stroke: #fff;
   stroke-width: 2.2;
@@ -325,23 +329,23 @@ const indicators = [
 
 .hero-main {
   min-width: 0;
-  padding-top: clamp(2px, 0.25vw, 6px);
+  padding-top: 2px;
 }
 
 .hero-title-row {
   display: flex;
   align-items: center;
   gap: clamp(10px, 0.72vw, 14px);
-  margin-bottom: clamp(16px, 1.25vw, 24px);
+  margin-bottom: 6px;
 }
 
 .hero-title-row h1 {
-  max-width: 680px;
+  max-width: 620px;
   margin: 0;
   color: #07122f;
-  font-size: clamp(22px, 1.55vw, 30px);
+  font-size: clamp(22px, 1.45vw, 28px);
   font-weight: 950;
-  letter-spacing: -0.7px;
+  letter-spacing: -0.55px;
   line-height: 1.16;
 }
 
@@ -349,64 +353,84 @@ const indicators = [
   display: inline-flex;
   flex: none;
   align-items: center;
-  height: clamp(22px, 1.35vw, 27px);
-  padding: 0 clamp(9px, 0.65vw, 12px);
+  height: clamp(22px, 1.25vw, 26px);
+  padding: 0 clamp(9px, 0.6vw, 12px);
   border-radius: 999px;
   background: #dff7e9;
   color: #0d9f58;
-  font-size: clamp(11px, 0.66vw, 13px);
+  font-size: clamp(11px, 0.62vw, 12px);
   font-weight: 900;
 }
 
-.hero-meta-grid {
-  display: grid;
-  grid-template-columns: minmax(210px, 1.45fr) minmax(112px, 0.72fr) minmax(170px, 0.95fr);
-  gap: clamp(18px, 1.35vw, 26px);
-  margin-bottom: clamp(18px, 1.25vw, 24px);
-}
-
-.hero-meta-item {
-  position: relative;
-  min-width: 0;
-}
-
-.hero-meta-item + .hero-meta-item::before {
-  position: absolute;
-  left: calc(clamp(18px, 1.35vw, 26px) / -2);
-  top: 2px;
-  width: 1px;
-  height: clamp(42px, 2.8vw, 54px);
-  background: #d9e4f2;
-  content: '';
-}
-
-.hero-meta-item p {
-  margin: 0 0 7px;
-  color: #697890;
-  font-size: clamp(12px, 0.72vw, 14px);
+.hero-subtitle {
+  margin: 0 0 clamp(13px, 0.85vw, 16px);
+  color: #65758f;
+  font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 700;
+  line-height: 1.4;
 }
 
-.hero-meta-item strong {
-  display: block;
+.hero-info-stack {
+  display: inline-flex;
+  min-width: min(100%, 590px);
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: clamp(14px, 1vw, 20px);
+  border: 1px solid rgba(216, 228, 244, 0.7);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: clamp(10px, 0.7vw, 13px) clamp(13px, 0.9vw, 17px);
+  box-shadow: 0 8px 20px rgba(18, 42, 84, 0.035);
+  backdrop-filter: blur(4px);
+}
+
+.hero-source-row,
+.hero-meta-row,
+.hero-meta-chip {
+  display: flex;
+  align-items: center;
+}
+
+.hero-source-row {
+  min-width: 0;
+  gap: 12px;
+}
+
+.meta-label,
+.hero-meta-chip span {
+  color: #6b7b94;
+  font-size: clamp(12px, 0.7vw, 13px);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.hero-source-row strong,
+.hero-meta-chip strong {
   color: #07122f;
-  font-size: clamp(13px, 0.82vw, 15px);
+  font-size: clamp(13px, 0.78vw, 15px);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.hero-source-row a {
+  color: var(--color-primary);
+  font-size: clamp(12px, 0.72vw, 14px);
   font-weight: 900;
   white-space: nowrap;
 }
 
-.hero-meta-item a {
-  display: inline-flex;
-  margin-top: 10px;
-  color: var(--color-primary);
-  font-size: clamp(13px, 0.78vw, 14px);
-  font-weight: 900;
+.hero-meta-row {
+  gap: clamp(22px, 1.55vw, 30px);
+}
+
+.hero-meta-chip {
+  gap: 10px;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: clamp(18px, 1.25vw, 26px);
+  gap: clamp(18px, 1.1vw, 24px);
 }
 
 .primary-action,
@@ -421,15 +445,15 @@ const indicators = [
 
 .primary-action {
   display: inline-flex;
-  height: clamp(38px, 2.55vw, 48px);
+  height: clamp(38px, 2.4vw, 46px);
   align-items: center;
   gap: clamp(6px, 0.45vw, 9px);
-  padding: 0 clamp(16px, 1.15vw, 24px);
+  padding: 0 clamp(16px, 1.1vw, 22px);
   border-radius: 7px;
   background: linear-gradient(135deg, #0b63f6 0%, #0055e6 100%);
   box-shadow: 0 12px 22px rgba(11, 99, 246, 0.22);
   color: #fff;
-  font-size: clamp(13px, 0.8vw, 15px);
+  font-size: clamp(13px, 0.78vw, 14px);
   font-weight: 900;
 }
 
@@ -445,7 +469,7 @@ const indicators = [
 
 .link-action {
   color: var(--color-primary);
-  font-size: clamp(13px, 0.8vw, 15px);
+  font-size: clamp(13px, 0.78vw, 14px);
   font-weight: 900;
 }
 
@@ -778,7 +802,7 @@ const indicators = [
 
 @media (max-width: 1440px) {
   .execution-hero {
-    min-height: clamp(160px, 12vw, 210px);
+    min-height: clamp(172px, 12.4vw, 220px);
   }
 
   .hero-art {
@@ -790,9 +814,9 @@ const indicators = [
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.98) 38%,
-      rgba(255, 255, 255, 0.72) 54%,
-      rgba(255, 255, 255, 0.22) 70%,
+      rgba(255, 255, 255, 0.99) 36%,
+      rgba(255, 255, 255, 0.82) 52%,
+      rgba(255, 255, 255, 0.28) 70%,
       rgba(255, 255, 255, 0) 100%
     );
   }
@@ -802,11 +826,11 @@ const indicators = [
   }
 
   .hero-title-row h1 {
-    max-width: 560px;
+    max-width: 540px;
   }
 
-  .hero-meta-grid {
-    grid-template-columns: minmax(190px, 1.45fr) minmax(108px, 0.72fr) minmax(150px, 0.95fr);
+  .hero-info-stack {
+    min-width: min(100%, 560px);
   }
 }
 
@@ -817,6 +841,10 @@ const indicators = [
 
   .hero-content {
     max-width: 100%;
+  }
+
+  .hero-info-stack {
+    min-width: min(100%, 620px);
   }
 
   .work-area {
