@@ -21,6 +21,18 @@ withDefaults(
 const navItems: AdminNavItem[] = [
   { key: 'home', label: '首页', to: '/admin/training/resources', icon: 'home' },
   {
+    key: 'training',
+    label: '培训管理',
+    to: '/admin/training/resources',
+    icon: 'training',
+    children: [
+      { key: 'training-records', label: '记录总览', to: '/admin/training/records' },
+      { key: 'training-resources', label: '资源库', to: '/admin/training/resources' },
+      { key: 'training-demands', label: '需求管理', to: '/admin/training/demands' },
+      { key: 'training-applications', label: '申请处理', to: '/admin/training/applications' },
+    ],
+  },
+  {
     key: 'ability-list',
     label: '能力清单',
     to: '/admin/ability-list/execution',
@@ -78,6 +90,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
             <span class="nav-icon" :class="`icon-${item.icon}`">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
+                <path v-else-if="item.icon === 'training'" d="M12 3 6 7v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7l-6-4Zm0 2.5 4.5 3H7.5L12 5.5ZM11 9h2v7h-2V9Z" />
                 <path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
                 <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
                 <path v-else-if="item.icon === 'reflection'" d="M9 5h6v3H9zM7 9h10v2H7zM5 13h14v2H5zM6 17h12v2H6z" />
