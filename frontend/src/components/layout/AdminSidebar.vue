@@ -55,7 +55,7 @@ function isActive(item: AdminNavItem, activeKey: string) {
             <path d="M11 11.5h10M11 16h10M13 20.5h6" />
           </svg>
         </div>
-        <h1>教师综合发展平台</h1>
+        <h1>教师综合发展</h1>
       </div>
 
       <button class="sidebar-toggle" type="button" aria-label="收起侧栏" title="收起侧栏">
