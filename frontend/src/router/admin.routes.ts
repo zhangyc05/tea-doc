@@ -10,6 +10,8 @@ const AbilityListRequirementMappingPage = () => import('@/pages/admin/ability-li
 const ArchiveProcessingPage = () => import('@/pages/admin/archive/ArchiveProcessingPage.vue')
 const ArchiveImportUploadPage = () => import('@/pages/admin/archive/ArchiveImportUploadPage.vue')
 const ArchiveImportBatchPage = () => import('@/pages/admin/archive/ArchiveImportBatchPage.vue')
+const ArchiveQueryPage = () => import('@/pages/admin/archive/ArchiveQueryPage.vue')
+const ArchiveTeacherDetailPage = () => import('@/pages/admin/archive/ArchiveTeacherDetailPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -91,13 +93,25 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/archive/query',
     name: 'AdminArchiveQuery',
-    component: AdminPlaceholderPage,
+    component: ArchiveQueryPage,
     meta: {
-      title: '档案查询',
+      title: '档案查阅',
       module: '成长档案',
       layout: 'admin',
       menuKey: 'archive-query',
-      breadcrumb: ['管理端', '成长档案', '档案查询'],
+      breadcrumb: ['管理端', '成长档案', '档案查阅'],
+    },
+  },
+  {
+    path: '/admin/archive/teacher/:teacherId',
+    name: 'AdminArchiveTeacherDetail',
+    component: ArchiveTeacherDetailPage,
+    meta: {
+      title: '教师成长档案',
+      module: '成长档案',
+      layout: 'admin',
+      menuKey: 'archive-query',
+      breadcrumb: ['管理端', '成长档案', '教师成长档案'],
     },
   },
   {
