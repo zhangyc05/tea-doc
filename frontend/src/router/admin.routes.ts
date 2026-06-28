@@ -15,6 +15,8 @@ const ArchiveTeacherDetailPage = () => import('@/pages/admin/archive/ArchiveTeac
 const AbilityProfileGroupPage = () => import('@/pages/admin/ability-profile/AbilityProfileGroupPage.vue')
 const AbilityProfileTeacherPage = () => import('@/pages/admin/ability-profile/AbilityProfileTeacherPage.vue')
 const AbilityProfileTeacherDetailPage = () => import('@/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue')
+const ReflectionOverviewPage = () => import('@/pages/admin/reflection/ReflectionOverviewPage.vue')
+const ReflectionDetailPage = () => import('@/pages/admin/reflection/ReflectionDetailPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -144,13 +146,25 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/reflection',
     name: 'AdminReflection',
-    component: AdminPlaceholderPage,
+    component: ReflectionOverviewPage,
     meta: {
       title: '教学反思',
       module: '教学反思',
       layout: 'admin',
       menuKey: 'reflection',
-      breadcrumb: ['管理端', '教学反思'],
+      breadcrumb: ['管理端', '发展活动', '教学反思'],
+    },
+  },
+  {
+    path: '/admin/reflection/:reflectionId',
+    name: 'AdminReflectionDetail',
+    component: ReflectionDetailPage,
+    meta: {
+      title: '反思详情',
+      module: '教学反思',
+      layout: 'admin',
+      menuKey: 'reflection',
+      breadcrumb: ['管理端', '发展活动', '教学反思', '反思详情'],
     },
   },
   {
