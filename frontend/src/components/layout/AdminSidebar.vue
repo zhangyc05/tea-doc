@@ -112,15 +112,7 @@
 	  }
 
 	  if (item.children?.length) {
-	    if (!isExpanded(item)) {
-	      toggleGroup(item.key)
-	      return
-	    }
-
-	    if (item.to) {
-	      router.push(item.to)
-	    }
-
+	    toggleGroup(item.key)
 	    return
 	  }
 
