@@ -6,6 +6,7 @@ const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityList
 const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue')
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
 const AbilityListPublishConfirmPage = () => import('@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue')
+const AbilityListRequirementMappingPage = () => import('@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -231,7 +232,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-list/execution/requirement-mapping',
     name: 'AdminAbilityListRequirementMapping',
-    component: AdminPlaceholderPage,
+    component: AbilityListRequirementMappingPage,
     meta: {
       title: '岗位/聘期要求映射',
       module: '能力清单',
