@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
 const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
+const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityListBasePage.vue')
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
@@ -180,7 +181,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-list/base',
     name: 'AdminAbilityListBase',
-    component: AdminPlaceholderPage,
+    component: AbilityListBasePage,
     meta: {
       title: '基准模板',
       module: '能力清单',
@@ -199,6 +200,42 @@ export const adminRoutes: RouteRecordRaw[] = [
       layout: 'admin',
       menuKey: 'ability-list-execution',
       breadcrumb: ['管理端', '能力清单', '执行版'],
+    },
+  },
+  {
+    path: '/admin/ability-list/base/optimization',
+    name: 'AdminAbilityListBaseOptimization',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '优化基准模板',
+      module: '能力清单',
+      layout: 'admin',
+      menuKey: 'ability-list-base',
+      breadcrumb: ['管理端', '能力清单', '基准模板', '优化基准模板'],
+    },
+  },
+  {
+    path: '/admin/ability-list/execution/publish-confirm',
+    name: 'AdminAbilityListPublishConfirm',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '发布确认',
+      module: '能力清单',
+      layout: 'admin',
+      menuKey: 'ability-list-execution',
+      breadcrumb: ['管理端', '能力清单', '执行版', '发布确认'],
+    },
+  },
+  {
+    path: '/admin/ability-list/execution/requirement-mapping',
+    name: 'AdminAbilityListRequirementMapping',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '岗位/聘期要求映射',
+      module: '能力清单',
+      layout: 'admin',
+      menuKey: 'ability-list-execution',
+      breadcrumb: ['管理端', '能力清单', '执行版', '岗位/聘期要求映射'],
     },
   },
 ]

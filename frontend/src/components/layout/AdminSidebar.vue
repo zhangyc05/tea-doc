@@ -33,7 +33,6 @@
 	  {
 	    key: 'ability-list',
 	    label: '能力清单',
-	    to: '/admin/ability-list/execution',
 	    icon: 'list',
 	    children: [
 	      { key: 'ability-list-base', label: '基准模板', to: '/admin/ability-list/base' },
@@ -168,7 +167,7 @@
 			<div v-for="item in navItems" :key="item.key" class="nav-group" :class="{ expanded: item.children && isActive(item, activeKey) }">
 				<!-- 情况 A：有 children 且展开态 -->
 				<div
-					v-if="item.to && item.children && !props.collapsed"
+					v-if="item.children && !props.collapsed"
 					class="nav-item nav-parent"
 					:class="{ active: isActive(item, activeKey), expanded: isExpanded(item) }"
 				>
