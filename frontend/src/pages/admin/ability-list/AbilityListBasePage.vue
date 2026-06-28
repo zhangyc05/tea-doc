@@ -2,7 +2,7 @@
 	import { ref } from 'vue'
 	import { useRouter } from 'vue-router'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
-	import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
+	import baseHeroArt from '../../assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 	import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
 	import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
 	import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
@@ -210,49 +210,56 @@
 <template>
 	<AdminLayout active-key="ability-list-base">
 		<div class="page-root">
-		<!-- Hero 区 -->
-		<div class="admin-hero base-hero">
-			<div class="hero-content">
-				<div class="hero-heading">
-						<div class="hero-emblem">
-							<img :src="baseHeroEmblem" alt="" />
+			<!-- Hero 区 -->
+			<section class="base-hero admin-hero">
+				<div class="hero-art" aria-hidden="true"></div>
+
+				<div class="hero-content">
+					<div class="hero-emblem">
+						<img class="hero-emblem-img" :src="baseHeroEmblem" alt="" />
+					</div>
+
+					<div class="hero-main">
+						<div class="hero-heading-row">
+							<div class="hero-title-group">
+								<div class="hero-title-row">
+									<h1>教师能力清单基准模板 V1.0</h1>
+									<span class="badge-status badge-success">已启用</span>
+								</div>
+								<p class="hero-subtitle">
+									维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
+								</p>
+							</div>
+
+							<div class="hero-actions">
+								<button class="primary-action btn-primary" @click="goToOptimization">优化基准模板</button>
+								<button class="secondary-action btn-secondary" @click="goToVersionHistory">查看版本记录</button>
+								<button class="secondary-action btn-outline" @click="deriveExecutionVersion">派生执行版</button>
+							</div>
 						</div>
-						<div>
-							<h1>教师能力清单基准模板 V1.0</h1>
-							<span class="badge-status badge-success">已启用</span>
+
+						<div class="hero-summary-strip admin-summary-strip">
+							<div class="summary-item admin-summary-item">
+								<span class="admin-summary-label">最近更新</span>
+								<strong class="admin-summary-value">2026-06-08 20:30</strong>
+							</div>
+							<div class="summary-item admin-summary-item">
+								<span class="admin-summary-label">能力结构</span>
+								<strong class="admin-summary-value">基本能力 + 教学能力 + 教研能力 + 实践能力 + 服务能力</strong>
+							</div>
+							<div class="summary-item admin-summary-item">
+								<span class="admin-summary-label">当前指标</span>
+								<strong class="admin-summary-value">69 项</strong>
+							</div>
 						</div>
-				</div>
 
-				<div class="hero-summary">
-					<div class="summary-item">
-						<span class="summary-label">最近更新：</span>
-						<span class="summary-value">2026-06-08 20:30</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">能力结构：</span>
-						<span class="summary-value">基本能力 + 教学能力 + 教研能力 + 实践能力 + 服务能力</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">当前指标：</span>
-						<span class="summary-value">69 项</span>
+						<div class="hero-note">
+							可基于制度文件和运行反馈形成优化建议，确认后再应用到基准模板。
+						</div>
 					</div>
 				</div>
+			</section>
 
-				<div class="hero-actions">
-					<button class="btn-primary" @click="goToOptimization">优化基准模板</button>
-					<button class="btn-secondary" @click="goToVersionHistory">查看版本记录</button>
-					<button class="btn-outline" @click="deriveExecutionVersion">派生执行版</button>
-				</div>
-
-				<div class="hero-note">
-					可基于制度文件和运行反馈形成优化建议，确认后再应用到基准模板。
-				</div>
-			</div>
-
-				<div class="hero-art" aria-hidden="true">
-					<img :src="baseHeroArt" alt="" />
-				</div>
-		</div>
 
 		<!-- 主体工作区 -->
 		<div class="main-workspace">
@@ -314,7 +321,6 @@
 								<img class="title-icon" :src="getSelectedAbilityIcon()" alt="" />
 								<h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
 							</div>
-						<button class="btn-link" @click="showIndicatorDescription">指标说明</button>
 					</div>
 					<div v-if="getSelectedAbilityDescription()" class="ability-description">
 						{{ getSelectedAbilityDescription() }}
@@ -372,92 +378,135 @@
 		gap: 24px;
 	}
 
-	/* Hero 区 */
-	.admin-hero {
-		display: flex;
-		align-items: stretch;
-		justify-content: space-between;
-		gap: 32px;
-		padding: 32px;
-		background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
-		border-radius: 16px;
-		border: 1px solid #e1efff;
-	}
 
-	.hero-content {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
+		/* Hero 区 */
+		.base-hero {
+			position: relative;
+			overflow: hidden;
+			min-height: var(--admin-hero-height-default);
+		}
 
-	.hero-heading {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-	}
+		.base-hero::before {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			pointer-events: none;
+			background: linear-gradient(
+				90deg,
+				rgba(255, 255, 255, 1) 0%,
+				rgba(255, 255, 255, 0.99) 30%,
+				rgba(255, 255, 255, 0.88) 45%,
+				rgba(255, 255, 255, 0.42) 62%,
+				rgba(255, 255, 255, 0) 100%
+			);
 
-	.hero-title {
-		margin: 0;
-		font-size: 24px;
-		font-weight: 900;
-		color: var(--color-text-primary);
-		line-height: 1.3;
-	}
+				content: "";
+			}
 
-	.hero-summary {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
+		.base-hero .hero-art {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 0;
+			width: min(68%, 900px);
+			background-image: url('"@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png"');
+			background-repeat: no-repeat;
+			background-position: right center;
+			background-size: cover;
+			opacity: 0.96;
+		}
 
-	.summary-item {
-		display: flex;
-		gap: 8px;
-		font-size: 14px;
-	}
 
-	.summary-label {
-		color: #7d899b;
-		font-weight: 700;
-	}
 
-	.summary-value {
-		color: #263856;
-		font-weight: 600;
-	}
 
-	.hero-actions {
-		display: flex;
-		gap: 12px;
-	}
 
-	.hero-note {
-		color: #7d899b;
-		font-size: 13px;
-		line-height: 1.5;
-		padding: 12px;
-		background: rgba(255, 255, 255, 0.6);
-		border-radius: 8px;
-		border: 1px solid #e1efff;
-	}
+		.base-hero .hero-content {
+			position: relative;
+			z-index: 2;
+			display: flex;
+			min-height: var(--admin-hero-height-default);
+			max-width: min(940px, 68%);
+			align-items: center;
+			gap: clamp(18px, 1.2vw, 26px);
+			padding: 0 0 0 clamp(24px, 1.75vw, 34px);
+		}
 
-	.hero-illustration {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 200px;
-		flex-shrink: 0;
-	}
+		.base-hero .hero-emblem {
+			flex: none;
+			transform: translateY(-18px);
+		}
 
-	.illustration-placeholder {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+		.base-hero .hero-emblem-img {
+			width: clamp(66px, 4vw, 78px);
+			height: clamp(66px, 4vw, 78px);
+			display: block;
+		}
 
+		.base-hero .hero-main {
+			display: flex;
+			min-width: 0;
+			flex: 1;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.base-hero .hero-heading-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: clamp(18px, 1.25vw, 26px);
+			margin-bottom: clamp(12px, 0.9vw, 16px);
+		}
+
+		.base-hero .hero-title-group {
+			min-width: 0;
+		}
+
+		.base-hero .hero-title-row {
+			display: flex;
+			align-items: center;
+			gap: clamp(10px, 0.72vw, 14px);
+			margin-bottom: 6px;
+		}
+
+		.base-hero .hero-title-row h1 {
+			margin: 0;
+			color: var(--color-text-primary);
+			font-size: clamp(22px, 1.45vw, 28px);
+			font-weight: 950;
+			letter-spacing: -0.55px;
+			line-height: 1.16;
+			white-space: nowrap;
+		}
+
+		.base-hero .hero-subtitle {
+			margin: 0;
+			color: var(--color-text-secondary);
+			font-size: clamp(12px, 0.75vw, 14px);
+			font-weight: 700;
+			line-height: 1.4;
+		}
+
+		.base-hero .hero-actions {
+			display: flex;
+			flex: none;
+			align-items: center;
+			gap: clamp(10px, 0.7vw, 14px);
+		}
+
+		.base-hero .hero-actions button {
+			white-space: nowrap;
+		}
+
+		.base-hero .hero-note {
+			margin-top: 12px;
+			max-width: 760px;
+			color: var(--color-text-secondary);
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 1.6;
+		}
 	/* 主体工作区 */
 	.main-workspace {
 		display: flex;
