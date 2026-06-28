@@ -29,7 +29,7 @@
 	})
 
 	// 侧边栏折叠状态管理
-	const sidebarCollapsed = ref(false)
+	const sidebarCollapsed = ref(true)
 	const toggleSidebar = () => {
 	  sidebarCollapsed.value = !sidebarCollapsed.value
 	}

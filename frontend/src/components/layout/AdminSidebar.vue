@@ -67,7 +67,7 @@
 	<aside class="admin-sidebar" :class="{ collapsed: props.collapsed }">
 		<div class="sidebar-brand">
 			<div class="brand-main">
-				<div class="brand-mark">
+				<div class="brand-mark tooltip-host" data-tooltip="教师综合发展">
 					<svg viewBox="0 0 32 32" aria-hidden="true">
 						<path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
 						<path d="M11 11.5h10M11 16h10M13 20.5h6" />
@@ -499,7 +499,7 @@
 			position: absolute;
 			left: calc(100% + 12px);
 			top: 50%;
-			z-index: 1000;
+			z-index: 3000;
 			display: none;
 			transform: translateY(-50%);
 			border-radius: 8px;
@@ -519,7 +519,7 @@
 			position: absolute;
 			left: calc(100% + 8px);
 			top: 50%;
-			z-index: 1001;
+			z-index: 3001;
 			display: none;
 			width: 8px;
 			height: 8px;
@@ -531,5 +531,11 @@
 		.admin-sidebar.collapsed .tooltip-host[data-tooltip]:hover::after,
 		.admin-sidebar.collapsed .tooltip-host[data-tooltip]:hover::before {
 			display: block;
+		}
+
+		/* 收起状态下 brand-mark 的需要特殊处理，因为 brand-mark 在收起态居中 */
+		.admin-sidebar.collapsed .brand-mark.tooltip-host[data-tooltip]::after,
+		.admin-sidebar.collapsed .brand-mark.tooltip-host[data-tooltip]::before {
+			left: calc(100% + 8px);
 		}
 </style>
