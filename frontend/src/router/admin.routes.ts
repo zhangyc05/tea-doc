@@ -7,6 +7,9 @@ const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
 const AbilityListPublishConfirmPage = () => import('@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue')
 const AbilityListRequirementMappingPage = () => import('@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue')
+const ArchiveProcessingPage = () => import('@/pages/admin/archive/ArchiveProcessingPage.vue')
+const ArchiveImportUploadPage = () => import('@/pages/admin/archive/ArchiveImportUploadPage.vue')
+const ArchiveImportBatchPage = () => import('@/pages/admin/archive/ArchiveImportBatchPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -76,7 +79,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/archive/processing',
     name: 'AdminArchiveProcessing',
-    component: AdminPlaceholderPage,
+    component: ArchiveProcessingPage,
     meta: {
       title: '档案处理',
       module: '成长档案',
@@ -100,7 +103,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/archive/import',
     name: 'AdminArchiveImport',
-    component: AdminPlaceholderPage,
+    component: ArchiveImportUploadPage,
     meta: {
       title: '导入部门资料',
       module: '成长档案',
@@ -112,7 +115,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/archive/import/:batchId',
     name: 'AdminArchiveImportBatch',
-    component: AdminPlaceholderPage,
+    component: ArchiveImportBatchPage,
     meta: {
       title: '导入批次详情',
       module: '成长档案',
