@@ -2,6 +2,14 @@
 	import { ref } from 'vue'
 	import { useRouter } from 'vue-router'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
+	import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
+	import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
+	import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
+	import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
+	import iconAbilityTeaching from '@/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg'
+	import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/icon-ability-research.svg'
+	import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
+	import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
 	const router = useRouter()
 
@@ -10,11 +18,13 @@
 	  {
 	    key: 'basic',
 	    label: '基本能力',
+		    icon: iconAbilityBasic,
 	    children: null,
 	  },
 	  {
 	    key: 'teaching',
 	    label: '教学能力',
+		    icon: iconAbilityTeaching,
 	    children: [
 	      { key: 'teaching-design', label: '教学设计与实施' },
 	      { key: 'teaching-resource', label: '教学资源开发' },
@@ -26,14 +36,17 @@
 	    key: 'research',
 	    label: '教研能力',
 	    children: null,
+		    icon: iconAbilityResearch,
 	  },
 	  {
 	    key: 'practice',
 	    label: '实践能力',
+		    icon: iconAbilityPractice,
 	    children: null,
 	  },
 	  {
 	    key: 'service',
+		    icon: iconAbilityService,
 	    label: '服务能力',
 	    children: null,
 	  },
@@ -139,6 +152,26 @@
 	  return findInTree(abilityTree)
 	}
 
+		// 获取选中能力项的图标
+		function getSelectedAbilityIcon() {
+		  const findInTree = (items: typeof abilityTree): string => {
+		    for (const item of items) {
+		      if (item.key === selectedAbility.value) {
+		        return item.icon
+		      }
+		      if (item.children) {
+		        for (const child of item.children) {
+		          if (child.key === selectedAbility.value) {
+		            return item.icon
+		          }
+		        }
+		      }
+		    }
+		    return iconAbilityStructure
+		  }
+		  return findInTree(abilityTree)
+		}
+
 	// 获取选中能力项的描述
 	function getSelectedAbilityDescription() {
 	  const descriptions: Record<string, string> = {
@@ -178,11 +211,16 @@
 	<AdminLayout active-key="ability-list-base">
 		<div class="page-root">
 		<!-- Hero 区 -->
-		<div class="admin-hero">
+		<div class="admin-hero base-hero">
 			<div class="hero-content">
-				<div class="hero-header">
-					<h1 class="hero-title">教师能力清单基准模板 V1.0</h1>
-					<span class="badge-status badge-success">已启用</span>
+				<div class="hero-heading">
+						<div class="hero-emblem">
+							<img :src="baseHeroEmblem" alt="" />
+						</div>
+						<div>
+							<h1>教师能力清单基准模板 V1.0</h1>
+							<span class="badge-status badge-success">已启用</span>
+						</div>
 				</div>
 
 				<div class="hero-summary">
@@ -211,18 +249,9 @@
 				</div>
 			</div>
 
-			<div class="hero-illustration">
-				<!-- 蓝色教育治理插画区域 -->
-				<div class="illustration-placeholder">
-					<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-						<rect width="200" height="200" fill="#f0f7ff" rx="12" />
-						<circle cx="100" cy="80" r="40" fill="#e1efff" />
-						<rect x="40" y="130" width="120" height="8" fill="#d0e7ff" rx="4" />
-						<rect x="60" y="145" width="80" height="8" fill="#d0e7ff" rx="4" />
-						<rect x="70" y="160" width="60" height="8" fill="#d0e7ff" rx="4" />
-					</svg>
+				<div class="hero-art" aria-hidden="true">
+					<img :src="baseHeroArt" alt="" />
 				</div>
-			</div>
 		</div>
 
 		<!-- 主体工作区 -->
@@ -231,7 +260,8 @@
 			<div class="ability-structure-panel">
 				<div class="admin-card">
 					<div class="admin-card-header">
-						<h3 class="admin-card-title">能力结构</h3>
+						<img class="title-icon" :src="iconAbilityStructure" alt="" />
+							<h3 class="admin-card-title">能力结构</h3>
 					</div>
 					<div class="ability-tree">
 						<div
@@ -246,7 +276,8 @@
 								:class="{ active: selectedAbility === item.key }"
 								@click="selectAbility(item.key)"
 							>
-								{{ item.label }}
+								<img class="ability-icon" :src="item.icon" alt="" />
+									{{ item.label }}
 							</div>
 
 							<!-- 有子项的能力 -->
@@ -255,7 +286,8 @@
 									class="ability-parent"
 									:class="{ active: item.children.some(child => child.key === selectedAbility) }"
 								>
-									{{ item.label }}
+									<img class="ability-icon" :src="item.icon" alt="" />
+										{{ item.label }}
 								</div>
 								<div class="ability-children">
 									<div
@@ -356,7 +388,7 @@
 		gap: 20px;
 	}
 
-	.hero-header {
+	.hero-heading {
 		display: flex;
 		align-items: center;
 		gap: 12px;
