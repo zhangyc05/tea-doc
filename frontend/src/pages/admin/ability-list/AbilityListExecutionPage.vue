@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-
-const router = useRouter()
 
 // 编辑抽屉状态
 const editingIndicator = ref<typeof indicators[0] | null>(null)
@@ -22,19 +19,6 @@ function closeEditDrawer() {
 function saveEdit() {
   console.log('保存编辑：', editingIndicator.value)
   closeEditDrawer()
-}
-
-// 按钮处理函数
-function deriveNextVersion() {
-  router.push('/admin/ability-list/execution/publish-confirm')
-}
-
-function viewHistory() {
-  console.log('查看历史版本')
-}
-
-function viewBaseTemplate() {
-  router.push('/admin/ability-list/base')
 }
 
 const abilityTree = [
@@ -125,14 +109,6 @@ const indicators = [
 <template>
   <AdminLayout active-key="ability-list-execution">
     <div class="execution-page">
-      <!-- 顶部说明区 -->
-      <div class="page-breadcrumb">
-        能力清单 / 执行版
-      </div>
-      <div class="page-description">
-        查看当前周期正在使用的能力清单，并可进入调整配置或派生下一周期执行版。
-      </div>
-
       <section class="execution-hero admin-hero">
         <div class="hero-art" aria-hidden="true"></div>
 
@@ -158,12 +134,11 @@ const indicators = [
               </div>
 
               <div class="hero-actions">
-                <button class="primary-action btn-primary" @click="deriveNextVersion">
+                <button class="primary-action btn-primary">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
                 </button>
-                <button class="secondary-action btn-secondary" @click="viewHistory">查看历史版本</button>
-                <button class="secondary-action btn-outline" @click="viewBaseTemplate">查看母版</button>
+                <button class="secondary-action btn-secondary">历史版本</button>
               </div>
             </div>
 
@@ -670,21 +645,6 @@ const indicators = [
   .structure-card,
   .indicator-card {
     min-height: auto;
-  }
-
-  /* 顶部说明区样式 */
-  .page-breadcrumb {
-    color: #7d899b;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .page-description {
-    color: #263856;
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 16px;
   }
 
   /* 编辑抽屉样式 */
