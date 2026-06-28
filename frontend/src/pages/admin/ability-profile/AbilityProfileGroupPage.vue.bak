@@ -156,6 +156,20 @@ function viewProfile(name: string) {
 <template>
   <AdminLayout active-key="ability-profile-group">
     <div class="ability-profile-group-page">
+      <!-- 页面头部 -->
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">
+            <span>能力画像</span>
+            <i class="separator">/</i>
+            <span class="current">群体画像</span>
+          </div>
+          <h1 class="page-title">学校画像</h1>
+          <p class="page-description">
+            基于已发布执行版能力清单和正式档案事实，查看全校教师发展结构。用于发展支持、资源配置和下钻分析，不作为正式评价结论。
+          </p>
+        </div>
+      </section>
 
       <!-- 顶部主卡区域 -->
       <section class="main-cards-section">
@@ -361,6 +375,50 @@ function viewProfile(name: string) {
 .ability-profile-group-page {
   min-height: 100vh;
   background: var(--color-page-bg);
+}
+
+.page-header {
+  padding: 32px 0;
+  background: white;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.header-content {
+  max-width: var(--admin-content-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb .separator {
+  color: var(--color-text-hint);
+}
+
+.breadcrumb .current {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.page-title {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.page-description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
 }
 
 /* 主卡区域 */

@@ -168,6 +168,17 @@ function viewRelatedRecords() {
 <template>
   <AdminLayout active-key="reflection">
     <div class="reflection-overview-page">
+      <!-- 页面头部 -->
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">
+            <span>发展活动</span>
+            <i class="separator">/</i>
+            <span class="current">教学反思</span>
+          </div>
+        </div>
+      </section>
+
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">
@@ -357,6 +368,34 @@ function viewRelatedRecords() {
   background: var(--color-page-bg);
 }
 
+.page-header {
+  padding: 32px 0;
+  background: white;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.header-content {
+  max-width: var(--admin-content-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb .separator {
+  color: var(--color-text-hint);
+}
+
+.breadcrumb .current {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
 
 /* 统计卡区域 */
 .stats-section {

@@ -113,6 +113,20 @@ function resetFilters() {
 <template>
   <AdminLayout active-key="practice-tracking">
     <div class="practice-tracking-page">
+      <!-- 页面头部 -->
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">
+            <span>企业实践</span>
+            <i class="separator">/</i>
+            <span class="current">年度实践跟踪</span>
+          </div>
+          <h1 class="page-title">年度实践跟踪</h1>
+          <p class="page-description">
+            根据 2026 年度教师企业实践 30 天完成情况，查看未完成教师、待申请和待材料确认状态。
+          </p>
+        </div>
+      </section>
 
       <!-- 统计卡区域 -->
       <section class="stats-section">
@@ -296,6 +310,49 @@ function resetFilters() {
   background: var(--color-page-bg);
 }
 
+.page-header {
+  padding: 32px 0;
+  background: white;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.header-content {
+  max-width: var(--admin-content-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.breadcrumb .separator {
+  color: var(--color-text-hint);
+}
+
+.breadcrumb .current {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.page-title {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.page-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
 
 .stats-section {
   background: white;

@@ -290,7 +290,8 @@
 						class="sub-item"
 						:class="{ active: child.key === activeKey }"
 					>
-						<strong>{{ child.label }}</strong>
+								<span class="sub-dot" aria-hidden="true"></span>
+								<span class="sub-label">{{ child.label }}</span>
 					</RouterLink>
 				</div>
 			</div>
@@ -639,43 +640,76 @@
 		transform: rotate(180deg);
 	}
 
-	/* 二级菜单 */
-	.sub-nav {
-		position: relative;
-		margin: 4px 0 0 24px;
-		padding: 0;
-	}
 
-	.sub-item {
+		/* 二级菜单 */
+		.sub-nav {
+		position: relative;
+		margin: 6px 0 0 18px;
+		padding: 6px 6px 6px 18px;
+		border-radius: 10px;
+		background: rgba(245, 248, 255, 0.78);
+		}
+
+		.sub-nav::before {
+		position: absolute;
+		left: 18px;
+		top: 16px;
+		bottom: 16px;
+		width: 2px;
+		border-radius: 999px;
+		background: #c8d1e1;
+		content: '';
+		}
+
+		.sub-item {
+		position: relative;
+		z-index: 1;
 		display: flex;
-		height: 32px;
+		height: 38px;
 		align-items: center;
-		border-radius: 6px;
-		padding: 0 10px;
-		color: #7d899b;
-		font-size: 13px;
-		font-weight: 700;
+		gap: 12px;
+		border-radius: 8px;
+		padding: 0 10px 0 0;
+		color: #7b8798;
+		font-size: 14px;
+		font-weight: 800;
 		text-decoration: none;
 		transition: 0.16s ease;
-	}
+		}
 
-	.sub-item + .sub-item {
+		.sub-item + .sub-item {
 		margin-top: 2px;
-	}
+		}
 
-	.sub-item:hover {
-		background: #f6f9ff;
+		.sub-dot {
+		width: 9px;
+		height: 9px;
+		flex: 0 0 9px;
+		border-radius: 999px;
+		background: #aeb8c8;
+		box-shadow: 0 0 0 4px rgba(245, 248, 255, 0.9);
+		}
+
+		.sub-label {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		}
+
+		.sub-item:hover {
 		color: var(--color-primary);
-	}
+		}
 
-	.sub-item.active {
-		background: #f2f7ff;
+		.sub-item.active {
+		background: #eef5ff;
 		color: var(--color-primary);
-	}
+		}
 
-	.sub-item strong {
-		font-weight: 800;
-	}
+		.sub-item.active .sub-dot {
+		background: var(--color-primary);
+		box-shadow: 0 0 0 4px #eef5ff;
+		}
 
 	/* 收起态隐藏不需要的元素 */
 	.admin-sidebar.collapsed .nav-label,

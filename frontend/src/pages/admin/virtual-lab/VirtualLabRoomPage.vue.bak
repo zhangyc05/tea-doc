@@ -128,11 +128,22 @@ function viewDetail(roomId: string) {
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-room-page">
+      <!-- 页面头部 -->
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">
+            <span>虚拟教研室</span>
+          </div>
+          <h1 class="page-title">虚拟教研室</h1>
+          <p class="page-description">
+            按教研室查看线上教研开展情况，进入详情查看活动、会议材料和已形成记录。
+          </p>
+        </div>
+        <div class="header-action">
+          <button class="btn-primary" @click="createRoom">新建教研室</button>
+        </div>
+      </section>
 
-      <!-- 顶部操作区 -->
-	      <div class="top-action-bar">
-	        <button class="btn-primary" @click="createRoom">新建教研室</button>
-	      </div>
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">
@@ -283,15 +294,49 @@ function viewDetail(roomId: string) {
   background: var(--color-page-bg);
 }
 
+.page-header {
+  padding: 32px 0;
+  background: white;
+  border-bottom: 1px solid var(--color-card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 
-/* 顶部操作区 */
-.top-action-bar {
+.header-content {
   max-width: var(--admin-content-max-width);
   margin: 0 auto;
-  padding: 24px 24px 0;
-  display: flex;
-  justify-content: flex-end;
+  padding: 0 24px;
+  flex: 1;
 }
+
+.header-action {
+  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.page-title {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.page-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
 .btn-primary {
   padding: 10px 20px;
   background: var(--color-primary);
