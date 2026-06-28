@@ -39,24 +39,8 @@
 	      { key: 'ability-list-execution', label: '执行版', to: '/admin/ability-list/execution' },
 	    ],
 	  },
-		  {
-		    key: 'archive',
-		    label: '成长档案',
-		    icon: 'archive',
-		    children: [
-		      { key: 'archive-processing', label: '档案处理', to: '/admin/archive/processing' },
-		      { key: 'archive-query', label: '档案查询', to: '/admin/archive/query' },
-		    ],
-		  },
-		  {
-		    key: 'ability-profile',
-		    label: '能力画像',
-		    icon: 'profile',
-		    children: [
-		      { key: 'ability-profile-group', label: '群体画像', to: '/admin/ability-profile/group' },
-		      { key: 'ability-profile-teacher', label: '教师画像', to: '/admin/ability-profile/teacher' },
-		    ],
-		  },
+	  { key: 'archive', label: '成长档案', to: '/admin/archive/records', icon: 'archive' },
+	  { key: 'ability-profile', label: '能力画像', to: '/admin/ability-profile/school', icon: 'profile' },
 	  { key: 'reflection', label: '教学反思', to: '/admin/reflection', icon: 'reflection' },
 	  {
 	    key: 'training',
@@ -70,16 +54,7 @@
 	      { key: 'training-applications', label: '申请处理', to: '/admin/training/applications' },
 	    ],
 	  },
-		  {
-		    key: 'practice',
-		    label: '企业实践',
-		    icon: 'practice',
-		    children: [
-		      { key: 'practice-tracking', label: '年度实践跟踪', to: '/admin/practice/tracking' },
-		      { key: 'practice-applications', label: '申请处理', to: '/admin/practice/applications' },
-		      { key: 'practice-records', label: '记录总览', to: '/admin/practice/records' },
-		    ],
-		  },
+	  { key: 'practice', label: '企业实践', to: '/admin/practice', icon: 'practice' },
 	  { key: 'virtual-lab', label: '虚拟教研室', to: '/admin/virtual-lab', icon: 'lab' },
 	  { key: 'reports', label: '分析报告', to: '/admin/reports', icon: 'report' },
 	  { key: 'system', label: '系统管理', to: '/admin/system', icon: 'system' },
