@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Button } from '@/components/ui'
 
 interface ProcessingRecord {
   id: string
@@ -255,6 +254,16 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
         </div>
       </section>
 
+      <!-- 主操作区 -->
+      <section class="main-actions-section">
+        <div class="main-actions-content">
+          <button class="btn-primary action-btn" @click="goToImport">
+            <span class="btn-icon">📥</span>
+            <span>导入部门资料</span>
+          </button>
+        </div>
+      </section>
+
       <!-- 主体三栏布局 -->
       <section class="main-content">
         <!-- 左侧：筛选条件 -->
@@ -289,12 +298,6 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
                 <span class="filter-count">{{ option.count }}</span>
               </li>
             </ul>
-          </div>
-
-          <div class="filter-actions">
-            <button class="btn-primary import-btn" @click="goToImport">
-              导入部门资料 →
-            </button>
           </div>
         </aside>
 
@@ -588,8 +591,8 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
   margin: 0 auto;
   padding: 0 24px 32px;
   display: grid;
-  grid-template-columns: 240px 1fr 360px;
-  gap: 24px;
+  grid-template-columns: 220px minmax(0, 1fr) 360px;
+  gap: 16px;
 }
 
 /* 左侧筛选条件 */
@@ -653,16 +656,40 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
   border-radius: 12px;
 }
 
-.filter-actions {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-card-border);
+/* 主操作区 */
+.main-actions-section {
+  max-width: var(--admin-content-max-width);
+  margin: 0 auto;
+  padding: 0 24px 16px;
 }
 
-.import-btn {
-  width: 100%;
-  padding: 12px;
+.main-actions-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.action-btn:hover {
+  background: #28a38a;
+}
+
+.btn-icon {
+  font-size: 16px;
 }
 
 /* 中间记录列表 */
@@ -671,6 +698,8 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
   border-radius: 12px;
   border: 1px solid var(--color-card-border);
   padding: 20px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .list-header {
@@ -718,6 +747,7 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
 }
 
 .records-table {
+  min-width: 0;
   overflow-x: auto;
 }
 

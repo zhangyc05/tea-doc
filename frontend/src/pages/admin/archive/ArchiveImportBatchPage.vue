@@ -265,109 +265,114 @@ function viewUploadedFiles() {
         </div>
       </section>
 
-      <!-- 进度展示 -->
-      <section class="progress-section">
-        <div class="progress-content">
-          <h3 class="section-title">当前进度</h3>
-          <div class="steps-list">
-            <div
-              v-for="(step, index) in steps"
-              :key="index"
-              class="step-item"
-              :class="stepStatusClass(step.status)"
-            >
-              <div class="step-indicator">
-                <div class="step-dot"></div>
-                <div v-if="index < steps.length - 1" class="step-line"></div>
-              </div>
-              <div class="step-content">
-                <span class="step-label">{{ step.label }}</span>
-                <span class="step-status">{{ step.status }}</span>
+      <!-- 主体工作区（两栏布局） -->
+      <section class="batch-workspace">
+        <div class="batch-left">
+          <!-- 当前进度 -->
+          <section class="progress-section">
+            <div class="progress-content">
+              <h3 class="section-title">当前进度</h3>
+              <div class="steps-list">
+                <div
+                  v-for="(step, index) in steps"
+                  :key="index"
+                  class="step-item"
+                  :class="stepStatusClass(step.status)"
+                >
+                  <div class="step-indicator">
+                    <div class="step-dot"></div>
+                    <div v-if="index < steps.length - 1" class="step-line"></div>
+                  </div>
+                  <div class="step-content">
+                    <span class="step-label">{{ step.label }}</span>
+                    <span class="step-status">{{ step.status }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <!-- 本批次文件 -->
-      <section class="files-section">
-        <div class="files-content">
-          <h3 class="section-title">本批次文件</h3>
-          <div class="files-list">
-            <div v-for="file in batchFiles" :key="file.id" class="file-item">
-              <div class="file-info">
-                <div class="file-name">{{ file.name }}</div>
-                <div class="file-meta">{{ file.type }} | {{ file.size }}</div>
-              </div>
-              <div class="file-status" :class="fileStatusClass(file.status)">
-                {{ file.status }}
+          <!-- 本批次文件 -->
+          <section class="files-section">
+            <div class="files-content">
+              <h3 class="section-title">本批次文件</h3>
+              <div class="files-list">
+                <div v-for="file in batchFiles" :key="file.id" class="file-item">
+                  <div class="file-info">
+                    <div class="file-name">{{ file.name }}</div>
+                    <div class="file-meta">{{ file.type }} | {{ file.size }}</div>
+                  </div>
+                  <div class="file-status" :class="fileStatusClass(file.status)">
+                    {{ file.status }}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
-      </section>
 
-      <!-- 识别结果 -->
-      <section class="result-section">
-        <div class="result-content">
-          <h3 class="section-title">识别结果</h3>
-          <div v-if="!isCompleted" class="result-placeholder">
-            <p class="placeholder-text">系统正在整理本批次资料，识别完成后将在这里展示结果。</p>
-            <div class="result-stats">
-              <div class="stat-item">
-                <span class="stat-label">可生成待确认记录</span>
-                <span class="stat-value">--</span>
+        <div class="batch-right">
+          <!-- 识别结果 -->
+          <section class="result-section">
+            <div class="result-content">
+              <h3 class="section-title">识别结果</h3>
+              <div v-if="!isCompleted" class="result-placeholder">
+                <p class="placeholder-text">系统正在整理本批次资料，识别完成后将在这里展示结果。</p>
+                <div class="result-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">可生成待确认记录</span>
+                    <span class="stat-value">--</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">需要补充</span>
+                    <span class="stat-value">--</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">需要核验</span>
+                    <span class="stat-value">--</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">异常待处理</span>
+                    <span class="stat-value">--</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">疑似重复</span>
+                    <span class="stat-value">--</span>
+                  </div>
+                </div>
               </div>
-              <div class="stat-item">
-                <span class="stat-label">需要补充</span>
-                <span class="stat-value">--</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">需要核验</span>
-                <span class="stat-value">--</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">异常待处理</span>
-                <span class="stat-value">--</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">疑似重复</span>
-                <span class="stat-value">--</span>
+              <div v-else class="result-data">
+                <p class="result-summary">共识别出 {{ recognitionResult.totalRecords }} 条教师相关记录</p>
+                <div class="result-stats">
+                  <div class="stat-item success">
+                    <span class="stat-label">可生成待确认记录</span>
+                    <span class="stat-value">{{ recognitionResult.pendingConfirm }}</span>
+                  </div>
+                  <div class="stat-item warning">
+                    <span class="stat-label">需要补充</span>
+                    <span class="stat-value">{{ recognitionResult.needSupplement }}</span>
+                  </div>
+                  <div class="stat-item info">
+                    <span class="stat-label">需要核验</span>
+                    <span class="stat-value">{{ recognitionResult.needVerify }}</span>
+                  </div>
+                  <div class="stat-item danger">
+                    <span class="stat-label">异常待处理</span>
+                    <span class="stat-value">{{ recognitionResult.exception }}</span>
+                  </div>
+                  <div class="stat-item slate">
+                    <span class="stat-label">疑似重复</span>
+                    <span class="stat-value">{{ recognitionResult.duplicate }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div v-else class="result-data">
-            <p class="result-summary">共识别出 {{ recognitionResult.totalRecords }} 条教师相关记录</p>
-            <div class="result-stats">
-              <div class="stat-item success">
-                <span class="stat-label">可生成待确认记录</span>
-                <span class="stat-value">{{ recognitionResult.pendingConfirm }}</span>
-              </div>
-              <div class="stat-item warning">
-                <span class="stat-label">需要补充</span>
-                <span class="stat-value">{{ recognitionResult.needSupplement }}</span>
-              </div>
-              <div class="stat-item info">
-                <span class="stat-label">需要核验</span>
-                <span class="stat-value">{{ recognitionResult.needVerify }}</span>
-              </div>
-              <div class="stat-item danger">
-                <span class="stat-label">异常待处理</span>
-                <span class="stat-value">{{ recognitionResult.exception }}</span>
-              </div>
-              <div class="stat-item slate">
-                <span class="stat-label">疑似重复</span>
-                <span class="stat-value">{{ recognitionResult.duplicate }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <!-- 处理说明 -->
-      <section class="instructions-section">
-        <div class="instructions-content">
-          <div class="instructions-card">
+          <!-- 处理说明 -->
+          <section class="instructions-section">
+            <div class="instructions-content">
+              <div class="instructions-card">
             <h3 class="instructions-title">处理说明</h3>
             <ul class="instructions-list">
               <li class="instruction-item">
@@ -390,6 +395,8 @@ function viewUploadedFiles() {
               </li>
             </ul>
           </div>
+        </div>
+      </section>
         </div>
       </section>
 
@@ -583,11 +590,30 @@ function viewUploadedFiles() {
   color: var(--color-text-secondary);
 }
 
-/* 进度展示 */
-.progress-section {
+/* 主体工作区（两栏布局） */
+.batch-workspace {
   max-width: var(--admin-content-max-width);
   margin: 0 auto;
   padding: 0 24px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) 420px;
+  gap: 16px;
+  align-items: start;
+}
+
+.batch-left,
+.batch-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* 进度展示 */
+.progress-section {
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
 .progress-content {
@@ -674,9 +700,9 @@ function viewUploadedFiles() {
 
 /* 文件列表 */
 .files-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
 .files-content {
@@ -741,9 +767,9 @@ function viewUploadedFiles() {
 
 /* 识别结果 */
 .result-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
 .result-content {
@@ -822,9 +848,9 @@ function viewUploadedFiles() {
 
 /* 处理说明 */
 .instructions-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
 .instructions-content {

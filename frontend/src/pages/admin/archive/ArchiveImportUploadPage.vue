@@ -194,7 +194,7 @@ function statusClass(status: UploadedFile['status']) {
 
           <!-- 已上传文件列表 -->
           <div class="uploaded-files">
-            <h3 class="section-title">已上传文件</h3>
+            <h3 class="section-title">已上传文件（{{ uploadedFiles.length }}）</h3>
             <div class="file-list">
               <div v-for="file in uploadedFiles" :key="file.id" class="file-item">
                 <div class="file-info">
@@ -410,9 +410,10 @@ function statusClass(status: UploadedFile['status']) {
   background: white;
   border: 2px dashed var(--color-card-border);
   border-radius: 12px;
-  padding: 48px 24px;
+  padding: 36px 32px;
   text-align: center;
   transition: all 0.3s ease;
+  min-height: 280px;
 }
 
 .upload-zone.dragging {
@@ -482,9 +483,10 @@ function statusClass(status: UploadedFile['status']) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
+  padding: 12px 16px;
   background: #f8fafc;
   border-radius: 8px;
+  min-height: 56px;
 }
 
 .file-info {
