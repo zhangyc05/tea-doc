@@ -1,5 +1,41 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+
+const router = useRouter()
+
+// 编辑抽屉状态
+const editingIndicator = ref<typeof indicators[0] | null>(null)
+
+// 打开编辑抽屉
+function openEditDrawer(indicator: typeof indicators[0]) {
+  editingIndicator.value = indicator
+}
+
+// 关闭编辑抽屉
+function closeEditDrawer() {
+  editingIndicator.value = null
+}
+
+// 保存编辑
+function saveEdit() {
+  console.log('保存编辑：', editingIndicator.value)
+  closeEditDrawer()
+}
+
+// 按钮处理函数
+function deriveNextVersion() {
+  router.push('/admin/ability-list/execution/publish-confirm')
+}
+
+function viewHistory() {
+  console.log('查看历史版本')
+}
+
+function viewBaseTemplate() {
+  router.push('/admin/ability-list/base')
+}
 
 const abilityTree = [
   {
@@ -89,6 +125,14 @@ const indicators = [
 <template>
   <AdminLayout active-key="ability-list-execution">
     <div class="execution-page">
+      <!-- 顶部说明区 -->
+      <div class="page-breadcrumb">
+        能力清单 / 执行版
+      </div>
+      <div class="page-description">
+        查看当前周期正在使用的能力清单，并可进入调整配置或派生下一周期执行版。
+      </div>
+
       <section class="execution-hero admin-hero">
         <div class="hero-art" aria-hidden="true"></div>
 
@@ -114,11 +158,12 @@ const indicators = [
               </div>
 
               <div class="hero-actions">
-                <button class="primary-action btn-primary">
+                <button class="primary-action btn-primary" @click="deriveNextVersion">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
                 </button>
-                <button class="secondary-action btn-secondary">历史版本</button>
+                <button class="secondary-action btn-secondary" @click="viewHistory">查看历史版本</button>
+                <button class="secondary-action btn-outline" @click="viewBaseTemplate">查看母版</button>
               </div>
             </div>
 
@@ -208,13 +253,82 @@ const indicators = [
                   <td>{{ row.master }}</td>
                   <td>{{ row.rule }}</td>
                   <td><span class="badge-status badge-success">已启用</span></td>
-                  <td><button class="edit-link btn-link">编辑</button></td>
+                  <td><button class="edit-link btn-link" @click="openEditDrawer(row)">编辑</button></td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
       </section>
+
+      <!-- 编辑抽屉 -->
+      <div v-if="editingIndicator" class="edit-drawer-overlay" @click="closeEditDrawer">
+        <div class="edit-drawer" @click.stop>
+          <div class="drawer-header">
+            <h3 class="drawer-title">编辑指标</h3>
+            <button class="drawer-close" @click="closeEditDrawer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="drawer-tip">
+            当前执行版已发布，修改后将先保存为调整内容，确认后再生效。
+          </div>
+
+          <div class="drawer-form">
+            <div class="form-group">
+              <label class="form-label">所属维度</label>
+              <input class="form-input" type="text" value="教学能力" readonly />
+            </div>
+            <div class="form-group">
+              <label class="form-label">所属要素</label>
+              <input class="form-input" type="text" value="教学设计与实施" readonly />
+            </div>
+            <div class="form-group">
+              <label class="form-label">指标名称</label>
+              <input class="form-input" type="text" :value="editingIndicator?.name || ''" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">新手</label>
+                <input class="form-input" type="text" :value="editingIndicator?.novice || ''" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">胜任</label>
+                <input class="form-input" type="text" :value="editingIndicator?.competent || ''" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">骨干</label>
+                <input class="form-input" type="text" :value="editingIndicator?.backbone || ''" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">名师</label>
+                <input class="form-input" type="text" :value="editingIndicator?.master || ''" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">计算规则</label>
+              <input class="form-input" type="text" :value="editingIndicator?.rule || ''" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">状态</label>
+              <label class="form-switch">
+                <input type="checkbox" checked />
+                <span class="form-switch-label">已启用</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="drawer-actions">
+            <button class="btn-secondary" @click="closeEditDrawer">取消</button>
+            <button class="btn-primary" @click="saveEdit">保存</button>
+          </div>
+        </div>
+      </div>
     </div>
   </AdminLayout>
 </template>
@@ -556,6 +670,191 @@ const indicators = [
   .structure-card,
   .indicator-card {
     min-height: auto;
+  }
+
+  /* 顶部说明区样式 */
+  .page-breadcrumb {
+    color: #7d899b;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .page-description {
+    color: #263856;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* 编辑抽屉样式 */
+  .edit-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .edit-drawer {
+    width: 540px;
+    height: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    border-bottom: 1px solid var(--color-card-border);
+  }
+
+  .drawer-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text-primary);
+  }
+
+  .drawer-close {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: #f5f8ff;
+    color: #7d899b;
+    cursor: pointer;
+    transition: all 0.16s ease;
+  }
+
+  .drawer-close:hover {
+    background: #eaf2ff;
+    color: var(--color-primary);
+  }
+
+  .drawer-tip {
+    padding: 16px 24px;
+    color: #7d899b;
+    font-size: 13px;
+    line-height: 1.6;
+    background: #f8fbff;
+    border-bottom: 1px solid var(--color-card-border);
+  }
+
+  .drawer-form {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #7d899b;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    background: white;
+    transition: all 0.16s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(47, 191, 155, 0.1);
+  }
+
+  .form-input[readonly] {
+    background: #f5f8ff;
+    color: #7d899b;
+    cursor: default;
+  }
+
+  .form-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .form-switch input[type="checkbox"] {
+    width: 44px;
+    height: 24px;
+    appearance: none;
+    background: #e1efff;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.16s ease;
+  }
+
+  .form-switch input[type="checkbox"]:checked {
+    background: var(--color-primary);
+  }
+
+  .form-switch input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.16s ease;
+  }
+
+  .form-switch input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+  }
+
+  .form-switch-label {
+    color: var(--color-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .drawer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px;
+    border-top: 1px solid var(--color-card-border);
+  }
+
+  @media (max-width: 768px) {
+    .edit-drawer {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 </style>
