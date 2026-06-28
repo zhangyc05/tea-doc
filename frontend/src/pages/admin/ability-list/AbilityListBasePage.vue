@@ -215,29 +215,14 @@ function showIndicatorDescription() {
           </div>
 
           <div class="hero-main">
-            <div class="hero-heading-row">
-              <div class="hero-title-group">
-                <div class="hero-title-row">
-                  <h1>教师能力清单基准模板 V1.0</h1>
-                  <span class="badge-status badge-success">已启用</span>
-                </div>
-                <p class="hero-subtitle">
-                  维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
-                </p>
+            <div class="hero-title-group">
+              <div class="hero-title-row">
+                <h1>教师能力清单基准模板 V1.0</h1>
+                <span class="badge-status badge-success">已启用</span>
               </div>
-
-              <div class="hero-actions">
-                <button class="primary-action btn-primary" @click="goToOptimization">
-                  优化基准模板
-                </button>
-                <button class="secondary-action btn-secondary" @click="goToVersionHistory">
-                  查看版本记录
-                </button>
-                <button class="derive-action" @click="deriveExecutionVersion">
-                  派生执行版
-                  <span aria-hidden="true">›</span>
-                </button>
-              </div>
+              <p class="hero-subtitle">
+                维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
+              </p>
             </div>
 
             <div class="hero-summary-strip admin-summary-strip">
@@ -255,6 +240,19 @@ function showIndicatorDescription() {
                 <span class="admin-summary-label">当前指标</span>
                 <strong class="admin-summary-value">69 项</strong>
               </div>
+            </div>
+
+            <div class="hero-actions">
+              <button class="primary-action btn-primary" @click="goToOptimization">
+                优化基准模板
+              </button>
+              <button class="secondary-action btn-secondary" @click="goToVersionHistory">
+                查看版本记录
+              </button>
+              <button class="derive-action" @click="deriveExecutionVersion">
+                派生执行版
+                <span aria-hidden="true">›</span>
+              </button>
             </div>
 
             <p class="hero-note">
@@ -385,7 +383,7 @@ function showIndicatorDescription() {
 .base-hero {
   position: relative;
   overflow: hidden;
-  min-height: var(--admin-hero-height-default);
+  min-height: clamp(230px, 15.5vw, 270px);
 }
 
 .base-hero::before {
@@ -397,8 +395,9 @@ function showIndicatorDescription() {
     90deg,
     rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 255, 0.99) 30%,
-    rgba(255, 255, 255, 0.88) 45%,
-    rgba(255, 255, 255, 0.42) 62%,
+    rgba(255, 255, 255, 0.94) 46%,
+    rgba(255, 255, 255, 0.66) 63%,
+    rgba(255, 255, 255, 0.2) 82%,
     rgba(255, 255, 255, 0) 100%
   );
   content: '';
@@ -420,23 +419,20 @@ function showIndicatorDescription() {
 
 .hero-art {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 0;
-  width: min(68%, 900px);
   background-repeat: no-repeat;
   background-position: right center;
   background-size: cover;
-  opacity: 0.96;
+  opacity: 0.9;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: var(--admin-hero-height-default);
-  max-width: min(940px, 68%);
+  min-height: clamp(230px, 15.5vw, 270px);
+  max-width: min(800px, 58%);
   align-items: center;
   gap: clamp(18px, 1.2vw, 26px);
   padding: 0 0 0 clamp(24px, 1.75vw, 34px);
@@ -444,7 +440,7 @@ function showIndicatorDescription() {
 
 .hero-emblem {
   flex: none;
-  transform: translateY(-20px);
+  transform: translateY(-24px);
 }
 
 .hero-emblem-img {
@@ -460,14 +456,6 @@ function showIndicatorDescription() {
   flex: 1;
   flex-direction: column;
   justify-content: center;
-}
-
-.hero-heading-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(18px, 1.25vw, 26px);
-  margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 
 .hero-title-group {
@@ -492,7 +480,7 @@ function showIndicatorDescription() {
 }
 
 .hero-subtitle {
-  max-width: 420px;
+  max-width: 520px;
   margin: 0;
   color: var(--color-text-secondary);
   font-size: clamp(12px, 0.75vw, 14px);
@@ -500,11 +488,20 @@ function showIndicatorDescription() {
   line-height: 1.5;
 }
 
+.hero-summary-strip {
+  max-width: 760px;
+  margin-top: clamp(14px, 0.95vw, 18px);
+}
+
+.summary-structure {
+  min-width: 360px;
+}
+
 .hero-actions {
   display: flex;
-  flex: none;
   align-items: center;
   gap: clamp(10px, 0.7vw, 14px);
+  margin-top: clamp(14px, 0.95vw, 18px);
 }
 
 .hero-actions button {
@@ -527,16 +524,8 @@ function showIndicatorDescription() {
   color: var(--color-primary-hover);
 }
 
-.hero-summary-strip {
-  max-width: 760px;
-}
-
-.summary-structure {
-  min-width: 360px;
-}
-
 .hero-note {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   max-width: 760px;
   color: var(--color-text-secondary);
   font-size: 13px;
@@ -752,11 +741,6 @@ function showIndicatorDescription() {
 @media (max-width: 1280px) {
   .hero-content {
     max-width: 72%;
-  }
-
-  .hero-heading-row {
-    align-items: flex-start;
-    flex-direction: column;
   }
 }
 </style>
