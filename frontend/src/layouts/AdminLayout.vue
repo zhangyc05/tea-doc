@@ -29,15 +29,18 @@
 	})
 
 	// 侧边栏折叠状态管理
-	const sidebarCollapsed = ref(true)
+	const sidebarCollapsed = ref(false)
 	const toggleSidebar = () => {
 	  sidebarCollapsed.value = !sidebarCollapsed.value
+	}
+	const handleNavigate = () => {
+	  sidebarCollapsed.value = false
 	}
 </script>
 
 <template>
 	<div class="admin-layout">
-		<AdminSidebar :active-key="resolvedActiveKey" :collapsed="sidebarCollapsed" @toggle="toggleSidebar" />
+		<AdminSidebar :active-key="resolvedActiveKey" :collapsed="sidebarCollapsed" @toggle="toggleSidebar" @navigate="handleNavigate" />
 
 		<div class="admin-frame">
 			<AdminTopbar />

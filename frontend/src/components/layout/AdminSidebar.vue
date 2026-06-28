@@ -22,6 +22,7 @@
 
 	const emit = defineEmits<{
 	  (event: 'toggle'): void
+	  (event: 'navigate'): void
 	}>()
 
 	const navItems: AdminNavItem[] = [
@@ -54,7 +55,7 @@
 	  { key: 'practice', label: '企业实践', to: '/admin/practice', icon: 'practice' },
 	  { key: 'virtual-lab', label: '虚拟教研室', to: '/admin/virtual-lab', icon: 'lab' },
 	  { key: 'reports', label: '分析报告', to: '/admin/reports', icon: 'report' },
-	  { key: 'system', label: '系统管理', icon: 'system' },
+	  { key: 'system', label: '系统管理', to: '/admin/system', icon: 'system' },
 	]
 
 	function isActive(item: AdminNavItem, activeKey: string) {
@@ -112,8 +113,9 @@
 					v-if="item.to"
 					:to="item.to"
 					class="nav-item tooltip-host"
-					:class="{ active: isActive(item, activeKey), disabled: !item.to }"
+					:class="{ active: isActive(item, activeKey) }"
 					:data-tooltip="props.collapsed ? item.label : undefined"
+					@click="props.collapsed && emit('navigate')"
 				>
 					<span class="nav-leading">
 						<span class="nav-icon" :class="`icon-${item.icon}`">
@@ -144,9 +146,7 @@
 				<button
 					v-else
 					type="button"
-					class="nav-item disabled tooltip-host"
-					aria-disabled="true"
-					tabindex="-1"
+					class="nav-item tooltip-host"
 					:data-tooltip="props.collapsed ? item.label : undefined"
 				>
 					<span class="nav-leading">

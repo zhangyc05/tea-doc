@@ -94,7 +94,55 @@ export const adminRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/admin/archive/records',
+    path: '/admin/reflection',
+    name: 'AdminReflection',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '教学反思',
+      module: '教学反思',
+      layout: 'admin',
+      menuKey: 'reflection',
+      breadcrumb: ['管理端', '教学反思'],
+    },
+  },
+  {
+    path: '/admin/practice',
+    name: 'AdminPractice',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '企业实践',
+      module: '企业实践',
+      layout: 'admin',
+      menuKey: 'practice',
+      breadcrumb: ['管理端', '企业实践'],
+    },
+  },
+  {
+    path: '/admin/virtual-lab',
+    name: 'AdminVirtualLab',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '虚拟教研室',
+      module: '虚拟教研室',
+      layout: 'admin',
+      menuKey: 'virtual-lab',
+      breadcrumb: ['管理端', '虚拟教研室'],
+    },
+  },
+  {
+    path: '/admin/system',
+    name: 'AdminSystem',
+    component: AdminPlaceholderPage,
+    meta: {
+      title: '系统管理',
+      module: '系统管理',
+      layout: 'admin',
+      menuKey: 'system',
+      breadcrumb: ['管理端', '系统管理'],
+    },
+  },
+  {
+    path: '/admin/archive/import',
     name: 'AdminArchiveRecords',
     component: AdminPlaceholderPage,
     meta: {
