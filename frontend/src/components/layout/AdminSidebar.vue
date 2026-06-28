@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import { ref, watch } from 'vue'
 	import { RouterLink } from 'vue-router'
 
 	interface AdminNavItem {
@@ -58,6 +59,44 @@
 	  { key: 'system', label: '系统管理', to: '/admin/system', icon: 'system' },
 	]
 
+	const expandedKeys = ref<Set<string>>(new Set())
+
+	function getParentKeyByActiveKey(activeKey: string) {
+	  return navItems.find((item) => {
+	    if (item.key === activeKey) return true
+	    return item.children?.some((child) => child.key === activeKey)
+	  })?.key
+	}
+
+	function isExpanded(item: AdminNavItem) {
+	  return expandedKeys.value.has(item.key)
+	}
+
+	function toggleGroup(key: string) {
+	  const next = new Set(expandedKeys.value)
+
+	  if (next.has(key)) {
+	    next.delete(key)
+	  } else {
+	    next.add(key)
+	  }
+
+	  expandedKeys.value = next
+	}
+
+	watch(
+	  () => props.activeKey,
+	  (activeKey) => {
+	    const parentKey = getParentKeyByActiveKey(activeKey || '')
+	    if (!parentKey) return
+
+	    const next = new Set(expandedKeys.value)
+	    next.add(parentKey)
+	    expandedKeys.value = next
+	  },
+	  { immediate: true },
+	)
+
 	function isActive(item: AdminNavItem, activeKey: string) {
 	  if (item.key === activeKey) return true
 	  return item.children?.some((child) => child.key === activeKey) ?? false
@@ -108,9 +147,53 @@
 
 		<nav class="sidebar-nav">
 			<div v-for="item in navItems" :key="item.key" class="nav-group" :class="{ expanded: item.children && isActive(item, activeKey) }">
-				<!-- 有路由的一级菜单 -->
+				<!-- 情况 A：有 children 且展开态 -->
+				<div
+					v-if="item.to && item.children && !props.collapsed"
+					class="nav-item nav-parent"
+					:class="{ active: isActive(item, activeKey), expanded: isExpanded(item) }"
+				>
+					<RouterLink
+						:to="item.to"
+						class="nav-parent-link tooltip-host"
+						:data-tooltip="props.collapsed ? item.label : undefined"
+						@click="props.collapsed && emit('navigate')"
+					>
+						<span class="nav-leading">
+							<span class="nav-icon" :class="`icon-${item.icon}`">
+								<svg viewBox="0 0 24 24" aria-hidden="true">
+									<path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
+									<path v-else-if="item.icon === 'training'" d="M12 3 6 7v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7l-6-4Zm0 2.5 4.5 3H7.5L12 5.5ZM11 9h2v7h-2V9Z" />
+									<path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
+									<path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
+									<path v-else-if="item.icon === 'reflection'" d="M9 5h6v3H9zM7 9h10v2H7zM5 13h14v2H5zM6 17h12v2H6z" />
+									<path v-else-if="item.icon === 'practice'" d="M5 5h14v14H5zM7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM13 13h4v4h-4z" />
+									<path v-else-if="item.icon === 'lab'" d="M12 3 8 7l3 3-5 7h12l-5-7 3-3-4-4z" />
+									<path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
+									<path v-else-if="item.icon === 'report'" d="M6 19V5h12v14H6Zm3-3V9m3 7v-5m3 5v-8" />
+									<path v-else-if="item.icon === 'system'" d="M5 5h14v14H5zM8 9h8M8 13h5" />
+									<path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
+								</svg>
+							</span>
+							<span v-if="!props.collapsed" class="nav-label">{{ item.label }}</span>
+						</span>
+					</RouterLink>
+					<button
+						class="nav-arrow-button"
+						type="button"
+						:aria-label="isExpanded(item) ? `收起${item.label}` : `展开${item.label}`"
+						:aria-expanded="isExpanded(item)"
+						@click.stop="toggleGroup(item.key)"
+					>
+						<svg viewBox="0 0 16 16" aria-hidden="true">
+							<path d="M4 10 8 6l4 4" />
+						</svg>
+					</button>
+				</div>
+
+				<!-- 情况 B：有 to 但没有 children，或者收起态 -->
 				<RouterLink
-					v-if="item.to"
+					v-else-if="item.to"
 					:to="item.to"
 					class="nav-item tooltip-host"
 					:class="{ active: isActive(item, activeKey) }"
@@ -135,14 +218,9 @@
 						</span>
 						<span v-if="!props.collapsed" class="nav-label">{{ item.label }}</span>
 					</span>
-					<span v-if="item.children && !props.collapsed" class="nav-arrow" aria-hidden="true">
-						<svg viewBox="0 0 16 16">
-							<path d="M4 10 8 6l4 4" />
-						</svg>
-					</span>
 				</RouterLink>
 
-				<!-- 无路由的一级菜单（如系统管理） -->
+				<!-- 情况 C：无 to 的兜底按钮 -->
 				<button
 					v-else
 					type="button"
@@ -160,7 +238,7 @@
 				</button>
 
 				<!-- 二级菜单（只在展开态显示） -->
-				<div v-if="item.children && !props.collapsed" class="sub-nav">
+				<div v-if="item.children && !props.collapsed && isExpanded(item)" class="sub-nav">
 					<RouterLink
 						v-for="child in item.children"
 						:key="child.key"
@@ -442,6 +520,59 @@
 		stroke-width: 2.2;
 		stroke-linecap: round;
 		stroke-linejoin: round;
+	}
+
+	/* 父级菜单容器 */
+	.nav-parent {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 4px;
+		padding: 0 6px 0 14px;
+	}
+
+	.nav-parent-link {
+		display: flex;
+		min-width: 0;
+		flex: 1;
+		height: 42px;
+		align-items: center;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.nav-arrow-button {
+		display: inline-flex;
+		width: 32px;
+		height: 32px;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		border: 0;
+		border-radius: 8px;
+		background: transparent;
+		color: inherit;
+		transition: all 0.16s ease;
+	}
+
+	.nav-arrow-button:hover {
+		background: #f5f8ff;
+		color: var(--color-primary);
+	}
+
+	.nav-arrow-button svg {
+		width: 14px;
+		height: 14px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		transition: transform 0.16s ease;
+	}
+
+	.nav-parent:not(.expanded) .nav-arrow-button svg {
+		transform: rotate(180deg);
 	}
 
 	/* 二级菜单 */
