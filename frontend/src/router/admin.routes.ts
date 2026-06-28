@@ -27,6 +27,10 @@ const TrainingRecordDetailPage = () => import('@/pages/admin/training/TrainingRe
 const PracticeTrackingPage = () => import('@/pages/admin/practice/PracticeTrackingPage.vue')
 const PracticeApplicationPage = () => import('@/pages/admin/practice/PracticeApplicationPage.vue')
 const PracticeRecordPage = () => import('@/pages/admin/practice/PracticeRecordPage.vue')
+const VirtualLabRoomPage = () => import('@/pages/admin/virtual-lab/VirtualLabRoomPage.vue')
+const VirtualLabRoomDetailPage = () => import('@/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue')
+const VirtualLabActivityDetailPage = () => import('@/pages/admin/virtual-lab/VirtualLabActivityDetailPage.vue')
+const VirtualLabRecordDetailPage = () => import('@/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -252,13 +256,49 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/virtual-lab',
     name: 'AdminVirtualLab',
-    component: AdminPlaceholderPage,
+    component: VirtualLabRoomPage,
     meta: {
       title: '虚拟教研室',
       module: '虚拟教研室',
       layout: 'admin',
       menuKey: 'virtual-lab',
       breadcrumb: ['管理端', '虚拟教研室'],
+    },
+  },
+  {
+    path: '/admin/virtual-lab/rooms/:roomId',
+    name: 'AdminVirtualLabRoomDetail',
+    component: VirtualLabRoomDetailPage,
+    meta: {
+      title: '教研室详情',
+      module: '虚拟教研室',
+      layout: 'admin',
+      menuKey: 'virtual-lab',
+      breadcrumb: ['管理端', '虚拟教研室', '教研室详情'],
+    },
+  },
+  {
+    path: '/admin/virtual-lab/activities/:activityId',
+    name: 'AdminVirtualLabActivityDetail',
+    component: VirtualLabActivityDetailPage,
+    meta: {
+      title: '教研活动详情',
+      module: '虚拟教研室',
+      layout: 'admin',
+      menuKey: 'virtual-lab',
+      breadcrumb: ['管理端', '虚拟教研室', '教研活动详情'],
+    },
+  },
+  {
+    path: '/admin/virtual-lab/records/:recordId',
+    name: 'AdminVirtualLabRecordDetail',
+    component: VirtualLabRecordDetailPage,
+    meta: {
+      title: '教研记录详情',
+      module: '虚拟教研室',
+      layout: 'admin',
+      menuKey: 'virtual-lab',
+      breadcrumb: ['管理端', '虚拟教研室', '教研记录详情'],
     },
   },
   {
