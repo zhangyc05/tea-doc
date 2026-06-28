@@ -1,5 +1,8 @@
 <script setup lang="ts">
 	import { ref } from 'vue'
+	import { useRouter } from 'vue-router'
+
+	const router = useRouter()
 
 	// Mock 数据：能力结构树
 	const abilityTree = [
@@ -145,6 +148,29 @@
 	  }
 	  return descriptions[selectedAbility.value] || ''
 	}
+
+	// 按钮处理函数
+	function goToOptimization() {
+	  router.push('/admin/ability-list/base/optimization')
+	}
+
+	function goToVersionHistory() {
+	  // 暂不实现
+	  console.log('查看版本记录')
+	}
+
+	function deriveExecutionVersion() {
+	  // 暂不实现，或跳转到发布确认页
+	  console.log('派生执行版')
+	}
+
+	function editIndicator(indicator: typeof indicators[0]) {
+	  console.log('编辑指标：', indicator)
+	}
+
+	function showIndicatorDescription() {
+	  console.log('显示指标说明')
+	}
 </script>
 
 <template>
@@ -181,9 +207,9 @@
 				</div>
 
 				<div class="hero-actions">
-					<button class="btn-primary">优化基准模板</button>
-					<button class="btn-secondary">查看版本记录</button>
-					<button class="btn-outline">派生执行版</button>
+					<button class="btn-primary" @click="goToOptimization">优化基准模板</button>
+					<button class="btn-secondary" @click="goToVersionHistory">查看版本记录</button>
+					<button class="btn-outline" @click="deriveExecutionVersion">派生执行版</button>
 				</div>
 
 				<div class="hero-note">
@@ -259,7 +285,7 @@
 				<div class="admin-card">
 					<div class="admin-card-header">
 						<h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
-						<button class="btn-link">指标说明</button>
+						<button class="btn-link" @click="showIndicatorDescription">指标说明</button>
 					</div>
 					<div v-if="getSelectedAbilityDescription()" class="ability-description">
 						{{ getSelectedAbilityDescription() }}

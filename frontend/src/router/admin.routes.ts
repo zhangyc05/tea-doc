@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
 const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
 const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityListBasePage.vue')
+const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue')
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
@@ -205,7 +206,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-list/base/optimization',
     name: 'AdminAbilityListBaseOptimization',
-    component: AdminPlaceholderPage,
+    component: AbilityListBaseOptimizationPage,
     meta: {
       title: '优化基准模板',
       module: '能力清单',
