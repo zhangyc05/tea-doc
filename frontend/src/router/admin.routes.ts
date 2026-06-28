@@ -5,6 +5,7 @@ const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibrary
 const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityListBasePage.vue')
 const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue')
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
+const AbilityListPublishConfirmPage = () => import('@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -218,7 +219,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-list/execution/publish-confirm',
     name: 'AdminAbilityListPublishConfirm',
-    component: AdminPlaceholderPage,
+    component: AbilityListPublishConfirmPage,
     meta: {
       title: '发布确认',
       module: '能力清单',
