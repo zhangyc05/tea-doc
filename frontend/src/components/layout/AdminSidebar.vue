@@ -64,10 +64,11 @@
 	    to: '/admin/training/resources',
 	    icon: 'training',
 	    children: [
-	      { key: 'training-records', label: '记录总览', to: '/admin/training/records' },
-	      { key: 'training-resources', label: '资源库', to: '/admin/training/resources' },
+	      { key: 'training-plans', label: '计划管理', to: '/admin/training/plans' },
 	      { key: 'training-demands', label: '需求管理', to: '/admin/training/demands' },
+	      { key: 'training-resources', label: '资源库', to: '/admin/training/resources' },
 	      { key: 'training-applications', label: '申请处理', to: '/admin/training/applications' },
+	      { key: 'training-records', label: '记录总览', to: '/admin/training/records' },
 	    ],
 	  },
 		  {
