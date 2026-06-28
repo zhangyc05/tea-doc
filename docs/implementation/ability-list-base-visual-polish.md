@@ -2,28 +2,28 @@
 
 ## 1. 当前检查结论
 
-本任务用于把已经生成的能力清单基准模板页视觉资源接入页面。
+本任务用于把已经生成并提交到仓库的能力清单基准模板页视觉资源接入页面。
 
-执行前请先确认资源文件已经存在于仓库：
-
-```txt
-frontend/src/assets/admin/ability-list/ability-list-base-hero-art.png
-frontend/src/assets/admin/ability-list/ability-list-base-hero-emblem.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-structure.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-basic.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-teaching.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-research.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-practice.svg
-frontend/src/assets/admin/ability-list/icons/icon-ability-service.svg
-```
-
-如果这些文件不存在，请先把资源包 `ability-list-base-assets.zip` 解压到：
+资源实际路径为：
 
 ```txt
-frontend/src/assets/admin/ability-list/
+frontend/src/assets/admin/ability-list-base-assets/
 ```
 
-不要改资源文件名。
+已经确认该目录下存在：
+
+```txt
+frontend/src/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png
+frontend/src/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-research.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg
+frontend/src/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg
+```
+
+注意：不要再去 `frontend/src/assets/admin/ability-list/` 查找。本次直接使用 `ability-list-base-assets` 目录。
 
 ## 2. 目标页面
 
@@ -53,15 +53,17 @@ frontend/src/pages/admin/ability-list/AbilityListBasePage.vue
 
 ## 4. 需要接入的资源
 
+请在 `AbilityListBasePage.vue` 中按实际路径引入：
+
 ```ts
-import baseHeroArt from '@/assets/admin/ability-list/ability-list-base-hero-art.png'
-import baseHeroEmblem from '@/assets/admin/ability-list/ability-list-base-hero-emblem.svg'
-import iconAbilityStructure from '@/assets/admin/ability-list/icons/icon-ability-structure.svg'
-import iconAbilityBasic from '@/assets/admin/ability-list/icons/icon-ability-basic.svg'
-import iconAbilityTeaching from '@/assets/admin/ability-list/icons/icon-ability-teaching.svg'
-import iconAbilityResearch from '@/assets/admin/ability-list/icons/icon-ability-research.svg'
-import iconAbilityPractice from '@/assets/admin/ability-list/icons/icon-ability-practice.svg'
-import iconAbilityService from '@/assets/admin/ability-list/icons/icon-ability-service.svg'
+import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
+import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
+import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
+import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
+import iconAbilityTeaching from '@/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg'
+import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/icon-ability-research.svg'
+import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
+import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 ```
 
 如果项目当前对静态资源引用方式不同，请按 Vite/Vue 当前规范处理。
