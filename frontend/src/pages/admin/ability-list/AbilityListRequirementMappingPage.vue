@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { ref } from 'vue'
+	import AdminLayout from '@/layouts/AdminLayout.vue'
 
 	// Mock 数据：要求对象
 	const requirementGroups = [
@@ -165,7 +166,8 @@
 </script>
 
 <template>
-	<div class="page-root">
+	<AdminLayout active-key="ability-list-execution">
+		<div class="page-root">
 		<!-- 页面顶部 -->
 		<div class="page-breadcrumb">
 			能力清单 / 执行版 / 岗位/聘期要求映射
@@ -516,7 +518,8 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
+	</AdminLayout>
 </template>
 
 <style scoped>

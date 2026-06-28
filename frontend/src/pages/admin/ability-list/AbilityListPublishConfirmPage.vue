@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { useRouter } from 'vue-router'
+	import AdminLayout from '@/layouts/AdminLayout.vue'
 
 	const router = useRouter()
 
@@ -16,7 +17,8 @@
 </script>
 
 <template>
-	<div class="page-root">
+	<AdminLayout active-key="ability-list-execution">
+		<div class="page-root">
 		<!-- 页面顶部 -->
 		<div class="page-breadcrumb">
 			能力清单 / 执行版 / 发布确认
@@ -136,7 +138,8 @@
 			<button class="btn-secondary" @click="goBack">返回修改</button>
 			<button class="btn-primary" @click="handlePublish">确认发布</button>
 		</div>
-	</div>
+		</div>
+	</AdminLayout>
 </template>
 
 <style scoped>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import { ref } from 'vue'
 	import { useRouter } from 'vue-router'
+	import AdminLayout from '@/layouts/AdminLayout.vue'
 
 	const router = useRouter()
 
@@ -174,7 +175,8 @@
 </script>
 
 <template>
-	<div class="page-root">
+	<AdminLayout active-key="ability-list-base">
+		<div class="page-root">
 		<!-- 顶部说明区 -->
 		<div class="page-breadcrumb">
 			能力清单 / 基准模板
@@ -331,7 +333,8 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
+	</AdminLayout>
 </template>
 
 <style scoped>

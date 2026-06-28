@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
+	import AdminLayout from '@/layouts/AdminLayout.vue'
 
 	// Mock 数据：建议来源
 	const suggestionSources = [
@@ -134,7 +135,8 @@
 </script>
 
 <template>
-	<div class="page-root">
+	<AdminLayout active-key="ability-list-base">
+		<div class="page-root">
 		<!-- 页面顶部 -->
 		<div class="page-breadcrumb">
 			能力清单 / 基准模板 / 优化基准模板
@@ -327,7 +329,8 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
+	</AdminLayout>
 </template>
 
 <style scoped>
