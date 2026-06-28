@@ -12,6 +12,9 @@ const ArchiveImportUploadPage = () => import('@/pages/admin/archive/ArchiveImpor
 const ArchiveImportBatchPage = () => import('@/pages/admin/archive/ArchiveImportBatchPage.vue')
 const ArchiveQueryPage = () => import('@/pages/admin/archive/ArchiveQueryPage.vue')
 const ArchiveTeacherDetailPage = () => import('@/pages/admin/archive/ArchiveTeacherDetailPage.vue')
+const AbilityProfileGroupPage = () => import('@/pages/admin/ability-profile/AbilityProfileGroupPage.vue')
+const AbilityProfileTeacherPage = () => import('@/pages/admin/ability-profile/AbilityProfileTeacherPage.vue')
+const AbilityProfileTeacherDetailPage = () => import('@/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -225,7 +228,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-profile/group',
     name: 'AdminAbilityProfileGroup',
-    component: AdminPlaceholderPage,
+    component: AbilityProfileGroupPage,
     meta: {
       title: '群体画像',
       module: '能力画像',
@@ -237,13 +240,25 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/ability-profile/teacher',
     name: 'AdminAbilityProfileTeacher',
-    component: AdminPlaceholderPage,
+    component: AbilityProfileTeacherPage,
     meta: {
       title: '教师画像',
       module: '能力画像',
       layout: 'admin',
       menuKey: 'ability-profile-teacher',
       breadcrumb: ['管理端', '能力画像', '教师画像'],
+    },
+  },
+  {
+    path: '/admin/ability-profile/teacher/:teacherId',
+    name: 'AdminAbilityProfileTeacherDetail',
+    component: AbilityProfileTeacherDetailPage,
+    meta: {
+      title: '教师个人画像',
+      module: '能力画像',
+      layout: 'admin',
+      menuKey: 'ability-profile-teacher',
+      breadcrumb: ['管理端', '能力画像', '教师画像', '教师个人画像'],
     },
   },
   {
