@@ -310,7 +310,10 @@
 			<div class="indicators-panel">
 				<div class="admin-card">
 					<div class="admin-card-header">
-						<h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
+						<div class="title-with-icon">
+								<img class="title-icon" :src="getSelectedAbilityIcon()" alt="" />
+								<h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
+							</div>
 						<button class="btn-link" @click="showIndicatorDescription">指标说明</button>
 					</div>
 					<div v-if="getSelectedAbilityDescription()" class="ability-description">
