@@ -17,6 +17,13 @@ const AbilityProfileTeacherPage = () => import('@/pages/admin/ability-profile/Ab
 const AbilityProfileTeacherDetailPage = () => import('@/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue')
 const ReflectionOverviewPage = () => import('@/pages/admin/reflection/ReflectionOverviewPage.vue')
 const ReflectionDetailPage = () => import('@/pages/admin/reflection/ReflectionDetailPage.vue')
+const TrainingPlanPage = () => import('@/pages/admin/training/TrainingPlanPage.vue')
+const TrainingPlanDetailPage = () => import('@/pages/admin/training/TrainingPlanDetailPage.vue')
+const TrainingResourcePage = () => import('@/pages/admin/training/TrainingResourcePage.vue')
+const TrainingDemandPage = () => import('@/pages/admin/training/TrainingDemandPage.vue')
+const TrainingApplicationPage = () => import('@/pages/admin/training/TrainingApplicationPage.vue')
+const TrainingRecordPage = () => import('@/pages/admin/training/TrainingRecordPage.vue')
+const TrainingRecordDetailPage = () => import('@/pages/admin/training/TrainingRecordDetailPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -24,9 +31,33 @@ export const adminRoutes: RouteRecordRaw[] = [
     redirect: '/admin/training/resources',
   },
   {
+    path: '/admin/training/plans',
+    name: 'AdminTrainingPlans',
+    component: TrainingPlanPage,
+    meta: {
+      title: '计划管理',
+      module: '培训管理',
+      layout: 'admin',
+      menuKey: 'training-plans',
+      breadcrumb: ['管理端', '培训管理', '计划管理'],
+    },
+  },
+  {
+    path: '/admin/training/plans/:planId',
+    name: 'AdminTrainingPlanDetail',
+    component: TrainingPlanDetailPage,
+    meta: {
+      title: '计划详情',
+      module: '培训管理',
+      layout: 'admin',
+      menuKey: 'training-plans',
+      breadcrumb: ['管理端', '培训管理', '计划管理', '计划详情'],
+    },
+  },
+  {
     path: '/admin/training/records',
     name: 'AdminTrainingRecords',
-    component: AdminPlaceholderPage,
+    component: TrainingRecordPage,
     meta: {
       title: '记录总览',
       module: '培训管理',
@@ -38,7 +69,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/training/resources',
     name: 'AdminTrainingResources',
-    component: ResourceLibraryPage,
+    component: TrainingResourcePage,
     meta: {
       title: '资源库',
       module: '培训管理',
@@ -50,7 +81,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/training/demands',
     name: 'AdminTrainingDemands',
-    component: AdminPlaceholderPage,
+    component: TrainingDemandPage,
     meta: {
       title: '需求管理',
       module: '培训管理',
@@ -62,13 +93,25 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/training/applications',
     name: 'AdminTrainingApplications',
-    component: AdminPlaceholderPage,
+    component: TrainingApplicationPage,
     meta: {
       title: '申请处理',
       module: '培训管理',
       layout: 'admin',
       menuKey: 'training-applications',
       breadcrumb: ['管理端', '培训管理', '申请处理'],
+    },
+  },
+  {
+    path: '/admin/training/records/:recordId',
+    name: 'AdminTrainingRecordDetail',
+    component: TrainingRecordDetailPage,
+    meta: {
+      title: '记录详情',
+      module: '培训管理',
+      layout: 'admin',
+      menuKey: 'training-records',
+      breadcrumb: ['管理端', '培训管理', '记录总览', '记录详情'],
     },
   },
   {
