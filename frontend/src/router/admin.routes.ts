@@ -24,6 +24,9 @@ const TrainingDemandPage = () => import('@/pages/admin/training/TrainingDemandPa
 const TrainingApplicationPage = () => import('@/pages/admin/training/TrainingApplicationPage.vue')
 const TrainingRecordPage = () => import('@/pages/admin/training/TrainingRecordPage.vue')
 const TrainingRecordDetailPage = () => import('@/pages/admin/training/TrainingRecordDetailPage.vue')
+const PracticeTrackingPage = () => import('@/pages/admin/practice/PracticeTrackingPage.vue')
+const PracticeApplicationPage = () => import('@/pages/admin/practice/PracticeApplicationPage.vue')
+const PracticeRecordPage = () => import('@/pages/admin/practice/PracticeRecordPage.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -213,7 +216,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/practice/tracking',
     name: 'AdminPracticeTracking',
-    component: AdminPlaceholderPage,
+    component: PracticeTrackingPage,
     meta: {
       title: '年度实践跟踪',
       module: '企业实践',
@@ -225,7 +228,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/practice/applications',
     name: 'AdminPracticeApplications',
-    component: AdminPlaceholderPage,
+    component: PracticeApplicationPage,
     meta: {
       title: '申请处理',
       module: '企业实践',
@@ -237,7 +240,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/practice/records',
     name: 'AdminPracticeRecords',
-    component: AdminPlaceholderPage,
+    component: PracticeRecordPage,
     meta: {
       title: '记录总览',
       module: '企业实践',
