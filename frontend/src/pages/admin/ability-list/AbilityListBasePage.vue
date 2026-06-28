@@ -177,14 +177,6 @@
 <template>
 	<AdminLayout active-key="ability-list-base">
 		<div class="page-root">
-		<!-- 顶部说明区 -->
-		<div class="page-breadcrumb">
-			能力清单 / 基准模板
-		</div>
-		<div class="page-description">
-			维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
-		</div>
-
 		<!-- Hero 区 -->
 		<div class="admin-hero">
 			<div class="hero-content">
@@ -343,20 +335,6 @@
 		flex-direction: column;
 		height: 100%;
 		gap: 24px;
-	}
-
-	/* 顶部说明区 */
-	.page-breadcrumb {
-		color: #7d899b;
-		font-size: 13px;
-		font-weight: 700;
-	}
-
-	.page-description {
-		color: #263856;
-		font-size: 15px;
-		line-height: 1.6;
-		margin-top: 8px;
 	}
 
 	/* Hero 区 */

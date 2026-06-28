@@ -29,13 +29,13 @@
 	const router = useRouter()
 
 	const navItems: AdminNavItem[] = [
-	  { key: 'home', label: '首页', to: '/admin/training/resources', icon: 'home' },
+	  { key: 'home', label: '首页', to: '/admin/ability-list/base', icon: 'home' },
 	  {
 	    key: 'ability-list',
 	    label: '能力清单',
 	    icon: 'list',
 	    children: [
-	      { key: 'ability-list-base', label: '基准模板', to: '/admin/ability-list/base' },
+	      { key: 'ability-list-base', label: '基准板', to: '/admin/ability-list/base' },
 	      { key: 'ability-list-execution', label: '执行版', to: '/admin/ability-list/execution' },
 	    ],
 	  },
