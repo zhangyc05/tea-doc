@@ -101,6 +101,15 @@
 	  if (item.key === activeKey) return true
 	  return item.children?.some((child) => child.key === activeKey) ?? false
 	}
+
+	function handleParentClick(item: AdminNavItem, event: MouseEvent) {
+	  // 如果菜单有 children 且当前未展开，点击时展开并阻止跳转
+	  if (item.children && !isExpanded(item)) {
+	    event.preventDefault()
+	    toggleGroup(item.key)
+	  }
+	  // 如果已展开，允许正常跳转
+	}
 </script>
 
 <template>
@@ -157,7 +166,7 @@
 						:to="item.to"
 						class="nav-parent-link tooltip-host"
 						:data-tooltip="props.collapsed ? item.label : undefined"
-						@click="props.collapsed && emit('navigate')"
+						@click="handleParentClick(item, $event)"
 					>
 						<span class="nav-leading">
 							<span class="nav-icon" :class="`icon-${item.icon}`">
