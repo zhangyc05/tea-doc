@@ -394,10 +394,10 @@ function showIndicatorDescription() {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.99) 30%,
-    rgba(255, 255, 255, 0.94) 46%,
-    rgba(255, 255, 255, 0.66) 63%,
-    rgba(255, 255, 255, 0.2) 82%,
+    rgba(255, 255, 255, 0.995) 34%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.78) 64%,
+    rgba(255, 255, 255, 0.34) 82%,
     rgba(255, 255, 255, 0) 100%
   );
   content: '';
@@ -419,12 +419,15 @@ function showIndicatorDescription() {
 
 .hero-art {
   position: absolute;
-  inset: 0;
+  top: clamp(10px, 0.8vw, 16px);
+  right: clamp(18px, 1.5vw, 30px);
+  bottom: clamp(10px, 0.8vw, 16px);
   z-index: 0;
+  width: min(48%, 720px);
   background-repeat: no-repeat;
   background-position: right center;
-  background-size: cover;
-  opacity: 0.9;
+  background-size: contain;
+  opacity: 0.88;
 }
 
 .hero-content {
@@ -741,6 +744,11 @@ function showIndicatorDescription() {
 @media (max-width: 1280px) {
   .hero-content {
     max-width: 72%;
+  }
+
+  .hero-art {
+    width: min(42%, 560px);
+    opacity: 0.78;
   }
 }
 </style>
