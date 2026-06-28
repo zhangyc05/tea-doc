@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref, watch } from 'vue'
-	import { RouterLink } from 'vue-router'
+	import { RouterLink, useRouter } from 'vue-router'
 
 	interface AdminNavItem {
 	  key: string
@@ -25,6 +25,8 @@
 	  (event: 'toggle'): void
 	  (event: 'navigate'): void
 	}>()
+
+	const router = useRouter()
 
 	const navItems: AdminNavItem[] = [
 	  { key: 'home', label: '首页', to: '/admin/training/resources', icon: 'home' },
@@ -102,13 +104,29 @@
 	  return item.children?.some((child) => child.key === activeKey) ?? false
 	}
 
-	function handleParentClick(item: AdminNavItem, event: MouseEvent) {
-	  // 如果菜单有 children 且当前未展开，点击时展开并阻止跳转
-	  if (item.children && !isExpanded(item)) {
-	    event.preventDefault()
-	    toggleGroup(item.key)
+	function handleParentAction(item: AdminNavItem) {
+	  if (props.collapsed) {
+	    if (item.to) router.push(item.to)
+	    emit('navigate')
+	    return
 	  }
-	  // 如果已展开，允许正常跳转
+
+	  if (item.children?.length) {
+	    if (!isExpanded(item)) {
+	      toggleGroup(item.key)
+	      return
+	    }
+
+	    if (item.to) {
+	      router.push(item.to)
+	    }
+
+	    return
+	  }
+
+	  if (item.to) {
+	    router.push(item.to)
+	  }
 	}
 </script>
 
@@ -162,11 +180,11 @@
 					class="nav-item nav-parent"
 					:class="{ active: isActive(item, activeKey), expanded: isExpanded(item) }"
 				>
-					<RouterLink
-						:to="item.to"
+					<button
+						type="button"
 						class="nav-parent-link tooltip-host"
 						:data-tooltip="props.collapsed ? item.label : undefined"
-						@click="handleParentClick(item, $event)"
+						@click="handleParentAction(item)"
 					>
 						<span class="nav-leading">
 							<span class="nav-icon" :class="`icon-${item.icon}`">
@@ -186,7 +204,7 @@
 							</span>
 							<span v-if="!props.collapsed" class="nav-label">{{ item.label }}</span>
 						</span>
-					</RouterLink>
+					</button>
 					<button
 						class="nav-arrow-button"
 						type="button"
@@ -546,8 +564,28 @@
 		flex: 1;
 		height: 42px;
 		align-items: center;
+		border: 0;
+		background: transparent;
+		padding: 0;
 		color: inherit;
+		font-family: inherit;
+		font-size: inherit;
+		text-align: left;
 		text-decoration: none;
+		cursor: pointer;
+		transition: all 0.16s ease;
+	}
+
+	.nav-parent-link:hover {
+		background: #f5f8ff;
+		color: var(--color-primary);
+		border-radius: 8px;
+	}
+
+	.nav-parent.active .nav-parent-link {
+		background: #f2f7ff;
+		color: var(--color-primary);
+		border-radius: 8px;
 	}
 
 	.nav-arrow-button {
