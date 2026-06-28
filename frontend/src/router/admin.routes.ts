@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
 const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
+const ReportCenterPage = () => import('@/pages/admin/reports/ReportCenterPage.vue')
 const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
 const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityListBasePage.vue')
 const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue')
@@ -124,7 +125,7 @@ export const adminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/reports',
     name: 'AdminReports',
-    component: AdminPlaceholderPage,
+    component: ReportCenterPage,
     meta: {
       title: '分析报告',
       module: '分析报告',
