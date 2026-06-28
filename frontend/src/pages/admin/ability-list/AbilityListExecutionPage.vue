@@ -586,6 +586,170 @@ const indicators = [
   box-shadow: inset 1px 0 0 var(--color-primary);
 }
 
+/* 编辑抽屉样式 */
+.edit-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(15, 23, 42, 0.28);
+}
+
+.edit-drawer {
+  width: 540px;
+  max-width: calc(100vw - 72px);
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.18);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.drawer-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.drawer-close {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f8ff;
+  color: #7d899b;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.drawer-close:hover {
+  background: #eaf2ff;
+  color: var(--color-primary);
+}
+
+.drawer-tip {
+  padding: 16px 24px;
+  color: #7d899b;
+  font-size: 13px;
+  line-height: 1.6;
+  background: #f8fbff;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.drawer-form {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #7d899b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: white;
+  transition: all 0.16s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(47, 191, 155, 0.1);
+}
+
+.form-input[readonly] {
+  background: #f5f8ff;
+  color: #7d899b;
+  cursor: default;
+}
+
+.form-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.form-switch input[type="checkbox"] {
+  width: 44px;
+  height: 24px;
+  appearance: none;
+  background: #e1efff;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.form-switch input[type="checkbox"]:checked {
+  background: var(--color-primary);
+}
+
+.form-switch input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.16s ease;
+}
+
+.form-switch input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+}
+
+.form-switch-label {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.drawer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-card-border);
+  background: #fff;
+}
+
 /* 响应式 */
 @media (max-width: 1440px) {
   .execution-hero {
@@ -645,169 +809,6 @@ const indicators = [
   .structure-card,
   .indicator-card {
     min-height: auto;
-  }
-
-  /* 编辑抽屉样式 */
-  .edit-drawer-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: flex-end;
-    padding: 0;
-  }
-
-  .edit-drawer {
-    width: 540px;
-    height: 100%;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  }
-
-  .drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px;
-    border-bottom: 1px solid var(--color-card-border);
-  }
-
-  .drawer-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--color-text-primary);
-  }
-
-  .drawer-close {
-    display: flex;
-    width: 32px;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: 8px;
-    background: #f5f8ff;
-    color: #7d899b;
-    cursor: pointer;
-    transition: all 0.16s ease;
-  }
-
-  .drawer-close:hover {
-    background: #eaf2ff;
-    color: var(--color-primary);
-  }
-
-  .drawer-tip {
-    padding: 16px 24px;
-    color: #7d899b;
-    font-size: 13px;
-    line-height: 1.6;
-    background: #f8fbff;
-    border-bottom: 1px solid var(--color-card-border);
-  }
-
-  .drawer-form {
-    flex: 1;
-    padding: 24px;
-    overflow-y: auto;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #7d899b;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--color-card-border);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--color-text-primary);
-    background: white;
-    transition: all 0.16s ease;
-  }
-
-  .form-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(47, 191, 155, 0.1);
-  }
-
-  .form-input[readonly] {
-    background: #f5f8ff;
-    color: #7d899b;
-    cursor: default;
-  }
-
-  .form-switch {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-
-  .form-switch input[type="checkbox"] {
-    width: 44px;
-    height: 24px;
-    appearance: none;
-    background: #e1efff;
-    border-radius: 12px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.16s ease;
-  }
-
-  .form-switch input[type="checkbox"]:checked {
-    background: var(--color-primary);
-  }
-
-  .form-switch input[type="checkbox"]::before {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    transition: all 0.16s ease;
-  }
-
-  .form-switch input[type="checkbox"]:checked::before {
-    transform: translateX(20px);
-  }
-
-  .form-switch-label {
-    color: var(--color-text-primary);
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .drawer-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 24px;
-    border-top: 1px solid var(--color-card-border);
   }
 
   @media (max-width: 768px) {
