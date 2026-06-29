@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
@@ -14,6 +14,7 @@ const selectedStatus = ref('全部')
 const selectedYear = ref('2026 年度')
 const selectedParticipation = ref('全部')
 const searchQuery = ref('')
+const planNotice = ref('')
 
 // 筛选项数据
 const organizations = ['全校', '智能制造学院', '电子信息学院', '商贸管理学院', '汽车工程学院']
@@ -43,7 +44,7 @@ interface TrainingPlan {
   maxParticipants: number
 }
 
-const trainingPlans: TrainingPlan[] = [
+const trainingPlans = ref<TrainingPlan[]>([
   {
     id: 'summer-digital',
     name: '2026 年暑期数字化教学能力提升培训',
@@ -92,7 +93,7 @@ const trainingPlans: TrainingPlan[] = [
     currentParticipants: 30,
     maxParticipants: 30,
   },
-]
+])
 
 // 执行提醒
 const reminders = [
@@ -114,12 +115,16 @@ function viewDetail(id: string) {
 }
 
 function saveDraft() {
-  console.log('保存草稿')
+  planNotice.value = newPlan.value.name
+    ? `已保存草稿：${newPlan.value.name}`
+    : '已保存草稿，稍后可继续完善培训计划。'
   closeDrawer()
 }
 
 function saveAndPublish() {
-  console.log('保存并发布')
+  planNotice.value = newPlan.value.name
+    ? `已发布培训计划：${newPlan.value.name}`
+    : '已保存并发布培训计划。'
   closeDrawer()
 }
 
@@ -149,31 +154,81 @@ const newPlan = ref({
 
 const applicationOptions = ['需要', '不需要']
 const materialOptions = ['培训总结', '培训证书', '其他材料']
+
+const filteredPlans = computed(() => {
+  const keyword = searchQuery.value.trim()
+  return trainingPlans.value.filter((plan) => {
+    const matchesStatus = selectedStatus.value === '全部' || plan.status === selectedStatus.value
+    const matchesParticipation = selectedParticipation.value === '全部' || plan.participation === selectedParticipation.value
+    const matchesOrganization = selectedOrganization.value === '全校' || plan.target.includes(selectedOrganization.value)
+    const matchesYear = selectedYear.value === '全部' || plan.startDate.startsWith(selectedYear.value.slice(0, 4))
+    const matchesKeyword = !keyword
+      || plan.name.includes(keyword)
+      || plan.direction.includes(keyword)
+      || plan.target.includes(keyword)
+
+    return matchesStatus && matchesParticipation && matchesOrganization && matchesYear && matchesKeyword
+  })
+})
 </script>
 
 <template>
   <AdminLayout active-key="training-plans">
     <div class="training-plan-page">
       <!-- 页面头部 -->
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">
+            <span>培训管理</span>
+            <i>/</i>
+            <span class="current">计划管理</span>
+          </div>
+          <div class="title-row">
+            <div>
+              <h1 class="page-title">计划管理</h1>
+              <p class="page-subtitle">创建、发布和跟踪培训计划的执行情况</p>
+            </div>
+            <button class="btn-primary btn-create" @click="openDrawer">
+              新建培训计划
+            </button>
+          </div>
+        </div>
+      </section>
 
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.total }}</div>
-            <div class="stat-label">计划总数</div>
+          <div class="stat-card stat-total">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">计划总数</div>
+              <div class="stat-value">{{ stats.total }}</div>
+              <div class="stat-desc">已创建的培训计划总数</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.registering }}</div>
-            <div class="stat-label">报名中</div>
+          <div class="stat-card stat-registering">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">报名中</div>
+              <div class="stat-value">{{ stats.registering }}</div>
+              <div class="stat-desc">正在报名中的培训计划</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.inProgress }}</div>
-            <div class="stat-label">进行中</div>
+          <div class="stat-card stat-progress">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">进行中</div>
+              <div class="stat-value">{{ stats.inProgress }}</div>
+              <div class="stat-desc">正在开展的培训计划</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.materialIncomplete }}</div>
-            <div class="stat-label">材料待完善</div>
+          <div class="stat-card stat-material">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">材料待完善</div>
+              <div class="stat-value">{{ stats.materialIncomplete }}</div>
+              <div class="stat-desc">材料尚未完善的计划</div>
+            </div>
           </div>
         </div>
       </section>
@@ -185,6 +240,9 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
           <div class="main-content">
             <div class="content-card">
               <!-- 筛选和操作区 -->
+              <div class="card-header">
+                <h2 class="card-title">培训计划</h2>
+              </div>
               <div class="filter-section">
                 <div class="filter-row">
                   <div class="filter-item">
@@ -220,9 +278,6 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
                     </select>
                   </div>
                   <button class="btn-reset" @click="resetFilters">重置</button>
-                  <button class="btn-primary" @click="openDrawer">
-                    新建培训计划
-                  </button>
                 </div>
                 <div class="search-row">
                   <input
@@ -232,6 +287,7 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
                     class="search-input"
                   />
                 </div>
+                <p v-if="planNotice" class="plan-notice">{{ planNotice }}</p>
               </div>
 
               <!-- 数据表格 -->
@@ -250,7 +306,7 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="plan in trainingPlans" :key="plan.id">
+                    <tr v-for="plan in filteredPlans" :key="plan.id">
                       <td>{{ plan.name }}</td>
                       <td>{{ plan.direction }}</td>
                       <td>{{ plan.target }}</td>
@@ -261,15 +317,27 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
                           {{ plan.status }}
                         </span>
                       </td>
-                      <td>{{ plan.currentParticipants }} / {{ plan.maxParticipants }} 人</td>
+                      <td>
+                        <div class="participant-cell">
+                          <span>{{ plan.currentParticipants }} / {{ plan.maxParticipants }} 人</span>
+                          <small>{{ Math.round(plan.currentParticipants / plan.maxParticipants * 100) }}%</small>
+                        </div>
+                      </td>
                       <td>
                         <button class="btn-view" @click="viewDetail(plan.id)">
                           查看
                         </button>
                       </td>
                     </tr>
+                    <tr v-if="filteredPlans.length === 0">
+                      <td colspan="8" class="empty-cell">暂无符合条件的培训计划</td>
+                    </tr>
                   </tbody>
                 </table>
+              </div>
+              <div class="table-footer">
+                <span>共 {{ filteredPlans.length }} 条</span>
+                <span>当前显示全部结果</span>
               </div>
             </div>
           </div>
@@ -284,10 +352,13 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
                   :key="index"
                   class="reminder-item"
                 >
-                  <span class="reminder-dot"></span>
+                  <span class="reminder-icon"></span>
                   <span class="reminder-text">{{ reminder }}</span>
                 </div>
               </div>
+              <button class="btn-outline" @click="selectedStatus = '报名中'">
+                查看相关计划
+              </button>
             </div>
           </div>
         </div>
@@ -379,252 +450,473 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
 </template>
 
 <style scoped>
+.training-plan-page {
+  min-height: 100vh;
+  background: #f6f9ff;
+}
+
+.training-plan-page *,
+.training-plan-page *::before,
+.training-plan-page *::after {
+  box-sizing: border-box;
+}
+
+.page-header {
+  padding: 24px 0 0;
+}
+
+.header-content {
+  width: min(100% - 48px, 1500px);
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #172b55;
+}
+
+.breadcrumb i {
+  color: #9aa9c0;
+  font-style: normal;
+}
+
+.breadcrumb .current {
+  color: #0f5eef;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
 .page-title {
   margin: 0;
   font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
+  line-height: 1.3;
+  font-weight: 800;
+  color: #07183d;
+}
+
+.page-subtitle {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #405985;
+}
+
+.btn-create {
+  margin-left: 0;
+  min-width: 138px;
 }
 
 /* 统计卡区域 */
 .stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  background: transparent;
 }
 
 .stats-container {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 0 18px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 18px;
 }
 
 .stat-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  gap: 22px;
+  min-height: 150px;
+  padding: 26px 28px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
+.stat-icon {
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #eaf2ff;
+  position: relative;
+}
+
+.stat-icon::after {
+  content: '';
+  position: absolute;
+  inset: 19px 21px;
+  border-radius: 4px;
+  background: #0f5eef;
+}
+
+.stat-registering .stat-icon {
+  background: #e6f8ef;
+}
+
+.stat-registering .stat-icon::after {
+  background: #13b86a;
+  border-radius: 50%;
+}
+
+.stat-progress .stat-icon {
+  background: #f0e9ff;
+}
+
+.stat-progress .stat-icon::after {
+  background: #7b4cf4;
+  clip-path: polygon(25% 16%, 82% 50%, 25% 84%);
+}
+
+.stat-material .stat-icon {
+  background: #fff0e3;
+}
+
+.stat-material .stat-icon::after {
+  background: #f97316;
+}
+
+.stat-card > div:last-child {
+  min-width: 0;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  font-weight: 600;
+  font-size: 16px;
+  color: #172b55;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 900;
+  color: #0f5eef;
+  margin-bottom: 12px;
+}
+
+.stat-registering .stat-value {
+  color: #0ca65f;
+}
+
+.stat-progress .stat-value {
+  color: #7b4cf4;
+}
+
+.stat-material .stat-value {
+  color: #f97316;
+}
+
+.stat-desc {
+  font-size: 13px;
+  color: #405985;
+  white-space: nowrap;
 }
 
 /* 主体内容区域 */
 .main-section {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 16px 0 34px;
 }
 
 .plan-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 20px;
 }
 
 .main-content {
   min-width: 0;
 }
 
+.content-card,
+.sidebar-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+}
+
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
   overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 10px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: #07183d;
 }
 
 /* 筛选区 */
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 16px 24px 20px;
 }
 
 .filter-row {
   display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 16px;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
   flex-wrap: wrap;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto 118px;
+  gap: 10px;
+  align-items: center;
 }
 
 .filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #31466f;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  height: 38px;
+  padding: 0 34px 0 12px;
+  border: 1px solid #d6e2f3;
   border-radius: 6px;
-  font-size: 13px;
-  background: white;
+  font-size: 14px;
+  color: #172b55;
+  background: #fff;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
 }
 
 .search-row {
   display: flex;
+  max-width: 520px;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d6e2f3;
+  border-radius: 6px;
   font-size: 14px;
+  color: #172b55;
   outline: none;
   transition: border-color 0.16s ease;
 }
 
-.search-input:focus {
-  border-color: var(--color-primary);
+.search-input:focus,
+.filter-select:focus {
+  border-color: #0f5eef;
 }
 
 .btn-reset {
-  padding: 8px 16px;
+  height: 38px;
+  padding: 0 12px;
   background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  border: 0;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: color 0.16s ease;
 }
 
 .btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: #0c4fd0;
 }
 
 .btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
+  height: 38px;
+  padding: 0 18px;
+  background: #0f5eef;
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid #0f5eef;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   transition: background 0.16s ease;
-  margin-left: auto;
 }
 
 .btn-primary:hover {
-  background: #28a38a;
+  background: #0c4fd0;
 }
 
 .btn-secondary {
-  padding: 10px 20px;
-  background: white;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 38px;
+  padding: 0 18px;
+  background: #fff;
+  color: #405985;
+  border: 1px solid #d6e2f3;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: #0f5eef;
+  color: #0f5eef;
+}
+
+.plan-notice {
+  margin: 12px 0 0;
+  color: #0f5eef;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 /* 表格 */
 .table-container {
+  padding: 0 18px;
   overflow-x: auto;
 }
 
 .plan-table {
   width: 100%;
+  min-width: 780px;
   border-collapse: collapse;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: fixed;
 }
 
 .plan-table th {
-  padding: 12px 24px;
+  height: 48px;
+  padding: 0 14px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  font-weight: 800;
+  color: #31466f;
+  border-bottom: 1px solid #d9e5f7;
+  border-right: 1px solid #e5edf8;
+  background: #f4f7fc;
 }
 
 .plan-table td {
-  padding: 12px 24px;
+  height: 70px;
+  padding: 0 14px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.65;
+  color: #172b55;
+  border-bottom: 1px solid #e5edf8;
+  border-right: 1px solid #e5edf8;
+  vertical-align: middle;
+}
+
+.plan-table th:last-child,
+.plan-table td:last-child {
+  border-right: 0;
 }
 
 .plan-table tr:last-child td {
   border-bottom: none;
 }
 
+.plan-table th:nth-child(1) { width: 18%; }
+.plan-table th:nth-child(2) { width: 10%; }
+.plan-table th:nth-child(3) { width: 18%; }
+.plan-table th:nth-child(4) { width: 16%; }
+.plan-table th:nth-child(5) { width: 10%; }
+.plan-table th:nth-child(6) { width: 10%; }
+.plan-table th:nth-child(7) { width: 10%; }
+.plan-table th:nth-child(8) { width: 8%; }
+
+.plan-table td:first-child {
+  color: #0f5eef;
+  font-weight: 800;
+}
+
 .status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .status-badge.报名中 {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #eaf2ff;
+  color: #0f5eef;
 }
 
 .status-badge.进行中 {
-  background: #d1fae5;
-  color: #059669;
+  background: #e8f8ef;
+  color: #0ca65f;
 }
 
 .status-badge.已完成 {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #eef2f7;
+  color: #52637e;
 }
 
 .status-badge.材料待完善 {
-  background: #fef3c7;
-  color: #d97706;
+  background: #fff1e7;
+  color: #f97316;
+}
+
+.participant-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.participant-cell small {
+  color: #7586a6;
+  font-size: 12px;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #0f5eef;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
-  transition: background 0.16s ease;
+  transition: color 0.16s ease;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0c4fd0;
+}
+
+.empty-cell {
+  height: 96px;
+  text-align: center;
+  color: #7586a6;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 16px 24px 24px;
+  color: #405985;
+  font-size: 13px;
 }
 
 /* 侧边栏 */
@@ -633,64 +925,115 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
 }
 
 .sidebar-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  padding: 24px 18px;
   position: sticky;
   top: 24px;
 }
 
 .sidebar-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .reminders-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .reminder-item {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-start;
+  padding: 22px 18px;
+  border-bottom: 1px solid #d9e5f7;
 }
 
-.reminder-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--color-primary);
+.reminder-item:last-child {
+  border-bottom: 0;
+}
+
+.reminder-icon {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  background: #eaf2ff;
   border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 6px;
+  position: relative;
+}
+
+.reminder-icon::after {
+  content: '';
+  position: absolute;
+  inset: 18px 19px;
+  background: #0f5eef;
+  border-radius: 4px;
+}
+
+.reminder-item:nth-child(2) .reminder-icon {
+  background: #fff0e3;
+}
+
+.reminder-item:nth-child(2) .reminder-icon::after {
+  background: #f97316;
+  border-radius: 50%;
+}
+
+.reminder-item:nth-child(3) .reminder-icon {
+  background: #e8f8ef;
+}
+
+.reminder-item:nth-child(3) .reminder-icon::after {
+  background: #0ca65f;
 }
 
 .reminder-text {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
+  font-size: 14px;
+  color: #172b55;
+  line-height: 1.8;
+  font-weight: 700;
+}
+
+.btn-outline {
+  width: 100%;
+  height: 44px;
+  margin-top: 26px;
+  background: #fff;
+  border: 1px solid #0f5eef;
+  border-radius: 6px;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-outline:hover {
+  background: #f4f8ff;
 }
 
 /* 抽屉 */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(7, 24, 61, 0.28);
   z-index: 1000;
   display: flex;
   justify-content: flex-end;
 }
 
 .drawer {
-  width: 480px;
+  width: min(100%, 484px);
   background: white;
   display: flex;
   flex-direction: column;
   max-height: 100vh;
+  box-shadow: -16px 0 40px rgba(27, 55, 96, 0.14);
 }
 
 .drawer-header {
@@ -698,14 +1041,14 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  border-bottom: 1px solid #d9e5f7;
 }
 
 .drawer-title {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 800;
+  color: #07183d;
 }
 
 .btn-close {
@@ -717,7 +1060,7 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: var(--color-text-hint);
+  color: #7586a6;
   font-size: 18px;
   cursor: pointer;
   transition: all 0.16s ease;
@@ -725,25 +1068,25 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
 
 .btn-close:hover {
   background: #f3f4f6;
-  color: var(--color-text-primary);
+  color: #172b55;
 }
 
 .drawer-body {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 22px 24px;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .form-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .form-row {
@@ -754,15 +1097,15 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
 
 .form-label {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 800;
+  color: #172b55;
 }
 
 .form-input,
 .form-select,
 .form-textarea {
   padding: 10px 12px;
-  border: 1px solid var(--color-card-border);
+  border: 1px solid #d6e2f3;
   border-radius: 6px;
   font-size: 14px;
   outline: none;
@@ -791,7 +1134,7 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--color-text-primary);
+  color: #172b55;
   cursor: pointer;
 }
 
@@ -799,7 +1142,7 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
   display: flex;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid var(--color-card-border);
+  border-top: 1px solid #d9e5f7;
 }
 
 .drawer-footer .btn-secondary,
@@ -807,7 +1150,13 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
   flex: 1;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1300px) {
+  .header-content,
+  .stats-container,
+  .main-section {
+    width: min(100% - 32px, 1500px);
+  }
+
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -822,6 +1171,10 @@ const materialOptions = ['培训总结', '培训证书', '其他材料']
 }
 
 @media (max-width: 768px) {
+  .title-row {
+    flex-direction: column;
+  }
+
   .stats-container {
     grid-template-columns: 1fr;
   }
