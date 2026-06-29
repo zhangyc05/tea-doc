@@ -8,6 +8,7 @@ const route = useRoute()
 
 // 从路由参数获取反思ID
 const reflectionId = route.params.reflectionId as string
+const sourceMessage = ref('')
 
 // 反思详情数据
 const reflectionDetail = ref({
@@ -84,7 +85,7 @@ function goBack() {
 }
 
 function viewSourceData() {
-  console.log('查看来源数据')
+  sourceMessage.value = `已关联：${sourceData.relatedData.join('、')}`
 }
 
 function viewRelatedDetail(id: string) {
@@ -92,7 +93,7 @@ function viewRelatedDetail(id: string) {
 }
 
 function viewMoreRelated() {
-  console.log('查看更多相关记录')
+  router.push('/admin/reflection?keyword=课堂互动反馈不足')
 }
 </script>
 
@@ -113,42 +114,43 @@ function viewMoreRelated() {
               <span class="current">反思详情</span>
             </div>
             <button class="btn-back" @click="goBack">
-              返回列表
+              ‹ 返回列表
             </button>
           </div>
 
           <!-- 标题卡 -->
           <div class="title-card">
-            <h1 class="main-title">{{ reflectionDetail.theme }}</h1>
-            <div class="basic-info">
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-label">教师：</span>
-                  <span class="info-value">{{ reflectionDetail.teacher }}</span>
+            <div class="title-icon" aria-hidden="true"></div>
+            <div class="title-content">
+              <h1 class="main-title">{{ reflectionDetail.theme }}</h1>
+              <div class="basic-info">
+                <div class="info-row">
+                  <div class="info-item">
+                    <span class="info-value">{{ reflectionDetail.teacher }}</span>
+                  </div>
+                  <span class="info-divider">|</span>
+                  <div class="info-item">
+                    <span class="info-value">{{ reflectionDetail.department }}</span>
+                    <span class="info-divider">/</span>
+                    <span class="info-value">{{ reflectionDetail.major }}</span>
+                  </div>
+                  <span class="info-divider">|</span>
+                  <div class="info-item">
+                    <span class="info-value">{{ reflectionDetail.course }}</span>
+                    <span class="info-divider">/</span>
+                    <span class="info-value">{{ reflectionDetail.class }}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-value">{{ reflectionDetail.department }}</span>
-                  <span class="info-divider">/</span>
-                  <span class="info-value">{{ reflectionDetail.major }}</span>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-value">{{ reflectionDetail.course }}</span>
-                  <span class="info-divider">/</span>
-                  <span class="info-value">{{ reflectionDetail.class }}</span>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-item">
-                  <span class="info-label">触发来源：</span>
-                  <span class="info-value">{{ reflectionDetail.trigger }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">提交时间：</span>
-                  <span class="info-value">{{ reflectionDetail.submitTime }}</span>
+                <div class="info-row">
+                  <div class="info-item">
+                    <span class="info-label">触发来源：</span>
+                    <span class="info-value">{{ reflectionDetail.trigger }}</span>
+                  </div>
+                  <span class="info-divider">|</span>
+                  <div class="info-item">
+                    <span class="info-label">提交时间：</span>
+                    <span class="info-value">{{ reflectionDetail.submitTime }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -270,6 +272,7 @@ function viewMoreRelated() {
               <button class="btn-source" @click="viewSourceData">
                 查看来源数据
               </button>
+              <p v-if="sourceMessage" class="source-message">{{ sourceMessage }}</p>
             </div>
 
             <!-- 记录去向 -->
@@ -294,26 +297,23 @@ function viewMoreRelated() {
 <style scoped>
 .reflection-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f7faff;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 24px 0 0;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
 .breadcrumb-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .breadcrumb {
@@ -321,68 +321,99 @@ function viewMoreRelated() {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  color: #172b55;
+  font-weight: 700;
 }
 
 .breadcrumb a {
-  color: var(--color-text-secondary);
+  color: #172b55;
   text-decoration: none;
   transition: color 0.16s ease;
 }
 
 .breadcrumb a:hover {
-  color: var(--color-primary);
+  color: #0f5eef;
 }
 
 .breadcrumb .separator {
-  color: var(--color-text-hint);
+  color: #9aa9c0;
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
-  font-weight: 600;
+  color: #0f5eef;
+  font-weight: 800;
 }
 
 .btn-back {
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-back:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: #0c4fd0;
 }
 
 /* 标题卡 */
 .title-card {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 24px;
-  border: 1px solid var(--color-card-border);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-height: 132px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 26px 32px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+}
+
+.title-icon {
+  flex: none;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: #eaf2ff;
+  position: relative;
+}
+
+.title-icon::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 17px;
+  width: 22px;
+  height: 30px;
+  border-radius: 4px;
+  background: #0f5eef;
+  box-shadow: inset 0 -8px 0 rgba(255, 255, 255, 0.25);
+}
+
+.title-content {
+  min-width: 0;
 }
 
 .main-title {
-  margin: 0 0 20px 0;
+  margin: 0 0 14px;
   font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
+  line-height: 1.3;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .basic-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .info-row {
   display: flex;
-  gap: 24px;
+  gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -394,30 +425,30 @@ function viewMoreRelated() {
 }
 
 .info-label {
-  font-size: 13px;
-  color: var(--color-text-hint);
+  font-size: 14px;
+  color: #405985;
 }
 
 .info-value {
-  font-size: 13px;
-  color: var(--color-text-primary);
-  font-weight: 500;
+  font-size: 14px;
+  color: #172b55;
+  font-weight: 700;
 }
 
 .info-divider {
-  color: var(--color-text-hint);
+  color: #9aa9c0;
 }
 
 /* 主体内容区域 */
 .main-section {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 16px 0 32px;
 }
 
 .detail-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 16px;
 }
 
@@ -430,30 +461,32 @@ function viewMoreRelated() {
 
 .content-card {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .card-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 20px 22px 4px;
 }
 
 .card-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .card-body {
-  padding: 24px;
+  padding: 18px 22px 22px;
 }
 
 /* 教学反思内容 */
 .reflection-section {
   margin-bottom: 24px;
+  padding-left: 14px;
+  border-left: 4px solid #0f5eef;
 }
 
 .reflection-section:last-child {
@@ -461,83 +494,103 @@ function viewMoreRelated() {
 }
 
 .section-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 10px;
   font-size: 16px;
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: 800;
+  color: #07183d;
 }
 
 .section-text {
   margin: 0;
   font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  line-height: 1.85;
+  color: #172b55;
 }
 
 /* 相关反思记录表格 */
 .related-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  table-layout: fixed;
+  border: 1px solid #d9e5f7;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .related-table th {
-  padding: 12px;
+  height: 38px;
+  padding: 0 14px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  font-weight: 800;
+  color: #31466f;
+  border-bottom: 1px solid #d9e5f7;
+  border-right: 1px solid #e5edf8;
+  background: #f4f7fc;
 }
 
 .related-table td {
-  padding: 12px;
+  height: 42px;
+  padding: 0 14px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  color: #172b55;
+  border-bottom: 1px solid #e5edf8;
+  border-right: 1px solid #e5edf8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.related-table th:last-child,
+.related-table td:last-child {
+  border-right: 0;
+}
+
+.related-table th:nth-child(1) { width: 24%; }
+.related-table th:nth-child(2) { width: 30%; }
+.related-table th:nth-child(3) { width: 18%; }
+.related-table th:nth-child(4) { width: 22%; }
+.related-table th:nth-child(5) { width: 6%; }
 
 .related-table tr:last-child td {
   border-bottom: none;
 }
 
 .card-footer {
-  padding-top: 16px;
-  border-top: 1px solid var(--color-card-border);
+  padding-top: 12px;
   display: flex;
   justify-content: center;
 }
 
 .btn-link {
-  padding: 8px 16px;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  color: var(--color-primary);
-  font-size: 13px;
+  border: 0;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-link:hover {
-  background: var(--color-primary);
-  color: white;
+  color: #0c4fd0;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #0f5eef;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
   transition: background 0.16s ease;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0c4fd0;
 }
 
 /* 侧边栏 */
@@ -550,23 +603,42 @@ function viewMoreRelated() {
 
 .sidebar-card {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
+  padding: 26px 28px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .sidebar-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 22px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #07183d;
+}
+
+.sidebar-title::before {
+  content: '';
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eaf2ff;
 }
 
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.sidebar .info-row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
 }
 
 .related-data-list {
@@ -577,16 +649,17 @@ function viewMoreRelated() {
 }
 
 .related-data-item {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  color: #172b55;
   padding-left: 8px;
+  line-height: 1.7;
 }
 
 .destination-text {
-  margin: 0 0 8px 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #172b55;
 }
 
 .destination-text:last-child {
@@ -594,25 +667,61 @@ function viewMoreRelated() {
 }
 
 .btn-source {
-  width: 100%;
-  padding: 10px 16px;
+  width: 220px;
+  height: 44px;
+  padding: 0 16px;
   background: white;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  border: 1px solid #0f5eef;
+  border-radius: 6px;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-source:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: #f4f8ff;
 }
 
-@media (max-width: 1024px) {
+.source-message {
+  margin: 12px 0 0;
+  color: #405985;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1300px) {
+  .header-content,
+  .main-section {
+    width: min(100% - 32px, 1500px);
+  }
+
   .detail-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .title-card {
+    align-items: flex-start;
+  }
+
+  .sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .related-table {
+    min-width: 760px;
+  }
+
+  .card-body {
+    overflow-x: auto;
   }
 }
 </style>

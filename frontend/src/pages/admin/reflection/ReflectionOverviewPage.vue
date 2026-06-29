@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
@@ -149,6 +149,23 @@ const stats = {
   triggerPercentage: 42,
 }
 
+const filteredReflections = computed(() => {
+  const keyword = searchQuery.value.trim().toLowerCase()
+  return reflections.filter((reflection) => {
+    const organizationMatched =
+      selectedOrganization.value === '全校' || reflection.department === selectedOrganization.value
+    const triggerMatched = selectedTrigger.value === '全部' || reflection.trigger === selectedTrigger.value
+    const keywordMatched =
+      !keyword ||
+      [reflection.teacher, reflection.department, reflection.major, reflection.course, reflection.class, reflection.theme]
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+
+    return organizationMatched && triggerMatched && keywordMatched
+  })
+})
+
 function viewDetail(id: string) {
   router.push(`/admin/reflection/${id}`)
 }
@@ -161,13 +178,22 @@ function resetFilters() {
 }
 
 function viewRelatedRecords() {
-  console.log('查看相关记录')
+  searchQuery.value = commonIssues[0].issue
+  selectedTrigger.value = '全部'
 }
 </script>
 
 <template>
   <AdminLayout active-key="reflection">
     <div class="reflection-overview-page">
+      <section class="page-head">
+        <div class="breadcrumb">
+          <span>发展活动</span>
+          <i>/</i>
+          <span>教学反思</span>
+        </div>
+      </section>
+
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">
@@ -299,7 +325,7 @@ function viewRelatedRecords() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="reflection in reflections" :key="reflection.id">
+                    <tr v-for="reflection in filteredReflections" :key="reflection.id">
                       <td>{{ reflection.teacher }}</td>
                       <td>{{ reflection.department }} / {{ reflection.major }}</td>
                       <td>{{ reflection.course }} / {{ reflection.class }}</td>
@@ -316,6 +342,9 @@ function viewRelatedRecords() {
                     </tr>
                   </tbody>
                 </table>
+                <div v-if="filteredReflections.length === 0" class="empty-state">
+                  未找到符合条件的反思记录
+                </div>
               </div>
             </div>
           </div>
@@ -354,32 +383,59 @@ function viewRelatedRecords() {
 <style scoped>
 .reflection-overview-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f7faff;
 }
 
+.page-head,
+.stats-container,
+.main-section {
+  width: min(100% - 48px, 1500px);
+  margin: 0 auto;
+}
+
+.page-head {
+  padding-top: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.breadcrumb span:first-child {
+  color: #172b55;
+}
+
+.breadcrumb i {
+  color: #9aa9c0;
+  font-style: normal;
+}
 
 /* 统计卡区域 */
 .stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding-top: 34px;
 }
 
 .stats-container {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
 
 .stat-card {
   display: flex;
-  gap: 16px;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  align-items: center;
+  gap: 18px;
+  min-height: 178px;
+  padding: 24px 30px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .stat-icon {
@@ -388,47 +444,74 @@ function viewRelatedRecords() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border-radius: 8px;
-  color: var(--color-primary);
+  background: #eaf2ff;
+  border-radius: 50%;
+  color: #0f5eef;
   flex-shrink: 0;
+}
+
+.stat-card:nth-child(2) .stat-icon {
+  background: #e9f8ee;
+  color: #16a34a;
+}
+
+.stat-card:nth-child(3) .stat-icon {
+  background: #fff3e3;
+  color: #f07f13;
+}
+
+.stat-card:nth-child(4) .stat-icon {
+  background: #f3eaff;
+  color: #7c3aed;
 }
 
 .stat-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--color-primary);
+  color: #0f5eef;
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.stat-card:nth-child(2) .stat-value {
+  color: #16a34a;
+}
+
+.stat-card:nth-child(3) .stat-value {
+  color: #f07f13;
+}
+
+.stat-card:nth-child(4) .stat-value {
+  color: #7c3aed;
+  font-size: 32px;
 }
 
 .stat-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .stat-sub {
-  font-size: 12px;
-  color: var(--color-text-hint);
+  font-size: 14px;
+  color: #304f82;
 }
 
 /* 主体内容区域 */
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding-top: 24px;
 }
 
 .reflection-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 14px;
 }
 
 .main-content {
@@ -437,66 +520,71 @@ function viewRelatedRecords() {
 
 .content-card {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .card-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 18px 18px 10px;
 }
 
 .card-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #07183d;
 }
 
 /* 筛选区 */
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 18px;
 }
 
 .filter-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 220px 260px 160px 1fr;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 0;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
 }
 
 .filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #172b55;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  height: 38px;
+  padding: 0 36px 0 14px;
+  border: 1px solid #d2def0;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 14px;
+  color: #172b55;
   background: white;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
+  min-width: 0;
 }
 
 .btn-reset {
-  padding: 8px 16px;
+  display: none;
+  padding: 0 16px;
   background: transparent;
-  border: 1px solid var(--color-card-border);
+  border: 1px solid #d2def0;
   border-radius: 6px;
-  color: var(--color-text-secondary);
+  color: #405985;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.16s ease;
@@ -509,13 +597,15 @@ function viewRelatedRecords() {
 
 .search-row {
   display: flex;
+  min-width: 0;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid #d2def0;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -527,29 +617,54 @@ function viewRelatedRecords() {
 
 /* 表格 */
 .table-container {
-  overflow-x: auto;
+  margin: 0 18px 14px;
+  overflow: hidden;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
 }
 
 .reflection-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .reflection-table th {
-  padding: 12px 24px;
+  height: 42px;
+  padding: 0 12px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  font-weight: 800;
+  color: #31466f;
+  border-bottom: 1px solid #d9e5f7;
+  border-right: 1px solid #e5edf8;
+  background: #f4f7fc;
+  white-space: nowrap;
+}
+
+.reflection-table th:nth-child(1) { width: 7%; }
+.reflection-table th:nth-child(2) { width: 20%; }
+.reflection-table th:nth-child(3) { width: 18%; }
+.reflection-table th:nth-child(4) { width: 20%; }
+.reflection-table th:nth-child(5) { width: 10%; }
+.reflection-table th:nth-child(6) { width: 17%; }
+.reflection-table th:nth-child(7) { width: 8%; }
+
+.reflection-table th:last-child,
+.reflection-table td:last-child {
+  border-right: 0;
 }
 
 .reflection-table td {
-  padding: 12px 24px;
+  height: 50px;
+  padding: 0 12px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  color: #172b55;
+  border-bottom: 1px solid #e5edf8;
+  border-right: 1px solid #e5edf8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reflection-table tr:last-child td {
@@ -557,28 +672,37 @@ function viewRelatedRecords() {
 }
 
 .trigger-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  background: #e0f2fe;
-  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  background: #eef5ff;
+  color: #0f5eef;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #0f5eef;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
   transition: background 0.16s ease;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0c4fd0;
+}
+
+.empty-state {
+  padding: 36px;
+  text-align: center;
+  color: #60708b;
+  font-size: 14px;
 }
 
 /* 侧边栏 */
@@ -588,52 +712,71 @@ function viewRelatedRecords() {
 
 .sidebar-card {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  padding: 28px 22px 22px;
   position: sticky;
   top: 24px;
+  min-height: 574px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .sidebar-title {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 28px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .sidebar-description {
-  margin: 0 0 20px 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  margin: 0 0 34px;
+  font-size: 15px;
+  color: #172b55;
   line-height: 1.5;
 }
 
 .issues-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 0;
+  margin-bottom: 54px;
 }
 
 .issue-item {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: flex-start;
+  padding: 0 0 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e5edf8;
+}
+
+.issue-item:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .issue-rank {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary);
+  background: #0f5eef;
   color: white;
   border-radius: 50%;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 800;
   flex-shrink: 0;
+}
+
+.issue-item:nth-child(2) .issue-rank {
+  background: #16a34a;
+}
+
+.issue-item:nth-child(3) .issue-rank {
+  background: #f59e0b;
 }
 
 .issue-content {
@@ -644,24 +787,29 @@ function viewRelatedRecords() {
 }
 
 .issue-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 800;
+  color: #07183d;
 }
 
 .issue-count {
-  font-size: 12px;
-  color: var(--color-text-hint);
+  font-size: 13px;
+  color: #405985;
 }
 
 .btn-view-related {
-  width: 100%;
-  padding: 10px 16px;
+  display: block;
+  width: 176px;
+  height: 44px;
+  margin: 0 auto;
+  padding: 0 16px;
   background: white;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  border: 1px solid #0f5eef;
+  border-radius: 6px;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
@@ -671,9 +819,40 @@ function viewRelatedRecords() {
   color: var(--color-primary);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
+  .page-head,
+  .stats-container,
+  .main-section {
+    width: min(100% - 32px, 1500px);
+  }
+
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reflection-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar-card {
+    position: static;
+    min-height: auto;
+  }
+
+  .filter-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .search-row {
+    grid-column: 1 / -1;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .reflection-table {
+    min-width: 920px;
   }
 }
 
