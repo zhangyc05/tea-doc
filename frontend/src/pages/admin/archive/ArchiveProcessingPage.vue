@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import heroArt from '@/images/hero-art.png'
 
 interface ProcessingRecord {
   id: string
@@ -38,6 +39,14 @@ const stats = {
   exception: 4,
   returning: 3,
 }
+
+const statCards = [
+  { label: '待确认', value: stats.pendingConfirm, tone: 'confirm', icon: 'clock' },
+  { label: '待检验', value: stats.pendingVerify, tone: 'verify', icon: 'shield' },
+  { label: '待补充', value: stats.pendingSupplement, tone: 'supplement', icon: 'folder' },
+  { label: '异常待处理', value: stats.exception, tone: 'exception', icon: 'alert' },
+  { label: '拟退中', value: stats.returning, tone: 'returning', icon: 'edit' },
+]
 
 // 筛选条件
 const statusFilter = ref('全部待处理')
@@ -209,46 +218,66 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
 <template>
   <AdminLayout active-key="archive-processing">
     <div class="archive-processing-page">
+      <section class="processing-hero admin-hero">
+        <div
+          class="hero-art"
+          :style="{ backgroundImage: `url(${heroArt})` }"
+          aria-hidden="true"
+        />
 
-      <!-- 统计卡区域 -->
-      <section class="stats-section">
-        <div class="stat-card warning">
-          <div class="stat-number">{{ stats.pendingConfirm }}</div>
-          <div class="stat-label">待确认</div>
-        </div>
-        <div class="stat-card info">
-          <div class="stat-number">{{ stats.pendingVerify }}</div>
-          <div class="stat-label">待检验</div>
-        </div>
-        <div class="stat-card orange">
-          <div class="stat-number">{{ stats.pendingSupplement }}</div>
-          <div class="stat-label">待补充</div>
-        </div>
-        <div class="stat-card danger">
-          <div class="stat-number">{{ stats.exception }}</div>
-          <div class="stat-label">异常待处理</div>
-        </div>
-        <div class="stat-card slate">
-          <div class="stat-number">{{ stats.returning }}</div>
-          <div class="stat-label">拟退中</div>
-        </div>
-      </section>
+        <div class="hero-content">
+          <div class="hero-emblem" aria-hidden="true">
+            <svg viewBox="0 0 44 44">
+              <path d="M12 8h15l5 5v23H12z" />
+              <path d="M27 8v7h7M17 18h11M17 23h11M17 28h8" />
+            </svg>
+          </div>
 
-      <!-- 提示信息 -->
-      <section class="tip-section">
-        <div class="tip-banner">
-          <span class="tip-icon">💡</span>
-          <span class="tip-text">发展活动中已完成确认的记录将直接入档，不在此处重复处理。</span>
-        </div>
-      </section>
+          <div class="hero-main">
+            <h1>档案处理</h1>
+            <p>处理尚未形成正式档案事项的记录，确认其进入档案查询，并可按查看、筛选需求对接和综合利用。</p>
 
-      <!-- 主操作区 -->
-      <section class="main-actions-section">
-        <div class="main-actions-content">
-          <button class="btn-primary action-btn" @click="goToImport">
-            <span class="btn-icon">📥</span>
-            <span>导入部门资料</span>
-          </button>
+            <div class="stats-strip">
+              <div
+                v-for="card in statCards"
+                :key="card.label"
+                class="stat-card"
+                :class="card.tone"
+              >
+                <span class="stat-icon" aria-hidden="true">
+                  <svg v-if="card.icon === 'clock'" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="8" />
+                    <path d="M12 7v5l3 2" />
+                  </svg>
+                  <svg v-else-if="card.icon === 'shield'" viewBox="0 0 24 24">
+                    <path d="M12 3l7 3v5c0 4.8-2.8 8.1-7 10-4.2-1.9-7-5.2-7-10V6z" />
+                    <path d="M9 12l2 2 4-5" />
+                  </svg>
+                  <svg v-else-if="card.icon === 'folder'" viewBox="0 0 24 24">
+                    <path d="M4 7h6l2 3h8v8H4z" />
+                  </svg>
+                  <svg v-else-if="card.icon === 'alert'" viewBox="0 0 24 24">
+                    <path d="M12 4l8 15H4z" />
+                    <path d="M12 9v4M12 17h.01" />
+                  </svg>
+                  <svg v-else viewBox="0 0 24 24">
+                    <path d="M4 17l1 3 3-1L19 8l-4-4z" />
+                    <path d="M13 6l4 4" />
+                  </svg>
+                </span>
+                <span class="stat-text">{{ card.label }}</span>
+                <strong>{{ card.value }}</strong>
+              </div>
+            </div>
+
+            <div class="hero-tip">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="7" />
+                <path d="M10 6v5M10 14h.01" />
+              </svg>
+              <span>发展活动中已完成确认的记录将直接入档，不在此处重复处理。</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -256,6 +285,7 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
       <section class="main-content">
         <!-- 左侧：筛选条件 -->
         <aside class="filter-sidebar">
+          <h2 class="panel-title">筛选条件</h2>
           <div class="filter-group">
             <h3 class="filter-title">处理状态</h3>
             <ul class="filter-list">
@@ -266,6 +296,7 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
                 :class="{ active: statusFilter === option.value }"
                 @click="statusFilter = option.value"
               >
+                <span class="filter-dot" aria-hidden="true"></span>
                 <span class="filter-label">{{ option.label }}</span>
                 <span class="filter-count">{{ option.count }}</span>
               </li>
@@ -282,6 +313,7 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
                 :class="{ active: sourceFilter === option.value }"
                 @click="sourceFilter = option.value"
               >
+                <span class="filter-dot" aria-hidden="true"></span>
                 <span class="filter-label">{{ option.label }}</span>
                 <span class="filter-count">{{ option.count }}</span>
               </li>
@@ -304,7 +336,12 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
           </div>
 
           <div class="filter-summary">
-            <span class="filter-text">当前筛选：{{ statusFilter }} | {{ sourceFilter }} | 共 6 条</span>
+            <span class="filter-text">当前筛选：</span>
+            <button class="filter-link">{{ statusFilter }}</button>
+            <span class="filter-separator">|</span>
+            <button class="filter-link">{{ sourceFilter }}</button>
+            <span class="filter-separator">|</span>
+            <span class="filter-text">共 6 条</span>
           </div>
 
           <div class="records-table">
@@ -346,7 +383,17 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
         <!-- 右侧：记录详情 -->
         <aside class="record-detail" v-if="recordDetail">
           <div class="detail-header">
-            <h2 class="detail-title">{{ selectedRecord?.name }}</h2>
+            <span class="detail-eyebrow">记录详情</span>
+            <div class="detail-heading-row">
+              <h2 class="detail-title">{{ selectedRecord?.name }}</h2>
+              <span
+                v-if="selectedRecord"
+                class="badge-status"
+                :class="statusBadgeClass(selectedRecord.status)"
+              >
+                {{ selectedRecord.status }}
+              </span>
+            </div>
           </div>
 
           <div class="detail-content">
@@ -940,5 +987,621 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
 
 .btn-link:hover {
   text-decoration: underline;
+}
+
+/* 精修版：对齐“档案处理”目标图 */
+.archive-processing-page {
+  display: flex;
+  min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
+  flex-direction: column;
+  gap: clamp(14px, 1vw, 18px);
+  background: transparent;
+}
+
+.processing-hero {
+  min-height: clamp(226px, 15.2vw, 258px);
+}
+
+.processing-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(247, 251, 255, 1) 0%,
+    rgba(247, 251, 255, 0.98) 46%,
+    rgba(247, 251, 255, 0.82) 63%,
+    rgba(247, 251, 255, 0.28) 82%,
+    rgba(247, 251, 255, 0) 100%
+  );
+  content: '';
+}
+
+.hero-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: min(45%, 650px);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: cover;
+  opacity: 0.84;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: clamp(226px, 15.2vw, 258px);
+  align-items: flex-start;
+  gap: clamp(24px, 1.6vw, 34px);
+  padding: clamp(28px, 1.9vw, 36px) clamp(30px, 2vw, 42px) 18px;
+}
+
+.hero-emblem {
+  display: flex;
+  width: clamp(72px, 5vw, 92px);
+  height: clamp(72px, 5vw, 92px);
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #eaf3ff 0%, #cfe3ff 100%);
+  box-shadow: 0 18px 34px rgba(11, 99, 246, 0.18);
+}
+
+.hero-emblem svg {
+  width: 58%;
+  height: 58%;
+  fill: rgba(11, 99, 246, 0.12);
+  stroke: var(--color-primary);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-main {
+  width: min(1030px, 76%);
+  min-width: 0;
+}
+
+.hero-main h1 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: clamp(23px, 1.45vw, 28px);
+  font-weight: 950;
+  line-height: 1.18;
+}
+
+.hero-main p {
+  margin: 0;
+  max-width: 840px;
+  color: var(--color-text-secondary);
+  font-size: clamp(13px, 0.76vw, 14px);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: clamp(12px, 0.8vw, 16px);
+  margin-top: clamp(20px, 1.35vw, 26px);
+}
+
+.stat-card {
+  display: grid;
+  min-height: clamp(70px, 4.6vw, 82px);
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  border: 1px solid rgba(213, 226, 245, 0.92);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 0 clamp(14px, 1vw, 18px);
+  box-shadow: 0 10px 26px rgba(28, 68, 128, 0.06);
+  text-align: left;
+}
+
+.stat-icon {
+  display: flex;
+  width: clamp(42px, 2.7vw, 50px);
+  height: clamp(42px, 2.7vw, 50px);
+  grid-row: span 2;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.stat-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-card.confirm .stat-icon {
+  background: #eaf3ff;
+  color: #0b63f6;
+}
+
+.stat-card.verify .stat-icon {
+  background: #eafbf0;
+  color: #21a957;
+}
+
+.stat-card.supplement .stat-icon {
+  background: #fff2e6;
+  color: #ff8a1f;
+}
+
+.stat-card.exception .stat-icon {
+  background: #fff0f0;
+  color: #ff3b3b;
+}
+
+.stat-card.returning .stat-icon {
+  background: #f2ecff;
+  color: #7257ff;
+}
+
+.stat-text {
+  align-self: end;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.stat-card strong {
+  align-self: start;
+  color: var(--color-text-primary);
+  font-size: clamp(25px, 1.55vw, 30px);
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.hero-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: clamp(16px, 1vw, 20px);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hero-tip svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: minmax(215px, 14.5%) minmax(0, 1fr) minmax(360px, 30%);
+  gap: clamp(14px, 1vw, 18px);
+  align-items: stretch;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-sidebar,
+.records-list,
+.record-detail {
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  padding: clamp(16px, 1vw, 20px);
+  box-shadow: var(--shadow-card);
+}
+
+.panel-title {
+  margin: 0 0 16px;
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.filter-group {
+  margin-bottom: 22px;
+}
+
+.filter-title {
+  margin: 0 0 9px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.filter-item {
+  display: grid;
+  min-height: 31px;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  border-radius: 7px;
+  padding: 0 8px;
+}
+
+.filter-item.active {
+  background: #eaf3ff;
+}
+
+.filter-dot {
+  width: 9px;
+  height: 9px;
+  border: 2px solid #8eb6ff;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.filter-item.active .filter-dot {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.filter-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-item.active .filter-label {
+  color: var(--color-primary);
+}
+
+.filter-count {
+  min-width: 27px;
+  padding: 0 7px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+}
+
+.records-list {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.list-header {
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.list-title,
+.detail-eyebrow {
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.search-box {
+  position: relative;
+  width: min(260px, 36%);
+}
+
+.search-input {
+  padding: 8px 13px 8px 34px;
+  font-size: 13px;
+}
+
+.search-box::before {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #8a9bb4;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  content: '';
+}
+
+.search-box::after {
+  position: absolute;
+  left: 24px;
+  top: calc(50% + 5px);
+  width: 7px;
+  height: 2px;
+  border-radius: 2px;
+  background: #8a9bb4;
+  transform: rotate(45deg);
+  content: '';
+}
+
+.filter-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #f8fbff;
+}
+
+.filter-text {
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.filter-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.filter-separator {
+  color: #9aa8bd;
+}
+
+.admin-table {
+  table-layout: fixed;
+}
+
+.admin-table th {
+  height: 42px;
+  background: #f6f9fe;
+  padding: 0 13px;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.admin-table td {
+  height: 48px;
+  border-bottom: 1px solid var(--color-card-border-soft);
+  padding: 0 13px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.record-row.selected {
+  background: #eef5ff;
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.record-name {
+  color: var(--color-primary);
+  font-weight: 900;
+}
+
+.badge-status {
+  height: 24px;
+  border-radius: 6px;
+  padding: 0 9px;
+}
+
+.record-detail {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.detail-header {
+  margin-bottom: 11px;
+  padding-bottom: 11px;
+}
+
+.detail-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.detail-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-title {
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+.detail-content {
+  overflow: visible;
+}
+
+.detail-section {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-card-border-soft);
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  position: relative;
+  margin: 0 0 7px;
+  padding-left: 12px;
+  font-weight: 950;
+}
+
+.section-title::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--color-primary);
+  transform: translateY(-50%);
+  content: '';
+}
+
+.info-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 18px;
+}
+
+.info-item {
+  min-width: 0;
+  gap: 6px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.info-label {
+  min-width: auto;
+  flex: none;
+  font-weight: 800;
+}
+
+.info-value {
+  min-width: 0;
+  font-weight: 800;
+}
+
+.issue-item {
+  position: relative;
+  margin-bottom: 3px;
+  border: 0;
+  background: transparent;
+  padding: 0 0 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.42;
+}
+
+.issue-item::before {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff8a1f;
+  content: '';
+}
+
+.history-item {
+  position: relative;
+  border-bottom: 0;
+  padding: 0 0 5px 22px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.38;
+}
+
+.history-item::before {
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px #eaf3ff;
+  content: '';
+}
+
+.history-item::after {
+  position: absolute;
+  left: 6px;
+  top: 15px;
+  bottom: 0;
+  width: 1px;
+  background: #dbe7f8;
+  content: '';
+}
+
+.history-item:last-child::after {
+  display: none;
+}
+
+.detail-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 11px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-link {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.record-detail .btn-link {
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+@media (max-width: 1440px) {
+  .hero-main {
+    width: min(980px, 82%);
+  }
+
+  .stats-strip {
+    grid-template-columns: repeat(5, minmax(128px, 1fr));
+  }
+
+  .main-content {
+    grid-template-columns: 200px minmax(0, 1fr) 340px;
+  }
+
+  .info-list {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1280px) {
+  .hero-art {
+    opacity: 0.34;
+  }
+
+  .hero-main {
+    width: 100%;
+  }
+
+  .stats-strip {
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+  }
+
+  .main-content {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .record-detail {
+    grid-column: 1 / -1;
+  }
 }
 </style>
