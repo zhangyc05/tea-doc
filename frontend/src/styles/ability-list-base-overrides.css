@@ -1,0 +1,70 @@
+/* 能力清单基准模板页：Hero 元信息区单行完整展示 */
+.base-hero .hero-content {
+  max-width: min(1040px, 74%) !important;
+}
+
+.base-hero .hero-summary-strip {
+  display: flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 18px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+}
+
+.base-hero .hero-summary-strip .admin-summary-item {
+  display: inline-flex !important;
+  flex: none !important;
+  min-width: max-content !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+}
+
+.base-hero .hero-summary-strip .admin-summary-item + .admin-summary-item {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  border-left: 0 !important;
+}
+
+.base-hero .hero-summary-strip .admin-summary-item + .admin-summary-item::before {
+  display: inline-flex !important;
+  width: 5px !important;
+  height: 5px !important;
+  margin-right: 10px !important;
+  border-radius: 999px !important;
+  background: #a3aec0 !important;
+  content: '' !important;
+}
+
+.base-hero .summary-structure {
+  max-width: none !important;
+  flex: none !important;
+}
+
+.base-hero .summary-structure .admin-summary-value {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+}
+
+@media (max-width: 1280px) {
+  .base-hero .hero-content {
+    max-width: 76% !important;
+  }
+
+  .base-hero .hero-summary-strip {
+    gap: 12px !important;
+    font-size: 12px !important;
+  }
+}
