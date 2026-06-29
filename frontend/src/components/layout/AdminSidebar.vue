@@ -574,20 +574,9 @@ function handleParentAction(item: AdminNavItem) {
 .sub-nav {
   position: relative;
   margin: 6px 0 8px 24px;
-  padding: 4px 8px 6px 14px;
+  padding: 4px 8px 6px 12px;
   border-radius: 12px;
   background: rgba(246, 249, 255, 0.92);
-}
-
-.sub-nav::before {
-  position: absolute;
-  left: 14px;
-  top: 19px;
-  bottom: 19px;
-  width: 2px;
-  border-radius: 999px;
-  background: #d3dbe8;
-  content: '';
 }
 
 .sub-item {
@@ -597,7 +586,7 @@ function handleParentAction(item: AdminNavItem) {
   height: 36px;
   align-items: center;
   border-radius: 9px;
-  padding: 0 10px 0 30px;
+  padding: 0 10px 0 28px;
   color: #7f8a9c;
   font-size: 14px;
   font-weight: 800;
