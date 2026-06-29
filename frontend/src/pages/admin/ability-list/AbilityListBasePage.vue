@@ -505,11 +505,12 @@ function editIndicator(indicator: Indicator) {
 }
 
 .hero-summary-strip {
-  display: inline-flex;
-  width: fit-content;
+  display: flex;
+  width: 100%;
   max-width: 100%;
-  align-items: center;
-  gap: 18px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 18px;
   margin-top: clamp(14px, 0.95vw, 18px);
   overflow: visible;
   border: 0;
@@ -521,12 +522,12 @@ function editIndicator(indicator: Indicator) {
 .hero-summary-strip .admin-summary-item {
   display: inline-flex;
   min-width: 0;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   background: transparent;
   border: 0;
   padding: 0;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .hero-summary-strip .admin-summary-item + .admin-summary-item {
@@ -536,13 +537,17 @@ function editIndicator(indicator: Indicator) {
 }
 
 .summary-structure {
-  max-width: 360px;
+  max-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .summary-structure .admin-summary-value {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  word-break: break-all;
+  line-height: 1.5;
 }
 
 .hero-actions {
