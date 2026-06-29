@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { AbilityTreeNode } from './types'
+import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
 
 const props = withDefaults(
   defineProps<{
@@ -60,7 +61,7 @@ function handleChildClick(key: string) {
   <aside class="ability-structure-panel admin-card">
     <header class="admin-card-header">
       <span class="card-icon admin-card-icon">
-        <img class="title-icon" src="" alt="" />
+        <img class="title-icon" :src="iconAbilityStructure" alt="" />
       </span>
       <h3 class="admin-card-title">{{ title }}</h3>
     </header>
