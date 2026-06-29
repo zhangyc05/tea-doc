@@ -470,7 +470,7 @@ function showIndicatorDescription() {
 
 .hero-emblem {
   flex: none;
-  transform: translateY(-24px);
+  transform: translateY(-44px);
 }
 
 .hero-emblem-img {
@@ -523,9 +523,13 @@ function showIndicatorDescription() {
   width: fit-content;
   max-width: 100%;
   align-items: center;
-  gap: 0;
+  gap: 18px;
   margin-top: clamp(14px, 0.95vw, 18px);
-  overflow: hidden;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
 }
 
 .hero-summary-strip .admin-summary-item {
@@ -533,13 +537,16 @@ function showIndicatorDescription() {
   min-width: 0;
   align-items: center;
   gap: 8px;
+  background: transparent;
+  border: 0;
+  padding: 0;
   white-space: nowrap;
 }
 
 .hero-summary-strip .admin-summary-item + .admin-summary-item {
-  margin-left: 14px;
-  padding-left: 14px;
-  border-left: 1px solid rgba(127, 150, 190, 0.22);
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
 }
 
 .summary-structure {
