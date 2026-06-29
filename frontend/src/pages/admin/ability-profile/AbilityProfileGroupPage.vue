@@ -62,6 +62,13 @@ const abilityDimensions = [
   },
 ]
 
+const dimensionMeta: Record<string, { icon: string; tone: string }> = {
+  教学能力: { icon: 'book', tone: 'blue' },
+  教研能力: { icon: 'lab', tone: 'green' },
+  实践能力: { icon: 'briefcase', tone: 'orange' },
+  服务能力: { icon: 'heart', tone: 'purple' },
+}
+
 // 发展支持方向
 const developmentDirections = [
   {
@@ -85,6 +92,8 @@ const developmentDirections = [
     keyDimension: '服务能力',
   },
 ]
+
+const directionTones = ['blue', 'green', 'orange', 'purple']
 
 // 重点关注对象数据
 const focusObjects = ref('院系')
@@ -151,140 +160,163 @@ function viewFullAdvice() {
 function viewProfile(name: string) {
   console.log('查看画像', name)
 }
+
+function getDimensionMeta(dimension: string) {
+  return dimensionMeta[dimension] || { icon: 'book', tone: 'blue' }
+}
+
+function getDistributionTone(index: number) {
+  return ['novice', 'competent', 'backbone', 'expert'][index] || 'novice'
+}
 </script>
 
 <template>
   <AdminLayout active-key="ability-profile-group">
     <div class="ability-profile-group-page">
+      <header class="page-intro">
+        <div class="breadcrumb-line">
+          <span>能力画像</span>
+          <span class="slash">/</span>
+          <strong>群体画像</strong>
+        </div>
+        <p>
+          基于已发布执行版能力清单和正式档案事实，查看全校教师发展结构。用于发展支持、资源配置和下钻分析，不作为正式评价结论。
+        </p>
+      </header>
 
-      <!-- 顶部主卡区域 -->
-      <section class="main-cards-section">
-        <div class="cards-container">
-          <!-- 左侧综合发展指数卡 -->
-          <div class="main-card score-card">
-            <h2 class="card-title">综合发展指数</h2>
-            <div class="score-display">
-              <div class="score-number">68</div>
-              <div class="score-divider">/</div>
-              <div class="score-total">100</div>
+      <section class="top-grid">
+        <article class="overview-card score-card">
+          <div class="card-copy">
+            <div class="section-heading">
+              <h2>综合发展指数</h2>
+              <span class="info-dot">i</span>
             </div>
-            <p class="score-description">
+            <div class="score-display">
+              <strong>68</strong>
+              <span>/ 100</span>
+            </div>
+            <p>
               由教学、教研、实践、服务四个维度的发展指数按权重汇总形成
             </p>
-            <div class="score-status">
-              <span class="status-label">基本能力：</span>
-              <span class="status-value">达标</span>
+            <div class="status-line">
+              <span class="check-dot">✓</span>
+              <span>基本能力：</span>
+              <strong>达标</strong>
             </div>
           </div>
+          <div class="score-illustration" aria-hidden="true">
+            <div class="folder-shape"></div>
+            <div class="chart-shape">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </article>
 
-          <!-- 右侧首年基线卡 -->
-          <div class="main-card baseline-card">
-            <h2 class="card-title">首年基线</h2>
-            <p class="card-description">
-              当前为首个画像周期，暂无历史趋势对比。
-            </p>
-            <p class="card-description">
-              本周期结果将作为后续年度趋势分析的基线。
-            </p>
-            <div class="timeline-display">
-              <div class="timeline-item">
-                <div class="timeline-year">2026</div>
-                <div class="timeline-status">已形成</div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-year">2027</div>
-                <div class="timeline-status">待形成</div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-year">2028</div>
-                <div class="timeline-status">待形成</div>
-              </div>
+        <article class="overview-card baseline-card">
+          <div>
+            <div class="section-heading">
+              <h2>首年基线</h2>
+              <span class="info-dot">i</span>
             </div>
+            <p>当前为首个画像周期，暂无历史趋势对比。</p>
+            <p>本周期结果将作为后续年度趋势分析的基线。</p>
           </div>
+          <ol class="baseline-list">
+            <li class="active">
+              <strong>2026</strong>
+              <span>基线已形成</span>
+            </li>
+            <li>
+              <strong>2027</strong>
+              <span>待形成</span>
+            </li>
+            <li>
+              <strong>2028</strong>
+              <span>待形成</span>
+            </li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="analysis-card">
+        <div class="radar-panel">
+          <div class="section-heading">
+            <h2>能力结构分析</h2>
+            <span class="info-dot">i</span>
+          </div>
+          <div class="radar-wrap">
+            <SimpleRadarChart
+              :scores="schoolRadarData"
+              center-text="基本能力 达标"
+              :size="270"
+            />
+          </div>
+        </div>
+
+        <div class="dimension-panel">
+          <div class="section-heading table-title">
+            <h2>能力维度说明</h2>
+            <span>（点击维度名称可查看下钻）</span>
+          </div>
+          <table class="dimension-table">
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>发展指数</th>
+                <th>指数构成（能力要素）</th>
+                <th>全校教师分布</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="dim in abilityDimensions" :key="dim.dimension">
+                <td>
+                  <div class="dimension-name" :class="getDimensionMeta(dim.dimension).tone">
+                    <span class="dimension-icon">{{ getDimensionMeta(dim.dimension).icon === 'book' ? '▤' : getDimensionMeta(dim.dimension).icon === 'lab' ? '♙' : getDimensionMeta(dim.dimension).icon === 'briefcase' ? '▣' : '◆' }}</span>
+                    <strong>{{ dim.dimension }}</strong>
+                  </div>
+                </td>
+                <td class="index-cell">{{ dim.index }}</td>
+                <td>{{ dim.composition }}</td>
+                <td>
+                  <div class="distribution-labels">
+                    <span v-for="dist in dim.distribution" :key="dist.label">
+                      {{ dist.label }} {{ dist.percentage }}%
+                    </span>
+                  </div>
+                  <div class="distribution-track">
+                    <span
+                      v-for="(dist, index) in dim.distribution"
+                      :key="dist.label"
+                      :class="getDistributionTone(index)"
+                      :style="{ width: `${dist.percentage}%` }"
+                    ></span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <!-- 能力结构分析区 -->
-      <section class="analysis-section">
-        <div class="analysis-content">
-          <!-- 左侧雷达图 -->
-          <div class="radar-chart-area">
-            <h2 class="section-title">能力结构分析</h2>
-            <div class="radar-chart-wrapper">
-              <SimpleRadarChart
-                :scores="schoolRadarData"
-                center-text="基本能力 达标"
-                :size="280"
-              />
-            </div>
-            <div class="radar-scores">
-              <div class="score-item">
-                <span class="score-label">教学能力</span>
-                <span class="score-value">72</span>
-              </div>
-              <div class="score-item">
-                <span class="score-label">教研能力</span>
-                <span class="score-value">61</span>
-              </div>
-              <div class="score-item">
-                <span class="score-label">实践能力</span>
-                <span class="score-value">54</span>
-              </div>
-              <div class="score-item">
-                <span class="score-label">服务能力</span>
-                <span class="score-value">49</span>
-              </div>
-            </div>
+      <section class="bottom-grid">
+        <article class="support-card">
+          <div class="section-heading">
+            <h2>发展支持方向</h2>
+            <span class="info-dot">i</span>
           </div>
-
-          <!-- 右侧能力维度说明表 -->
-          <div class="dimension-table-area">
-            <h2 class="section-title">能力维度说明</h2>
-            <table class="dimension-table">
-              <thead>
-                <tr>
-                  <th>维度</th>
-                  <th>发展指数</th>
-                  <th>指数构成（能力要素）</th>
-                  <th>全校教师分布</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="dim in abilityDimensions" :key="dim.dimension">
-                  <td>{{ dim.dimension }}</td>
-                  <td class="index-cell">{{ dim.index }}</td>
-                  <td>{{ dim.composition }}</td>
-                  <td class="distribution-cell">
-                    <div class="distribution-bars">
-                      <span
-                        v-for="(dist, index) in dim.distribution"
-                        :key="index"
-                        class="distribution-item"
-                      >
-                        {{ dist.label }} {{ dist.percentage }}%
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 发展支持方向 -->
-      <section class="directions-section">
-        <div class="section-content">
-          <h2 class="section-title">发展支持方向</h2>
-          <p class="section-description">
+          <p class="support-desc">
             基于能力结构与正式档案数据观察，识别当前阶段的重点发展方向。
           </p>
           <div class="directions-grid">
             <div
-              v-for="direction in developmentDirections"
+              v-for="(direction, index) in developmentDirections"
               :key="direction.title"
               class="direction-card"
+              :class="directionTones[index]"
             >
+              <span class="direction-icon">{{ index === 0 ? '▣' : index === 1 ? '▰' : index === 2 ? '●' : '▥' }}</span>
               <h3 class="direction-title">{{ direction.title }}</h3>
               <p class="direction-observation">{{ direction.observation }}</p>
               <div class="key-dimension">
@@ -293,31 +325,26 @@ function viewProfile(name: string) {
               </div>
             </div>
           </div>
-        </div>
-        <div class="direction-actions">
-          <button class="btn-primary" @click="viewFullAdvice">查看完整建议</button>
-        </div>
-      </section>
-
-      <!-- 重点关注对象 -->
-      <section class="focus-section">
-        <div class="focus-content">
-          <h2 class="section-title">重点关注对象</h2>
-
-          <!-- Tab 切换 -->
-          <div class="focus-tabs">
-            <button
-              v-for="tab in focusTabs"
-              :key="tab.value"
-              class="tab-btn"
-              :class="{ active: focusObjects === tab.value }"
-              @click="switchTab(tab.value)"
-            >
-              {{ tab.label }}
-            </button>
+          <div class="direction-actions">
+            <button class="btn-primary" @click="viewFullAdvice">查看完整建议 <span>→</span></button>
           </div>
+        </article>
 
-          <!-- 表格内容 -->
+        <article class="focus-card">
+          <div class="focus-head">
+            <h2>重点关注对象</h2>
+            <div class="focus-tabs">
+              <button
+                v-for="tab in focusTabs"
+                :key="tab.value"
+                class="tab-btn"
+                :class="{ active: focusObjects === tab.value }"
+                @click="switchTab(tab.value)"
+              >
+                {{ tab.label }}
+              </button>
+            </div>
+          </div>
           <table class="focus-table">
             <thead>
               <tr>
@@ -351,7 +378,8 @@ function viewProfile(name: string) {
               </tr>
             </tbody>
           </table>
-        </div>
+          <button class="more-btn">查看更多对象 ↓</button>
+        </article>
       </section>
     </div>
   </AdminLayout>
@@ -359,430 +387,634 @@ function viewProfile(name: string) {
 
 <style scoped>
 .ability-profile-group-page {
-  min-height: 100vh;
-  background: var(--color-page-bg);
-}
-
-/* 主卡区域 */
-.main-cards-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.cards-container {
   display: flex;
-  gap: 20px;
+  min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
+  flex-direction: column;
+  gap: clamp(12px, 0.9vw, 16px);
 }
 
-.main-card {
-  flex: 1;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+.page-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.score-card .card-title {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  font-weight: 600;
+.breadcrumb-line {
+  display: flex;
+  align-items: center;
+  gap: 18px;
   color: var(--color-text-primary);
+  font-size: clamp(18px, 1.15vw, 22px);
+  font-weight: 950;
+}
+
+.breadcrumb-line strong {
+  color: var(--color-primary);
+}
+
+.slash {
+  color: var(--color-text-primary);
+}
+
+.page-intro p {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(13px, 0.78vw, 15px);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.top-grid,
+.bottom-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+  gap: clamp(14px, 1vw, 18px);
+}
+
+.overview-card,
+.analysis-card,
+.support-card,
+.focus-card {
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+}
+
+.overview-card {
+  min-height: clamp(178px, 12vw, 210px);
+  padding: clamp(20px, 1.35vw, 26px);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: clamp(10px, 0.7vw, 14px);
+}
+
+.section-heading h2,
+.focus-head h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(16px, 0.98vw, 19px);
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.info-dot {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #9bb3d9;
+  border-radius: 50%;
+  color: #6f83a6;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.score-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  overflow: hidden;
 }
 
 .score-display {
   display: flex;
   align-items: baseline;
-  justify-content: center;
-  margin: 24px 0;
+  gap: 8px;
+  margin: 8px 0 8px;
 }
 
-.score-number {
-  font-size: 48px;
-  font-weight: 700;
+.score-display strong {
   color: var(--color-primary);
+  font-size: clamp(42px, 2.8vw, 56px);
+  font-weight: 950;
+  line-height: 1;
 }
 
-.score-divider {
-  font-size: 32px;
-  color: var(--color-text-hint);
-  margin: 0 4px;
-}
-
-.score-total {
-  font-size: 24px;
-  color: var(--color-text-hint);
-}
-
-.score-description {
-  margin: 16px 0 12px 0;
-  font-size: 14px;
+.score-display span {
   color: var(--color-text-secondary);
-  text-align: center;
+  font-size: clamp(20px, 1.25vw, 24px);
+  font-weight: 800;
 }
 
-.score-status {
+.score-card p,
+.baseline-card p {
+  margin: 0 0 10px;
+  color: var(--color-text-primary);
+  font-size: clamp(13px, 0.78vw, 15px);
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.status-line strong {
+  border-radius: 5px;
+  background: #e8fff2;
+  color: #13a854;
+  padding: 2px 8px;
+}
+
+.check-dot {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8fff2;
+  color: #13a854;
+  font-size: 13px;
+}
+
+.score-illustration {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-illustration::before {
+  position: absolute;
+  width: 190px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(215, 231, 255, 0.75), rgba(239, 246, 255, 0));
+  transform: translateY(40px);
+  content: '';
+}
+
+.folder-shape {
+  position: relative;
+  width: 126px;
+  height: 104px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #7fb0ff, #d9e8ff);
+  box-shadow: 18px 16px 34px rgba(65, 122, 220, 0.18);
+}
+
+.folder-shape::before {
+  position: absolute;
+  left: 12px;
+  top: -10px;
+  width: 78px;
+  height: 26px;
+  border-radius: 10px 10px 0 0;
+  background: #a8c9ff;
+  content: '';
+}
+
+.chart-shape {
+  position: absolute;
+  display: flex;
+  right: 48px;
+  bottom: 42px;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.chart-shape span {
+  display: block;
+  width: 10px;
+  border-radius: 5px 5px 0 0;
+  background: #4d8eff;
+}
+
+.chart-shape span:nth-child(1) { height: 22px; }
+.chart-shape span:nth-child(2) { height: 38px; }
+.chart-shape span:nth-child(3) { height: 56px; }
+
+.baseline-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 40%);
+  gap: 22px;
+}
+
+.baseline-list {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  margin: 16px 0 0;
+  padding: 0 0 0 48px;
+  list-style: none;
+}
+
+.baseline-list::before {
+  position: absolute;
+  left: 101px;
+  top: 17px;
+  bottom: 17px;
+  width: 2px;
+  background: #dbe5f4;
+  content: '';
+}
+
+.baseline-list li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.baseline-list li::before {
+  position: absolute;
+  left: 48px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #b9c7db;
+  box-shadow: 0 0 0 2px #dbe5f4;
+  content: '';
+}
+
+.baseline-list li.active::before {
+  background: #16b569;
+  box-shadow: 0 0 0 2px #bff2d4;
+}
+
+.baseline-list strong {
+  color: var(--color-primary);
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.baseline-list span {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.analysis-card {
+  display: grid;
+  grid-template-columns: minmax(330px, 31%) minmax(0, 1fr);
+  gap: clamp(16px, 1.1vw, 22px);
+  padding: clamp(16px, 1vw, 20px);
+}
+
+.radar-panel,
+.dimension-panel {
+  min-width: 0;
+}
+
+.radar-wrap {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  font-size: 14px;
+  transform: translateY(-2px);
+}
+
+.table-title span {
   color: var(--color-text-primary);
-}
-
-.status-label {
-  color: var(--color-text-secondary);
-}
-
-.status-value {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.baseline-card .card-title {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.card-description {
-  margin: 0 0 8px 0;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  font-weight: 800;
+}
+
+.dimension-table,
+.focus-table {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.dimension-table th,
+.focus-table th {
+  height: 42px;
+  background: #f7faff;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 950;
+  text-align: left;
+}
+
+.dimension-table th,
+.dimension-table td,
+.focus-table th,
+.focus-table td {
+  border-right: 1px solid var(--color-card-border-soft);
+  border-bottom: 1px solid var(--color-card-border-soft);
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+.dimension-table th:last-child,
+.dimension-table td:last-child,
+.focus-table th:last-child,
+.focus-table td:last-child {
+  border-right: 0;
+}
+
+.dimension-table tr:last-child td,
+.focus-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.dimension-table td,
+.focus-table td {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
   line-height: 1.5;
 }
 
-.timeline-display {
-  display: flex;
-  gap: 24px;
-  margin-top: 16px;
+.dimension-table th:nth-child(1) { width: 18%; }
+.dimension-table th:nth-child(2) { width: 12%; }
+.dimension-table th:nth-child(3) { width: 32%; }
+.dimension-table th:nth-child(4) { width: 38%; }
+
+.dimension-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-primary);
 }
 
-.timeline-item {
-  display: flex;
-  flex-direction: column;
+.dimension-icon {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
   align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.dimension-name.blue .dimension-icon { background: #0b63f6; }
+.dimension-name.green .dimension-icon { background: #16b569; }
+.dimension-name.orange .dimension-icon { background: #ff7a00; }
+.dimension-name.purple .dimension-icon { background: #7657ff; }
+
+.index-cell {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.distribution-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.distribution-track {
+  display: flex;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef3fb;
   gap: 4px;
 }
 
-.timeline-year {
-  font-size: 16px;
-  font-weight: 600;
+.distribution-track span {
+  display: block;
+  min-width: 10px;
+  border-radius: 999px;
+}
+
+.novice { background: #9aa9c0; }
+.competent { background: #3b82f6; }
+.backbone { background: #18b76b; }
+.expert { background: #ff7a00; }
+
+.bottom-grid {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+.support-card,
+.focus-card {
+  padding: clamp(16px, 1vw, 20px);
+}
+
+.support-desc {
+  margin: -4px 0 14px;
   color: var(--color-text-primary);
-}
-
-.timeline-status {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-/* 能力结构分析区 */
-.analysis-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
-}
-
-.analysis-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.radar-chart-area {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
-}
-
-.section-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.radar-chart-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.radar-scores {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.score-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: #f8fafc;
-  border-radius: 6px;
-}
-
-.score-label {
   font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.score-value {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.dimension-table-area {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
-}
-
-.dimension-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.dimension-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.dimension-table td {
-  padding: 12px;
-  font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.index-cell {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.distribution-cell {
-  padding: 4px 0;
-}
-
-.distribution-bars {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.distribution-item {
-  padding: 4px 8px;
-  background: #f0f9ff;
-  color: var(--color-primary);
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-/* 发展支持方向 */
-.directions-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
-}
-
-.section-content {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
-  margin-bottom: 16px;
-}
-
-.section-description {
-  margin: 0 0 20px 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  font-weight: 700;
 }
 
 .directions-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .direction-card {
-  background: #f8fafc;
+  min-height: 122px;
+  border: 1px solid var(--color-card-border);
   border-radius: 8px;
-  padding: 16px;
-  border-left: 3px solid var(--color-primary);
+  padding: 14px 12px;
+  text-align: center;
 }
+
+.direction-card.blue { background: #f1f7ff; }
+.direction-card.green { background: #f0fff7; }
+.direction-card.orange { background: #fff7ed; }
+.direction-card.purple { background: #f6f3ff; }
+
+.direction-icon {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.direction-card.green .direction-icon { background: #16b569; }
+.direction-card.orange .direction-icon { background: #ff7a00; }
+.direction-card.purple .direction-icon { background: #7657ff; }
 
 .direction-title {
-  margin: 0 0 8px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 8px 0 7px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 950;
 }
 
-.direction-observation {
-  margin: 0 0 8px 0;
-  font-size: 13px;
+.direction-card.green .direction-title { color: #0c9552; }
+.direction-card.orange .direction-title { color: #e15f00; }
+.direction-card.purple .direction-title { color: #7657ff; }
+
+.direction-observation,
+.key-dimension {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 700;
   line-height: 1.5;
-  color: var(--color-text-secondary);
 }
 
 .key-dimension {
-  font-size: 12px;
-  color: var(--color-text-hint);
+  margin-top: 6px;
 }
 
 .dimension-value {
   color: var(--color-primary);
-  font-weight: 500;
 }
 
 .direction-actions {
   display: flex;
   justify-content: center;
-  padding: 16px 0 0;
+  margin-top: 14px;
 }
 
-/* 重点关注对象 */
-.focus-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 32px;
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 34px;
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-primary);
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 950;
 }
 
-.focus-content {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+.focus-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
 }
 
 .focus-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 18px;
   border-bottom: 1px solid var(--color-card-border);
 }
 
 .tab-btn {
-  padding: 10px 16px;
-  background: transparent;
-  border: none;
-  border-radius: 6px 6px 0 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all 0.16s ease;
+  border: 0;
   border-bottom: 2px solid transparent;
-}
-
-.tab-btn:hover {
-  color: var(--color-primary);
+  background: transparent;
+  color: var(--color-text-primary);
+  padding: 0 6px 8px;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .tab-btn.active {
-  color: var(--color-primary);
   border-bottom-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
-.focus-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.focus-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.focus-table td {
-  padding: 12px;
-  font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
+.focus-table th:nth-child(1) { width: 18%; }
+.focus-table th:nth-child(2) { width: 16%; }
+.focus-table th:nth-child(3) { width: 22%; }
+.focus-table th:nth-child(4) { width: 31%; }
+.focus-table th:nth-child(5) { width: 13%; }
 
 .focus-type {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
 }
 
 .focus-type.support {
-  background: #f0fdf4;
-  color: #22c55e;
+  background: #fff1e6;
+  color: #ff7a00;
 }
 
 .focus-type.advantage {
-  background: #f0f9ff;
-  color: var(--color-primary);
+  background: #eafff2;
+  color: #16a45a;
 }
 
 .focus-type.attention {
-  background: #fffbeb;
-  color: #f59e0b;
+  background: #eef4ff;
+  color: #375be8;
 }
 
 .btn-link {
-  padding: 6px 12px;
+  border: 0;
   background: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
   color: var(--color-primary);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 950;
+  white-space: nowrap;
 }
 
-.btn-link:hover {
-  background: var(--color-primary);
-  color: white;
+.more-btn {
+  display: block;
+  margin: 11px auto 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 950;
 }
 
-.btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #28a38a;
-}
-
-@media (max-width: 768px) {
-  .main-cards-section {
-    grid-template-columns: 1fr;
+@media (max-width: 1440px) {
+  .score-card {
+    grid-template-columns: minmax(0, 1fr) 160px;
   }
 
-  .analysis-content {
-    grid-template-columns: 1fr;
+  .score-illustration {
+    transform: scale(0.82);
+  }
+
+  .analysis-card {
+    grid-template-columns: minmax(280px, 31%) minmax(0, 1fr);
   }
 
   .directions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .direction-card {
+    min-height: 104px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .top-grid,
+  .bottom-grid {
     grid-template-columns: 1fr;
+  }
+
+  .analysis-card {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-wrap {
+    max-height: 250px;
+    overflow: hidden;
   }
 }
 </style>

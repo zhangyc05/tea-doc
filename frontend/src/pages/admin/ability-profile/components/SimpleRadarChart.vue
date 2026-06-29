@@ -187,6 +187,10 @@ const radarPolygonPoints = computed(() => {
   gap: 16px;
 }
 
+.radar-chart-container svg {
+  overflow: visible;
+}
+
 .radar-legend {
   display: flex;
   gap: 12px;
@@ -205,6 +209,18 @@ const radarPolygonPoints = computed(() => {
   height: 8px;
   border-radius: 50%;
   background: #94a3b8;
+}
+
+.legend-item:nth-child(2) .legend-dot {
+  background: #3b82f6;
+}
+
+.legend-item:nth-child(3) .legend-dot {
+  background: #18b76b;
+}
+
+.legend-item:nth-child(4) .legend-dot {
+  background: #ff7a00;
 }
 
 .legend-text {
