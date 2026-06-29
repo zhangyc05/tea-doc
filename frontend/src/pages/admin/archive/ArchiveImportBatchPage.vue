@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Button } from '@/components/ui'
 
 interface BatchFile {
   id: string
@@ -35,6 +34,7 @@ const batchInfo = {
 
 // 当前状态：识别中或识别完成
 const isCompleted = computed(() => route.query.status === 'completed')
+const batchId = computed(() => String(route.params.batchId || '20260620-01'))
 
 // 步骤进度
 const steps = computed(() => {
@@ -163,12 +163,40 @@ function fileStatusClass(status: BatchFile['status']) {
   return classMap[status] || 'text-neutral'
 }
 
+const resultRows = computed(() => [
+  {
+    label: '可生成待确认记录',
+    value: isCompleted.value ? recognitionResult.value.pendingConfirm : '--',
+    tone: 'blue',
+  },
+  {
+    label: '需要补充',
+    value: isCompleted.value ? recognitionResult.value.needSupplement : '--',
+    tone: 'orange',
+  },
+  {
+    label: '需要核验',
+    value: isCompleted.value ? recognitionResult.value.needVerify : '--',
+    tone: 'green',
+  },
+  {
+    label: '异常待处理',
+    value: isCompleted.value ? recognitionResult.value.exception : '--',
+    tone: 'red',
+  },
+  {
+    label: '疑似重复',
+    value: isCompleted.value ? recognitionResult.value.duplicate : '--',
+    tone: 'purple',
+  },
+])
+
 function returnToProcessing() {
   router.push('/admin/archive/processing')
 }
 
 function refreshStatus() {
-  router.push('/admin/archive/import/20260620-01?status=completed')
+  router.push(`/admin/archive/import/${batchId.value}?status=completed`)
 }
 
 function confirmResult() {
@@ -176,93 +204,92 @@ function confirmResult() {
 }
 
 function cancelTask() {
-  console.log('取消本次任务')
+  router.push('/admin/archive/processing')
 }
 
 function viewUploadedFiles() {
-  console.log('查看上传文件')
+  router.push('/admin/archive/import')
 }
 </script>
 
 <template>
   <AdminLayout active-key="archive-processing">
     <div class="archive-batch-detail-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>成长档案</span>
-            <i class="separator">/</i>
-            <span>档案处理</span>
-            <i class="separator">/</i>
-            <span>导入部门资料</span>
-            <i class="separator">/</i>
-            <span class="current">导入批次详情</span>
-          </div>
-          <h1>导入批次详情</h1>
+      <section class="page-shell">
+        <div class="breadcrumb">
+          <span>成长档案</span>
+          <i class="separator">/</i>
+          <span>档案处理</span>
+          <i class="separator">/</i>
+          <span>导入部门资料</span>
+          <i class="separator">/</i>
+          <span class="current">导入批次详情</span>
         </div>
-      </section>
 
-      <!-- 批次信息 -->
-      <section class="batch-info-section">
-        <div class="batch-info-card">
-          <h3 class="info-title">批次信息</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">批次名称：</span>
-              <span class="info-value">{{ batchInfo.name }}</span>
+        <section class="hero-card" :class="{ completed: isCompleted }">
+          <div class="hero-head">
+            <div>
+              <h1>导入批次详情</h1>
+              <p>
+                {{
+                  isCompleted
+                    ? '资料已识别完成，系统已整理资料内容、关联教师和建议归档维度。请确认识别结果后生成待处理记录。'
+                    : '资料已提交，系统正在后台识别资料内容、关联教师和建议归档维度。识别完成后，需人工确认后才会生成待处理记录。'
+                }}
+              </p>
             </div>
-            <div class="info-item">
-              <span class="info-label">提交人：</span>
-              <span class="info-value">{{ batchInfo.submitter }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">提交时间：</span>
-              <span class="info-value">{{ batchInfo.submitTime }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">提交部门：</span>
-              <span class="info-value">{{ batchInfo.department }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">所属周期：</span>
-              <span class="info-value">{{ batchInfo.period }}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 状态展示 -->
-      <section class="status-section">
-        <div class="status-content">
-          <!-- 状态标题 -->
-          <div class="status-header">
-            <div class="status-indicator" :class="{ completed: isCompleted }">
-              <div class="status-dot"></div>
-            </div>
-            <h2 class="status-title">{{ isCompleted ? '识别完成' : '识别中' }}</h2>
+            <span class="state-pill" :class="{ completed: isCompleted }">
+              <i></i>
+              {{ isCompleted ? '识别完成' : '识别中' }}
+            </span>
           </div>
 
-          <!-- 说明 -->
-          <div class="status-description">
-            <template v-if="!isCompleted">
-              <p>资料已提交，系统正在后台识别资料内容、关联教师和建议归档维度。识别完成后，需人工确认后才会生成待处理记录。</p>
-            </template>
-            <template v-else>
-              <p>资料已识别完成，系统已整理资料内容、关联教师和建议归档维度。请确认识别结果后生成待处理记录。</p>
-            </template>
+          <div class="hero-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">批次名称：</span>
+                <span class="info-value">{{ batchInfo.name }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">提交人：</span>
+                <span class="info-value">{{ batchInfo.submitter }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">提交时间：</span>
+                <span class="info-value">{{ batchInfo.submitTime }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">提交部门：</span>
+                <span class="info-value">{{ batchInfo.department }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">所属周期：</span>
+                <span class="info-value">{{ batchInfo.period }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">当前状态：</span>
+                <span class="inline-status" :class="{ completed: isCompleted }">
+                  {{ isCompleted ? '识别完成' : '识别中' }}
+                </span>
+              </div>
+            </div>
+            <div class="hero-illustration" aria-hidden="true">
+              <div class="doc-card"></div>
+              <div class="lens"></div>
+            </div>
           </div>
 
-          <!-- 提示条 -->
-          <div v-if="!isCompleted" class="tip-banner">
-            <span class="tip-icon">ℹ️</span>
-            <span class="tip-text">你可以先离开当前页面，识别完成后再回来查看结果。</span>
+          <div class="tip-banner" :class="{ success: isCompleted }">
+            <span class="tip-icon">{{ isCompleted ? '✓' : 'i' }}</span>
+            <span class="tip-text">
+              {{
+                isCompleted
+                  ? '识别已完成，请查看识别结果并确认后生成待处理记录。'
+                  : '你可以先离开当前页面，识别完成后再回来查看结果。'
+              }}
+            </span>
           </div>
-          <div v-else class="tip-banner success">
-            <span class="tip-icon">✓</span>
-            <span class="tip-text">识别已完成，请查看识别结果并确认后生成待处理记录。</span>
-          </div>
-        </div>
+        </section>
       </section>
 
       <!-- 主体工作区（两栏布局） -->
@@ -296,17 +323,21 @@ function viewUploadedFiles() {
           <section class="files-section">
             <div class="files-content">
               <h3 class="section-title">本批次文件</h3>
-              <div class="files-list">
-                <div v-for="file in batchFiles" :key="file.id" class="file-item">
-                  <div class="file-info">
-                    <div class="file-name">{{ file.name }}</div>
-                    <div class="file-meta">{{ file.type }} | {{ file.size }}</div>
-                  </div>
-                  <div class="file-status" :class="fileStatusClass(file.status)">
-                    {{ file.status }}
-                  </div>
+              <div class="files-table">
+                <div class="file-row file-head">
+                  <span>文件名称</span>
+                  <span>文件类型</span>
+                  <span>文件大小</span>
+                  <span>当前处理状态</span>
+                </div>
+                <div v-for="file in batchFiles" :key="file.id" class="file-row">
+                  <span class="file-name">{{ file.name }}</span>
+                  <span>{{ file.type }}</span>
+                  <span>{{ file.size }}</span>
+                  <span class="file-status" :class="fileStatusClass(file.status)">{{ file.status }}</span>
                 </div>
               </div>
+              <p class="file-count">共 {{ batchFiles.length }} 个文件</p>
             </div>
           </section>
         </div>
@@ -317,55 +348,20 @@ function viewUploadedFiles() {
             <div class="result-content">
               <h3 class="section-title">识别结果</h3>
               <div v-if="!isCompleted" class="result-placeholder">
+                <div class="result-graphic" aria-hidden="true"></div>
                 <p class="placeholder-text">系统正在整理本批次资料，识别完成后将在这里展示结果。</p>
-                <div class="result-stats">
-                  <div class="stat-item">
-                    <span class="stat-label">可生成待确认记录</span>
-                    <span class="stat-value">--</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">需要补充</span>
-                    <span class="stat-value">--</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">需要核验</span>
-                    <span class="stat-value">--</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">异常待处理</span>
-                    <span class="stat-value">--</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">疑似重复</span>
-                    <span class="stat-value">--</span>
-                  </div>
-                </div>
               </div>
               <div v-else class="result-data">
-                <p class="result-summary">共识别出 {{ recognitionResult.totalRecords }} 条教师相关记录</p>
-                <div class="result-stats">
-                  <div class="stat-item success">
-                    <span class="stat-label">可生成待确认记录</span>
-                    <span class="stat-value">{{ recognitionResult.pendingConfirm }}</span>
-                  </div>
-                  <div class="stat-item warning">
-                    <span class="stat-label">需要补充</span>
-                    <span class="stat-value">{{ recognitionResult.needSupplement }}</span>
-                  </div>
-                  <div class="stat-item info">
-                    <span class="stat-label">需要核验</span>
-                    <span class="stat-value">{{ recognitionResult.needVerify }}</span>
-                  </div>
-                  <div class="stat-item danger">
-                    <span class="stat-label">异常待处理</span>
-                    <span class="stat-value">{{ recognitionResult.exception }}</span>
-                  </div>
-                  <div class="stat-item slate">
-                    <span class="stat-label">疑似重复</span>
-                    <span class="stat-value">{{ recognitionResult.duplicate }}</span>
-                  </div>
+                <p class="result-summary">共识别出 <strong>{{ recognitionResult.totalRecords }}</strong> 条教师相关记录</p>
+              </div>
+              <div class="result-list">
+                <div v-for="row in resultRows" :key="row.label" class="result-row">
+                  <span class="row-dot" :class="row.tone"></span>
+                  <span>{{ row.label }}</span>
+                  <strong>{{ row.value }}</strong>
                 </div>
               </div>
+              <p v-if="isCompleted" class="result-note">以上结果将进入确认步骤，确认后可按以上分类生成待处理记录。</p>
             </div>
           </section>
 
@@ -373,30 +369,30 @@ function viewUploadedFiles() {
           <section class="instructions-section">
             <div class="instructions-content">
               <div class="instructions-card">
-            <h3 class="instructions-title">处理说明</h3>
-            <ul class="instructions-list">
-              <li class="instruction-item">
-                <span class="instruction-text">
-                  {{ isCompleted ? '资料识别已完成，尚未直接写入教师档案。' : '资料识别在后台进行，不会直接写入教师档案。' }}
-                </span>
-              </li>
-              <li class="instruction-item">
-                <span class="instruction-text">
-                  {{ isCompleted ? '请先确认识别结果，再生成待处理记录。' : '识别完成后，需人工确认后才会生成待处理记录。' }}
-                </span>
-              </li>
-              <li class="instruction-item">
-                <span class="instruction-text">
-                  {{ isCompleted ? '生成待处理记录后，可在档案处理工作台继续处理。' : '如部分文件暂时无法识别，系统会先处理其余资料。' }}
-                </span>
-              </li>
-              <li class="instruction-item" v-if="isCompleted">
-                <span class="instruction-text">如发现识别不准确，可在下一步中调整。</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+                <h3 class="instructions-title">处理说明</h3>
+                <ul class="instructions-list">
+                  <li class="instruction-item">
+                    <span class="instruction-text">
+                      {{ isCompleted ? '资料识别已完成，尚未直接写入教师档案。' : '资料识别在后台进行，不会直接写入教师档案。' }}
+                    </span>
+                  </li>
+                  <li class="instruction-item">
+                    <span class="instruction-text">
+                      {{ isCompleted ? '请先确认识别结果，再生成待处理记录。' : '识别完成后，需人工确认后才会生成待处理记录。' }}
+                    </span>
+                  </li>
+                  <li class="instruction-item">
+                    <span class="instruction-text">
+                      {{ isCompleted ? '生成待处理记录后，可在档案处理工作台继续处理。' : '如部分文件暂时无法识别，系统会先处理其余资料。' }}
+                    </span>
+                  </li>
+                  <li class="instruction-item" v-if="isCompleted">
+                    <span class="instruction-text">如发现识别不准确，可在下一步中调整。</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -415,128 +411,265 @@ function viewUploadedFiles() {
 <style scoped>
 .archive-batch-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
-  padding-bottom: 80px;
+  background: #f7faff;
+  padding-bottom: 24px;
 }
 
-.page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.header-content {
-  max-width: var(--admin-content-max-width);
+.page-shell,
+.batch-workspace,
+.actions-section {
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 0 24px;
+}
+
+.page-shell {
+  padding-top: 24px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #667799;
 }
 
 .breadcrumb .separator {
-  color: var(--color-text-hint);
+  color: #9aa9c0;
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
+  color: #1b2f5f;
   font-weight: 600;
 }
 
-.page-header h1 {
+.hero-card {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #d9e5f7;
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.04);
+}
+
+.hero-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px 12px;
+}
+
+.hero-head h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
+  line-height: 1.25;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #07183d;
 }
 
-/* 批次信息 */
-.batch-info-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+.hero-head p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #44618f;
 }
 
-.batch-info-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
+.state-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  min-width: 96px;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #b8d1ff;
+  background: #eef5ff;
+  color: #075cf2;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.info-title {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.state-pill i {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  animation: pulse 1.6s infinite;
+}
+
+.state-pill.completed {
+  border-color: #b8ebc7;
+  background: #eaf9ee;
+  color: #139139;
+}
+
+.state-pill.completed i {
+  animation: none;
+}
+
+.hero-body {
+  position: relative;
+  margin: 0 24px;
+  min-height: 116px;
+  padding: 24px 330px 20px 18px;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(100deg, #fff 0%, #fff 72%, #eaf3ff 100%);
+}
+
+.hero-card.completed .hero-body {
+  background: linear-gradient(100deg, #fff 0%, #fff 72%, #edf9ef 100%);
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  column-gap: 48px;
+  row-gap: 20px;
 }
 
 .info-item {
   display: flex;
+  align-items: center;
+  min-width: 0;
   font-size: 14px;
 }
 
 .info-label {
-  color: var(--color-text-secondary);
-  min-width: 80px;
-}
-
-.info-value {
-  color: var(--color-text-primary);
+  flex: none;
+  color: #536b96;
   font-weight: 500;
 }
 
-/* 状态展示 */
-.status-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
+.info-value {
+  min-width: 0;
+  color: #10254f;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.status-content {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+.inline-status {
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: #eaf2ff;
+  color: #075cf2;
+  font-weight: 700;
 }
 
-.status-header {
+.inline-status.completed {
+  background: #e9f8ee;
+  color: #139139;
+}
+
+.hero-illustration {
+  position: absolute;
+  right: 34px;
+  bottom: 0;
+  width: 226px;
+  height: 118px;
+  opacity: 0.92;
+}
+
+.hero-illustration::before,
+.hero-illustration::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  background: #cfe0ff;
+  opacity: 0.8;
+}
+
+.hero-illustration::before {
+  width: 142px;
+  height: 42px;
+  right: 0;
+  bottom: 0;
+}
+
+.hero-illustration::after {
+  width: 10px;
+  height: 10px;
+  left: 24px;
+  top: 12px;
+}
+
+.hero-card.completed .hero-illustration::before,
+.hero-card.completed .hero-illustration::after {
+  background: #c8f0d0;
+}
+
+.doc-card {
+  position: absolute;
+  right: 44px;
+  bottom: 28px;
+  width: 86px;
+  height: 70px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6ea6ff, #1264e9);
+  box-shadow: 0 12px 24px rgba(12, 93, 226, 0.22);
+}
+
+.doc-card::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: -18px;
+  width: 72px;
+  height: 52px;
+  border: 1px solid #cfe0ff;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.hero-card.completed .doc-card {
+  background: linear-gradient(135deg, #75d885, #24a547);
+  box-shadow: 0 12px 24px rgba(36, 165, 71, 0.2);
+}
+
+.lens {
+  position: absolute;
+  right: 16px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border: 8px solid rgba(15, 94, 239, 0.72);
+  border-radius: 50%;
+}
+
+.lens::after {
+  content: '';
+  position: absolute;
+  right: -24px;
+  bottom: -14px;
+  width: 32px;
+  height: 8px;
+  border-radius: 999px;
+  background: #0f5eef;
+  transform: rotate(42deg);
+}
+
+.hero-card.completed .lens {
+  border-color: rgba(28, 164, 67, 0.72);
+}
+
+.hero-card.completed .lens::after {
+  background: #1ca443;
+}
+
+.tip-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.status-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f59e0b;
-  position: relative;
-}
-
-.status-indicator.completed {
-  background: #22c55e;
-}
-
-.status-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: inherit;
-  animation: pulse 2s infinite;
+  gap: 10px;
+  margin: 0 24px 18px;
+  padding: 9px 16px;
+  background: #eef5ff;
+  border: 1px solid #d7e5ff;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
 }
 
 @keyframes pulse {
@@ -548,55 +681,39 @@ function viewUploadedFiles() {
   }
 }
 
-.status-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.status-description {
-  margin-bottom: 16px;
-}
-
-.status-description p {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-}
-
-.tip-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 8px;
-}
-
 .tip-banner.success {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: #edf9ef;
+  border-color: #c9efd3;
 }
 
 .tip-icon {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0f5eef;
+  color: #fff;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.success .tip-icon {
+  background: #139139;
 }
 
 .tip-text {
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  font-size: 13px;
+  color: #23436f;
 }
 
-/* 主体工作区（两栏布局） */
 .batch-workspace {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
+  padding-top: 16px;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) 420px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.9fr);
   gap: 16px;
   align-items: start;
 }
@@ -609,7 +726,6 @@ function viewUploadedFiles() {
   min-width: 0;
 }
 
-/* 进度展示 */
 .progress-section {
   margin: 0;
   padding: 0;
@@ -618,16 +734,18 @@ function viewUploadedFiles() {
 
 .progress-content {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  padding: 20px 22px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .section-title {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 18px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #07183d;
 }
 
 .steps-list {
@@ -638,7 +756,8 @@ function viewUploadedFiles() {
 
 .step-item {
   display: flex;
-  gap: 16px;
+  gap: 18px;
+  min-height: 42px;
 }
 
 .step-indicator {
@@ -649,56 +768,92 @@ function viewUploadedFiles() {
 }
 
 .step-dot {
-  width: 12px;
-  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #e2e8f0;
+  background: #edf1f7;
+  color: #20345d;
+  font-size: 14px;
+  font-weight: 700;
   z-index: 1;
 }
 
+.step-dot::after {
+  content: counter(step);
+}
+
+.steps-list {
+  counter-reset: step;
+}
+
+.step-item {
+  counter-increment: step;
+}
+
 .step-item.completed .step-dot {
-  background: #22c55e;
+  background: #d8f4df;
+  color: #16893b;
 }
 
 .step-item.processing .step-dot {
-  background: #f59e0b;
+  background: #0f5eef;
+  color: #fff;
   animation: pulse 2s infinite;
 }
 
 .step-line {
   position: absolute;
-  top: 12px;
+  top: 28px;
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 48px;
-  background: #e2e8f0;
+  height: 28px;
+  background: #dce5f2;
 }
 
 .step-item.completed .step-line {
-  background: #22c55e;
+  background: #c8eecf;
 }
 
 .step-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 2px 0 12px;
   flex: 1;
 }
 
 .step-label {
-  font-size: 14px;
-  color: var(--color-text-primary);
-  font-weight: 500;
+  font-size: 15px;
+  color: #10254f;
+  font-weight: 700;
 }
 
 .step-status {
-  font-size: 12px;
-  color: var(--color-text-hint);
+  min-width: 58px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #f0f3f8;
+  color: #60708b;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
 }
 
-/* 文件列表 */
+.step-item.completed .step-status {
+  background: #eaf9ee;
+  color: #139139;
+}
+
+.step-item.processing .step-status {
+  background: #eaf2ff;
+  color: #075cf2;
+}
+
 .files-section {
   margin: 0;
   padding: 0;
@@ -707,65 +862,80 @@ function viewUploadedFiles() {
 
 .files-content {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  padding: 18px 22px 12px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
-.files-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.file-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  background: #f8fafc;
+.files-table {
+  overflow: hidden;
+  border: 1px solid #d9e5f7;
   border-radius: 8px;
 }
 
-.file-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.file-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px 78px 112px;
+  align-items: center;
+  gap: 10px;
+  min-height: 43px;
+  padding: 0 12px;
+  border-top: 1px solid #e5edf8;
+  color: #10254f;
+  font-size: 13px;
+}
+
+.file-head {
+  min-height: 38px;
+  border-top: 0;
+  background: #f4f7fc;
+  color: #31466f;
+  font-weight: 700;
 }
 
 .file-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-
-.file-meta {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-.file-status {
-  font-size: 12px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 600;
 }
 
+.file-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.file-status::before {
+  content: '';
+  width: 15px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
 .text-success {
-  color: #22c55e;
+  color: #139139;
 }
 
 .text-warning {
-  color: #f59e0b;
+  color: #075cf2;
 }
 
 .text-neutral {
-  color: #64748b;
+  color: #60708b;
 }
 
-.text-info {
-  color: #3b82f6;
+.file-count {
+  margin: 12px 0 0;
+  color: #536b96;
+  font-size: 13px;
 }
 
-/* 识别结果 */
 .result-section {
   margin: 0;
   padding: 0;
@@ -773,80 +943,110 @@ function viewUploadedFiles() {
 }
 
 .result-content {
+  position: relative;
+  overflow: hidden;
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  padding: 20px 22px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .result-placeholder {
   text-align: center;
 }
 
+.result-graphic {
+  width: 152px;
+  height: 96px;
+  margin: 8px auto 14px;
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(209, 226, 255, 0.8)) 50% 16px / 72px 50px no-repeat,
+    radial-gradient(ellipse at 50% 78%, #dbe8ff 0 44%, transparent 45%),
+    linear-gradient(135deg, #a7c8ff, #2270ef);
+  opacity: 0.9;
+}
+
 .placeholder-text {
-  margin: 0 0 24px 0;
+  margin: 0 0 16px;
   font-size: 14px;
-  color: var(--color-text-hint);
+  line-height: 1.6;
+  color: #536b96;
 }
 
 .result-data {
-  text-align: center;
+  text-align: left;
 }
 
 .result-summary {
-  margin: 0 0 24px 0;
-  font-size: 15px;
+  margin: 8px 0 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: #10254f;
 }
 
-.result-stats {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
+.result-summary strong {
+  color: #0fa33b;
+  font-size: 22px;
 }
 
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 120px;
+.result-list {
+  overflow: hidden;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
 }
 
-.stat-item.success {
+.result-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-top: 1px solid #e5edf8;
+  color: #10254f;
+  font-size: 14px;
 }
 
-.stat-item.warning {
-  align-items: center;
+.result-row:first-child {
+  border-top: 0;
 }
 
-.stat-item.info {
-  align-items: center;
+.result-row strong {
+  font-size: 15px;
 }
 
-.stat-item.danger {
-  align-items: center;
+.row-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #0f5eef;
 }
 
-.stat-item.slate {
-  align-items: center;
+.row-dot.orange {
+  background: #f59e0b;
 }
 
-.stat-label {
+.row-dot.green {
+  background: #18a64a;
+}
+
+.row-dot.red {
+  background: #ff3b30;
+}
+
+.row-dot.purple {
+  background: #7c3aed;
+}
+
+.result-note {
+  margin: 14px 0 0;
+  color: #536b96;
   font-size: 13px;
-  color: var(--color-text-secondary);
-  text-align: center;
+  line-height: 1.6;
 }
 
-.stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-/* 处理说明 */
 .instructions-section {
   margin: 0;
   padding: 0;
@@ -855,16 +1055,22 @@ function viewUploadedFiles() {
 
 .instructions-content {
   background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d9e5f7;
+  padding: 20px 22px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+}
+
+.instructions-card {
+  margin: 0;
 }
 
 .instructions-title {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 18px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #07183d;
 }
 
 .instructions-list {
@@ -873,85 +1079,142 @@ function viewUploadedFiles() {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .instruction-item {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+}
+
+.instruction-item::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-top: 9px;
+  border-radius: 50%;
+  background: #0f5eef;
 }
 
 .instruction-text {
   font-size: 14px;
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: #44618f;
 }
 
-/* 底部操作按钮 */
 .actions-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding-top: 24px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
 .btn-primary,
 .btn-secondary,
 .btn-outline {
-  padding: 12px 24px;
-  border-radius: 8px;
+  min-width: 154px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.16s ease;
-  border: none;
   outline: none;
-  min-width: 120px;
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  margin-left: auto;
+  border: 1px solid #0f5eef;
+  background: #0f5eef;
   color: white;
+  box-shadow: 0 10px 20px rgba(15, 94, 239, 0.18);
 }
 
 .btn-primary:hover {
-  background: #28a38a;
+  background: #0c4fd0;
 }
 
 .btn-secondary {
-  background: #f1f5f9;
-  color: var(--color-text-primary);
+  border: 1px solid #d0def0;
+  background: #fff;
+  color: #23436f;
 }
 
 .btn-secondary:hover {
-  background: #e2e8f0;
+  background: #f5f8fd;
 }
 
 .btn-outline {
   background: white;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-card-border);
+  color: #23436f;
+  border: 1px solid #d0def0;
 }
 
 .btn-outline:hover {
   background: #f8fafc;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1320px) {
+  .page-shell,
+  .batch-workspace,
+  .actions-section {
+    width: min(100% - 32px, 1500px);
+  }
+
+  .hero-body {
+    min-height: 138px;
+    padding-right: 220px;
+  }
+
+  .hero-illustration {
+    right: 20px;
+    width: 178px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    column-gap: 32px;
+    row-gap: 18px;
+  }
+
+  .batch-workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+  }
+
+  .file-row {
+    grid-template-columns: minmax(0, 1fr) 72px 76px 108px;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-body {
+    padding-right: 18px;
+  }
+
+  .hero-illustration {
+    display: none;
+  }
+
   .info-grid {
     grid-template-columns: 1fr;
   }
 
-  .result-stats {
-    flex-direction: column;
-    gap: 16px;
+  .batch-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .file-row {
+    grid-template-columns: minmax(0, 1fr) 72px 76px 108px;
   }
 
   .actions-section {
-    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    margin-left: 0;
   }
 }
 </style>

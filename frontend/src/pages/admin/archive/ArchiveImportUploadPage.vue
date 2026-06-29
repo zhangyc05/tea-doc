@@ -2,62 +2,57 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Button } from '@/components/ui'
 
 interface UploadedFile {
   id: string
   name: string
   size: string
   status: '已上传' | '上传中' | '上传失败'
+  type: 'excel' | 'zip' | 'pdf' | 'word' | 'image'
 }
 
 const router = useRouter()
 
-// 步骤条
 const currentStep = ref(1)
+const isDragging = ref(false)
+const fileInput = ref<HTMLInputElement | null>(null)
 
-// 已上传文件
 const uploadedFiles = ref<UploadedFile[]>([
   {
     id: '1',
     name: '2026年度课程建设项目名单件名单.xlsx',
     size: '1.8MB',
     status: '已上传',
+    type: 'excel',
   },
   {
     id: '2',
     name: '精品课程建设立项材料.zip',
     size: '24.6MB',
     status: '已上传',
+    type: 'zip',
   },
   {
     id: '3',
     name: '教学成果申报通知.pdf',
     size: '3.2MB',
     status: '已上传',
+    type: 'pdf',
   },
   {
     id: '4',
     name: '教师培训证书扫描件.zip',
     size: '18.4MB',
     status: '已上传',
+    type: 'zip',
   },
 ])
 
-// 拖拽上传状态
-const isDragging = ref(false)
+const steps = ['上传资料', '系统识别', '确认结果', '生成待处理记录']
 
-// 计算总大小
 const totalSize = computed(() => {
-  const sizeMap: Record<string, number> = {
-    '1.8MB': 1.8,
-    '24.6MB': 24.6,
-    '3.2MB': 3.2,
-    '18.4MB': 18.4,
-  }
-
-  return Object.values(uploadedFiles.value).reduce((total, file) => {
-    return total + (sizeMap[file.size] || 0)
+  return uploadedFiles.value.reduce((total, file) => {
+    return total + Number.parseFloat(file.size)
   }, 0).toFixed(1)
 })
 
@@ -78,16 +73,40 @@ function handleDragOver(event: DragEvent) {
 function handleDrop(event: DragEvent) {
   event.preventDefault()
   isDragging.value = false
-  // 这里可以添加文件处理逻辑
-  console.log('Files dropped:', event.dataTransfer?.files)
+  const files = Array.from(event.dataTransfer?.files || [])
+  appendFiles(files)
 }
 
 function selectFiles() {
-  console.log('选择文件')
+  fileInput.value?.click()
 }
 
 function importFromFolder() {
-  console.log('从本地文件夹导入')
+  fileInput.value?.click()
+}
+
+function handleFileChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  appendFiles(Array.from(input.files || []))
+  input.value = ''
+}
+
+function appendFiles(files: File[]) {
+  const mapped = files.map((file, index) => {
+    const id = `${Date.now()}-${index}`
+    return {
+      id,
+      name: file.name,
+      size: `${(file.size / 1024 / 1024).toFixed(1)}MB`,
+      status: '已上传' as const,
+      type: getFileType(file.name),
+    }
+  })
+  uploadedFiles.value = [...uploadedFiles.value, ...mapped]
+}
+
+function removeFile(fileId: string) {
+  uploadedFiles.value = uploadedFiles.value.filter(file => file.id !== fileId)
 }
 
 function startRecognition() {
@@ -98,72 +117,66 @@ function cancelUpload() {
   router.back()
 }
 
-function statusClass(status: UploadedFile['status']) {
-  const classMap = {
-    '已上传': 'text-success',
-    '上传中': 'text-warning',
-    '上传失败': 'text-danger',
+function getFileType(name: string): UploadedFile['type'] {
+  const lowerName = name.toLowerCase()
+  if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls')) return 'excel'
+  if (lowerName.endsWith('.pdf')) return 'pdf'
+  if (lowerName.endsWith('.doc') || lowerName.endsWith('.docx')) return 'word'
+  if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg')) return 'image'
+  return 'zip'
+}
+
+function fileTypeLabel(type: UploadedFile['type']) {
+  const labels = {
+    excel: 'XLS',
+    zip: 'ZIP',
+    pdf: 'PDF',
+    word: 'DOC',
+    image: 'IMG',
   }
-  return classMap[status] || 'text-neutral'
+  return labels[type]
 }
 </script>
 
 <template>
   <AdminLayout active-key="archive-processing">
     <div class="archive-import-upload-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>成长档案</span>
-            <i class="separator">/</i>
-            <span>档案处理</span>
-            <i class="separator">/</i>
-            <span class="current">导入部门资料</span>
+      <section class="page-intro">
+        <div class="breadcrumb">
+          <span>成长档案</span>
+          <span class="slash">/</span>
+          <span>档案处理</span>
+          <span class="slash">/</span>
+          <span class="current">导入部门资料</span>
+        </div>
+        <h1>导入部门资料</h1>
+        <p>
+          上传部门掌握的教师相关资料，系统会先识别资料内容，涉及教师和建议归档维度，确认后再生成待处理记录，不会直接导入教师档案。
+        </p>
+      </section>
+
+      <section class="steps-card">
+        <div v-for="(step, index) in steps" :key="step" class="step-group">
+          <div class="step-item" :class="{ active: currentStep === index + 1 }">
+            <span>{{ index + 1 }}</span>
+            <strong>{{ step }}</strong>
           </div>
-          <h1>导入部门资料</h1>
+          <i v-if="index < steps.length - 1"></i>
         </div>
       </section>
 
-      <!-- 说明区域 -->
-      <section class="description-section">
-        <div class="description-content">
-          <p class="description-text">
-            上传部门掌握的教师相关资料，系统会先识别资料内容，涉及教师和建议归档维度，确认后再生成待处理记录，不会直接导入教师档案。
-          </p>
-        </div>
-      </section>
+      <section class="content-grid">
+        <article class="upload-panel">
+          <h2>上传资料</h2>
+          <input
+            ref="fileInput"
+            type="file"
+            multiple
+            class="file-input"
+            accept=".xlsx,.xls,.pdf,.doc,.docx,.png,.jpg,.jpeg,.zip"
+            @change="handleFileChange"
+          />
 
-      <!-- 步骤条 -->
-      <section class="steps-section">
-        <div class="steps-container">
-          <div class="step-item" :class="{ active: currentStep === 1, completed: currentStep > 1 }">
-            <div class="step-number">1</div>
-            <div class="step-label">上传资料</div>
-          </div>
-          <div class="step-line" :class="{ completed: currentStep > 1 }"></div>
-          <div class="step-item" :class="{ active: currentStep === 2, completed: currentStep > 2 }">
-            <div class="step-number">2</div>
-            <div class="step-label">系统识别</div>
-          </div>
-          <div class="step-line" :class="{ completed: currentStep > 2 }"></div>
-          <div class="step-item" :class="{ active: currentStep === 3, completed: currentStep > 3 }">
-            <div class="step-number">3</div>
-            <div class="step-label">确认结果</div>
-          </div>
-          <div class="step-line" :class="{ completed: currentStep > 3 }"></div>
-          <div class="step-item" :class="{ active: currentStep === 4, completed: currentStep > 4 }">
-            <div class="step-number">4</div>
-            <div class="step-label">生成待处理记录</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 主体内容区域 -->
-      <section class="main-content">
-        <!-- 左侧：上传区域 -->
-        <div class="upload-section">
-          <!-- 拖拽上传区域 -->
           <div
             class="upload-zone"
             :class="{ dragging: isDragging }"
@@ -172,84 +185,55 @@ function statusClass(status: UploadedFile['status']) {
             @dragover="handleDragOver"
             @drop="handleDrop"
           >
-            <div class="upload-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
+            <div class="folder-art">
+              <span class="paper paper-one"></span>
+              <span class="paper paper-two"></span>
+              <span class="folder-front">↑</span>
             </div>
-            <div class="upload-text">
-              <p class="upload-main">拖拽文件到此处，或点击上传</p>
-              <p class="upload-sub">支持 Excel、PDF、Word、图片、ZIP 压缩包</p>
+            <div class="upload-copy">
+              <h3>拖拽文件到此处，或点击上传</h3>
+              <p>支持 Excel、PDF、Word、图片、ZIP 压缩包</p>
+              <p>可一次上传台账、名单、证书扫描件、项目材料、评审结果、通知文件等资料。</p>
             </div>
-            <div class="upload-buttons">
-              <button class="btn-primary" @click="selectFiles">选择文件</button>
-              <button class="btn-secondary" @click="importFromFolder">从本地文件夹导入</button>
+            <div class="upload-actions">
+              <button type="button" class="ghost-button" @click="selectFiles">▣ 选择文件</button>
+              <button type="button" class="ghost-button" @click="importFromFolder">▣ 从本地文件夹导入</button>
             </div>
-            <p class="upload-hint">
-              可一次上传台账、名单、证书扫描件、项目材料、评审结果、通知文件等资料。
-            </p>
           </div>
 
-          <!-- 已上传文件列表 -->
-          <div class="uploaded-files">
-            <h3 class="section-title">已上传文件（{{ uploadedFiles.length }}）</h3>
+          <div class="file-card">
+            <header>
+              <h3>已上传文件（{{ uploadedFiles.length }}）</h3>
+            </header>
             <div class="file-list">
-              <div v-for="file in uploadedFiles" :key="file.id" class="file-item">
-                <div class="file-info">
-                  <div class="file-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                    </svg>
-                  </div>
-                  <div class="file-details">
-                    <div class="file-name">{{ file.name }}</div>
-                    <div class="file-meta">{{ file.size }}</div>
-                  </div>
-                </div>
-                <div class="file-status" :class="statusClass(file.status)">
-                  {{ file.status }}
-                </div>
+              <div v-for="file in uploadedFiles" :key="file.id" class="file-row">
+                <span class="file-type" :class="file.type">{{ fileTypeLabel(file.type) }}</span>
+                <strong>{{ file.name }}</strong>
+                <span>{{ file.size }}</span>
+                <em>{{ file.status }}</em>
+                <button type="button" @click="removeFile(file.id)">删除</button>
               </div>
             </div>
-            <div class="upload-summary">
-              已上传 {{ uploadedFiles.length }} 个文件，共 {{ totalSize }}MB
-            </div>
+            <footer>已上传 {{ uploadedFiles.length }} 个文件，共 {{ totalSize }}MB</footer>
           </div>
-        </div>
+        </article>
 
-        <!-- 右侧：上传说明 -->
-        <div class="instructions-section">
-          <div class="instructions-card">
-            <h3 class="instructions-title">上传说明</h3>
-            <ul class="instructions-list">
-              <li class="instruction-item">
-                <span class="instruction-bullet">•</span>
-                <span class="instruction-text">可直接上传原始资料，无需提前分类。</span>
-              </li>
-              <li class="instruction-item">
-                <span class="instruction-bullet">•</span>
-                <span class="instruction-text">系统会自动识别教师姓名、资料内容和建议归档维度。</span>
-              </li>
-              <li class="instruction-item">
-                <span class="instruction-bullet">•</span>
-                <span class="instruction-text">识别不清或信息缺失的资料，会在下一步提示补充。</span>
-              </li>
-              <li class="instruction-item">
-                <span class="instruction-bullet">•</span>
-                <span class="instruction-text">上传后不会直接入档，需确认后才生成待处理记录。</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <aside class="instructions-panel">
+          <h2>上传说明</h2>
+          <ul>
+            <li>可直接上传原始资料，无需提前分类。</li>
+            <li>系统会自动识别教师姓名、资料内容和建议归档维度。</li>
+            <li>识别不清或信息缺失的资料，会在下一步提示补充。</li>
+            <li>上传后不会直接入档，需确认后才生成待处理记录。</li>
+          </ul>
+        </aside>
       </section>
 
-      <!-- 底部操作按钮 -->
-      <section class="actions-section">
-        <button class="btn-secondary" @click="cancelUpload">取消</button>
-        <button class="btn-primary" @click="startRecognition">开始识别资料</button>
+      <section class="bottom-actions">
+        <button type="button" class="cancel-button" @click="cancelUpload">取消</button>
+        <button type="button" class="primary-button" :disabled="uploadedFiles.length === 0" @click="startRecognition">
+          开始识别资料
+        </button>
       </section>
     </div>
   </AdminLayout>
@@ -258,381 +242,414 @@ function statusClass(status: UploadedFile['status']) {
 <style scoped>
 .archive-import-upload-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
-  padding-bottom: 80px;
+  padding-bottom: 90px;
+  background: var(--color-page-bg, #f5f7fb);
+  color: #14213d;
 }
 
-.page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.header-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
+.page-intro {
+  padding-top: 14px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  color: #6d7c91;
   font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
-.breadcrumb .separator {
-  color: var(--color-text-hint);
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 28px;
+  color: #16233c;
   font-weight: 700;
-  color: var(--color-text-primary);
 }
 
-.description-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+.slash {
+  color: #bac4d2;
 }
 
-.description-content {
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 8px;
-  padding: 16px;
+.page-intro h1 {
+  margin: 8px 0 6px;
+  color: #10213d;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.description-text {
+.page-intro p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: #405170;
+  font-size: 15px;
+  line-height: 1.55;
 }
 
-/* 步骤条 */
-.steps-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px 24px;
-}
-
-.steps-container {
+.steps-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 14px;
+  margin: 14px 0 14px;
+}
+
+.step-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .step-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  position: relative;
-  z-index: 1;
+  gap: 12px;
+  color: #6c7b92;
 }
 
-.step-number {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #e2e8f0;
-  color: #64748b;
+.step-item span {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ccd8ea;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #53647b;
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.step-item.active .step-number {
-  background: var(--color-primary);
-  color: white;
+.step-item strong {
+  font-size: 16px;
 }
 
-.step-item.completed .step-number {
-  background: #22c55e;
-  color: white;
+.step-item.active span {
+  border-color: #1677ff;
+  background: #1677ff;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
 }
 
-.step-label {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  text-align: center;
-  min-width: 80px;
+.step-item.active strong {
+  color: #1677ff;
 }
 
-.step-item.active .step-label {
-  color: var(--color-primary);
-  font-weight: 600;
+.step-group i {
+  width: clamp(80px, 11vw, 180px);
+  height: 1px;
+  background: #d8e2f0;
 }
 
-.step-line {
-  width: 60px;
-  height: 2px;
-  background: #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.step-line.completed {
-  background: #22c55e;
-}
-
-/* 主体内容区域 */
-.main-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
+.content-grid {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
+  grid-template-columns: minmax(620px, 1fr) minmax(360px, 0.68fr);
+  gap: 22px;
 }
 
-/* 上传区域 */
-.upload-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.upload-panel,
+.instructions-panel,
+.bottom-actions {
+  border: 1px solid #dfe8f4;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(32, 56, 96, 0.035);
+}
+
+.upload-panel,
+.instructions-panel {
+  padding: 18px;
+}
+
+.upload-panel h2,
+.instructions-panel h2 {
+  margin: 0 0 10px;
+  color: #10213d;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.file-input {
+  display: none;
 }
 
 .upload-zone {
-  background: white;
-  border: 2px dashed var(--color-card-border);
+  min-height: 198px;
+  padding: 18px;
+  border: 1px dashed #b9ccec;
   border-radius: 12px;
-  padding: 36px 32px;
+  background: #fbfdff;
   text-align: center;
-  transition: all 0.3s ease;
-  min-height: 280px;
+  transition: border-color 0.16s ease, background 0.16s ease;
 }
 
 .upload-zone.dragging {
-  border-color: var(--color-primary);
-  background: #f0fdfa;
+  border-color: #1677ff;
+  background: #f0f7ff;
 }
 
-.upload-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 16px;
-  color: var(--color-primary);
+.folder-art {
+  position: relative;
+  width: 86px;
+  height: 58px;
+  margin: 0 auto 8px;
 }
 
-.upload-text {
-  margin-bottom: 24px;
+.paper,
+.folder-front {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.upload-main {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.paper {
+  width: 40px;
+  height: 42px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #e8f2ff, #cfe1ff);
 }
 
-.upload-sub {
-  margin: 0;
+.paper-one {
+  top: 0;
+  margin-left: -16px;
+  transform: rotate(-8deg) translateX(-50%);
+}
+
+.paper-two {
+  top: 3px;
+  margin-left: 14px;
+  transform: rotate(8deg) translateX(-50%);
+}
+
+.folder-front {
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 40px;
+  border-radius: 10px 10px 8px 8px;
+  background: linear-gradient(180deg, #60a5ff, #1f72f2);
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.upload-copy h3 {
+  margin: 0 0 8px;
+  color: #10213d;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.upload-copy p {
+  margin: 0 0 6px;
+  color: #405170;
+  font-size: 15px;
+}
+
+.upload-copy p:last-child {
   font-size: 14px;
-  color: var(--color-text-secondary);
 }
 
-.upload-buttons {
+.upload-actions {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 22px;
+  margin-top: 10px;
 }
 
-.upload-hint {
+.ghost-button,
+.cancel-button,
+.primary-button {
+  height: 42px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ghost-button {
+  min-width: 196px;
+  border: 1px solid #cfdaea;
+  background: #ffffff;
+  color: #10213d;
+}
+
+.file-card {
+  margin-top: 12px;
+  border: 1px solid #dfe8f4;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-card header {
+  padding: 10px 12px 8px;
+}
+
+.file-card h3 {
   margin: 0;
-  font-size: 13px;
-  color: var(--color-text-hint);
-}
-
-.uploaded-files {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
-}
-
-.section-title {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  color: #10213d;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  display: grid;
 }
 
-.file-item {
-  display: flex;
-  justify-content: space-between;
+.file-row {
+  display: grid;
+  grid-template-columns: 32px minmax(260px, 1fr) 92px 82px 54px;
   align-items: center;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  min-height: 56px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-top: 1px solid #dfe8f4;
+  color: #20304b;
+  font-size: 15px;
 }
 
-.file-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.file-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--color-text-hint);
-}
-
-.file-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.file-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-
-.file-meta {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-.file-status {
-  font-size: 12px;
+.file-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 600;
 }
 
-.text-success {
-  color: #22c55e;
+.file-row span {
+  color: #405170;
 }
 
-.text-warning {
-  color: #f59e0b;
+.file-row em {
+  color: #13a052;
+  font-style: normal;
+  font-weight: 700;
 }
 
-.text-danger {
-  color: #ef4444;
-}
-
-.text-neutral {
-  color: #64748b;
-}
-
-.upload-summary {
-  padding-top: 16px;
-  border-top: 1px solid var(--color-card-border);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  text-align: center;
-}
-
-/* 上传说明区域 */
-.instructions-section {
-  position: sticky;
-  top: 24px;
-  height: fit-content;
-}
-
-.instructions-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 20px;
-}
-
-.instructions-title {
-  margin: 0 0 16px 0;
+.file-row button {
+  border: 0;
+  background: transparent;
+  color: #1677ff;
+  cursor: pointer;
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-text-primary);
 }
 
-.instructions-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.instruction-item {
-  display: flex;
-  gap: 12px;
-}
-
-.instruction-bullet {
-  color: var(--color-primary);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.instruction-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-}
-
-/* 底部操作按钮 */
-.actions-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
+.file-type {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 16px;
+  width: 22px;
+  height: 24px;
+  border-radius: 4px;
+  color: #ffffff !important;
+  font-size: 9px;
+  font-weight: 800;
 }
 
-.btn-primary,
-.btn-secondary {
-  padding: 12px 32px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  border: none;
-  outline: none;
-  min-width: 120px;
+.file-type.excel {
+  background: #16a34a;
 }
 
-.btn-primary {
-  background: var(--color-primary);
-  color: white;
+.file-type.zip,
+.file-type.word {
+  background: #f59e0b;
 }
 
-.btn-primary:hover {
-  background: #28a38a;
+.file-type.pdf {
+  background: #ef4444;
 }
 
-.btn-secondary {
-  background: #f1f5f9;
-  color: var(--color-text-primary);
+.file-type.image {
+  background: #1677ff;
 }
 
-.btn-secondary:hover {
-  background: #e2e8f0;
+.file-card footer {
+  padding: 8px 12px;
+  border-top: 1px solid #dfe8f4;
+  color: #405170;
+  font-size: 15px;
+}
+
+.instructions-panel ul {
+  display: grid;
+  gap: 24px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.instructions-panel li {
+  position: relative;
+  padding-left: 30px;
+  color: #344664;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.instructions-panel li::before {
+  position: absolute;
+  top: 11px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1677ff;
+  content: '';
+}
+
+.bottom-actions {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: var(--admin-sidebar-width, 288px);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 36px;
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+
+.cancel-button {
+  min-width: 166px;
+  border: 1px solid #d4dfef;
+  background: #ffffff;
+  color: #10213d;
+}
+
+.primary-button {
+  min-width: 250px;
+  border: 0;
+  background: #1677ff;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 1440px) {
+  .content-grid {
+    grid-template-columns: minmax(560px, 1fr) minmax(300px, 0.58fr);
+  }
+
+  .step-group i {
+    width: 70px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .instructions-panel ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 22px;
+  }
 }
 </style>
