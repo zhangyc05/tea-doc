@@ -5,23 +5,19 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = useRouter()
 
-// 视图模式
 const viewMode = ref<'list' | 'card'>('list')
 
-// 搜索和筛选
 const searchQuery = ref('')
 const selectedCollege = ref('全部学院')
 const selectedTitle = ref('全部职称')
 const selectedType = ref('全部类型')
 const selectedFocus = ref('全部')
 
-// 筛选项
 const colleges = ['全部学院', '智能制造学院', '电子信息学院', '财经学院', '计算机学院', '外国语学院', '艺术设计学院']
 const titles = ['全部职称', '讲师', '副教授', '教授']
 const teacherTypes = ['全部类型', '教学实践型', '教研成长型', '实践带动型', '综合发展型']
 const focusTypes = ['全部', '重点支持', '持续观察', '优势样本']
 
-// 教师数据
 interface Teacher {
   id: string
   name: string
@@ -32,7 +28,6 @@ interface Teacher {
   basicAbilityStatus: string
   tags: string[]
   focusType: string
-  avatar?: string
 }
 
 const teachers: Teacher[] = [
@@ -104,13 +99,18 @@ const teachers: Teacher[] = [
   },
 ]
 
-// 分页
 const currentPage = ref(1)
 const pageSize = 12
 const total = 142
+const totalPages = Math.ceil(total / pageSize)
+const avatarTones = ['tone-blue', 'tone-cyan', 'tone-green', 'tone-indigo', 'tone-orange', 'tone-purple']
 
 function switchViewMode(mode: 'list' | 'card') {
   viewMode.value = mode
+}
+
+function applySearch() {
+  currentPage.value = 1
 }
 
 function resetFilters() {
@@ -119,14 +119,11 @@ function resetFilters() {
   selectedTitle.value = '全部职称'
   selectedType.value = '全部类型'
   selectedFocus.value = '全部'
+  currentPage.value = 1
 }
 
 function viewTeacherProfile(teacherId: string) {
   router.push(`/admin/ability-profile/teacher/${teacherId}`)
-}
-
-function getAvatar(name: string): string {
-  return name.charAt(0)
 }
 
 function getFocusTypeClass(focusType: string): string {
@@ -141,220 +138,156 @@ function getFocusTypeClass(focusType: string): string {
       return ''
   }
 }
+
+function getAvatarTone(index: number): string {
+  return avatarTones[index % avatarTones.length]
+}
 </script>
 
 <template>
   <AdminLayout active-key="ability-profile-teacher">
     <div class="teacher-profile-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>能力画像</span>
-            <i class="separator">/</i>
-            <span class="current">教师画像</span>
-          </div>
+      <div class="breadcrumb-line">
+        <span>能力画像</span>
+        <span class="slash">/</span>
+        <span class="current">教师画像</span>
+      </div>
+
+      <section class="filter-card">
+        <div class="search-control">
+          <span class="search-icon">⌕</span>
+          <input v-model="searchQuery" type="text" placeholder="搜索教师姓名 / 工号" @keyup.enter="applySearch" />
+          <button type="button" class="search-button" aria-label="搜索" @click="applySearch">⌕</button>
         </div>
+
+        <div class="filter-field">
+          <span>学院</span>
+          <select v-model="selectedCollege">
+            <option v-for="college in colleges" :key="college" :value="college">{{ college }}</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <span>职称</span>
+          <select v-model="selectedTitle">
+            <option v-for="title in titles" :key="title" :value="title">{{ title }}</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <span>教师类型</span>
+          <select v-model="selectedType">
+            <option v-for="type in teacherTypes" :key="type" :value="type">{{ type }}</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <span>关注类型</span>
+          <select v-model="selectedFocus">
+            <option v-for="focus in focusTypes" :key="focus" :value="focus">{{ focus }}</option>
+          </select>
+        </div>
+
+        <button type="button" class="reset-button" aria-label="重置筛选" @click="resetFilters">↻</button>
       </section>
 
-      <!-- 筛选区域 -->
-      <section class="filter-section">
-        <div class="filter-content">
-          <div class="filter-row">
-            <div class="search-box">
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="搜索教师姓名 / 工号"
-                class="search-input"
-              />
-            </div>
-            <div class="filter-controls">
-              <select v-model="selectedCollege" class="filter-select">
-                <option v-for="college in colleges" :key="college" :value="college">
-                  {{ college }}
-                </option>
-              </select>
-              <select v-model="selectedTitle" class="filter-select">
-                <option v-for="title in titles" :key="title" :value="title">
-                  {{ title }}
-                </option>
-              </select>
-              <select v-model="selectedType" class="filter-select">
-                <option v-for="type in teacherTypes" :key="type" :value="type">
-                  {{ type }}
-                </option>
-              </select>
-              <select v-model="selectedFocus" class="filter-select">
-                <option v-for="focus in focusTypes" :key="focus" :value="focus">
-                  {{ focus }}
-                </option>
-              </select>
-              <button class="btn-reset" @click="resetFilters">重置</button>
-            </div>
-            <div class="view-toggle">
-              <button
-                class="view-btn"
-                :class="{ active: viewMode === 'card' }"
-                @click="switchViewMode('card')"
-              >
-                卡片视图
-              </button>
-              <button
-                class="view-btn"
-                :class="{ active: viewMode === 'list' }"
-                @click="switchViewMode('list')"
-              >
-                列表视图
-              </button>
-            </div>
+      <section class="list-shell">
+        <header class="section-head">
+          <div>
+            <h1>教师画像列表</h1>
+            <p>请选择教师，查看其能力画像详情</p>
           </div>
-        </div>
-      </section>
+          <div class="view-toggle">
+            <button type="button" :class="{ active: viewMode === 'card' }" @click="switchViewMode('card')">卡片视图</button>
+            <button type="button" :class="{ active: viewMode === 'list' }" @click="switchViewMode('list')">列表视图</button>
+          </div>
+        </header>
 
-      <!-- 内容区域 -->
-      <section class="content-section">
-        <div class="content-wrapper">
-          <div v-if="viewMode === 'list'" class="list-view">
-            <div class="list-header">
-              <h2 class="list-title">教师画像列表</h2>
-              <p class="list-description">请选择教师，查看其能力画像详情</p>
-            </div>
-            <div class="teacher-list">
-              <div
-                v-for="teacher in teachers"
-                :key="teacher.id"
-                class="teacher-row"
-              >
-                <div class="teacher-avatar">
-                  <span class="avatar-text">{{ getAvatar(teacher.name) }}</span>
-                </div>
-                <div class="teacher-info">
-                  <div class="teacher-name-row">
-                    <span class="teacher-name">{{ teacher.name }}</span>
-                    <span class="teacher-college">{{ teacher.college }}</span>
-                    <span class="teacher-title">{{ teacher.title }}</span>
-                  </div>
-                  <div class="teacher-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">综合发展指数</span>
-                      <span class="meta-value">{{ teacher.developmentIndex }} / 100</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">教师类型</span>
-                      <span class="meta-value">{{ teacher.teacherType }}</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">基本能力状态</span>
-                      <span class="meta-value status">{{ teacher.basicAbilityStatus }}</span>
-                    </div>
-                  </div>
-                  <div class="teacher-tags">
-                    <span
-                      v-for="(tag, index) in teacher.tags.slice(0, 3)"
-                      :key="index"
-                      class="tag"
-                    >
-                      {{ tag }}
-                    </span>
-                  </div>
-                </div>
-                <div class="teacher-focus">
-                  <span
-                    class="focus-badge"
-                    :class="getFocusTypeClass(teacher.focusType)"
-                  >
-                    {{ teacher.focusType }}
-                  </span>
-                </div>
-                <div class="teacher-action">
-                  <button class="btn-view" @click="viewTeacherProfile(teacher.id)">
-                    进入画像
-                  </button>
-                </div>
+        <div v-if="viewMode === 'card'" class="cards-grid">
+          <article v-for="(teacher, index) in teachers" :key="teacher.id" class="teacher-card">
+            <span class="focus-badge card-badge" :class="getFocusTypeClass(teacher.focusType)">
+              {{ teacher.focusType }}
+            </span>
+            <div class="teacher-card-main">
+              <div class="avatar-figure avatar-large" :class="getAvatarTone(index)">
+                <span class="avatar-hair"></span>
+                <span class="avatar-face"></span>
+                <span class="avatar-body"></span>
+              </div>
+              <div class="card-copy">
+                <h2>{{ teacher.name }}</h2>
+                <p>{{ teacher.college }} ｜ {{ teacher.title }}</p>
               </div>
             </div>
-          </div>
 
-          <div v-else class="card-view">
-            <div class="cards-grid">
-              <div
-                v-for="teacher in teachers"
-                :key="teacher.id"
-                class="teacher-card"
-              >
-                <div class="card-header">
-                  <div class="card-avatar">
-                    <span class="avatar-text">{{ getAvatar(teacher.name) }}</span>
-                  </div>
-                  <div class="focus-indicator">
-                    <span
-                      class="focus-dot"
-                      :class="getFocusTypeClass(teacher.focusType)"
-                    >
-                      {{ teacher.focusType }}
-                    </span>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h3 class="card-name">{{ teacher.name }}</h3>
-                  <div class="card-meta">
-                    <span class="meta-text">{{ teacher.college }}</span>
-                    <span class="meta-divider">|</span>
-                    <span class="meta-text">{{ teacher.title }}</span>
-                  </div>
-                  <div class="card-score">
-                    <span class="score-label">综合发展指数</span>
-                    <div class="score-value">
-                      {{ teacher.developmentIndex }} <span class="score-divider">/</span> 100
-                    </div>
-                  </div>
-                  <div class="card-type">
-                    <span class="type-label">教师类型</span>
-                    <span class="type-value">{{ teacher.teacherType }}</span>
-                  </div>
-                  <div class="card-status">
-                    <span class="status-label">基本能力状态</span>
-                    <span class="status-value">{{ teacher.basicAbilityStatus }}</span>
-                  </div>
-                  <div class="card-tags">
-                    <span
-                      v-for="(tag, index) in teacher.tags.slice(0, 3)"
-                      :key="index"
-                      class="card-tag"
-                    >
-                      {{ tag }}
-                    </span>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <button class="btn-card-view" @click="viewTeacherProfile(teacher.id)">
-                    进入画像
-                  </button>
-                </div>
+            <div class="card-metrics">
+              <div>
+                <span>综合发展指数</span>
+                <strong>{{ teacher.developmentIndex }} <em>/ 100</em></strong>
+              </div>
+              <div>
+                <span>教师类型</span>
+                <b>{{ teacher.teacherType }}</b>
+              </div>
+              <div>
+                <span>基本能力状态</span>
+                <b class="status-ok">{{ teacher.basicAbilityStatus }}</b>
               </div>
             </div>
-          </div>
+
+            <div class="tag-row">
+              <span v-for="tag in teacher.tags" :key="tag">{{ tag }}</span>
+            </div>
+
+            <button type="button" class="profile-link" @click="viewTeacherProfile(teacher.id)">进入画像 ></button>
+          </article>
+        </div>
+
+        <div v-else class="teacher-table">
+          <article v-for="(teacher, index) in teachers" :key="teacher.id" class="teacher-row">
+            <div class="teacher-identity">
+              <div class="avatar-figure" :class="getAvatarTone(index)">
+                <span class="avatar-hair"></span>
+                <span class="avatar-face"></span>
+                <span class="avatar-body"></span>
+              </div>
+              <div>
+                <h2>{{ teacher.name }}</h2>
+                <p>{{ teacher.college }} ｜ {{ teacher.title }}</p>
+              </div>
+            </div>
+
+            <div class="row-metric score">
+              <span>综合发展指数</span>
+              <strong>{{ teacher.developmentIndex }} <em>/ 100</em></strong>
+            </div>
+            <div class="row-metric">
+              <span>教师类型</span>
+              <b>{{ teacher.teacherType }}</b>
+            </div>
+            <div class="row-metric">
+              <span>基本能力状态</span>
+              <b class="status-ok">{{ teacher.basicAbilityStatus }}</b>
+            </div>
+            <div class="row-tags">
+              <span v-for="tag in teacher.tags.slice(0, 2)" :key="tag">{{ tag }}</span>
+            </div>
+            <span class="focus-badge" :class="getFocusTypeClass(teacher.focusType)">{{ teacher.focusType }}</span>
+            <button type="button" class="profile-link row-link" @click="viewTeacherProfile(teacher.id)">进入画像 ></button>
+          </article>
         </div>
       </section>
 
-      <!-- 分页区域 -->
-      <section class="pagination-section">
-        <div class="pagination-content">
-          <div class="pagination-info">
-            共 {{ total }} 条，每页 {{ pageSize }} 条
-          </div>
-          <div class="pagination-controls">
-            <button class="page-btn" :disabled="currentPage === 1">
-              上一页
-            </button>
-            <span class="page-info">{{ currentPage }} / {{ Math.ceil(total / pageSize) }} 页</span>
-            <button class="page-btn" :disabled="currentPage >= Math.ceil(total / pageSize)">
-              下一页
-            </button>
-          </div>
-        </div>
-      </section>
+      <footer class="pagination-bar">
+        <span>共 {{ total }} 条</span>
+        <select :value="pageSize" aria-label="每页条数">
+          <option>{{ pageSize }} 条/页</option>
+        </select>
+        <button type="button" disabled>&lt;</button>
+        <button type="button" class="active-page">{{ currentPage }}</button>
+        <button type="button">2</button>
+        <button type="button">3</button>
+        <span>...</span>
+        <button type="button">{{ totalPages }}</button>
+        <button type="button">&gt;</button>
+      </footer>
     </div>
   </AdminLayout>
 </template>
@@ -362,577 +295,529 @@ function getFocusTypeClass(focusType: string): string {
 <style scoped>
 .teacher-profile-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  padding: 0 0 24px;
+  background: var(--color-page-bg, #f5f7fb);
+  color: var(--color-text-primary, #17233d);
 }
 
-.page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.header-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.breadcrumb {
+.breadcrumb-line {
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 48px;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  color: #8a96a8;
 }
 
-.breadcrumb .separator {
-  color: var(--color-text-hint);
-}
-
-.breadcrumb .current {
-  color: var(--color-text-primary);
+.breadcrumb-line .current {
+  color: #1f2a3d;
   font-weight: 600;
 }
 
-/* 筛选区域 */
-.filter-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+.slash {
+  color: #c0c7d2;
 }
 
-.filter-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 20px 24px;
+.filter-card,
+.list-shell,
+.pagination-bar {
+  border: 1px solid #e6ebf2;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(32, 56, 96, 0.035);
 }
 
-.filter-row {
-  display: flex;
-  gap: 20px;
+.filter-card {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.25fr) repeat(4, minmax(150px, 0.8fr)) 40px;
+  gap: 14px;
   align-items: center;
-  flex-wrap: wrap;
+  padding: 18px 20px;
+  border-radius: 12px;
 }
 
-.search-box {
-  flex: 1;
-  min-width: 200px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
+.search-control {
+  display: grid;
+  grid-template-columns: 24px 1fr 36px;
+  align-items: center;
+  height: 40px;
+  padding-left: 10px;
+  border: 1px solid #dfe6ef;
   border-radius: 8px;
-  font-size: 14px;
+  background: #f9fbfe;
+}
+
+.search-icon {
+  color: #9aa7b8;
+  font-size: 18px;
+}
+
+.search-control input,
+.filter-field select,
+.pagination-bar select {
+  min-width: 0;
+  border: 0;
   outline: none;
-  transition: border-color 0.16s ease;
-}
-
-.search-input:focus {
-  border-color: var(--color-primary);
-}
-
-.filter-controls {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-select {
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-  outline: none;
-}
-
-.btn-reset {
-  padding: 10px 16px;
   background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
+  color: #1f2a3d;
   font-size: 14px;
-  cursor: pointer;
-  transition: all 0.16s ease;
 }
 
-.btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.search-button,
+.reset-button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.search-button {
+  margin-right: 2px;
+  background: #1677ff;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.filter-field {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #dfe6ef;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.filter-field span {
+  color: #66758a;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.reset-button {
+  border: 1px solid #dfe6ef;
+  background: #ffffff;
+  color: #65748a;
+  font-size: 18px;
+}
+
+.list-shell {
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.section-head h1 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.section-head p {
+  margin: 0;
+  color: #7a8798;
+  font-size: 14px;
 }
 
 .view-toggle {
-  display: flex;
+  display: inline-flex;
   gap: 8px;
 }
 
-.view-btn {
-  padding: 10px 16px;
-  background: transparent;
-  border: 1px solid var(--color-card-border);
+.view-toggle button {
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #d6dfeb;
   border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 14px;
+  background: #ffffff;
+  color: #526176;
   cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.view-btn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.view-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
-}
-
-/* 内容区域 */
-.content-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.content-wrapper {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  overflow: hidden;
-}
-
-/* 列表视图 */
-.list-view {
-  padding: 24px;
-}
-
-.list-header {
-  margin-bottom: 20px;
-}
-
-.list-title {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.list-description {
-  margin: 0;
   font-size: 14px;
-  color: var(--color-text-secondary);
 }
 
-.teacher-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.teacher-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 16px;
-  padding: 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  align-items: center;
-}
-
-.teacher-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-text {
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.teacher-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.teacher-name-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.teacher-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.teacher-college,
-.teacher-title {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.teacher-meta {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.meta-label {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-.meta-value {
-  font-size: 13px;
-  color: var(--color-text-primary);
-  font-weight: 500;
-}
-
-.meta-value.status {
-  color: var(--color-primary);
-}
-
-.teacher-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  padding: 4px 8px;
-  background: #e0f2fe;
-  color: var(--color-primary);
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-.teacher-focus {
-  display: flex;
-  justify-content: center;
-}
-
-.focus-badge {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.focus-badge.support {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.focus-badge.advantage {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.focus-badge.observation {
-  background: #dbeafe;
-  color: #2563eb;
-}
-
-.teacher-action {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.btn-view {
-  padding: 8px 16px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-view:hover {
-  background: #28a38a;
-}
-
-/* 卡片视图 */
-.card-view {
-  padding: 24px;
+.view-toggle button.active {
+  border-color: #1677ff;
+  background: #1677ff;
+  color: #ffffff;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .teacher-card {
-  background: white;
-  border: 1px solid var(--color-card-border);
+  position: relative;
+  min-height: 258px;
+  padding: 20px;
+  border: 1px solid #e4eaf3;
   border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.16s ease;
+  background: #ffffff;
 }
 
-.teacher-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.card-header {
-  padding: 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--color-card-border);
+.teacher-card-main {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 14px;
+  padding-right: 88px;
 }
 
-.card-avatar {
-  width: 40px;
-  height: 40px;
+.card-copy h2,
+.teacher-identity h2 {
+  margin: 0 0 7px;
+  color: #18233a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card-copy p,
+.teacher-identity p {
+  margin: 0;
+  color: #728196;
+  font-size: 13px;
+}
+
+.avatar-figure {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  overflow: hidden;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
+  background: #eaf3ff;
+}
+
+.avatar-large {
+  width: 62px;
+  height: 62px;
+}
+
+.avatar-hair,
+.avatar-face,
+.avatar-body {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.avatar-hair {
+  top: 10px;
+  width: 30px;
+  height: 22px;
+  border-radius: 18px 18px 10px 10px;
+  background: #334155;
+}
+
+.avatar-face {
+  top: 18px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffd7b1;
+}
+
+.avatar-body {
+  bottom: -4px;
+  width: 42px;
+  height: 24px;
+  border-radius: 16px 16px 0 0;
+  background: #2f80ed;
+}
+
+.tone-cyan { background: #e8fbff; }
+.tone-cyan .avatar-body { background: #06a6c8; }
+.tone-green { background: #ecfdf3; }
+.tone-green .avatar-body { background: #22a06b; }
+.tone-indigo { background: #eef2ff; }
+.tone-indigo .avatar-body { background: #536dfe; }
+.tone-orange { background: #fff5e9; }
+.tone-orange .avatar-body { background: #f59e0b; }
+.tone-purple { background: #f5efff; }
+.tone-purple .avatar-body { background: #8b5cf6; }
+
+.focus-badge {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.card-avatar .avatar-text {
-  color: white;
-  font-size: 16px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.focus-indicator {
+.card-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.focus-badge.support {
+  background: #fff3dd;
+  color: #c67812;
+}
+
+.focus-badge.advantage {
+  background: #e7f8ee;
+  color: #17995a;
+}
+
+.focus-badge.observation {
+  background: #eaf2ff;
+  color: #246fe5;
+}
+
+.card-metrics {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.card-metrics div,
+.row-metric {
   display: flex;
-}
-
-.focus-dot {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.focus-dot.support {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.focus-dot.advantage {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.focus-dot.observation {
-  background: #dbeafe;
-  color: #2563eb;
-}
-
-.card-body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.card-name {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.card-meta {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.meta-divider {
-  color: var(--color-text-hint);
-}
-
-.card-score {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.score-label {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-.score-value {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.score-divider {
-  font-size: 12px;
-  color: var(--color-text-hint);
-  margin: 0 2px;
-}
-
-.card-type {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card-metrics span,
+.row-metric span {
+  color: #7b889a;
   font-size: 13px;
 }
 
-.type-label {
-  color: var(--color-text-hint);
+.card-metrics strong,
+.row-metric strong {
+  color: #1677ff;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1;
 }
 
-.type-value {
-  color: var(--color-text-primary);
+.card-metrics em,
+.row-metric em {
+  color: #9aa6b7;
+  font-size: 12px;
+  font-style: normal;
   font-weight: 500;
 }
 
-.card-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
+.card-metrics b,
+.row-metric b {
+  color: #27364d;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.status-label {
-  color: var(--color-text-hint);
+.status-ok {
+  color: #18a058 !important;
 }
 
-.status-value {
-  color: var(--color-primary);
-  font-weight: 500;
-}
-
-.card-tags {
+.tag-row,
+.row-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
-.card-tag {
-  padding: 3px 6px;
-  background: #f0f9ff;
-  color: var(--color-primary);
-  border-radius: 4px;
-  font-size: 10px;
-  line-height: 1.4;
+.tag-row {
+  margin-top: 16px;
+  padding-right: 84px;
 }
 
-.card-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--color-card-border);
-  display: flex;
-  justify-content: center;
-}
-
-.btn-card-view {
-  width: 100%;
-  padding: 8px 16px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-card-view:hover {
-  background: #28a38a;
-}
-
-/* 分页区域 */
-.pagination-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 20px 24px;
-}
-
-.pagination-content {
-  display: flex;
-  justify-content: space-between;
+.tag-row span,
+.row-tags span {
+  display: inline-flex;
   align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #f3f7fc;
+  color: #516178;
+  font-size: 12px;
 }
 
-.pagination-info {
+.profile-link {
+  border: 0;
+  background: transparent;
+  color: #1677ff;
+  cursor: pointer;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
-.pagination-controls {
-  display: flex;
-  gap: 16px;
+.teacher-card .profile-link {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+}
+
+.teacher-table {
+  display: grid;
+  gap: 10px;
+}
+
+.teacher-row {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.35fr) 142px 132px 116px minmax(210px, 1.4fr) 84px 84px;
   align-items: center;
+  gap: 16px;
+  min-height: 92px;
+  padding: 14px 16px;
+  border: 1px solid #e5ebf3;
+  border-radius: 10px;
+  background: #ffffff;
 }
 
-.page-btn {
-  padding: 8px 16px;
-  background: white;
-  border: 1px solid var(--color-card-border);
+.teacher-identity {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.row-metric {
+  display: grid;
+  justify-content: start;
+  gap: 8px;
+}
+
+.row-metric.score strong {
+  font-size: 22px;
+}
+
+.row-tags {
+  min-width: 0;
+}
+
+.row-link {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.pagination-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.pagination-bar select,
+.pagination-bar button {
+  height: 30px;
+  border: 1px solid #dfe6ef;
   border-radius: 6px;
-  font-size: 13px;
-  color: var(--color-text-primary);
+  background: #ffffff;
+  color: #526176;
+}
+
+.pagination-bar select {
+  padding: 0 8px;
+}
+
+.pagination-bar button {
+  min-width: 30px;
   cursor: pointer;
-  transition: all 0.16s ease;
 }
 
-.page-btn:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
+.pagination-bar button:disabled {
   cursor: not-allowed;
+  opacity: 0.45;
 }
 
-.page-info {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+.pagination-bar .active-page {
+  border-color: #1677ff;
+  background: #1677ff;
+  color: #ffffff;
 }
 
-@media (max-width: 1024px) {
-  .cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 1500px) {
+  .filter-card {
+    grid-template-columns: minmax(280px, 1.2fr) repeat(2, minmax(170px, 1fr)) 40px;
   }
-}
 
-@media (max-width: 768px) {
-  .cards-grid {
-    grid-template-columns: 1fr;
+  .filter-field:nth-of-type(4) {
+    grid-column: 1 / 2;
+  }
+
+  .filter-field:nth-of-type(5) {
+    grid-column: 2 / 3;
+  }
+
+  .reset-button {
+    grid-column: 3 / 4;
   }
 
   .teacher-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: minmax(200px, 1.4fr) 132px 122px 104px minmax(180px, 1.15fr) 80px;
   }
 
-  .teacher-action {
-    justify-content: flex-start;
+  .row-link {
+    grid-column: 6;
+  }
+
+  .teacher-row .focus-badge {
+    display: none;
+  }
+}
+
+@media (max-width: 1320px) {
+  .filter-card {
+    grid-template-columns: minmax(260px, 1fr) minmax(190px, 0.85fr) 40px;
+  }
+
+  .search-control {
+    grid-column: 1 / 3;
+  }
+
+  .filter-field:nth-of-type(2),
+  .filter-field:nth-of-type(4) {
+    grid-column: 1 / 2;
+  }
+
+  .filter-field:nth-of-type(3),
+  .filter-field:nth-of-type(5) {
+    grid-column: 2 / 3;
+  }
+
+  .reset-button {
+    grid-column: 3 / 4;
+    grid-row: 3 / 4;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teacher-row {
+    grid-template-columns: minmax(190px, 1.2fr) 126px 118px minmax(200px, 1fr) 82px;
+  }
+
+  .teacher-row .row-metric:nth-of-type(4) {
+    display: none;
+  }
+
+  .row-link {
+    grid-column: auto;
   }
 }
 </style>

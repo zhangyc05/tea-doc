@@ -1,45 +1,40 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-// 从路由参数获取教师ID
 const teacherId = route.params.teacherId as string
 
-// 教师信息
 const teacherInfo = ref({
-  name: '林老师',
-  college: '智能制造学院',
-  title: '讲师',
+  name: teacherId === 'chen' ? '陈老师' : '林老师',
+  college: teacherId === 'chen' ? '电子信息学院' : '智能制造学院',
+  title: teacherId === 'chen' ? '副教授' : '讲师',
   year: 2,
-  period: '2026年度',
-  version: '2026年度执行版能力清单',
+  period: '2026 年度',
+  version: '2026 年度执行版能力清单',
   dataBasis: '正式档案事实',
   updateTime: '2026-06-19',
 })
 
-// 综合发展指数
 const developmentIndex = ref({
-  score: 76,
+  score: teacherId === 'chen' ? 72 : 76,
   total: 100,
-  teacherType: '教学实践型',
+  teacherType: teacherId === 'chen' ? '教研成长型' : '教学实践型',
   abilityStage: '骨干教师',
   basicAbility: '达标',
   typeBasis: '教学能力较突出 | 实践能力较突出 | 教研、服务保持稳定',
 })
 
-// 首年基线数据
 const baselineData = ref([
-  { year: 2026, status: '已形成' },
+  { year: 2026, status: '基线已形成' },
   { year: 2027, status: '待形成' },
   { year: 2028, status: '待形成' },
 ])
 
-// 雷达图数据
 const radarData = ref([
   { label: '教学能力', value: 88 },
   { label: '教研能力', value: 68 },
@@ -47,7 +42,6 @@ const radarData = ref([
   { label: '服务能力', value: 72 },
 ])
 
-// 能力维度说明
 const abilityDimensions = ref([
   {
     dimension: '教学能力',
@@ -71,7 +65,6 @@ const abilityDimensions = ref([
   },
 ])
 
-// 支持方向
 const supportDirections = ref([
   {
     feature: '课程建设基础较好',
@@ -100,197 +93,155 @@ function goBack() {
 }
 
 function switchTeacher() {
-  console.log('切换教师')
+  router.push('/admin/ability-profile/teacher')
 }
 </script>
 
 <template>
   <AdminLayout active-key="ability-profile-teacher">
     <div class="teacher-detail-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb-row">
-            <div class="breadcrumb">
-              <span>能力画像</span>
-              <i class="separator">/</i>
-              <span>
-                <RouterLink to="/admin/ability-profile/teacher">教师画像</RouterLink>
-              </span>
-              <i class="separator">/</i>
-              <span class="current">{{ teacherInfo.name }}</span>
-            </div>
-            <button class="btn-back" @click="goBack">
-              返回教师画像列表
-            </button>
-          </div>
+      <div class="detail-toolbar">
+        <div class="breadcrumb">
+          <span>能力画像</span>
+          <span class="slash">/</span>
+          <RouterLink to="/admin/ability-profile/teacher">教师画像</RouterLink>
+          <span class="slash">/</span>
+          <span class="current">{{ teacherInfo.name }}</span>
+        </div>
+        <button type="button" class="back-button" @click="goBack">‹ 返回教师画像列表</button>
+      </div>
 
-          <!-- 教师信息条 -->
-          <div class="teacher-info-bar">
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">当前教师：</span>
-                <span class="info-value">{{ teacherInfo.name }}</span>
+      <section class="teacher-hero-card">
+        <div class="teacher-main">
+          <div class="portrait">
+            <span class="hair"></span>
+            <span class="face"></span>
+            <span class="body"></span>
+          </div>
+          <div>
+            <div class="teacher-label">当前教师：</div>
+            <h1>{{ teacherInfo.name }}</h1>
+            <p>{{ teacherInfo.college }} <span>|</span> {{ teacherInfo.title }} <span>|</span> 聘期第 {{ teacherInfo.year }} 年</p>
+          </div>
+        </div>
+
+        <div class="hero-meta">
+          <div>
+            <span>分析周期：</span>
+            <strong>{{ teacherInfo.period }}</strong>
+          </div>
+          <div>
+            <span>画像口径：</span>
+            <strong>{{ teacherInfo.version }}</strong>
+          </div>
+          <div>
+            <span>数据依据：</span>
+            <strong>{{ teacherInfo.dataBasis }}</strong>
+          </div>
+          <div>
+            <span>更新时间：</span>
+            <strong>{{ teacherInfo.updateTime }}</strong>
+          </div>
+        </div>
+
+        <button type="button" class="switch-button" @click="switchTeacher">↔ 切换教师</button>
+      </section>
+
+      <section class="summary-grid">
+        <article class="panel index-panel">
+          <h2>综合发展指数</h2>
+          <div class="index-content">
+            <div class="trend-icon">↗</div>
+            <div class="index-copy">
+              <div class="score-line">
+                <strong>{{ developmentIndex.score }}</strong>
+                <span>/ {{ developmentIndex.total }}</span>
               </div>
-              <div class="info-item">
-                <span class="info-value">{{ teacherInfo.college }}</span>
-                <span class="info-divider">|</span>
-                <span class="info-value">{{ teacherInfo.title }}</span>
-                <span class="info-divider">|</span>
-                <span class="info-value">聘期第{{ teacherInfo.year }}年</span>
-              </div>
-            </div>
-            <div class="info-row">
-              <div class="info-item">
-                <span class="info-label">分析周期：</span>
-                <span class="info-value">{{ teacherInfo.period }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">画像口径：</span>
-                <span class="info-value">{{ teacherInfo.version }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">数据依据：</span>
-                <span class="info-value">{{ teacherInfo.dataBasis }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">更新时间：</span>
-                <span class="info-value">{{ teacherInfo.updateTime }}</span>
-              </div>
-              <button class="btn-switch" @click="switchTeacher">
-                切换教师
-              </button>
+              <dl>
+                <div>
+                  <dt>教师类型：</dt>
+                  <dd><span class="blue-pill">{{ developmentIndex.teacherType }}</span></dd>
+                </div>
+                <div>
+                  <dt>能力阶段参考：</dt>
+                  <dd>{{ developmentIndex.abilityStage }}</dd>
+                </div>
+                <div>
+                  <dt>基本能力：</dt>
+                  <dd><span class="green-pill">{{ developmentIndex.basicAbility }}</span></dd>
+                </div>
+                <div>
+                  <dt>类型依据：</dt>
+                  <dd>{{ developmentIndex.typeBasis }}</dd>
+                </div>
+              </dl>
             </div>
           </div>
+        </article>
+
+        <article class="panel baseline-panel">
+          <h2>首年基线</h2>
+          <div class="baseline-layout">
+            <div class="baseline-note">
+              <p>当前为首个画像周期，暂无历史趋势对比。</p>
+              <p>本周期结果将作为后续趋势分析基线。</p>
+            </div>
+            <div class="timeline">
+              <div v-for="(item, index) in baselineData" :key="item.year" class="timeline-item" :class="{ done: index === 0 }">
+                <span class="dot"></span>
+                <strong>{{ item.year }}</strong>
+                <span>{{ item.status }}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel structure-panel">
+        <div class="radar-column">
+          <h2>能力结构分析</h2>
+          <SimpleRadarChart :scores="radarData" center-text="教师原型 达标" :size="270" />
+        </div>
+
+        <div class="dimension-column">
+          <h2>能力维度说明</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>发展指数</th>
+                <th>指数构成</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="dim in abilityDimensions" :key="dim.dimension">
+                <td class="dimension-name">{{ dim.dimension }}</td>
+                <td class="number-cell">{{ dim.index }}</td>
+                <td>{{ dim.composition }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <!-- 主要内容区域 -->
-      <section class="main-content">
-        <div class="content-wrapper">
-          <!-- 顶部卡片区域 -->
-          <div class="top-cards-section">
-            <!-- 左侧综合发展指数 -->
-            <div class="card index-card">
-              <h2 class="card-title">综合发展指数</h2>
-              <div class="index-display">
-                <div class="index-number">{{ developmentIndex.score }}</div>
-                <div class="index-divider">/</div>
-                <div class="index-total">{{ developmentIndex.total }}</div>
-              </div>
-              <div class="index-details">
-                <div class="detail-item">
-                  <span class="detail-label">教师类型：</span>
-                  <span class="detail-value">{{ developmentIndex.teacherType }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">能力阶段参考：</span>
-                  <span class="detail-value">{{ developmentIndex.abilityStage }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">基本能力：</span>
-                  <span class="detail-value status">{{ developmentIndex.basicAbility }}</span>
-                </div>
-              </div>
-              <div class="type-basis">
-                <span class="basis-label">类型依据：</span>
-                <span class="basis-value">{{ developmentIndex.typeBasis }}</span>
-              </div>
-            </div>
-
-            <!-- 右侧首年基线 -->
-            <div class="card baseline-card">
-              <h2 class="card-title">首年基线</h2>
-              <p class="card-description">
-                当前为首个画像周期，暂无历史趋势对比。
-              </p>
-              <p class="card-description">
-                本周期结果将作为后续趋势分析基线。
-              </p>
-              <div class="timeline-display">
-                <div
-                  v-for="item in baselineData"
-                  :key="item.year"
-                  class="timeline-item"
-                >
-                  <div class="timeline-year">{{ item.year }}</div>
-                  <div class="timeline-status">{{ item.status }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 能力结构分析 -->
-          <div class="analysis-section">
-            <div class="section-cards">
-              <!-- 左侧雷达图 -->
-              <div class="card radar-card">
-                <h2 class="card-title">能力结构分析</h2>
-                <div class="radar-wrapper">
-                  <SimpleRadarChart
-                    :scores="radarData"
-                    center-text="教学原型 达标"
-                    :size="300"
-                  />
-                </div>
-                <div class="radar-scores">
-                  <div
-                    v-for="score in radarData"
-                    :key="score.label"
-                    class="score-item"
-                  >
-                    <span class="score-label">{{ score.label }}</span>
-                    <span class="score-value">{{ score.value }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 右侧能力维度说明 -->
-              <div class="card dimension-card">
-                <h2 class="card-title">能力维度说明</h2>
-                <table class="dimension-table">
-                  <thead>
-                    <tr>
-                      <th>维度</th>
-                      <th>发展指数</th>
-                      <th>指数构成</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="dim in abilityDimensions" :key="dim.dimension">
-                      <td>{{ dim.dimension }}</td>
-                      <td class="index-cell">{{ dim.index }}</td>
-                      <td>{{ dim.composition }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- 支持方向 -->
-          <div class="support-section">
-            <div class="card support-card">
-              <h2 class="card-title">支持方向</h2>
-              <table class="support-table">
-                <thead>
-                  <tr>
-                    <th>对应发展特征</th>
-                    <th>支持方向</th>
-                    <th>支持重点</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in supportDirections" :key="index">
-                    <td>{{ item.feature }}</td>
-                    <td>{{ item.direction }}</td>
-                    <td>{{ item.focus }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      <section class="panel support-panel">
+        <h2>支持方向</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>对应发展特征</th>
+              <th>支持方向</th>
+              <th>支持重点</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in supportDirections" :key="item.feature">
+              <td>{{ item.feature }}</td>
+              <td>{{ item.direction }}</td>
+              <td>{{ item.focus }}</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </div>
   </AdminLayout>
@@ -299,401 +250,474 @@ function switchTeacher() {
 <style scoped>
 .teacher-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  padding: 0 0 24px;
+  background: var(--color-page-bg, #f5f7fb);
+  color: #14213d;
 }
 
-.page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.header-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.breadcrumb-row {
+.detail-toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 50px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: #7d8aa0;
   font-size: 14px;
-  color: var(--color-text-secondary);
 }
 
 .breadcrumb a {
-  color: var(--color-text-secondary);
+  color: #41516a;
   text-decoration: none;
-  transition: color 0.16s ease;
-}
-
-.breadcrumb a:hover {
-  color: var(--color-primary);
-}
-
-.breadcrumb .separator {
-  color: var(--color-text-hint);
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
+  color: #1d2b45;
+  font-weight: 700;
+}
+
+.slash {
+  color: #c1cad8;
+}
+
+.back-button,
+.switch-button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #d8e2f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1677ff;
+  cursor: pointer;
+  font-size: 14px;
   font-weight: 600;
 }
 
-.btn-back {
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+.teacher-hero-card,
+.panel {
+  border: 1px solid #e1e8f2;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(32, 56, 96, 0.035);
 }
 
-.btn-back:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* 教师信息条 */
-.teacher-info-bar {
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.info-row {
-  display: flex;
-  gap: 24px;
+.teacher-hero-card {
+  display: grid;
+  grid-template-columns: minmax(350px, 1.05fr) minmax(540px, 2.2fr) auto;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 26px;
+  min-height: 112px;
+  padding: 18px 20px;
 }
 
-.info-item {
+.teacher-main {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 16px;
+  min-width: 0;
 }
 
-.info-label {
+.portrait {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #eaf3ff;
+}
+
+.hair,
+.face,
+.body {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hair {
+  top: 13px;
+  width: 39px;
+  height: 29px;
+  border-radius: 20px 20px 12px 12px;
+  background: #243149;
+}
+
+.face {
+  top: 25px;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: #ffd8b4;
+}
+
+.body {
+  bottom: -5px;
+  width: 54px;
+  height: 31px;
+  border-radius: 20px 20px 0 0;
+  background: #2f80ed;
+}
+
+.teacher-label {
+  color: #516179;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.teacher-main h1 {
+  display: inline;
+  margin: 0 0 8px;
+  color: #10213d;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.teacher-main p {
+  margin: 8px 0 0;
+  color: #53637b;
+  font-size: 14px;
+}
+
+.teacher-main p span {
+  margin: 0 10px;
+  color: #bac4d3;
+}
+
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  border-left: 1px solid #e5ecf5;
+}
+
+.hero-meta div {
+  min-height: 56px;
+  padding: 4px 20px;
+  border-right: 1px solid #e5ecf5;
+}
+
+.hero-meta span {
+  display: block;
+  margin-bottom: 10px;
+  color: #69778d;
   font-size: 13px;
-  color: var(--color-text-hint);
+  font-weight: 600;
 }
 
-.info-value {
-  font-size: 13px;
-  color: var(--color-text-primary);
-  font-weight: 500;
+.hero-meta strong {
+  color: #14213d;
+  font-size: 14px;
 }
 
-.info-divider {
-  color: var(--color-text-hint);
-}
-
-.btn-switch {
-  padding: 8px 16px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-switch:hover {
-  background: #28a38a;
-}
-
-/* 主要内容区域 */
-.main-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* 顶部卡片区域 */
-.top-cards-section {
+.summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
-}
-
-.card-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-/* 综合发展指数卡片 */
-.index-display {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  margin: 24px 0;
-}
-
-.index-number {
-  font-size: 48px;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.index-divider {
-  font-size: 32px;
-  color: var(--color-text-hint);
-  margin: 0 4px;
-}
-
-.index-total {
-  font-size: 24px;
-  color: var(--color-text-hint);
-}
-
-.index-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.detail-item {
-  display: flex;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.detail-label {
-  color: var(--color-text-hint);
-}
-
-.detail-value {
-  color: var(--color-text-primary);
-  font-weight: 500;
-}
-
-.detail-value.status {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
-.type-basis {
-  padding-top: 12px;
-  border-top: 1px solid var(--color-card-border);
-  font-size: 13px;
-  display: flex;
-  gap: 8px;
-  line-height: 1.5;
-}
-
-.basis-label {
-  color: var(--color-text-hint);
-  flex-shrink: 0;
-}
-
-.basis-value {
-  color: var(--color-text-secondary);
-}
-
-/* 首年基线卡片 */
-.card-description {
-  margin: 0 0 12px 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-}
-
-.timeline-display {
-  display: flex;
-  gap: 32px;
+  gap: 16px;
   margin-top: 16px;
 }
 
-.timeline-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+.panel {
+  padding: 18px 20px;
 }
 
-.timeline-year {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.panel h2 {
+  margin: 0 0 14px;
+  color: #12203b;
+  font-size: 18px;
+  font-weight: 800;
 }
 
-.timeline-status {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-/* 能力结构分析 */
-.analysis-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.section-cards {
+.index-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.radar-card {
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: 128px 1fr;
   align-items: center;
+  gap: 18px;
+  min-height: 150px;
 }
 
-.radar-wrapper {
+.trend-icon {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #e6f8ef;
+  color: #18a058;
+  font-size: 44px;
+  font-weight: 700;
 }
 
-.radar-scores {
+.score-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.score-line strong {
+  color: #111b3a;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.score-line span {
+  color: #17213b;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+dl {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  width: 100%;
+  gap: 9px;
+  margin: 0;
 }
 
-.score-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: #f8fafc;
-  border-radius: 6px;
+dl div {
+  display: grid;
+  grid-template-columns: 96px 1fr;
   align-items: center;
+  gap: 8px;
 }
 
-.score-label {
+dt,
+dd {
+  margin: 0;
+  font-size: 13px;
+}
+
+dt {
+  color: #66758c;
+}
+
+dd {
+  color: #1d2b45;
+  font-weight: 600;
+}
+
+.blue-pill,
+.green-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 6px;
   font-size: 12px;
-  color: var(--color-text-secondary);
 }
 
-.score-value {
+.blue-pill {
+  background: #e8f2ff;
+  color: #1677ff;
+}
+
+.green-pill {
+  background: #e8f8ef;
+  color: #16a05d;
+}
+
+.baseline-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, 0.7fr);
+  gap: 24px;
+  min-height: 150px;
+}
+
+.baseline-note {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding-left: 4px;
+}
+
+.baseline-note p {
+  position: relative;
+  margin: 0;
+  padding-left: 24px;
+  color: #42516b;
   font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
+  line-height: 1.65;
 }
 
-/* 能力维度说明表 */
-.dimension-card {
-  overflow: hidden;
+.baseline-note p::before {
+  position: absolute;
+  top: 9px;
+  left: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1677ff;
+  content: '';
 }
 
-.dimension-table {
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  padding-left: 16px;
+}
+
+.timeline::before {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 21px;
+  width: 1px;
+  background: #d7e0ec;
+  content: '';
+}
+
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px 54px 1fr;
+  align-items: center;
+  gap: 10px;
+  color: #53637b;
+  font-size: 14px;
+}
+
+.timeline-item .dot {
+  width: 11px;
+  height: 11px;
+  border: 2px solid #c6d0de;
+  border-radius: 50%;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.timeline-item.done .dot {
+  border-color: #18a058;
+  background: #18a058;
+}
+
+.timeline-item strong {
+  color: #14213d;
+}
+
+.structure-panel {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.75fr) minmax(520px, 1.25fr);
+  gap: 26px;
+  margin-top: 16px;
+}
+
+.radar-column {
+  padding-right: 20px;
+  border-right: 1px solid #e6edf6;
+}
+
+.radar-column :deep(.radar-chart-container) {
+  gap: 8px;
+}
+
+.radar-column :deep(.radar-legend) {
+  justify-content: flex-start;
+  gap: 10px 18px;
+  margin-top: -6px;
+}
+
+.dimension-column {
+  min-width: 0;
+}
+
+table {
   width: 100%;
-  border-collapse: collapse;
-}
-
-.dimension-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.dimension-table td {
-  padding: 12px;
-  font-size: 12px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.dimension-table tr:last-child td {
-  border-bottom: none;
-}
-
-.index-cell {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-/* 支持方向 */
-.support-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.support-card {
   overflow: hidden;
+  border: 1px solid #dde6f1;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.support-table {
-  width: 100%;
-  border-collapse: collapse;
+th,
+td {
+  height: 40px;
+  padding: 0 18px;
+  border-right: 1px solid #dde6f1;
+  border-bottom: 1px solid #dde6f1;
+  color: #25334d;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
-.support-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+th {
+  background: #f8fbff;
+  color: #10213d;
+  font-weight: 800;
 }
 
-.support-table td {
-  padding: 12px;
-  font-size: 12px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  line-height: 1.5;
+tr:last-child td {
+  border-bottom: 0;
 }
 
-.support-table tr:last-child td {
-  border-bottom: none;
+th:last-child,
+td:last-child {
+  border-right: 0;
 }
 
-@media (max-width: 1024px) {
-  .top-cards-section {
+.dimension-name,
+.number-cell {
+  color: #1677ff;
+  font-weight: 800;
+}
+
+.number-cell {
+  text-align: center;
+  color: #14213d;
+}
+
+.support-panel {
+  margin-top: 16px;
+}
+
+.support-panel th:nth-child(1) {
+  width: 19%;
+}
+
+.support-panel th:nth-child(2) {
+  width: 22%;
+}
+
+@media (max-width: 1500px) {
+  .teacher-hero-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hero-meta {
+    border-left: 0;
+  }
+
+  .switch-button {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 1280px) {
+  .structure-panel {
     grid-template-columns: 1fr;
   }
 
-  .section-cards {
-    grid-template-columns: 1fr;
+  .radar-column {
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .hero-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .btn-switch {
-    width: 100%;
+@media (max-width: 1100px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
