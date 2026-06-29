@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
+import type { AbilityTreeNode, AbilityIndicator } from '@/components/admin/ability-list/types'
+import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
+import iconAbilityTeaching from '@/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg'
+import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/icon-ability-research.svg'
+import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
+import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
 // 编辑抽屉状态
-const editingIndicator = ref<typeof indicators[0] | null>(null)
+const editingIndicator = ref<AbilityIndicator | null>(null)
 
 // 打开编辑抽屉
-function openEditDrawer(indicator: typeof indicators[0]) {
+function openEditDrawer(indicator: AbilityIndicator) {
   editingIndicator.value = indicator
 }
 
@@ -21,7 +28,8 @@ function saveEdit() {
   closeEditDrawer()
 }
 
-const abilityTree = [
+// 旧的执行版数据结构
+const oldAbilityTree = [
   {
     id: 'basic',
     label: '基本能力',
@@ -54,7 +62,7 @@ const abilityTree = [
   },
 ]
 
-const indicators = [
+const oldIndicators = [
   {
     name: '教学工作量（课时/学期）',
     novice: '≥ 64',
@@ -104,6 +112,59 @@ const indicators = [
     rule: '信息化应用综合得分',
   },
 ]
+
+// 数据映射：将旧的执行版结构映射为新组件结构
+const normalizedAbilityTree: AbilityTreeNode[] = [
+  {
+    key: 'basic',
+    label: '基本能力',
+    icon: iconAbilityBasic,
+    color: 'blue',
+  },
+  {
+    key: 'teaching',
+    label: '教学能力',
+    icon: iconAbilityTeaching,
+    color: 'blue',
+    children: [
+      { key: 'teaching-design', label: '教学设计与实施' },
+      { key: 'teaching-resource', label: '教学资源开发' },
+      { key: 'teaching-evaluation', label: '教学评价与反馈' },
+      { key: 'teaching-innovation', label: '教学创新与改进' },
+    ],
+  },
+  {
+    key: 'research',
+    label: '教研能力',
+    icon: iconAbilityResearch,
+    color: 'orange',
+  },
+  {
+    key: 'practice',
+    label: '实践能力',
+    icon: iconAbilityPractice,
+    color: 'green',
+  },
+  {
+    key: 'service',
+    label: '服务能力',
+    icon: iconAbilityService,
+    color: 'purple',
+  },
+]
+
+const normalizedIndicators = computed<AbilityIndicator[]>(() =>
+  oldIndicators.map((item, index) => ({
+    key: `execution-indicator-${index}`,
+    name: item.name,
+    novice: item.novice,
+    competent: item.competent,
+    backbone: item.backbone,
+    expert: item.master,
+    basisLabel: item.rule,
+    status: 'enabled',
+  })),
+)
 </script>
 
 <template>
@@ -160,81 +221,15 @@ const indicators = [
         </div>
       </section>
 
-      <section class="work-area">
-        <aside class="structure-card admin-card">
-          <header class="card-heading admin-card-header">
-            <span class="card-icon admin-card-icon structure-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 8 4-8 4-8-4 8-4Zm8 8-8 4-8-4m16 4-8 4-8-4" /></svg>
-            </span>
-            <strong class="admin-card-title">能力结构</strong>
-          </header>
-
-          <div class="ability-tree">
-            <div v-for="node in abilityTree" :key="node.id" class="ability-tree-group">
-              <div class="tree-row ability-tree-row" :class="[`color-${node.color}`, { expanded: node.children.length }]">
-                <span class="tree-symbol ability-tree-symbol">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" /></svg>
-                </span>
-                <span>{{ node.label }}</span>
-                <em>›</em>
-              </div>
-
-              <div v-if="node.children.length" class="tree-children ability-tree-children">
-                <div
-                  v-for="child in node.children"
-                  :key="child"
-                  class="tree-child ability-tree-child"
-                  :class="{ active: child === '教学设计与实施' }"
-                >
-                  <strong>{{ child }}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        <section class="indicator-card admin-card">
-          <header class="indicator-header admin-card-header">
-            <div class="indicator-title-wrap">
-              <span class="card-icon admin-card-icon indicator-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h6v14H5zM13 5h6v14h-6zM7 9h2m6 0h2" /></svg>
-              </span>
-              <div>
-                <h2 class="admin-card-title">教学能力 / 教学设计与实施</h2>
-              </div>
-            </div>
-          </header>
-
-          <div class="indicator-table-wrap admin-table-container">
-            <table class="indicator-table admin-table">
-              <thead>
-                <tr>
-                  <th>指标名称</th>
-                  <th>新手</th>
-                  <th>胜任</th>
-                  <th>骨干</th>
-                  <th>名师</th>
-                  <th>计算规则</th>
-                  <th>状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in indicators" :key="row.name">
-                  <td class="name-cell primary-text">{{ row.name }}</td>
-                  <td>{{ row.novice }}</td>
-                  <td>{{ row.competent }}</td>
-                  <td>{{ row.backbone }}</td>
-                  <td>{{ row.master }}</td>
-                  <td>{{ row.rule }}</td>
-                  <td><span class="badge-status badge-success">已启用</span></td>
-                  <td><button class="edit-link btn-link" @click="openEditDrawer(row)">编辑</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </section>
+      <AbilityListWorkspace
+        :nodes="normalizedAbilityTree"
+        selected-key="teaching-design"
+        selected-title="教学能力 / 教学设计与实施"
+        :indicators="normalizedIndicators"
+        basis-column-title="计算规则"
+        :default-expanded-keys="['teaching']"
+        @edit-indicator="openEditDrawer"
+      />
 
       <!-- 编辑抽屉 -->
       <div v-if="editingIndicator" class="edit-drawer-overlay" @click="closeEditDrawer">
@@ -282,12 +277,12 @@ const indicators = [
               </div>
               <div class="form-group">
                 <label class="form-label">名师</label>
-                <input class="form-input" type="text" :value="editingIndicator?.master || ''" />
+                <input class="form-input" type="text" :value="editingIndicator?.expert || ''" />
               </div>
             </div>
             <div class="form-group">
               <label class="form-label">计算规则</label>
-              <input class="form-input" type="text" :value="editingIndicator?.rule || ''" />
+              <input class="form-input" type="text" :value="editingIndicator?.basisLabel || ''" />
             </div>
             <div class="form-group">
               <label class="form-label">状态</label>
@@ -464,126 +459,6 @@ const indicators = [
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-/* 工作区域 */
-.work-area {
-  display: grid;
-  grid-template-columns: minmax(270px, 21.5%) minmax(0, 1fr);
-  gap: clamp(18px, 1.25vw, 24px);
-}
-
-.structure-card {
-  min-height: clamp(280px, 18vw, 340px);
-  padding: clamp(18px, 1.2vw, 22px) clamp(16px, 1.1vw, 20px);
-}
-
-.indicator-card {
-  min-height: clamp(280px, 18vw, 340px);
-  padding: clamp(18px, 1.2vw, 22px) clamp(18px, 1.2vw, 22px) clamp(20px, 1.4vw, 26px);
-}
-
-.indicator-header {
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: clamp(12px, 0.9vw, 16px);
-}
-
-.indicator-title-wrap {
-  display: flex;
-  min-width: 0;
-  gap: clamp(10px, 0.7vw, 14px);
-}
-
-.indicator-title-wrap h2 {
-  margin: 0 0 clamp(4px, 0.4vw, 6px);
-  color: var(--color-text-primary);
-  font-size: clamp(17px, 1vw, 19px);
-  font-weight: 950;
-}
-
-/* 表格列宽定义 */
-.admin-table th:first-child,
-.admin-table td:first-child {
-  width: 25%;
-}
-
-.admin-table th:nth-child(2),
-.admin-table td:nth-child(2),
-.admin-table th:nth-child(3),
-.admin-table td:nth-child(3),
-.admin-table th:nth-child(4),
-.admin-table td:nth-child(4),
-.admin-table th:nth-child(5),
-.admin-table td:nth-child(5) {
-  width: 9.5%;
-  text-align: center;
-}
-
-.admin-table th:nth-child(6),
-.admin-table td:nth-child(6) {
-  width: 17%;
-  text-align: center;
-}
-
-.admin-table th:nth-child(7),
-.admin-table td:nth-child(7) {
-  width: 10%;
-  text-align: center;
-}
-
-.admin-table th:nth-child(8),
-.admin-table td:nth-child(8) {
-  width: 10%;
-  text-align: center;
-}
-
-/* 能力树特有样式 */
-.tree-row em {
-  margin-left: auto;
-  color: var(--color-text-tertiary);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 800;
-}
-
-.tree-child strong {
-  font-weight: 750;
-}
-
-/* 能力树颜色变体 */
-.color-blue .ability-tree-symbol {
-  background: var(--color-ability-basic);
-  color: var(--color-primary);
-}
-
-.color-teaching-blue .ability-tree-symbol {
-  background: var(--color-ability-teaching-light);
-  color: var(--color-primary);
-}
-
-.color-orange .ability-tree-symbol {
-  background: #fff5e6;
-  color: var(--color-warning);
-}
-
-.color-green .ability-tree-symbol {
-  background: #ecf9f2;
-  color: var(--color-success);
-}
-
-.color-purple .ability-tree-symbol {
-  background: #f4efff;
-  color: var(--color-purple);
-}
-
-.tree-child.active {
-  margin-left: -8px;
-  margin-right: 40px;
-  padding-left: 12px;
-  background: var(--color-ability-tree-child);
-  color: var(--color-primary);
-  box-shadow: inset 1px 0 0 var(--color-primary);
 }
 
 /* 编辑抽屉样式 */
@@ -800,15 +675,6 @@ const indicators = [
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-  }
-
-  .work-area {
-    grid-template-columns: 1fr;
-  }
-
-  .structure-card,
-  .indicator-card {
-    min-height: auto;
   }
 
   @media (max-width: 768px) {

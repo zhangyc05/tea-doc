@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
+import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
 import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
@@ -137,12 +139,30 @@ const selectedAbility = ref('teaching-design')
 const selectedIndicator = ref<Indicator | null>(null)
 const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
+// 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
+const normalizedIndicators = computed<AbilityIndicator[]>(() =>
+  indicators.map(item => ({
+    key: item.key,
+    name: item.name,
+    novice: item.novice,
+    competent: item.competent,
+    backbone: item.backbone,
+    expert: item.expert,
+    basisLabel: item.basis,
+    status: item.status,
+  })),
+)
+
 function selectAbility(key: string) {
   selectedAbility.value = key
 }
 
-function selectIndicator(indicator: Indicator) {
-  selectedIndicator.value = indicator
+function selectIndicator(indicator: AbilityIndicator) {
+  selectedIndicator.value = indicator as unknown as Indicator
+}
+
+function editIndicator(indicator: AbilityIndicator) {
+  console.log('编辑指标：', indicator)
 }
 
 function isAbilityExpanded(key: string) {
@@ -196,10 +216,6 @@ function goToVersionHistory() {
 
 function deriveExecutionVersion() {
   console.log('派生执行版')
-}
-
-function editIndicator(indicator: Indicator) {
-  console.log('编辑指标：', indicator)
 }
 
 </script>
@@ -267,119 +283,18 @@ function editIndicator(indicator: Indicator) {
         </div>
       </section>
 
-      <div class="main-workspace">
-        <aside class="ability-structure-panel admin-card">
-          <header class="admin-card-header">
-            <span class="card-icon admin-card-icon">
-              <img class="title-icon" :src="iconAbilityStructure" alt="" />
-            </span>
-            <h3 class="admin-card-title">能力结构</h3>
-          </header>
-
-          <div class="ability-tree">
-            <div v-for="item in abilityTree" :key="item.key" class="ability-tree-item">
-              <button
-                v-if="!item.children"
-                class="ability-node"
-                :class="{ active: selectedAbility === item.key }"
-                type="button"
-                @click="selectAbility(item.key)"
-              >
-                <img class="ability-icon" :src="item.icon" alt="" />
-                <span>{{ item.label }}</span>
-                <span class="ability-arrow ability-arrow-leaf" aria-hidden="true">›</span>
-              </button>
-
-              <div v-else class="ability-group">
-                <button
-                  class="ability-parent"
-                  :class="{
-                    active: item.children.some(child => child.key === selectedAbility),
-                    expanded: isAbilityExpanded(item.key),
-                  }"
-                  type="button"
-                  @click="toggleAbilityGroup(item.key)"
-                >
-                  <img class="ability-icon" :src="item.icon" alt="" />
-                  <span>{{ item.label }}</span>
-                  <span class="ability-arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16">
-                      <path d="M4 6l4 4 4-4" />
-                    </svg>
-                  </span>
-                </button>
-
-                <div v-if="isAbilityExpanded(item.key)" class="ability-children">
-                  <button
-                    v-for="child in item.children"
-                    :key="child.key"
-                    class="ability-child"
-                    :class="{ active: selectedAbility === child.key }"
-                    type="button"
-                    @click="selectAbility(child.key)"
-                  >
-                    <span>{{ child.label }}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        <section class="indicators-panel admin-card">
-          <header class="indicator-header admin-card-header">
-            <div class="title-with-icon">
-              <span class="card-icon admin-card-icon">
-                <img class="title-icon" :src="getSelectedAbilityIcon()" alt="" />
-              </span>
-              <div>
-                <h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
-                
-              </div>
-            </div>
-            
-          </header>
-
-          <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>指标名称</th>
-                  <th>新手</th>
-                  <th>胜任</th>
-                  <th>骨干</th>
-                  <th>名师</th>
-                  <th>建议依据</th>
-                  <th>状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="indicator in indicators"
-                  :key="indicator.key"
-                  class="admin-table-row"
-                  :class="{ active: selectedIndicator?.key === indicator.key }"
-                  @click="selectIndicator(indicator)"
-                >
-                  <td class="name-cell">{{ indicator.name }}</td>
-                  <td>{{ indicator.novice }}</td>
-                  <td>{{ indicator.competent }}</td>
-                  <td>{{ indicator.backbone }}</td>
-                  <td>{{ indicator.expert }}</td>
-                  <td>{{ indicator.basis }}</td>
-                  <td>
-                    <span class="badge-status badge-success">已启用</span>
-                  </td>
-                  <td>
-                    <button class="btn-link" @click.stop="editIndicator(indicator)">编辑</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
+      <AbilityListWorkspace
+        :nodes="abilityTree"
+        :selected-key="selectedAbility"
+        :selected-title="getSelectedAbilityLabel()"
+        :selected-icon="getSelectedAbilityIcon()"
+        :indicators="normalizedIndicators"
+        basis-column-title="建议依据"
+        :default-expanded-keys="['teaching']"
+        @select-ability="selectAbility"
+        @row-click="selectIndicator"
+        @edit-indicator="editIndicator"
+      />
     </div>
   </AdminLayout>
 </template>
@@ -584,240 +499,6 @@ function editIndicator(indicator: Indicator) {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.6;
-}
-
-.main-workspace {
-  display: grid;
-  grid-template-columns: minmax(270px, 21.5%) minmax(0, 1fr);
-  gap: clamp(18px, 1.25vw, 24px);
-}
-
-.ability-structure-panel {
-  min-height: clamp(280px, 18vw, 340px);
-  padding: clamp(18px, 1.2vw, 22px) clamp(16px, 1.1vw, 20px);
-}
-
-.indicators-panel {
-  min-width: 0;
-  min-height: clamp(280px, 18vw, 340px);
-  padding: clamp(18px, 1.2vw, 22px) clamp(18px, 1.2vw, 22px) clamp(20px, 1.4vw, 26px);
-}
-
-.card-icon {
-  flex: none;
-}
-
-.title-icon {
-  width: 22px;
-  height: 22px;
-  display: block;
-}
-
-.ability-tree {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-top: 12px;
-}
-
-.ability-tree-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.ability-node,
-.ability-parent,
-.ability-child {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: #263856;
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  text-align: left;
-  transition: all 0.16s ease;
-}
-
-.ability-node,
-.ability-parent {
-  gap: 10px;
-  min-height: 40px;
-  padding: 8px 10px;
-}
-
-.ability-node:hover,
-.ability-parent:hover,
-.ability-child:hover {
-  background: #f5f8ff;
-  color: var(--color-primary);
-}
-
-.ability-node.active,
-.ability-parent.active,
-.ability-child.active {
-  color: var(--color-primary);
-}
-
-.ability-node.active,
-.ability-child.active {
-  background: #eef5ff;
-}
-
-.ability-icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
-}
-
-.ability-arrow {
-  display: inline-flex;
-  width: 22px;
-  height: 22px;
-  margin-left: auto;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  color: #8b98aa;
-  transition: all 0.16s ease;
-}
-
-.ability-arrow svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.2;
-  transition: transform 0.16s ease;
-}
-
-.ability-parent.expanded .ability-arrow svg {
-  transform: rotate(180deg);
-}
-
-.ability-node:hover .ability-arrow,
-.ability-parent:hover .ability-arrow,
-.ability-parent.active .ability-arrow {
-  color: var(--color-primary);
-}
-
-.ability-arrow-leaf {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.ability-children {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 4px 0 8px 22px;
-  padding-left: 18px;
-}
-
-.ability-children::before {
-  position: absolute;
-  left: 5px;
-  top: 12px;
-  bottom: 12px;
-  width: 2px;
-  border-radius: 999px;
-  background: #c8d1e1;
-  content: '';
-}
-
-.ability-child {
-  position: relative;
-  min-height: 36px;
-  padding: 0 12px 0 14px;
-}
-
-.ability-child::before {
-  position: absolute;
-  left: -17px;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #aeb8c8;
-  box-shadow: 0 0 0 4px #fff;
-  content: '';
-}
-
-.ability-child.active::before {
-  background: var(--color-primary);
-  box-shadow: 0 0 0 4px #eef5ff;
-}
-
-.indicator-header {
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: clamp(12px, 0.9vw, 16px);
-}
-
-.title-with-icon {
-  display: flex;
-  min-width: 0;
-  align-items: flex-start;
-  gap: clamp(10px, 0.7vw, 14px);
-}
-
-.ability-description {
-  margin: 6px 0 0;
-  color: #7d899b;
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 1.6;
-}
-
-.name-cell {
-  font-weight: 850;
-}
-
-.admin-table th:first-child,
-.admin-table td:first-child {
-  width: 25%;
-}
-
-.admin-table th:nth-child(2),
-.admin-table td:nth-child(2),
-.admin-table th:nth-child(3),
-.admin-table td:nth-child(3),
-.admin-table th:nth-child(4),
-.admin-table td:nth-child(4),
-.admin-table th:nth-child(5),
-.admin-table td:nth-child(5) {
-  width: 9.5%;
-  text-align: center;
-}
-
-.admin-table th:nth-child(6),
-.admin-table td:nth-child(6) {
-  width: 17%;
-  text-align: center;
-}
-
-.admin-table th:nth-child(7),
-.admin-table td:nth-child(7),
-.admin-table th:nth-child(8),
-.admin-table td:nth-child(8) {
-  width: 10%;
-  text-align: center;
-}
-
-.admin-table-row {
-  cursor: pointer;
-}
-
-.admin-table-row.active,
-.admin-table-row:hover {
-  background: #f5f8ff;
 }
 
 @media (max-width: 1280px) {
