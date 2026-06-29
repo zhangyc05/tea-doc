@@ -184,16 +184,7 @@ function getSelectedAbilityIcon() {
   return findSelectedAbility().icon
 }
 
-function getSelectedAbilityDescription() {
-  const descriptions: Record<string, string> = {
-    'teaching-design': '聚焦教学目标设计、教学过程组织与实施，作为教师教学能力发展的长期标准参考。',
-    'teaching-resource': '评估教学资源开发与应用能力，包括课程设计、教材编写、数字化资源建设等。',
-    'teaching-evaluation': '关注教学评价能力，包括学生学习评价、教学反思、教学改进等。',
-    'teaching-innovation': '评估教学创新与改进能力，包括教学方法创新、技术应用创新等。',
-  }
 
-  return descriptions[selectedAbility.value] || ''
-}
 
 function goToOptimization() {
   router.push('/admin/ability-list/base/optimization')
@@ -211,9 +202,6 @@ function editIndicator(indicator: Indicator) {
   console.log('编辑指标：', indicator)
 }
 
-function showIndicatorDescription() {
-  console.log('显示指标说明')
-}
 </script>
 
 <template>
@@ -346,12 +334,10 @@ function showIndicatorDescription() {
               </span>
               <div>
                 <h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
-                <p v-if="getSelectedAbilityDescription()" class="ability-description">
-                  {{ getSelectedAbilityDescription() }}
-                </p>
+                
               </div>
             </div>
-            <button class="btn-link" @click="showIndicatorDescription">指标说明</button>
+            
           </header>
 
           <div class="admin-table-container">
