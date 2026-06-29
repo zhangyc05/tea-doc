@@ -144,7 +144,7 @@ const indicators = [
 
             <div class="hero-summary-strip admin-summary-strip">
               <div class="summary-item admin-summary-item source-item">
-                <span class="admin-summary-label">基准模版</span>
+                <span class="admin-summary-label">基准版</span>
                 <button class="admin-summary-link template-link">职业院校教师能力清单 V1.0</button>
               </div>
               <div class="summary-item admin-summary-item">
