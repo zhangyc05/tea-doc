@@ -135,6 +135,7 @@ const indicators: Indicator[] = [
 
 const selectedAbility = ref('teaching-design')
 const selectedIndicator = ref<Indicator | null>(null)
+const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
 function selectAbility(key: string) {
   selectedAbility.value = key
@@ -142,6 +143,22 @@ function selectAbility(key: string) {
 
 function selectIndicator(indicator: Indicator) {
   selectedIndicator.value = indicator
+}
+
+function isAbilityExpanded(key: string) {
+  return expandedAbilityKeys.value.has(key)
+}
+
+function toggleAbilityGroup(key: string) {
+  const next = new Set(expandedAbilityKeys.value)
+
+  if (next.has(key)) {
+    next.delete(key)
+  } else {
+    next.add(key)
+  }
+
+  expandedAbilityKeys.value = next
 }
 
 function findSelectedAbility() {
@@ -167,7 +184,16 @@ function getSelectedAbilityIcon() {
   return findSelectedAbility().icon
 }
 
+function getSelectedAbilityDescription() {
+  const descriptions: Record<string, string> = {
+    'teaching-design': '聚焦教学目标设计、教学过程组织与实施，作为教师教学能力发展的长期标准参考。',
+    'teaching-resource': '评估教学资源开发与应用能力，包括课程设计、教材编写、数字化资源建设等。',
+    'teaching-evaluation': '关注教学评价能力，包括学生学习评价、教学反思、教学改进等。',
+    'teaching-innovation': '评估教学创新与改进能力，包括教学方法创新、技术应用创新等。',
+  }
 
+  return descriptions[selectedAbility.value] || ''
+}
 
 function goToOptimization() {
   router.push('/admin/ability-list/base/optimization')
@@ -273,19 +299,29 @@ function showIndicatorDescription() {
               >
                 <img class="ability-icon" :src="item.icon" alt="" />
                 <span>{{ item.label }}</span>
+                <span class="ability-arrow ability-arrow-leaf" aria-hidden="true">›</span>
               </button>
 
               <div v-else class="ability-group">
-                <div
+                <button
                   class="ability-parent"
-                  :class="{ active: item.children.some(child => child.key === selectedAbility) }"
+                  :class="{
+                    active: item.children.some(child => child.key === selectedAbility),
+                    expanded: isAbilityExpanded(item.key),
+                  }"
+                  type="button"
+                  @click="toggleAbilityGroup(item.key)"
                 >
                   <img class="ability-icon" :src="item.icon" alt="" />
                   <span>{{ item.label }}</span>
-                  <span class="parent-arrow" aria-hidden="true">⌄</span>
-                </div>
+                  <span class="ability-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16">
+                      <path d="M4 6l4 4 4-4" />
+                    </svg>
+                  </span>
+                </button>
 
-                <div class="ability-children">
+                <div v-if="isAbilityExpanded(item.key)" class="ability-children">
                   <button
                     v-for="child in item.children"
                     :key="child.key"
@@ -310,10 +346,12 @@ function showIndicatorDescription() {
               </span>
               <div>
                 <h3 class="admin-card-title">{{ getSelectedAbilityLabel() }}</h3>
-                
+                <p v-if="getSelectedAbilityDescription()" class="ability-description">
+                  {{ getSelectedAbilityDescription() }}
+                </p>
               </div>
             </div>
-            
+            <button class="btn-link" @click="showIndicatorDescription">指标说明</button>
           </header>
 
           <div class="admin-table-container">
@@ -424,7 +462,7 @@ function showIndicatorDescription() {
   z-index: 2;
   display: flex;
   min-height: clamp(230px, 15.5vw, 270px);
-  max-width: min(800px, 58%);
+  max-width: min(820px, 60%);
   align-items: center;
   gap: clamp(18px, 1.2vw, 26px);
   padding: 0 0 0 clamp(24px, 1.75vw, 34px);
@@ -472,7 +510,7 @@ function showIndicatorDescription() {
 }
 
 .hero-subtitle {
-  max-width: 520px;
+  max-width: 560px;
   margin: 0;
   color: var(--color-text-secondary);
   font-size: clamp(12px, 0.75vw, 14px);
@@ -481,12 +519,37 @@ function showIndicatorDescription() {
 }
 
 .hero-summary-strip {
-  max-width: 760px;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 0;
   margin-top: clamp(14px, 0.95vw, 18px);
+  overflow: hidden;
+}
+
+.hero-summary-strip .admin-summary-item {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.hero-summary-strip .admin-summary-item + .admin-summary-item {
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid rgba(127, 150, 190, 0.22);
 }
 
 .summary-structure {
-  min-width: 360px;
+  max-width: 360px;
+}
+
+.summary-structure .admin-summary-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hero-actions {
@@ -590,6 +653,7 @@ function showIndicatorDescription() {
 }
 
 .ability-node:hover,
+.ability-parent:hover,
 .ability-child:hover {
   background: #f5f8ff;
   color: var(--color-primary);
@@ -606,20 +670,48 @@ function showIndicatorDescription() {
   background: #eef5ff;
 }
 
-.ability-parent {
-  cursor: default;
-}
-
 .ability-icon {
   width: 24px;
   height: 24px;
   flex: 0 0 24px;
 }
 
-.parent-arrow {
+.ability-arrow {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
   margin-left: auto;
-  color: currentColor;
-  font-size: 18px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #8b98aa;
+  transition: all 0.16s ease;
+}
+
+.ability-arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+  transition: transform 0.16s ease;
+}
+
+.ability-parent.expanded .ability-arrow svg {
+  transform: rotate(180deg);
+}
+
+.ability-node:hover .ability-arrow,
+.ability-parent:hover .ability-arrow,
+.ability-parent.active .ability-arrow {
+  color: var(--color-primary);
+}
+
+.ability-arrow-leaf {
+  font-size: 20px;
   line-height: 1;
 }
 
