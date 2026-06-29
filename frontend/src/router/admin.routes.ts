@@ -367,11 +367,11 @@ export const adminRoutes: RouteRecordRaw[] = [
     name: 'AdminAbilityListBase',
     component: AbilityListBasePage,
     meta: {
-      title: '基准模板',
+      title: '基准板',
       module: '能力清单',
       layout: 'admin',
       menuKey: 'ability-list-base',
-      breadcrumb: ['管理端', '能力清单', '基准模板'],
+      breadcrumb: ['管理端', '能力清单', '基准板'],
     },
   },
   {
