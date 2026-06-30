@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
-// 当前选中的分类 Tab
 const activeTab = ref('全部')
-
-// 筛选条件
 const selectedTarget = ref('全部')
 const selectedPeriod = ref('2026 年度')
 const selectedStatus = ref('全部')
 const searchQuery = ref('')
+const appliedSearchQuery = ref('')
+const operationMessage = ref('')
 
-// 分类 Tab 列表
 const tabs = ['全部', '分析报告', '分析大屏', '专题解读', '数据问答']
 
-// 报告卡片数据
 interface ReportCard {
   id: string
   title: string
@@ -24,9 +21,11 @@ interface ReportCard {
   generatedTime: string
   status: string
   buttons: string[]
+  icon: string
+  tone: string
 }
 
-const reports: ReportCard[] = [
+const reports = ref<ReportCard[]>([
   {
     id: '1',
     title: '2026 年度学校教师发展分析报告',
@@ -36,6 +35,8 @@ const reports: ReportCard[] = [
     generatedTime: '06-24 10:20',
     status: '已生成',
     buttons: ['查看', '继续分析', '重新生成'],
+    icon: '▤',
+    tone: 'blue',
   },
   {
     id: '2',
@@ -46,6 +47,8 @@ const reports: ReportCard[] = [
     generatedTime: '06-23 16:40',
     status: '已生成',
     buttons: ['查看', '继续分析'],
+    icon: '▣',
+    tone: 'green',
   },
   {
     id: '3',
@@ -56,6 +59,8 @@ const reports: ReportCard[] = [
     generatedTime: '06-22 14:10',
     status: '已生成',
     buttons: ['查看大屏', '继续分析'],
+    icon: '▱',
+    tone: 'purple',
   },
   {
     id: '4',
@@ -66,6 +71,8 @@ const reports: ReportCard[] = [
     generatedTime: '06-21 11:30',
     status: '待更新',
     buttons: ['查看', '更新'],
+    icon: '●',
+    tone: 'orange',
   },
   {
     id: '5',
@@ -76,6 +83,8 @@ const reports: ReportCard[] = [
     generatedTime: '06-20 09:50',
     status: '数据不足',
     buttons: ['查看原因'],
+    icon: '◔',
+    tone: 'teal',
   },
   {
     id: '6',
@@ -86,15 +95,42 @@ const reports: ReportCard[] = [
     generatedTime: '06-19 15:00',
     status: '已生成',
     buttons: ['查看', '继续追问'],
+    icon: '●●',
+    tone: 'chat',
   },
-]
+])
+
+const filteredReports = computed(() => {
+  const keyword = appliedSearchQuery.value.trim().toLowerCase()
+
+  return reports.value.filter((report) => {
+    const matchesTab = activeTab.value === '全部'
+      || report.type === activeTab.value
+      || (activeTab.value === '专题解读' && report.type === '图表解读')
+    const matchesTarget = selectedTarget.value === '全部' || report.target === selectedTarget.value
+    const matchesStatus = selectedStatus.value === '全部' || report.status === selectedStatus.value
+    const matchesKeyword = !keyword
+      || `${report.title} ${report.type} ${report.target} ${report.basis}`.toLowerCase().includes(keyword)
+
+    return matchesTab && matchesTarget && matchesStatus && matchesKeyword
+  })
+})
 
 function selectTab(tab: string) {
   activeTab.value = tab
+  operationMessage.value = `已切换到「${tab}」，共 ${filteredReports.value.length} 条。`
 }
 
 function handleCardAction(cardId: string, action: string) {
-  console.log(`卡片 ${cardId} 操作:`, action)
+  const report = reports.value.find((item) => item.id === cardId)
+  if (!report) return
+
+  if (action === '重新生成' || action === '更新') {
+    report.status = '已生成'
+    report.generatedTime = '刚刚'
+  }
+
+  operationMessage.value = `${report.title}：${action}。`
 }
 
 function resetFilters() {
@@ -102,13 +138,24 @@ function resetFilters() {
   selectedPeriod.value = '2026 年度'
   selectedStatus.value = '全部'
   searchQuery.value = ''
+  appliedSearchQuery.value = ''
+  operationMessage.value = '已重置筛选条件。'
+}
+
+function applyFilters() {
+  appliedSearchQuery.value = searchQuery.value
+  operationMessage.value = `已筛选出 ${filteredReports.value.length} 条报告。`
+}
+
+function openAiAssistant() {
+  operationMessage.value = 'AI 助理已准备基于当前筛选结果生成分析。'
 }
 
 function getStatusClass(status: string): string {
   const statusMap: Record<string, string> = {
-    '已生成': 'generated',
-    '待更新': 'pending-update',
-    '数据不足': 'insufficient-data',
+    已生成: 'generated',
+    待更新: 'pending-update',
+    数据不足: 'insufficient-data',
   }
   return statusMap[status] || ''
 }
@@ -117,113 +164,108 @@ function getStatusClass(status: string): string {
 <template>
   <AdminLayout active-key="reports">
     <div class="report-center-page">
+      <section class="page-header">
+        <div class="header-content">
+          <h1>分析报告</h1>
+        </div>
+      </section>
 
-      <!-- 主体内容区域 -->
       <section class="main-section">
-        <div class="content-card">
-          <!-- 分类 Tab -->
-          <div class="tabs-section">
-            <div class="tabs-container">
+        <div class="intro-row">
+          <span class="spark">✦</span>
+          <p>基于当前平台数据，用 AI 生成分析报告，分析大屏或专题解读。</p>
+          <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+        </div>
+
+        <div class="toolbar">
+          <div class="tabs-container">
+            <button
+              v-for="tab in tabs"
+              :key="tab"
+              :class="['tab-btn', { active: activeTab === tab }]"
+              @click="selectTab(tab)"
+            >
+              {{ tab }}
+            </button>
+          </div>
+
+          <div class="filters">
+            <label class="filter-item">
+              <span>对象：</span>
+              <select v-model="selectedTarget">
+                <option>全部</option>
+                <option>全校教师</option>
+                <option>智能制造学院</option>
+                <option>全校</option>
+                <option>虚拟教研室</option>
+                <option>教师发展管理</option>
+              </select>
+            </label>
+            <label class="filter-item">
+              <span>周期：</span>
+              <select v-model="selectedPeriod">
+                <option>2026 年度</option>
+                <option>2025 年度</option>
+                <option>2024 年度</option>
+              </select>
+            </label>
+            <label class="filter-item">
+              <span>状态：</span>
+              <select v-model="selectedStatus">
+                <option>全部</option>
+                <option>已生成</option>
+                <option>待更新</option>
+                <option>数据不足</option>
+              </select>
+            </label>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="搜索报告名称 / 分析问题"
+              class="search-input"
+              @keyup.enter="applyFilters"
+            />
+            <button class="icon-button" title="查询" @click="applyFilters">⌕</button>
+            <button class="btn-reset" @click="resetFilters">重置</button>
+          </div>
+        </div>
+
+        <div class="reports-grid">
+          <article
+            v-for="report in filteredReports"
+            :key="report.id"
+            class="report-card"
+          >
+            <div class="report-icon" :class="report.tone">{{ report.icon }}</div>
+            <div class="report-body">
+              <h2>{{ report.title }}</h2>
+              <div class="report-meta">
+                <span><b>类型：</b>{{ report.type }}</span>
+                <span><b>对象：</b>{{ report.target }}</span>
+                <span><b>依据：</b>{{ report.basis }}</span>
+                <span><b>生成时间：</b>{{ report.generatedTime }}</span>
+                <span>
+                  <b>状态：</b>
+                  <em class="card-status" :class="getStatusClass(report.status)">{{ report.status }}</em>
+                </span>
+              </div>
+            </div>
+            <div class="card-footer">
               <button
-                v-for="tab in tabs"
-                :key="tab"
-                :class="['tab-btn', { active: activeTab === tab }]"
-                @click="selectTab(tab)"
+                v-for="button in report.buttons"
+                :key="button"
+                class="btn-action"
+                @click="handleCardAction(report.id, button)"
               >
-                {{ tab }}
+                {{ button }}
               </button>
             </div>
-          </div>
+          </article>
+          <div v-if="filteredReports.length === 0" class="empty-panel">暂无符合条件的分析报告</div>
+        </div>
 
-          <!-- 筛选区 -->
-          <div class="filter-section">
-            <div class="filter-row">
-              <div class="filter-item">
-                <label class="filter-label">对象</label>
-                <select v-model="selectedTarget" class="filter-select">
-                  <option>全部</option>
-                  <option>全校教师</option>
-                  <option>智能制造学院</option>
-                  <option>虚拟教研室</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label class="filter-label">周期</label>
-                <select v-model="selectedPeriod" class="filter-select">
-                  <option>2026 年度</option>
-                  <option>2025 年度</option>
-                  <option>2024 年度</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label class="filter-label">状态</label>
-                <select v-model="selectedStatus" class="filter-select">
-                  <option>全部</option>
-                  <option>已生成</option>
-                  <option>待更新</option>
-                  <option>数据不足</option>
-                </select>
-              </div>
-              <button class="btn-reset" @click="resetFilters">重置</button>
-            </div>
-            <div class="search-row">
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="搜索报告名称 / 分析问题"
-                class="search-input"
-              />
-            </div>
-          </div>
-
-          <!-- 报告卡片网格 -->
-          <div class="reports-section">
-            <h2 class="section-title">报告列表</h2>
-            <div class="reports-grid">
-              <div
-                v-for="report in reports"
-                :key="report.id"
-                class="report-card"
-              >
-                <div class="card-header">
-                  <div class="card-type">{{ report.type }}</div>
-                  <div
-                    class="card-status"
-                    :class="getStatusClass(report.status)"
-                  >
-                    {{ report.status }}
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h3 class="card-title">{{ report.title }}</h3>
-                  <div class="card-info">
-                    <div class="info-item">
-                      <span class="info-label">对象：</span>
-                      <span class="info-value">{{ report.target }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="info-label">依据：</span>
-                      <span class="info-value">{{ report.basis }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="info-label">生成时间：</span>
-                      <span class="info-value">{{ report.generatedTime }}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <button
-                    v-for="button in report.buttons"
-                    :key="button"
-                    class="btn-action"
-                    @click="handleCardAction(report.id, button)"
-                  >
-                    {{ button }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="assistant-row">
+          <button class="ai-assistant" @click="openAiAssistant">▣ AI 助理</button>
         </div>
       </section>
     </div>
@@ -233,281 +275,382 @@ function getStatusClass(status: string): string {
 <style scoped>
 .report-center-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
 }
 
+.report-center-page *,
+.report-center-page *::before,
+.report-center-page *::after {
+  box-sizing: border-box;
+}
 
-.page-description {
+.page-header {
+  padding: 24px 0 18px;
+  border-bottom: 1px solid #e4ebf5;
+  background: #fff;
+}
+
+.header-content,
+.main-section {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.header-content h1 {
   margin: 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
+  color: #17233d;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  position: relative;
+  padding-top: 22px;
+  padding-bottom: 72px;
 }
 
-.content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  overflow: hidden;
+.intro-row {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #263b63;
+  font-size: 16px;
 }
 
-.tabs-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+.intro-row p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.spark {
+  color: #355cff;
+  font-size: 24px;
+}
+
+.operation-message {
+  margin-left: auto;
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.toolbar {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
 }
 
 .tabs-container {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 26px;
 }
 
 .tab-btn {
-  padding: 10px 20px;
+  position: relative;
+  height: 36px;
+  padding: 0;
+  border: 0;
   background: transparent;
-  border: none;
-  border-radius: 8px;
+  color: #3d4e6f;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.tab-btn:hover {
-  background: white;
-  color: var(--color-text-primary);
 }
 
 .tab-btn.active {
-  background: white;
-  color: var(--color-primary);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #1268f6;
 }
 
-.filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 3px;
+  border-radius: 3px;
+  background: #1268f6;
 }
 
-.filter-row {
+.filters {
   display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-item,
+.search-input {
+  height: 40px;
+  border: 1px solid #d7e2f2;
+  border-radius: 8px;
+  background: #fff;
 }
 
 .filter-item {
+  min-width: 148px;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
 }
 
-.filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-}
-
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
+.filter-item span {
+  color: #66758f;
   font-size: 13px;
-  background: white;
-  cursor: pointer;
-  outline: none;
-  min-width: 140px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.search-row {
-  display: flex;
+.filter-item select {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #17233d;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .search-input {
-  flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  font-size: 14px;
+  width: 250px;
+  padding: 0 12px;
+  color: #17233d;
+  font-size: 13px;
   outline: none;
-  transition: border-color 0.16s ease;
 }
 
-.search-input:focus {
-  border-color: var(--color-primary);
+.search-input:focus,
+.filter-item:focus-within {
+  border-color: #1268f6;
+  box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
+}
+
+.icon-button,
+.btn-reset,
+.btn-action,
+.ai-assistant {
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d7e2f2;
+  background: #fff;
+  color: #1268f6;
+  font-size: 22px;
 }
 
 .btn-reset {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.reports-section {
-  padding: 24px;
-}
-
-.section-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d7e2f2;
+  background: #fff;
+  color: #66758f;
 }
 
 .reports-grid {
+  margin-top: 30px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px 18px;
 }
 
 .report-card {
-  border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: box-shadow 0.16s ease;
-  background: white;
+  min-height: 270px;
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0 18px;
+  padding: 28px 24px 24px;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
 }
 
 .report-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 28px rgba(35, 64, 110, 0.08);
 }
 
-.card-header {
-  padding: 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--color-card-border);
+.report-icon {
+  width: 64px;
+  height: 64px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 34px;
+  font-weight: 800;
 }
 
-.card-type {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+.report-icon.blue {
+  color: #1268f6;
+  background: #e8f0ff;
 }
 
-.card-status {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 8px;
-  border-radius: 4px;
+.report-icon.green {
+  color: #18a663;
+  background: #dff8ec;
 }
 
-.card-status.generated {
-  background: #d1fae5;
-  color: #059669;
+.report-icon.purple {
+  color: #7a35f2;
+  background: #efe7ff;
 }
 
-.card-status.pending-update {
-  background: #fef3c7;
-  color: #d97706;
+.report-icon.orange {
+  color: #f26a16;
+  background: #fff0df;
 }
 
-.card-status.insufficient-data {
-  background: #fee2e2;
-  color: #dc2626;
+.report-icon.teal {
+  color: #00a58a;
+  background: #e1f8f3;
 }
 
-.card-body {
-  padding: 16px;
+.report-icon.chat {
+  color: #1268f6;
+  background: #e8f0ff;
+  font-size: 20px;
 }
 
-.card-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.report-body h2 {
+  margin: 0 0 16px;
+  color: #17233d;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+.report-meta {
+  display: grid;
+  gap: 10px;
+  color: #263b63;
+  font-size: 14px;
   line-height: 1.4;
 }
 
-.card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.report-meta b {
+  color: #4d5d75;
+  font-weight: 700;
 }
 
-.info-item {
-  display: flex;
-  font-size: 13px;
+.card-status {
+  font-style: normal;
+  font-weight: 800;
 }
 
-.info-label {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  min-width: 80px;
+.card-status.generated {
+  color: #18a663;
 }
 
-.info-value {
-  color: var(--color-text-primary);
-  flex: 1;
+.card-status.pending-update {
+  color: #f26a16;
+}
+
+.card-status.insufficient-data {
+  color: #d92d20;
 }
 
 .card-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--color-card-border);
+  grid-column: 2;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 18px;
+  padding-top: 22px;
   flex-wrap: wrap;
 }
 
 .btn-action {
-  padding: 8px 16px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  min-width: 92px;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid #1268f6;
+  background: #fff;
+  color: #1268f6;
 }
 
-.btn-action:hover {
-  background: var(--color-primary);
-  color: white;
+.btn-action:hover,
+.icon-button:hover,
+.btn-reset:hover {
+  border-color: #1268f6;
+  background: #1268f6;
+  color: #fff;
 }
 
-@media (max-width: 1024px) {
+.empty-panel {
+  grid-column: 1 / -1;
+  padding: 34px;
+  border: 1px dashed #d7e2f2;
+  border-radius: 8px;
+  background: #fff;
+  color: #8a98ad;
+  text-align: center;
+}
+
+.assistant-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 34px;
+}
+
+.ai-assistant {
+  height: 54px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 28px;
+  background: #1268f6;
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(18, 104, 246, 0.24);
+  font-size: 16px;
+}
+
+@media (max-width: 1360px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
   .reports-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .reports-grid {
     grid-template-columns: 1fr;
   }
 
-  .filter-row {
-    flex-direction: column;
-    align-items: stretch;
+  .report-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .tabs-container {
-    flex-wrap: wrap;
+  .card-footer {
+    grid-column: 1;
+  }
+
+  .operation-message {
+    margin-left: 0;
   }
 }
 </style>
