@@ -183,17 +183,6 @@ function getStatusClass(status: string): string {
 <template>
   <AdminLayout active-key="practice-records">
     <div class="practice-record-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>企业实践</span>
-            <i class="separator">/</i>
-            <span class="current">记录总览</span>
-          </div>
-        </div>
-      </section>
-
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">

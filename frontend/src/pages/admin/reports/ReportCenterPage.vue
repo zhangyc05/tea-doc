@@ -164,19 +164,7 @@ function getStatusClass(status: string): string {
 <template>
   <AdminLayout active-key="reports">
     <div class="report-center-page">
-      <section class="page-header">
-        <div class="header-content">
-          <h1>分析报告</h1>
-        </div>
-      </section>
-
       <section class="main-section">
-        <div class="intro-row">
-          <span class="spark">✦</span>
-          <p>基于当前平台数据，用 AI 生成分析报告，分析大屏或专题解读。</p>
-          <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
-        </div>
-
         <div class="toolbar">
           <div class="tabs-container">
             <button
@@ -262,10 +250,6 @@ function getStatusClass(status: string): string {
             </div>
           </article>
           <div v-if="filteredReports.length === 0" class="empty-panel">暂无符合条件的分析报告</div>
-        </div>
-
-        <div class="assistant-row">
-          <button class="ai-assistant" @click="openAiAssistant">▣ AI 助理</button>
         </div>
       </section>
     </div>

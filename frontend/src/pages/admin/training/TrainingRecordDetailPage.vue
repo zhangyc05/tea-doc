@@ -107,21 +107,6 @@ function viewRelatedRecord(recordId: string) {
     <div class="training-record-detail-page">
       <section class="page-header">
         <div class="header-content">
-          <div class="breadcrumb-row">
-            <div class="breadcrumb">
-              <span>培训管理</span>
-              <i class="separator">/</i>
-              <span>
-                <RouterLink to="/admin/training/records">记录总览</RouterLink>
-              </span>
-              <i class="separator">/</i>
-              <span class="current">记录详情</span>
-            </div>
-            <button class="btn-back" @click="goBack">
-              ‹ 返回列表
-            </button>
-          </div>
-
           <!-- 标题卡 -->
           <div class="title-card">
             <div class="title-icon" aria-hidden="true"></div>

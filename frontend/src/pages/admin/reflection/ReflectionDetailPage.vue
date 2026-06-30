@@ -100,64 +100,6 @@ function viewMoreRelated() {
 <template>
   <AdminLayout active-key="reflection">
     <div class="reflection-detail-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb-row">
-            <div class="breadcrumb">
-              <span>发展活动</span>
-              <i class="separator">/</i>
-              <span>
-                <RouterLink to="/admin/reflection">教学反思</RouterLink>
-              </span>
-              <i class="separator">/</i>
-              <span class="current">反思详情</span>
-            </div>
-            <button class="btn-back" @click="goBack">
-              ‹ 返回列表
-            </button>
-          </div>
-
-          <!-- 标题卡 -->
-          <div class="title-card">
-            <div class="title-icon" aria-hidden="true"></div>
-            <div class="title-content">
-              <h1 class="main-title">{{ reflectionDetail.theme }}</h1>
-              <div class="basic-info">
-                <div class="info-row">
-                  <div class="info-item">
-                    <span class="info-value">{{ reflectionDetail.teacher }}</span>
-                  </div>
-                  <span class="info-divider">|</span>
-                  <div class="info-item">
-                    <span class="info-value">{{ reflectionDetail.department }}</span>
-                    <span class="info-divider">/</span>
-                    <span class="info-value">{{ reflectionDetail.major }}</span>
-                  </div>
-                  <span class="info-divider">|</span>
-                  <div class="info-item">
-                    <span class="info-value">{{ reflectionDetail.course }}</span>
-                    <span class="info-divider">/</span>
-                    <span class="info-value">{{ reflectionDetail.class }}</span>
-                  </div>
-                </div>
-                <div class="info-row">
-                  <div class="info-item">
-                    <span class="info-label">触发来源：</span>
-                    <span class="info-value">{{ reflectionDetail.trigger }}</span>
-                  </div>
-                  <span class="info-divider">|</span>
-                  <div class="info-item">
-                    <span class="info-label">提交时间：</span>
-                    <span class="info-value">{{ reflectionDetail.submitTime }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- 主体内容区域 -->
       <section class="main-section">
         <div class="detail-workspace">

@@ -151,12 +151,6 @@ function showPendingApplications() {
 <template>
   <AdminLayout active-key="training-applications">
     <div class="training-application-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">培训管理 / <strong>申请处理</strong></div>
-        </div>
-      </section>
-
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">

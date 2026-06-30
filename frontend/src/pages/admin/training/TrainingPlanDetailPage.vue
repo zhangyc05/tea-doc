@@ -128,21 +128,6 @@ function handleApplication(teacherId: string) {
       <!-- 页面头部 -->
       <section class="page-header">
         <div class="header-content">
-          <div class="breadcrumb-row">
-            <div class="breadcrumb">
-              <span>培训管理</span>
-              <i class="separator">/</i>
-              <span>
-                <RouterLink to="/admin/training/plans">计划管理</RouterLink>
-              </span>
-              <i class="separator">/</i>
-              <span class="current">计划详情</span>
-            </div>
-            <button class="btn-back" @click="goBack">
-              ‹ 返回列表
-            </button>
-          </div>
-
           <!-- 标题卡 -->
           <div class="title-card">
             <div class="title-main">

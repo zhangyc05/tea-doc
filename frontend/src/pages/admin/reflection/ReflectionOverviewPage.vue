@@ -186,14 +186,6 @@ function viewRelatedRecords() {
 <template>
   <AdminLayout active-key="reflection">
     <div class="reflection-overview-page">
-      <section class="page-head">
-        <div class="breadcrumb">
-          <span>发展活动</span>
-          <i>/</i>
-          <span>教学反思</span>
-        </div>
-      </section>
-
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">

@@ -133,28 +133,6 @@ function distributionDotClass(tone: ResourceDistributionItem['tone']) {
 <template>
   <AdminLayout>
     <div class="resource-page">
-      <section class="resource-hero">
-        <div class="hero-copy">
-          <div class="hero-eyebrow">
-            <span>培训管理</span>
-            <i />
-            <span>资源库</span>
-          </div>
-          <h1>培训资源库</h1>
-          <p>统一维护校内建设、外部机构、企业合作和公开课程等培训资源，供培训计划、需求匹配和教师申请场景调用。</p>
-          <div class="hero-tags">
-            <span>当前范围：全校</span>
-            <span>周期：2026 年度</span>
-            <span>资源口径：可用 / 待完善 / 停用</span>
-          </div>
-        </div>
-
-        <div class="hero-actions">
-          <Button variant="outline" class="hero-secondary">导出资源</Button>
-          <Button class="hero-primary">新增资源</Button>
-        </div>
-      </section>
-
       <section class="stat-grid">
         <Card
           v-for="stat in trainingResourceStats"

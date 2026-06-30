@@ -147,12 +147,6 @@ function getAvatarTone(index: number): string {
 <template>
   <AdminLayout active-key="ability-profile-teacher">
     <div class="teacher-profile-page">
-      <div class="breadcrumb-line">
-        <span>能力画像</span>
-        <span class="slash">/</span>
-        <span class="current">教师画像</span>
-      </div>
-
       <section class="filter-card">
         <div class="search-control">
           <span class="search-icon">⌕</span>

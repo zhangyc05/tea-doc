@@ -171,20 +171,6 @@ function viewDetail(roomId: string) {
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-room-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div>
-            <div class="breadcrumb">
-              <span>发展活动</span>
-              <i class="separator">/</i>
-              <span class="current">虚拟教研室</span>
-            </div>
-            <p class="page-desc">按教研室查看线上教研开展情况，进入详情查看活动、会议材料和已形成记录。</p>
-          </div>
-          <button class="btn-primary" @click="createRoom">+ 新建教研室</button>
-        </div>
-      </section>
-
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">

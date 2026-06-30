@@ -173,17 +173,6 @@ function getDistributionTone(index: number) {
 <template>
   <AdminLayout active-key="ability-profile-group">
     <div class="ability-profile-group-page">
-      <header class="page-intro">
-        <div class="breadcrumb-line">
-          <span>能力画像</span>
-          <span class="slash">/</span>
-          <strong>群体画像</strong>
-        </div>
-        <p>
-          基于已发布执行版能力清单和正式档案事实，查看全校教师发展结构。用于发展支持、资源配置和下钻分析，不作为正式评价结论。
-        </p>
-      </header>
-
       <section class="top-grid">
         <article class="overview-card score-card">
           <div class="card-copy">

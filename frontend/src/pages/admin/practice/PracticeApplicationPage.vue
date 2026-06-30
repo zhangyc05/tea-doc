@@ -187,20 +187,6 @@ function applyFilters() {
 <template>
   <AdminLayout active-key="practice-applications">
     <div class="practice-application-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>企业实践</span>
-            <i class="separator">/</i>
-            <span class="current">申请处理</span>
-          </div>
-          <p class="page-description">
-            处理教师提交的企业实践申请，判断是否纳入本次实践计划。
-          </p>
-        </div>
-      </section>
-
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">

@@ -162,12 +162,6 @@ function showPendingDemands() {
 <template>
   <AdminLayout active-key="training-demands">
     <div class="training-demand-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">培训管理 / <strong>需求管理</strong></div>
-        </div>
-      </section>
-
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">

@@ -146,12 +146,7 @@ function applyFilters() {
 <template>
   <AdminLayout active-key="practice-tracking">
     <div class="practice-tracking-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">企业实践 / <strong>年度实践跟踪</strong></div>
-          <p class="page-desc">根据 2026 年度教师企业实践 30 天完成情况，查看未完成教师、待审核申请和实践过程状态。</p>
-        </div>
-      </section>
+    
 
       <!-- 统计卡区域 -->
       <section class="stats-section">

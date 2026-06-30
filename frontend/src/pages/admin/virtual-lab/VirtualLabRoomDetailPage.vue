@@ -206,16 +206,6 @@ function getStatusClass(status: string): string {
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-room-detail-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>虚拟教研室</span>
-            <i class="separator">/</i>
-            <span class="current">{{ roomInfo.name }}</span>
-          </div>
-        </div>
-      </section>
-
       <section class="main-section">
         <div class="room-profile-card">
           <div class="room-avatar">👥</div>

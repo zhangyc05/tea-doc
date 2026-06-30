@@ -168,22 +168,6 @@ function viewMaterial(id: string) {
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-record-detail-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>虚拟教研室</span>
-            <i class="separator">/</i>
-            <span>智能制造课程改革虚拟教研室</span>
-            <i class="separator">/</i>
-            <span>教研活动</span>
-            <i class="separator">/</i>
-            <span>智能产线课程项目化改造研讨</span>
-            <i class="separator">/</i>
-            <span class="current">教研记录详情</span>
-          </div>
-        </div>
-      </section>
-
       <section class="main-section">
         <div class="record-profile-card">
           <div class="record-title-row">

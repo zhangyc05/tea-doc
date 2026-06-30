@@ -222,14 +222,7 @@ function showIncompleteResources() {
   <AdminLayout active-key="training-resources">
     <div class="training-resource-page">
       <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div>
-            <div class="breadcrumb">培训管理 / <strong>资源库</strong></div>
-            <h1 class="page-title">资源库</h1>
-          </div>
-        </div>
-      </section>
+      
 
       <!-- 统计卡区域 -->
       <section class="stats-section">

@@ -117,16 +117,7 @@ const filteredRecords = computed(() => {
 <template>
   <AdminLayout active-key="training-records">
     <div class="training-record-page">
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>培训管理</span>
-            <i>/</i>
-            <span class="current">记录总览</span>
-          </div>
-          <h1 class="page-title">记录总览</h1>
-        </div>
-      </section>
+    
 
       <!-- 统计卡区域 -->
       <section class="stats-section">

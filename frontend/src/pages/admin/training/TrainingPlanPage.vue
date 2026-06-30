@@ -175,25 +175,7 @@ const filteredPlans = computed(() => {
 <template>
   <AdminLayout active-key="training-plans">
     <div class="training-plan-page">
-      <!-- 页面头部 -->
-      <section class="page-header">
-        <div class="header-content">
-          <div class="breadcrumb">
-            <span>培训管理</span>
-            <i>/</i>
-            <span class="current">计划管理</span>
-          </div>
-          <div class="title-row">
-            <div>
-              <h1 class="page-title">计划管理</h1>
-              <p class="page-subtitle">创建、发布和跟踪培训计划的执行情况</p>
-            </div>
-            <button class="btn-primary btn-create" @click="openDrawer">
-              新建培训计划
-            </button>
-          </div>
-        </div>
-      </section>
+     
 
       <!-- 统计卡区域 -->
       <section class="stats-section">
