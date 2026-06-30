@@ -1,0 +1,21 @@
+.mobile-page {
+  min-height: 100vh;
+  padding: calc(var(--status-bar-height) + 16rpx) $teacher-mobile-page-x calc($teacher-mobile-tabbar-height + env(safe-area-inset-bottom) + 32rpx);
+  background:
+    radial-gradient(circle at 16% 2%, rgba(216, 252, 234, 0.74), transparent 30%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbff 46%, #f5f9ff 100%);
+}
+
+.mobile-card {
+  border: 1rpx solid $teacher-mobile-card-border;
+  border-radius: $teacher-mobile-radius-lg;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 20rpx 48rpx rgba(35, 51, 87, 0.07);
+}
+
+.mobile-section-title {
+  color: $teacher-mobile-text-primary;
+  font-size: 38rpx;
+  font-weight: 900;
+  line-height: 1.2;
+}

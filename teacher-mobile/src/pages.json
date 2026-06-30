@@ -1,0 +1,65 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/activity/index",
+      "style": {
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/todo/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "tabBar": {
+    "custom": true,
+    "color": "#667089",
+    "selectedColor": "#0EC165",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/todo/index",
+        "text": "待办"
+      },
+      {
+        "pagePath": "pages/archive/index",
+        "text": "档案"
+      },
+      {
+        "pagePath": "pages/activity/index",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#F7FAFF",
+    "backgroundTextStyle": "dark",
+    "navigationBarTextStyle": "black"
+  }
+}
