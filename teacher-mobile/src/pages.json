@@ -32,30 +32,6 @@
       }
     }
   ],
-  "tabBar": {
-    "custom": true,
-    "color": "#667089",
-    "selectedColor": "#0EC165",
-    "backgroundColor": "#FFFFFF",
-    "list": [
-      {
-        "pagePath": "pages/todo/index",
-        "text": "待办"
-      },
-      {
-        "pagePath": "pages/archive/index",
-        "text": "档案"
-      },
-      {
-        "pagePath": "pages/activity/index",
-        "text": "活动"
-      },
-      {
-        "pagePath": "pages/profile/index",
-        "text": "我的"
-      }
-    ]
-  },
   "globalStyle": {
     "navigationStyle": "custom",
     "backgroundColor": "#F7FAFF",
