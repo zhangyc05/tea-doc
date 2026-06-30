@@ -8,6 +8,7 @@ const route = useRoute()
 
 // 从路由参数获取计划ID
 const planId = route.params.planId as string
+const actionMessage = ref('')
 
 // 计划详情数据
 const planDetail = ref({
@@ -23,6 +24,14 @@ const planDetail = ref({
   relatedDemand: '数字化教学能力提升需求',
   relatedResource: '职业教育数字化教学能力提升培训',
   description: '本次培训旨在提升教师的数字化教学能力，掌握现代教育技术和方法。',
+  organization: '教师发展中心',
+  provider: '省职业教育教师发展中心',
+  applicationRequired: '需要',
+  quota: 30,
+  applicationStartDate: '2026-06-20',
+  applicationEndDate: '2026-07-05',
+  location: '教师发展中心 302 实训室',
+  entry: '腾讯会议链接，开课前开放',
   schedule: [
     { date: '2026-07-10', content: '开班仪式，数字化教学理念介绍' },
     { date: '2026-07-11', content: '数字化教学工具实操训练' },
@@ -34,8 +43,31 @@ const planDetail = ref({
   recordDestination: '成长档案 / 个人发展维度',
 })
 
+const relatedDemands = [
+  {
+    direction: '数字化教学',
+    source: '能力画像观察',
+    target: '24 名教师',
+    note: '课堂数据应用与数字资源建设需求集中',
+  },
+  {
+    direction: 'AI 赋能课程建设',
+    source: '教师主动提出',
+    target: '8 名教师',
+    note: '教师主动提出相关学习需求',
+  },
+]
+
+const progressNodes = [
+  { label: '计划创建', date: '2026-06-10', active: true },
+  { label: '计划发布', date: '2026-06-18', active: true },
+  { label: '报名截止', date: '2026-07-05', active: true },
+  { label: '培训开始', date: '2026-07-10', active: false },
+  { label: '培训结束', date: '2026-07-14', active: false },
+]
+
 // 参与教师数据
-const participants = [
+const participants = ref([
   {
     id: 'lin',
     name: '林老师',
@@ -72,18 +104,21 @@ const participants = [
     participationStatus: '待开始',
     materialStatus: '—',
   },
-]
+])
 
 function goBack() {
   router.push('/admin/training/plans')
 }
 
 function viewTeacherDetail(teacherId: string) {
-  console.log('查看教师详情', teacherId)
+  router.push(`/admin/archive/teacher/${teacherId}`)
 }
 
 function handleApplication(teacherId: string) {
-  console.log('处理申请', teacherId)
+  const participant = participants.value.find((item) => item.id === teacherId)
+  if (!participant) return
+  participant.applicationStatus = '已同意'
+  actionMessage.value = `已同意 ${participant.name} 的培训申请`
 }
 </script>
 
@@ -104,37 +139,41 @@ function handleApplication(teacherId: string) {
               <span class="current">计划详情</span>
             </div>
             <button class="btn-back" @click="goBack">
-              返回列表
+              ‹ 返回列表
             </button>
           </div>
 
           <!-- 标题卡 -->
           <div class="title-card">
-            <h1 class="main-title">{{ planDetail.name }}</h1>
-            <div class="summary-info">
-              <div class="info-item">
-                <span class="info-label">培训方向：</span>
-                <span class="info-value">{{ planDetail.direction }}</span>
+            <div class="title-main">
+              <h1 class="main-title">{{ planDetail.name }}</h1>
+              <div class="summary-info">
+                <div class="info-item">
+                  <span class="info-label">培训方向：</span>
+                  <span class="info-value">{{ planDetail.direction }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">面向对象：</span>
+                  <span class="info-value">{{ planDetail.target }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">培训时间：</span>
+                  <span class="info-value">{{ planDetail.startDate }} 至 {{ planDetail.endDate }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">参与方式：</span>
+                  <span class="info-value">{{ planDetail.participation }}</span>
+                </div>
               </div>
-              <div class="info-item">
-                <span class="info-label">面向对象：</span>
-                <span class="info-value">{{ planDetail.target }}</span>
+            </div>
+            <div class="title-stats">
+              <div class="title-stat-card">
+                <span class="title-stat-label">当前状态</span>
+                <strong>{{ planDetail.status }}</strong>
               </div>
-              <div class="info-item">
-                <span class="info-label">培训时间：</span>
-                <span class="info-value">{{ planDetail.startDate }} 至 {{ planDetail.endDate }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">参与方式：</span>
-                <span class="info-value">{{ planDetail.participation }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">当前状态：</span>
-                <span class="info-value status">{{ planDetail.status }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">参与情况：</span>
-                <span class="info-value">{{ planDetail.currentParticipants }} / {{ planDetail.maxParticipants }} 人</span>
+              <div class="title-stat-card">
+                <span class="title-stat-label">参与情况</span>
+                <strong>{{ planDetail.currentParticipants }} <em>/ {{ planDetail.maxParticipants }} 人</em></strong>
               </div>
             </div>
           </div>
@@ -154,12 +193,28 @@ function handleApplication(teacherId: string) {
               <div class="card-body">
                 <div class="info-grid">
                   <div class="info-row">
+                    <span class="info-label">计划名称：</span>
+                    <span class="info-value">{{ planDetail.name }}</span>
+                  </div>
+                  <div class="info-row">
                     <span class="info-label">培训方向：</span>
                     <span class="info-value">{{ planDetail.direction }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">面向对象：</span>
                     <span class="info-value">{{ planDetail.target }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">组织部门：</span>
+                    <span class="info-value">{{ planDetail.organization }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">培训资源：</span>
+                    <span class="info-value">{{ planDetail.relatedResource }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">培训机构：</span>
+                    <span class="info-value">{{ planDetail.provider }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">培训时间：</span>
@@ -170,25 +225,17 @@ function handleApplication(teacherId: string) {
                     <span class="info-value">{{ planDetail.participation }}</span>
                   </div>
                   <div class="info-row">
-                    <span class="info-label">当前状态：</span>
-                    <span class="info-value">{{ planDetail.status }}</span>
+                    <span class="info-label">是否需要申请处理：</span>
+                    <span class="info-value">{{ planDetail.applicationRequired }}</span>
                   </div>
                   <div class="info-row">
-                    <span class="info-label">参与情况：</span>
-                    <span class="info-value">{{ planDetail.currentParticipants }} / {{ planDetail.maxParticipants }} 人</span>
+                    <span class="info-label">计划名额：</span>
+                    <span class="info-value">{{ planDetail.quota }} 人</span>
                   </div>
                   <div class="info-row">
-                    <span class="info-label">关联需求：</span>
-                    <span class="info-value">{{ planDetail.relatedDemand }}</span>
+                    <span class="info-label">材料要求：</span>
+                    <span class="info-value">{{ planDetail.materialRequirements.join('、') }}</span>
                   </div>
-                  <div class="info-row">
-                    <span class="info-label">关联资源：</span>
-                    <span class="info-value">{{ planDetail.relatedResource }}</span>
-                  </div>
-                </div>
-                <div v-if="planDetail.description" class="description-section">
-                  <div class="info-label">计划说明：</div>
-                  <div class="description-text">{{ planDetail.description }}</div>
                 </div>
               </div>
             </div>
@@ -199,7 +246,25 @@ function handleApplication(teacherId: string) {
                 <h2 class="card-title">关联需求</h2>
               </div>
               <div class="card-body">
-                <p class="card-text">{{ planDetail.relatedDemand }}</p>
+                <p class="card-text">{{ planDetail.relatedDemand }} 32 条，来源：能力画像观察 24 条，教师主动提出 8 条，涉及院系：智能制造学院、电子信息学院。</p>
+                <table class="demand-table">
+                  <thead>
+                    <tr>
+                      <th>需求方向</th>
+                      <th>需求来源</th>
+                      <th>涉及对象</th>
+                      <th>匹配说明</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="demand in relatedDemands" :key="demand.direction">
+                      <td>{{ demand.direction }}</td>
+                      <td>{{ demand.source }}</td>
+                      <td>{{ demand.target }}</td>
+                      <td>{{ demand.note }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -209,14 +274,26 @@ function handleApplication(teacherId: string) {
                 <h2 class="card-title">计划安排</h2>
               </div>
               <div class="card-body">
-                <div class="schedule-list">
-                  <div
-                    v-for="(item, index) in planDetail.schedule"
-                    :key="index"
-                    class="schedule-item"
-                  >
-                    <div class="schedule-date">{{ item.date }}</div>
-                    <div class="schedule-content">{{ item.content }}</div>
+                <div class="arrangement-grid">
+                  <div class="info-row">
+                    <span class="info-label">报名时间：</span>
+                    <span class="info-value">{{ planDetail.applicationStartDate }} 至 {{ planDetail.applicationEndDate }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">培训地点：</span>
+                    <span class="info-value">{{ planDetail.location }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">培训时间：</span>
+                    <span class="info-value">{{ planDetail.startDate }} 至 {{ planDetail.endDate }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">线上入口：</span>
+                    <span class="info-value">{{ planDetail.entry }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">培训方式：</span>
+                    <span class="info-value">线上 + 线下</span>
                   </div>
                 </div>
               </div>
@@ -228,16 +305,19 @@ function handleApplication(teacherId: string) {
                 <h2 class="card-title">执行进度</h2>
               </div>
               <div class="card-body">
-                <div class="progress-info">
-                  <div class="progress-item">
-                    <span class="progress-label">当前状态：</span>
-                    <span class="progress-value">{{ planDetail.status }}</span>
-                  </div>
-                  <div class="progress-item">
-                    <span class="progress-label">参与人数：</span>
-                    <span class="progress-value">{{ planDetail.currentParticipants }} / {{ planDetail.maxParticipants }}</span>
+                <div class="timeline">
+                  <div
+                    v-for="node in progressNodes"
+                    :key="node.label"
+                    class="timeline-node"
+                    :class="{ active: node.active }"
+                  >
+                    <span class="timeline-dot"></span>
+                    <strong>{{ node.label }}</strong>
+                    <small>{{ node.date }}</small>
                   </div>
                 </div>
+                <p class="progress-note">培训结束后，教师在教师端确认总结并补充证书。</p>
               </div>
             </div>
 
@@ -247,6 +327,7 @@ function handleApplication(teacherId: string) {
                 <h2 class="card-title">参与教师</h2>
               </div>
               <div class="card-body">
+                <p v-if="actionMessage" class="action-message">{{ actionMessage }}</p>
                 <table class="participants-table">
                   <thead>
                     <tr>
@@ -262,8 +343,12 @@ function handleApplication(teacherId: string) {
                     <tr v-for="participant in participants" :key="participant.id">
                       <td>{{ participant.name }}</td>
                       <td>{{ participant.department }} / {{ participant.major }}</td>
-                      <td>{{ participant.applicationStatus }}</td>
-                      <td>{{ participant.participationStatus }}</td>
+                      <td>
+                        <span class="status-text" :class="participant.applicationStatus">{{ participant.applicationStatus }}</span>
+                      </td>
+                      <td>
+                        <span class="status-text blue">{{ participant.participationStatus }}</span>
+                      </td>
                       <td>{{ participant.materialStatus }}</td>
                       <td>
                         <button
@@ -322,6 +407,7 @@ function handleApplication(teacherId: string) {
                     :style="{ width: (planDetail.currentParticipants / planDetail.maxParticipants * 100) + '%' }"
                   ></div>
                 </div>
+                <div class="stat-caption">报名进度 {{ Math.round(planDetail.currentParticipants / planDetail.maxParticipants * 100) }}%</div>
               </div>
             </div>
 
@@ -363,26 +449,29 @@ function handleApplication(teacherId: string) {
 <style scoped>
 .training-plan-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+}
+
+.training-plan-detail-page *,
+.training-plan-detail-page *::before,
+.training-plan-detail-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 24px 0 0;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
 .breadcrumb-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .breadcrumb {
@@ -390,97 +479,137 @@ function handleApplication(teacherId: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  color: #172b55;
+  font-weight: 800;
 }
 
 .breadcrumb a {
-  color: var(--color-text-secondary);
+  color: #172b55;
   text-decoration: none;
   transition: color 0.16s ease;
 }
 
 .breadcrumb a:hover {
-  color: var(--color-primary);
+  color: #0f5eef;
 }
 
 .breadcrumb .separator {
-  color: var(--color-text-hint);
+  color: #9aa9c0;
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
-  font-weight: 600;
+  color: #0f5eef;
+  font-weight: 800;
 }
 
 .btn-back {
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-back:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: #0c4fd0;
 }
 
 /* 标题卡 */
 .title-card {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 24px;
-  border: 1px solid var(--color-card-border);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 28px;
+  align-items: center;
+  min-height: 132px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px 28px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .main-title {
-  margin: 0 0 20px 0;
+  margin: 0 0 18px;
   font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
+  line-height: 1.3;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .summary-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 40px;
 }
 
 .info-item {
   display: flex;
   gap: 8px;
   align-items: center;
+  min-width: 0;
 }
 
 .info-label {
-  font-size: 13px;
-  color: var(--color-text-hint);
+  font-size: 14px;
+  color: #405985;
+  flex: none;
 }
 
 .info-value {
-  font-size: 13px;
-  color: var(--color-text-primary);
-  font-weight: 500;
+  font-size: 14px;
+  color: #172b55;
+  font-weight: 700;
+  min-width: 0;
 }
 
-.info-value.status {
-  color: var(--color-primary);
-  font-weight: 600;
+.title-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.title-stat-card {
+  min-height: 86px;
+  padding: 18px 22px;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.title-stat-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #7586a6;
+  font-weight: 700;
+}
+
+.title-stat-card strong {
+  font-size: 26px;
+  line-height: 1;
+  color: #0f5eef;
+  font-weight: 900;
+}
+
+.title-stat-card em {
+  color: #7586a6;
+  font-size: 20px;
+  font-style: normal;
 }
 
 /* 主体内容区域 */
 .main-section {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 16px 0 32px;
 }
 
 .detail-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 376px;
   gap: 16px;
 }
 
@@ -492,163 +621,210 @@ function handleApplication(teacherId: string) {
 }
 
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .card-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 18px 20px 8px;
 }
 
 .card-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .card-body {
-  padding: 24px;
+  padding: 10px 20px 18px;
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 12px 34px;
 }
 
 .info-row {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-.description-section {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--color-card-border);
-}
-
-.description-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  min-width: 0;
 }
 
 .card-text {
-  margin: 0;
+  margin: 0 0 12px;
   font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  line-height: 1.75;
+  color: #172b55;
 }
 
-.schedule-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.schedule-item {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.schedule-date {
-  width: 100px;
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.schedule-content {
-  flex: 1;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  line-height: 1.5;
-}
-
-.progress-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.progress-item {
-  display: flex;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.progress-label {
-  color: var(--color-text-hint);
-}
-
-.progress-value {
-  color: var(--color-text-primary);
-  font-weight: 500;
-}
-
+.demand-table,
 .participants-table {
   width: 100%;
   border-collapse: collapse;
+  border: 1px solid #d9e5f7;
+  border-radius: 6px;
+  overflow: hidden;
+  table-layout: fixed;
 }
 
+.demand-table th,
 .participants-table th {
-  padding: 12px;
-  text-align: left;
+  height: 34px;
+  padding: 0 12px;
+  text-align: center;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  font-weight: 800;
+  color: #31466f;
+  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid #d9e5f7;
+  background: #f4f7fc;
 }
 
+.demand-table td,
 .participants-table td {
-  padding: 12px;
+  height: 36px;
+  padding: 0 12px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.55;
+  color: #172b55;
+  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid #e5edf8;
+  text-align: center;
 }
 
+.demand-table th:last-child,
+.demand-table td:last-child,
+.participants-table th:last-child,
+.participants-table td:last-child {
+  border-right: 0;
+}
+
+.demand-table tr:last-child td,
 .participants-table tr:last-child td {
-  border-bottom: none;
+  border-bottom: 0;
+}
+
+.arrangement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 36px;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
+  padding: 10px 20px 4px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 54px;
+  right: 54px;
+  top: 28px;
+  height: 2px;
+  background: #c8d8ef;
+}
+
+.timeline-node {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  z-index: 1;
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 13px;
+  border-radius: 50%;
+  background: #c8d8ef;
+  box-shadow: 0 0 0 5px #fff;
+}
+
+.timeline-node.active .timeline-dot {
+  background: #0f5eef;
+}
+
+.timeline-node strong {
+  font-size: 13px;
+  color: #172b55;
+  font-weight: 800;
+}
+
+.timeline-node small {
+  font-size: 13px;
+  color: #7586a6;
+}
+
+.progress-note {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: #172b55;
+  line-height: 1.7;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #0f5eef;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
-  transition: background 0.16s ease;
-  margin-right: 8px;
+  transition: color 0.16s ease;
+  margin-right: 10px;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0c4fd0;
 }
 
 .btn-handle {
-  padding: 6px 12px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0;
+  background: transparent;
+  color: #f97316;
+  border: 0;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-handle:hover {
-  background: var(--color-primary);
-  color: white;
+  color: #c75a0b;
+}
+
+.status-text {
+  font-weight: 800;
+}
+
+.status-text.已同意 {
+  color: #0ca65f;
+}
+
+.status-text.待处理 {
+  color: #f97316;
+}
+
+.status-text.blue {
+  color: #0f5eef;
+}
+
+.action-message {
+  margin: 0 0 10px;
+  color: #0f5eef;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 /* 侧边栏 */
@@ -660,56 +836,72 @@ function handleApplication(teacherId: string) {
 }
 
 .sidebar-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
+  padding: 22px 20px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .sidebar-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 18px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+}
+
+.sidebar .info-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
 }
 
 .participation-stat {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .stat-number {
   font-size: 32px;
-  font-weight: 700;
-  color: var(--color-primary);
+  line-height: 1;
+  font-weight: 900;
+  color: #0f5eef;
 }
 
 .stat-total {
   font-size: 14px;
-  color: var(--color-text-hint);
+  color: #7586a6;
+  font-weight: 800;
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #e5e7eb;
+  background: #e5edf8;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary);
+  background: #0f5eef;
   border-radius: 4px;
   transition: width 0.3s ease;
+}
+
+.stat-caption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #7586a6;
 }
 
 .material-list {
@@ -719,25 +911,58 @@ function handleApplication(teacherId: string) {
 }
 
 .material-item {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  color: #172b55;
   padding-left: 8px;
 }
 
 .destination-text {
-  margin: 0 0 8px 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #172b55;
 }
 
 .destination-text:last-child {
   margin-bottom: 0;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1300px) {
+  .header-content,
+  .main-section {
+    width: min(100% - 32px, 1500px);
+  }
+
+  .title-card {
+    grid-template-columns: 1fr;
+  }
+
   .detail-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .summary-info,
+  .info-grid,
+  .arrangement-grid,
+  .title-stats,
+  .sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .card-body {
+    overflow-x: auto;
+  }
+
+  .participants-table,
+  .demand-table {
+    min-width: 760px;
   }
 }
 </style>

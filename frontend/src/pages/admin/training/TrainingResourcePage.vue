@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // 筛选条件
@@ -8,6 +8,9 @@ const selectedDirection = ref('全部')
 const selectedLevel = ref('全部')
 const selectedSource = ref('全部')
 const searchQuery = ref('')
+const appliedSearchQuery = ref('')
+const activeResourceId = ref('1')
+const operationMessage = ref('')
 
 // 统计数据
 const stats = {
@@ -30,7 +33,7 @@ interface TrainingResource {
   status: string
 }
 
-const resources: TrainingResource[] = [
+const resources = ref<TrainingResource[]>([
   {
     id: '1',
     name: '职业教育数字化教学能力提升培训',
@@ -75,29 +78,94 @@ const resources: TrainingResource[] = [
     source: '外部机构',
     status: '信息待完善',
   },
-]
+  {
+    id: '5',
+    name: '教学评价能力提升培训',
+    direction: '教学评价',
+    level: '省级',
+    hours: '20学时',
+    institution: '教育评估中心',
+    target: '教学骨干',
+    source: '外部机构',
+    status: '可用',
+  },
+  {
+    id: '6',
+    name: '教学资源建设公开课',
+    direction: '数字化教学',
+    level: '公开课程',
+    hours: '8学时',
+    institution: '公开平台',
+    target: '需自主学习教师',
+    source: '公开课程',
+    status: '已停用',
+  },
+  {
+    id: '7',
+    name: '教师教学创新能力提升工作坊',
+    direction: '教学创新',
+    level: '校级',
+    hours: '16学时',
+    institution: '教师发展中心',
+    target: '全校教师',
+    source: '校内建设',
+    status: '可用',
+  },
+  {
+    id: '8',
+    name: '企业实践教学案例开发培训',
+    direction: '实践教学',
+    level: '企业培训',
+    hours: '24学时',
+    institution: '合作企业联合体',
+    target: '专业教师',
+    source: '企业合作',
+    status: '可用',
+  },
+])
 
 // 右侧资源概览
 const resourceOverview = {
   sourceDistribution: [
-    { label: '校内建设', count: 18 },
-    { label: '外部机构', count: 24 },
-    { label: '企业合作', count: 14 },
-    { label: '公开课程', count: 12 },
+    { label: '校内建设', count: 18, rate: '26.5%' },
+    { label: '外部机构', count: 24, rate: '35.3%' },
+    { label: '企业合作', count: 14, rate: '20.6%' },
+    { label: '公开课程', count: 12, rate: '17.6%' },
   ],
   levelDistribution: [
-    { label: '国家级', count: 8 },
-    { label: '省级', count: 22 },
-    { label: '市级', count: 12 },
-    { label: '校级', count: 16 },
-    { label: '企业培训', count: 10 },
+    { label: '国家级', count: 8, rate: '11.8%' },
+    { label: '省级', count: 22, rate: '32.4%' },
+    { label: '市级', count: 12, rate: '17.6%' },
+    { label: '校级', count: 16, rate: '23.5%' },
+    { label: '企业培训', count: 10, rate: '14.7%' },
   ],
   statusDistribution: [
-    { label: '可用', count: 52 },
-    { label: '信息待完善', count: 10 },
-    { label: '已停用', count: 6 },
+    { label: '可用资源', count: 52, rate: '76.5%' },
+    { label: '信息待完善', count: 10, rate: '14.7%' },
+    { label: '已停用', count: 6, rate: '8.8%' },
   ],
 }
+
+const filteredResources = computed(() => {
+  const keyword = appliedSearchQuery.value.trim().toLowerCase()
+
+  return resources.value.filter((resource) => {
+    const matchesStatus = selectedStatus.value === '全部' || resource.status === selectedStatus.value
+    const matchesDirection = selectedDirection.value === '全部' || resource.direction === selectedDirection.value
+    const matchesLevel = selectedLevel.value === '全部' || resource.level === selectedLevel.value
+    const matchesSource = selectedSource.value === '全部' || resource.source === selectedSource.value
+    const matchesKeyword = !keyword
+      || `${resource.name} ${resource.institution} ${resource.direction} ${resource.target}`
+        .toLowerCase()
+        .includes(keyword)
+
+    return matchesStatus && matchesDirection && matchesLevel && matchesSource && matchesKeyword
+  })
+})
+
+const activeResource = computed(() => {
+  return resources.value.find((resource) => resource.id === activeResourceId.value) ?? resources.value[0]
+})
 
 function resetFilters() {
   selectedStatus.value = '全部'
@@ -105,14 +173,48 @@ function resetFilters() {
   selectedLevel.value = '全部'
   selectedSource.value = '全部'
   searchQuery.value = ''
+  appliedSearchQuery.value = ''
+  operationMessage.value = '已重置筛选条件。'
 }
 
 function viewDetail(id: string) {
-  console.log('查看资源详情', id)
+  activeResourceId.value = id
+  operationMessage.value = '已在右侧展示资源摘要。'
 }
 
 function addResource() {
-  console.log('新增资源')
+  const draftId = `draft-${resources.value.length + 1}`
+  resources.value.unshift({
+    id: draftId,
+    name: '新增培训资源待完善',
+    direction: '数字化教学',
+    level: '校级',
+    hours: '待补充',
+    institution: '教师发展中心',
+    target: '待明确',
+    source: '校内建设',
+    status: '信息待完善',
+  })
+  activeResourceId.value = draftId
+  selectedStatus.value = '信息待完善'
+  appliedSearchQuery.value = ''
+  searchQuery.value = ''
+  operationMessage.value = '已创建待完善资源草稿。'
+}
+
+function applyFilters() {
+  appliedSearchQuery.value = searchQuery.value
+  operationMessage.value = `已筛选出 ${filteredResources.value.length} 条资源。`
+}
+
+function showIncompleteResources() {
+  selectedStatus.value = '信息待完善'
+  selectedDirection.value = '全部'
+  selectedLevel.value = '全部'
+  selectedSource.value = '全部'
+  searchQuery.value = ''
+  appliedSearchQuery.value = ''
+  operationMessage.value = '已切换到待完善资源。'
 }
 </script>
 
@@ -122,7 +224,10 @@ function addResource() {
       <!-- 页面头部 -->
       <section class="page-header">
         <div class="header-content">
-          <h1 class="page-title">资源库</h1>
+          <div>
+            <div class="breadcrumb">培训管理 / <strong>资源库</strong></div>
+            <h1 class="page-title">资源库</h1>
+          </div>
         </div>
       </section>
 
@@ -130,20 +235,36 @@ function addResource() {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-value">{{ stats.total }}</div>
-            <div class="stat-label">资源总数</div>
+            <div class="stat-icon icon-file">▤</div>
+            <div>
+              <div class="stat-label">资源总数</div>
+              <div class="stat-value">{{ stats.total }} <span>个</span></div>
+              <div class="stat-desc">资源库内全部培训资源</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.available }}</div>
-            <div class="stat-label">可用资源</div>
+            <div class="stat-icon icon-check">✓</div>
+            <div>
+              <div class="stat-label">可用资源</div>
+              <div class="stat-value">{{ stats.available }} <span>个</span></div>
+              <div class="stat-desc">信息完整、当前可被使用</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.incomplete }}</div>
-            <div class="stat-label">信息待完善</div>
+            <div class="stat-icon icon-edit">▰</div>
+            <div>
+              <div class="stat-label">信息待完善</div>
+              <div class="stat-value">{{ stats.incomplete }} <span>个</span></div>
+              <div class="stat-desc">缺少关键字段需完善</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.sourceTypes }}</div>
-            <div class="stat-label">资源来源</div>
+            <div class="stat-icon icon-book">▣</div>
+            <div>
+              <div class="stat-label">资源来源</div>
+              <div class="stat-value">{{ stats.sourceTypes }} <span>类</span></div>
+              <div class="stat-desc">校内建设、外部机构等</div>
+            </div>
           </div>
         </div>
       </section>
@@ -197,18 +318,21 @@ function addResource() {
                       <option>公开课程</option>
                     </select>
                   </div>
-                  <button class="btn-reset" @click="resetFilters">重置</button>
-                  <button class="btn-secondary">查询</button>
-                  <button class="btn-primary" @click="addResource">新增资源</button>
                 </div>
                 <div class="search-row">
+                  <label class="filter-label">搜索：</label>
                   <input
                     v-model="searchQuery"
                     type="text"
                     placeholder="搜索资源名称/培训机构/关键词"
                     class="search-input"
+                    @keyup.enter="applyFilters"
                   />
+                  <button class="btn-reset" @click="resetFilters">重置</button>
+                  <button class="btn-secondary" @click="applyFilters">查询</button>
+                  <button class="btn-primary" @click="addResource">＋ 新增资源</button>
                 </div>
+                <div v-if="operationMessage" class="operation-message">{{ operationMessage }}</div>
               </div>
 
               <!-- 数据表格 -->
@@ -227,8 +351,12 @@ function addResource() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="resource in resources" :key="resource.id">
-                      <td>{{ resource.name }}</td>
+                    <tr
+                      v-for="resource in filteredResources"
+                      :key="resource.id"
+                      :class="{ active: activeResourceId === resource.id }"
+                    >
+                      <td class="resource-name">{{ resource.name }}</td>
                       <td>{{ resource.direction }}</td>
                       <td>{{ resource.level }} / {{ resource.hours }}</td>
                       <td>{{ resource.institution }}</td>
@@ -245,8 +373,29 @@ function addResource() {
                         </button>
                       </td>
                     </tr>
+                    <tr v-if="filteredResources.length === 0">
+                      <td colspan="8" class="empty-cell">暂无符合条件的培训资源</td>
+                    </tr>
                   </tbody>
                 </table>
+              </div>
+              <div class="pagination-row">
+                <span>共 {{ stats.total }} 条</span>
+                <select class="page-size" aria-label="每页条数">
+                  <option>10条/页</option>
+                </select>
+                <button class="page-button" type="button" aria-label="上一页">‹</button>
+                <button class="page-button active" type="button">1</button>
+                <button class="page-button" type="button">2</button>
+                <button class="page-button" type="button">3</button>
+                <button class="page-button" type="button">4</button>
+                <button class="page-button" type="button">5</button>
+                <button class="page-button" type="button">6</button>
+                <button class="page-button" type="button">7</button>
+                <button class="page-button" type="button" aria-label="下一页">›</button>
+                <span>前往</span>
+                <input class="page-input" value="1" aria-label="页码" readonly />
+                <span>页</span>
               </div>
             </div>
           </div>
@@ -264,8 +413,9 @@ function addResource() {
                     :key="item.label"
                     class="distribution-item"
                   >
+                    <span class="item-dot"></span>
                     <span class="item-label">{{ item.label }}</span>
-                    <span class="item-count">{{ item.count }}</span>
+                    <span class="item-count">{{ item.count }} ({{ item.rate }})</span>
                   </div>
                 </div>
               </div>
@@ -278,8 +428,9 @@ function addResource() {
                     :key="item.label"
                     class="distribution-item"
                   >
+                    <span class="item-dot"></span>
                     <span class="item-label">{{ item.label }}</span>
-                    <span class="item-count">{{ item.count }}</span>
+                    <span class="item-count">{{ item.count }} ({{ item.rate }})</span>
                   </div>
                 </div>
               </div>
@@ -292,11 +443,24 @@ function addResource() {
                     :key="item.label"
                     class="distribution-item"
                   >
+                    <span class="item-dot"></span>
                     <span class="item-label">{{ item.label }}</span>
-                    <span class="item-count">{{ item.count }}</span>
+                    <span class="item-count">{{ item.count }} ({{ item.rate }})</span>
                   </div>
                 </div>
               </div>
+
+              <div class="selected-resource" v-if="activeResource">
+                <h4 class="section-title">当前查看资源</h4>
+                <div class="selected-name">{{ activeResource.name }}</div>
+                <div class="selected-meta">
+                  {{ activeResource.level }} · {{ activeResource.hours }} · {{ activeResource.source }}
+                </div>
+              </div>
+
+              <button class="outline-action" type="button" @click="showIncompleteResources">
+                查看待完善资源
+              </button>
             </div>
           </div>
         </div>
@@ -308,75 +472,137 @@ function addResource() {
 <style scoped>
 .training-resource-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
+}
+
+.training-resource-page *,
+.training-resource-page *::before,
+.training-resource-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 24px 0 12px;
+  background: #f6f9ff;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
+  max-width: 1560px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 22px;
 }
 
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.stats-container {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.stat-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-}
-
-.stat-label {
+.breadcrumb {
+  color: #66758f;
   font-size: 14px;
-  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
-.main-section {
-  max-width: var(--admin-content-max-width);
+.breadcrumb strong {
+  color: #17233d;
+}
+
+.page-title {
+  margin: 10px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #14213d;
+}
+
+.stats-section {
+  background: #f6f9ff;
+}
+
+.stats-container {
+  max-width: 1560px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 0 22px 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-card {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  min-height: 132px;
+  padding: 22px 30px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+}
+
+.stat-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.icon-file {
+  color: #18b675;
+  background: #dff8ec;
+}
+
+.icon-check {
+  color: #1fbd75;
+  background: #dcf7e9;
+}
+
+.icon-edit {
+  color: #ff8a1f;
+  background: #fff0df;
+}
+
+.icon-book {
+  color: #7347e9;
+  background: #eee7ff;
+}
+
+.stat-value {
+  margin-top: 8px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 700;
+  color: #091632;
+}
+
+.stat-value span {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 15px;
+  color: #17233d;
+  font-weight: 600;
+}
+
+.stat-desc {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6c7890;
+}
+
+.main-section {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 22px 30px;
 }
 
 .resource-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 16px;
+  align-items: start;
 }
 
 .main-content {
@@ -384,88 +610,99 @@ function addResource() {
 }
 
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
 }
 
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid #dce6f5;
 }
 
 .filter-row {
-  display: flex;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(148px, 1fr));
+  gap: 20px;
   align-items: flex-end;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  margin-bottom: 18px;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
 }
 
 .filter-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #1d2b48;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  width: 100%;
+  height: 38px;
+  padding: 0 36px 0 14px;
+  border: 1px solid #d7e2f1;
   border-radius: 6px;
   font-size: 13px;
-  background: white;
+  color: #1a2944;
+  background: #fff;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
 }
 
 .search-row {
   display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .search-input {
-  flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  flex: 0 1 420px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d7e2f1;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
 }
 
 .search-input:focus {
-  border-color: var(--color-primary);
+  border-color: #1d6df2;
 }
 
 .btn-reset {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--color-card-border);
+  height: 40px;
+  padding: 0 20px;
+  background: #fff;
+  border: 1px solid #d7e2f1;
   border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  color: #44536c;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: #1d6df2;
+  color: #1d6df2;
 }
 
 .btn-secondary {
-  padding: 10px 20px;
-  background: white;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 22px;
+  background: #1268f6;
+  color: #fff;
+  border: 1px solid #1268f6;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -473,16 +710,17 @@ function addResource() {
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: #0d57d4;
 }
 
 .btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
+  height: 40px;
+  margin-left: auto;
+  padding: 0 22px;
+  background: #1268f6;
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -490,33 +728,102 @@ function addResource() {
 }
 
 .btn-primary:hover {
-  background: #28a38a;
+  background: #0d57d4;
+}
+
+.operation-message {
+  margin-top: 10px;
+  color: #1d6df2;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .table-container {
   overflow-x: auto;
+  padding: 16px 16px 0;
 }
 
 .resource-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
+  border: 1px solid #dce6f5;
 }
 
 .resource-table th {
-  padding: 12px 24px;
+  padding: 12px 10px;
   text-align: left;
   font-size: 13px;
+  line-height: 1.35;
   font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  color: #17233d;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #dce6f5;
+  background: #f8fbff;
 }
 
 .resource-table td {
-  padding: 12px 24px;
+  padding: 12px 10px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.55;
+  color: #24314c;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #e4ecf7;
+  vertical-align: middle;
+}
+
+.resource-table th:last-child,
+.resource-table td:last-child {
+  border-right: none;
+}
+
+.resource-table tr.active td {
+  background: #f4f8ff;
+}
+
+.resource-name {
+  font-weight: 600;
+  color: #14213d;
+}
+
+.resource-table th:nth-child(1),
+.resource-table td:nth-child(1) {
+  width: 22%;
+}
+
+.resource-table th:nth-child(2),
+.resource-table td:nth-child(2) {
+  width: 10%;
+}
+
+.resource-table th:nth-child(3),
+.resource-table td:nth-child(3) {
+  width: 12%;
+}
+
+.resource-table th:nth-child(4),
+.resource-table td:nth-child(4) {
+  width: 17%;
+}
+
+.resource-table th:nth-child(5),
+.resource-table td:nth-child(5) {
+  width: 12%;
+}
+
+.resource-table th:nth-child(6),
+.resource-table td:nth-child(6) {
+  width: 9%;
+}
+
+.resource-table th:nth-child(7),
+.resource-table td:nth-child(7) {
+  width: 12%;
+}
+
+.resource-table th:nth-child(8),
+.resource-table td:nth-child(8) {
+  width: 6%;
 }
 
 .resource-table tr:last-child td {
@@ -525,40 +832,92 @@ function addResource() {
 
 .status-badge {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 4px 6px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .status-badge.可用 {
-  background: #d1fae5;
-  color: #059669;
+  background: #dff8ec;
+  color: #18a663;
+  border: 1px solid #bdeed7;
 }
 
 .status-badge.信息待完善 {
-  background: #fef3c7;
-  color: #d97706;
+  background: #fff2e5;
+  color: #f07c1d;
+  border: 1px solid #ffd7b8;
 }
 
 .status-badge.已停用 {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #eef2f7;
+  color: #66758f;
+  border: 1px solid #d8e0ec;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #1268f6;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.16s ease;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0d57d4;
+}
+
+.empty-cell {
+  height: 120px;
+  text-align: center;
+  color: #66758f;
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px 20px;
+  color: #52617a;
+  font-size: 13px;
+}
+
+.page-size,
+.page-input {
+  height: 34px;
+  border: 1px solid #d7e2f1;
+  border-radius: 6px;
+  background: #fff;
+  color: #17233d;
+}
+
+.page-size {
+  width: 120px;
+  padding: 0 12px;
+}
+
+.page-input {
+  width: 54px;
+  text-align: center;
+}
+
+.page-button {
+  min-width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #17233d;
+  font-weight: 700;
+}
+
+.page-button.active {
+  background: #eef5ff;
+  color: #1268f6;
 }
 
 .sidebar {
@@ -566,59 +925,124 @@ function addResource() {
 }
 
 .sidebar-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
 }
 
 .sidebar-title {
-  margin: 0 0 20px 0;
+  margin: 0;
+  padding: 16px 24px;
   font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 700;
+  color: #17233d;
+  border-bottom: 1px solid #dce6f5;
 }
 
 .overview-section {
-  margin-bottom: 24px;
+  margin: 0 16px;
+  padding: 18px 8px;
+  border-bottom: 1px solid #dce6f5;
 }
 
 .overview-section:last-child {
-  margin-bottom: 0;
+  border-bottom: 1px solid #dce6f5;
 }
 
 .section-title {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #17233d;
 }
 
 .distribution-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .distribution-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 8px;
   align-items: center;
-  padding: 8px 0;
+}
+
+.item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1268f6;
+}
+
+.distribution-item:nth-child(2) .item-dot {
+  background: #19bd72;
+}
+
+.distribution-item:nth-child(3) .item-dot {
+  background: #ff9a2e;
+}
+
+.distribution-item:nth-child(4) .item-dot {
+  background: #ff5d4f;
+}
+
+.distribution-item:nth-child(5) .item-dot {
+  background: #9aa6ba;
 }
 
 .item-label {
   font-size: 13px;
-  color: var(--color-text-primary);
+  color: #24314c;
 }
 
 .item-count {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: #52617a;
 }
 
-@media (max-width: 1024px) {
+.selected-resource {
+  margin: 0 16px;
+  padding: 18px 8px;
+  border-bottom: 1px solid #dce6f5;
+}
+
+.selected-name {
+  color: #17233d;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.selected-meta {
+  margin-top: 8px;
+  color: #66758f;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.outline-action {
+  width: calc(100% - 32px);
+  height: 48px;
+  margin: 18px 16px 20px;
+  border: 1px solid #1268f6;
+  border-radius: 6px;
+  background: #fff;
+  color: #1268f6;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.outline-action:hover {
+  background: #f2f7ff;
+}
+
+@media (max-width: 1320px) {
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -626,11 +1050,52 @@ function addResource() {
   .resource-workspace {
     grid-template-columns: 1fr;
   }
+
+  .filter-row {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
+  .sidebar-card {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sidebar-title {
+    grid-column: 1 / -1;
+  }
+
+  .outline-action {
+    align-self: end;
+  }
 }
 
 @media (max-width: 768px) {
   .stats-container {
     grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    grid-template-columns: 64px minmax(0, 1fr);
+    padding: 18px;
+  }
+
+  .stat-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .filter-row,
+  .sidebar-card {
+    grid-template-columns: 1fr;
+  }
+
+  .search-row,
+  .pagination-row {
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    margin-left: 0;
   }
 }
 </style>

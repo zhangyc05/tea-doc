@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
@@ -74,6 +74,7 @@ const selectedYear = ref('2026 年度')
 const selectedDirection = ref('全部')
 const selectedMaterialStatus = ref('全部')
 const searchQuery = ref('')
+const reminderMessage = ref('')
 
 function resetFilters() {
   selectedOrganization.value = '全校'
@@ -86,6 +87,31 @@ function resetFilters() {
 function viewDetail(id: string) {
   router.push(`/admin/training/records/${id}`)
 }
+
+function viewIncompleteMaterials() {
+  selectedMaterialStatus.value = '证书待补'
+  reminderMessage.value = '已筛选证书待补记录'
+}
+
+const filteredRecords = computed(() => {
+  const keyword = searchQuery.value.trim()
+  return records.filter((record) => {
+    const matchesOrganization = selectedOrganization.value === '全校'
+      || record.department.includes(selectedOrganization.value)
+    const matchesYear = selectedYear.value === '全部'
+      || record.trainingDate.includes(selectedYear.value.slice(0, 4))
+    const matchesDirection = selectedDirection.value === '全部'
+      || record.planName.includes(selectedDirection.value)
+    const matchesMaterial = selectedMaterialStatus.value === '全部'
+      || record.materialStatus === selectedMaterialStatus.value
+    const matchesKeyword = !keyword
+      || record.teacher.includes(keyword)
+      || record.planName.includes(keyword)
+      || record.department.includes(keyword)
+
+    return matchesOrganization && matchesYear && matchesDirection && matchesMaterial && matchesKeyword
+  })
+})
 </script>
 
 <template>
@@ -93,6 +119,11 @@ function viewDetail(id: string) {
     <div class="training-record-page">
       <section class="page-header">
         <div class="header-content">
+          <div class="breadcrumb">
+            <span>培训管理</span>
+            <i>/</i>
+            <span class="current">记录总览</span>
+          </div>
           <h1 class="page-title">记录总览</h1>
         </div>
       </section>
@@ -100,21 +131,37 @@ function viewDetail(id: string) {
       <!-- 统计卡区域 -->
       <section class="stats-section">
         <div class="stats-container">
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.totalRecords }}</div>
-            <div class="stat-label">培训记录数</div>
+          <div class="stat-card stat-record">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">培训记录数</div>
+              <div class="stat-value">{{ stats.totalRecords }} <span>条</span></div>
+              <div class="stat-desc">当前周期已形成培训记录</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.totalTeachers }}</div>
-            <div class="stat-label">覆盖教师</div>
+          <div class="stat-card stat-teacher">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">覆盖教师</div>
+              <div class="stat-value">{{ stats.totalTeachers }} <span>人</span></div>
+              <div class="stat-desc">已形成培训记录的教师数</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.totalHours.toLocaleString() }}</div>
-            <div class="stat-label">累计学时</div>
+          <div class="stat-card stat-hours">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">累计学时</div>
+              <div class="stat-value">{{ stats.totalHours.toLocaleString() }} <span>学时</span></div>
+              <div class="stat-desc">已沉淀培训学时</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ stats.materialIncomplete }}</div>
-            <div class="stat-label">材料待完善</div>
+          <div class="stat-card stat-material">
+            <div class="stat-icon"></div>
+            <div>
+              <div class="stat-label">材料待完善</div>
+              <div class="stat-value">{{ stats.materialIncomplete }} <span>条</span></div>
+              <div class="stat-desc">待总结、证书待补</div>
+            </div>
           </div>
         </div>
       </section>
@@ -124,6 +171,9 @@ function viewDetail(id: string) {
         <div class="record-workspace">
           <div class="main-content">
             <div class="content-card">
+              <div class="card-header">
+                <h2 class="card-title">培训记录</h2>
+              </div>
               <!-- 筛选区 -->
               <div class="filter-section">
                 <div class="filter-row">
@@ -144,21 +194,24 @@ function viewDetail(id: string) {
                     </select>
                   </div>
                   <div class="filter-item">
-                    <label class="filter-label">培训方向</label>
+	                    <label class="filter-label">培训方向</label>
                     <select v-model="selectedDirection" class="filter-select">
-                      <option>全部</option>
-                      <option>数字化教学</option>
-                      <option>实践教学</option>
-                    </select>
+	                      <option>全部</option>
+	                      <option>数字化教学</option>
+	                      <option>实践教学</option>
+	                      <option>AI 赋能课程建设</option>
+	                      <option>课程思政</option>
+	                    </select>
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">材料情况</label>
                     <select v-model="selectedMaterialStatus" class="filter-select">
                       <option>全部</option>
                       <option>记录完整</option>
-                      <option>待总结</option>
-                      <option>证书待补</option>
-                    </select>
+	                      <option>待总结</option>
+	                      <option>证书待补</option>
+	                      <option>学习中</option>
+	                    </select>
                   </div>
                   <button class="btn-reset" @click="resetFilters">重置</button>
                 </div>
@@ -170,6 +223,7 @@ function viewDetail(id: string) {
                     class="search-input"
                   />
                 </div>
+                <p v-if="reminderMessage" class="filter-message">{{ reminderMessage }}</p>
               </div>
 
               <!-- 数据表格 -->
@@ -187,7 +241,7 @@ function viewDetail(id: string) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="record in records" :key="record.id">
+                    <tr v-for="record in filteredRecords" :key="record.id">
                       <td>{{ record.teacher }}</td>
                       <td>{{ record.department }} / {{ record.major }}</td>
                       <td>{{ record.planName }}</td>
@@ -204,8 +258,16 @@ function viewDetail(id: string) {
                         </button>
                       </td>
                     </tr>
+                    <tr v-if="filteredRecords.length === 0">
+                      <td colspan="7" class="empty-cell">暂无符合条件的培训记录</td>
+                    </tr>
                   </tbody>
                 </table>
+              </div>
+              <div class="table-footer">
+                <span>共 {{ filteredRecords.length }} 条</span>
+                <button type="button">1</button>
+                <span>10 条/页</span>
               </div>
             </div>
           </div>
@@ -215,21 +277,24 @@ function viewDetail(id: string) {
             <div class="sidebar-card">
               <h3 class="sidebar-title">材料完善提醒</h3>
               <div class="reminders-list">
-                <div class="reminder-item">
-                  <span class="reminder-dot"></span>
+	                <div class="reminder-item">
+	                  <span class="reminder-icon"></span>
                   <div class="reminder-content">
                     <div class="reminder-title">待总结</div>
                     <div class="reminder-desc">12 位教师需要提交培训总结</div>
                   </div>
                 </div>
-                <div class="reminder-item">
-                  <span class="reminder-dot warning"></span>
+	                <div class="reminder-item">
+	                  <span class="reminder-icon warning"></span>
                   <div class="reminder-content">
                     <div class="reminder-title">证书待补</div>
                     <div class="reminder-desc">18 位教师需要补充培训证书</div>
-                  </div>
-                </div>
-              </div>
+	                </div>
+	              </div>
+	              <button class="btn-primary full-width" @click="viewIncompleteMaterials">
+	                查看材料待完善记录
+	              </button>
+            </div>
             </div>
           </div>
         </div>
@@ -241,75 +306,168 @@ function viewDetail(id: string) {
 <style scoped>
 .training-record-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+}
+
+.training-record-page *,
+.training-record-page *::before,
+.training-record-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 24px 0 0;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #172b55;
+  font-weight: 800;
+}
+
+.breadcrumb i {
+  color: #9aa9c0;
+  font-style: normal;
+}
+
+.breadcrumb .current {
+  color: #0f5eef;
 }
 
 .page-title {
   margin: 0;
   font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
+  line-height: 1.3;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  background: transparent;
 }
 
 .stats-container {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 0 18px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 18px;
 }
 
 .stat-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  gap: 22px;
+  min-height: 150px;
+  padding: 26px 28px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+}
+
+.stat-icon {
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #eaf2ff;
+  position: relative;
+}
+
+.stat-icon::after {
+  content: '';
+  position: absolute;
+  inset: 18px 21px;
+  border-radius: 4px;
+  background: #0f5eef;
+}
+
+.stat-teacher .stat-icon {
+  background: #e6f8ef;
+}
+
+.stat-teacher .stat-icon::after {
+  background: #13b86a;
+  border-radius: 50%;
+}
+
+.stat-hours .stat-icon {
+  background: #f0e9ff;
+}
+
+.stat-hours .stat-icon::after {
+  background: #7b4cf4;
+  border-radius: 50%;
+}
+
+.stat-material .stat-icon {
+  background: #fff0e3;
+}
+
+.stat-material .stat-icon::after {
+  background: #f97316;
 }
 
 .stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 900;
+  color: #0f5eef;
+  margin-bottom: 12px;
+}
+
+.stat-value span {
+  font-size: 16px;
+  color: #172b55;
+  font-weight: 800;
+}
+
+.stat-teacher .stat-value {
+  color: #0ca65f;
+}
+
+.stat-hours .stat-value {
+  color: #7b4cf4;
+}
+
+.stat-material .stat-value {
+  color: #f97316;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  font-weight: 600;
+  font-size: 16px;
+  color: #172b55;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.stat-desc {
+  font-size: 13px;
+  color: #405985;
+  white-space: nowrap;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
+  width: min(100% - 48px, 1500px);
   margin: 0 auto;
-  padding: 24px;
+  padding: 16px 0 34px;
 }
 
 .record-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
 }
 
 .main-content {
@@ -317,153 +475,237 @@ function viewDetail(id: string) {
 }
 
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+}
+
+.card-header {
+  padding: 22px 24px 10px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 16px 24px 18px;
 }
 
 .filter-row {
   display: flex;
-  gap: 16px;
-  align-items: flex-end;
+  gap: 18px;
+  align-items: center;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto 136px;
+  gap: 10px;
+  align-items: center;
 }
 
 .filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 800;
+  color: #31466f;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  height: 40px;
+  padding: 0 34px 0 12px;
+  border: 1px solid #d6e2f3;
   border-radius: 6px;
-  font-size: 13px;
-  background: white;
+  font-size: 14px;
+  color: #172b55;
+  background: #fff;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
 }
 
 .search-row {
   display: flex;
+  max-width: 380px;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d6e2f3;
+  border-radius: 6px;
   font-size: 14px;
+  color: #172b55;
   outline: none;
   transition: border-color 0.16s ease;
 }
 
-.search-input:focus {
-  border-color: var(--color-primary);
+.search-input:focus,
+.filter-select:focus {
+  border-color: #0f5eef;
 }
 
 .btn-reset {
-  padding: 8px 16px;
+  height: 40px;
+  padding: 0 8px;
   background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+  border: 0;
+  color: #0f5eef;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.16s ease;
 }
 
 .btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: #0c4fd0;
+}
+
+.filter-message {
+  margin: 10px 0 0;
+  color: #0f5eef;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .table-container {
+  padding: 0 18px;
   overflow-x: auto;
 }
 
 .record-table {
   width: 100%;
   border-collapse: collapse;
+  border: 1px solid #d9e5f7;
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: fixed;
 }
 
 .record-table th {
-  padding: 12px 24px;
-  text-align: left;
+  height: 48px;
+  padding: 0 14px;
+  text-align: center;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  font-weight: 900;
+  color: #31466f;
+  border-bottom: 1px solid #d9e5f7;
+  border-right: 1px solid #e5edf8;
+  background: #f4f7fc;
 }
 
 .record-table td {
-  padding: 12px 24px;
+  height: 64px;
+  padding: 0 14px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.65;
+  color: #172b55;
+  text-align: center;
+  border-bottom: 1px solid #e5edf8;
+  border-right: 1px solid #e5edf8;
+  vertical-align: middle;
+}
+
+.record-table th:last-child,
+.record-table td:last-child {
+  border-right: 0;
 }
 
 .record-table tr:last-child td {
   border-bottom: none;
 }
 
+.record-table th:nth-child(1) { width: 10%; }
+.record-table th:nth-child(2) { width: 18%; }
+.record-table th:nth-child(3) { width: 24%; }
+.record-table th:nth-child(4) { width: 20%; }
+.record-table th:nth-child(5) { width: 10%; }
+.record-table th:nth-child(6) { width: 12%; }
+.record-table th:nth-child(7) { width: 8%; }
+
+.record-table td:first-child {
+  font-weight: 800;
+  color: #172b55;
+}
+
 .status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .status-badge.记录完整 {
-  background: #d1fae5;
-  color: #059669;
+  background: #e8f8ef;
+  color: #0ca65f;
 }
 
 .status-badge.待总结 {
-  background: #fef3c7;
-  color: #d97706;
+  background: #fff1e7;
+  color: #f97316;
 }
 
 .status-badge.证书待补 {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #fff1e7;
+  color: #f97316;
 }
 
 .status-badge.学习中 {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #eaf2ff;
+  color: #0f5eef;
 }
 
 .btn-view {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #0f5eef;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 900;
   cursor: pointer;
-  transition: background 0.16s ease;
+  transition: color 0.16s ease;
 }
 
 .btn-view:hover {
-  background: #28a38a;
+  color: #0c4fd0;
+}
+
+.empty-cell {
+  height: 96px;
+  color: #7586a6;
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 18px 24px 24px;
+  color: #405985;
+  font-size: 14px;
+}
+
+.table-footer button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 6px;
+  background: #0f5eef;
+  color: #fff;
+  font-weight: 900;
 }
 
 .sidebar {
@@ -471,42 +713,56 @@ function viewDetail(id: string) {
 }
 
 .sidebar-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9e5f7;
   padding: 24px;
+  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .sidebar-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #07183d;
 }
 
 .reminders-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 26px;
 }
 
 .reminder-item {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 18px;
+  align-items: center;
+  min-height: 132px;
+  padding: 22px 18px;
+  background: #fffaf4;
+  border: 1px solid #f4dfc5;
+  border-radius: 8px;
 }
 
-.reminder-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--color-primary);
+.reminder-icon {
+  width: 62px;
+  height: 62px;
+  background: #fff0e3;
   border-radius: 50%;
   flex-shrink: 0;
-  margin-top: 4px;
+  position: relative;
 }
 
-.reminder-dot.warning {
-  background: #f59e0b;
+.reminder-icon::after {
+  content: '';
+  position: absolute;
+  inset: 18px 21px;
+  border-radius: 4px;
+  background: #f97316;
+}
+
+.reminder-icon.warning::after {
+  border-radius: 6px;
 }
 
 .reminder-content {
@@ -514,18 +770,47 @@ function viewDetail(id: string) {
 }
 
 .reminder-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #07183d;
+  margin-bottom: 10px;
 }
 
 .reminder-desc {
-  font-size: 12px;
-  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.75;
+  color: #405985;
 }
 
-@media (max-width: 1024px) {
+.btn-primary {
+  height: 46px;
+  padding: 0 18px;
+  background: #0f5eef;
+  color: white;
+  border: 1px solid #0f5eef;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.btn-primary:hover {
+  background: #0c4fd0;
+}
+
+.full-width {
+  width: 100%;
+  margin-top: 48px;
+}
+
+@media (max-width: 1300px) {
+  .header-content,
+  .stats-container,
+  .main-section {
+    width: min(100% - 32px, 1500px);
+  }
+
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -538,6 +823,14 @@ function viewDetail(id: string) {
 @media (max-width: 768px) {
   .stats-container {
     grid-template-columns: 1fr;
+  }
+
+  .table-container {
+    padding: 0 12px;
+  }
+
+  .record-table {
+    min-width: 840px;
   }
 }
 </style>
