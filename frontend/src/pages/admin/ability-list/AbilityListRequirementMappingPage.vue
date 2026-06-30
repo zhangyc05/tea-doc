@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref } from 'vue'
+	import { ref, computed } from 'vue'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 
 	// Mock 数据：要求对象
@@ -25,7 +25,7 @@
 	]
 
 	// Mock 数据：要求项映射表
-	const mappings = [
+	const mappings = ref([
 		{
 			id: '1',
 			requirementText: '近三年承担不少于 2 门专业课程教学',
@@ -66,38 +66,41 @@
 			documentCondition: '累计企业实践天数 ≥ 30',
 			confirmStatus: 'unconfigured',
 		},
-	]
+	])
 
 	// 当前选中的要求对象
 	const selectedGroup = ref('associate-professor')
 
 	// 当前选中的映射项
-	const selectedMapping = ref(mappings[0])
+	const selectedMapping = ref(mappings.value[0])
 
 	// 编辑抽屉状态
-	const editingMapping = ref<typeof mappings[0] | null>(null)
+	const editingMapping = ref<typeof mappings.value[0] | null>(null)
+	const operationMessage = ref('')
 
 	// 统计数据
-	const stats = {
+	const stats = computed(() => ({
 		positionRequirements: 12,
 		tenureRequirements: 12,
-		confirmed: 19,
-		pending: 5,
-	}
+		confirmed: mappings.value.filter((item) => item.confirmStatus === 'confirmed').length + 17,
+		pending: mappings.value.filter((item) => item.confirmStatus !== 'confirmed').length + 3,
+	}))
 
 	// 选择要求对象
 	function selectGroup(key: string) {
 		selectedGroup.value = key
+		operationMessage.value = `已切换要求对象：${getSelectedGroupLabel()}。`
 	}
 
 	// 选择映射项
-	function selectMapping(mapping: typeof mappings[0]) {
+	function selectMapping(mapping: typeof mappings.value[0]) {
 		selectedMapping.value = mapping
+		operationMessage.value = '已在右侧展示要求项详情。'
 	}
 
 	// 打开编辑抽屉
-	function openEditDrawer(mapping?: typeof mappings[0]) {
-		editingMapping.value = mapping || selectedMapping.value
+	function openEditDrawer(mapping?: typeof mappings.value[0]) {
+		editingMapping.value = { ...(mapping || selectedMapping.value) }
 	}
 
 	// 关闭编辑抽屉
@@ -107,24 +110,47 @@
 
 	// 新增要求项
 	function addNewMapping() {
-		openEditDrawer()
+		editingMapping.value = {
+			id: `new-${mappings.value.length + 1}`,
+			requirementText: '新增要求项待完善',
+			indicatorDimension: '教学能力',
+			indicatorName: '教学工作量',
+			level: '胜任',
+			levelCriteria: '待补充等级标准',
+			documentCondition: '待补充制度条件',
+			confirmStatus: 'pending',
+		}
+		operationMessage.value = '已创建待完善要求项。'
 	}
 
 	// 删除映射
 	function deleteMapping() {
-		console.log('删除映射：', selectedMapping.value)
+		const target = editingMapping.value || selectedMapping.value
+		mappings.value = mappings.value.filter((item) => item.id !== target.id)
+		selectedMapping.value = mappings.value[0]
+		operationMessage.value = '已删除当前要求项映射。'
 		closeEditDrawer()
 	}
 
 	// 保存映射
 	function saveMapping() {
-		console.log('保存映射：', editingMapping.value)
+		if (!editingMapping.value) return
+		const index = mappings.value.findIndex((item) => item.id === editingMapping.value?.id)
+		if (index >= 0) {
+			mappings.value[index] = { ...editingMapping.value }
+			selectedMapping.value = mappings.value[index]
+		} else {
+			mappings.value.unshift({ ...editingMapping.value })
+			selectedMapping.value = mappings.value[0]
+		}
+		operationMessage.value = '已保存要求项映射。'
 		closeEditDrawer()
 	}
 
 	// 确认配置
 	function confirmMapping() {
-		console.log('确认配置：', selectedMapping.value)
+		selectedMapping.value.confirmStatus = 'confirmed'
+		operationMessage.value = '该要求项映射已确认配置。'
 	}
 
 	// 获取选中要求对象的标签
@@ -142,6 +168,16 @@
 			return ''
 		}
 		return findInGroups(requirementGroups)
+	}
+
+	function getLevelBadgeClass(level: string) {
+		const classMap: Record<string, string> = {
+			骨干: 'level-core',
+			胜任: 'level-qualified',
+			新手: 'level-new',
+			名师: 'level-master',
+		}
+		return classMap[level] || 'level-qualified'
 	}
 
 	// 获取状态徽章类名
@@ -172,6 +208,7 @@
 		<div class="page-breadcrumb">
 			能力清单 / 执行版 / 岗位/聘期要求映射
 		</div>
+		<div v-if="operationMessage" class="operation-message">{{ operationMessage }}</div>
 
 		<!-- Hero 区 -->
 		<div class="admin-hero">
@@ -196,19 +233,19 @@
 
 				<div class="hero-stats">
 					<div class="stat-card">
-						<div class="stat-value">12</div>
+						<div class="stat-value">{{ stats.positionRequirements }}</div>
 						<div class="stat-label">岗位竞聘要求</div>
 					</div>
 					<div class="stat-card">
-						<div class="stat-value">12</div>
+						<div class="stat-value">{{ stats.tenureRequirements }}</div>
 						<div class="stat-label">聘期履职要求</div>
 					</div>
 					<div class="stat-card">
-						<div class="stat-value">19</div>
+						<div class="stat-value">{{ stats.confirmed }}</div>
 						<div class="stat-label">已确认映射</div>
 					</div>
 					<div class="stat-card">
-						<div class="stat-value">5</div>
+						<div class="stat-value">{{ stats.pending }}</div>
 						<div class="stat-label">待确认映射</div>
 					</div>
 				</div>
@@ -281,11 +318,12 @@
 									<th>要求等级</th>
 									<th>制度补充条件</th>
 									<th>确认状态</th>
+									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr
-									v-for="mapping in mappings"
+							v-for="mapping in mappings"
 									:key="mapping.id"
 									class="admin-table-row"
 									:class="{ active: selectedMapping?.id === mapping.id }"
@@ -293,7 +331,7 @@
 								>
 									<td>{{ mapping.requirementText }}</td>
 									<td>{{ mapping.indicatorDimension }} / {{ mapping.indicatorName }}</td>
-									<td>{{ mapping.level }}</td>
+									<td><span class="level-badge" :class="getLevelBadgeClass(mapping.level)">{{ mapping.level }}</span></td>
 									<td>{{ mapping.documentCondition }}</td>
 									<td>
 										<span
@@ -303,6 +341,15 @@
 											{{ getStatusLabel(mapping.confirmStatus) }}
 										</span>
 									</td>
+									<td>
+										<div class="row-actions">
+											<button class="btn-link" @click.stop="openEditDrawer(mapping)">编辑</button>
+											<button class="btn-link danger" @click.stop="selectMapping(mapping); deleteMapping()">删除</button>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="mappings.length === 0">
+									<td colspan="6" class="empty-cell">暂无要求项映射</td>
 								</tr>
 							</tbody>
 						</table>
@@ -372,7 +419,7 @@
 
 					<div class="detail-actions">
 						<button class="btn-primary" @click="openEditDrawer(selectedMapping)">编辑映射</button>
-						<button class="btn-outline" @click="deleteMapping">删除</button>
+						<button class="btn-outline danger-outline" @click="deleteMapping">删除</button>
 						<button class="btn-secondary" @click="confirmMapping">确认配置</button>
 					</div>
 				</div>
@@ -526,8 +573,17 @@
 	.page-root {
 		display: flex;
 		flex-direction: column;
-		height: 100%;
-		gap: 24px;
+		min-height: 100vh;
+		gap: 18px;
+		padding: 24px;
+		background: #f6f9ff;
+		color: #17233d;
+	}
+
+	.page-root *,
+	.page-root *::before,
+	.page-root *::after {
+		box-sizing: border-box;
 	}
 
 	/* 页面顶部 */
@@ -537,12 +593,21 @@
 		font-weight: 700;
 	}
 
+	.operation-message {
+		color: #1268f6;
+		font-size: 13px;
+		font-weight: 800;
+	}
+
 	/* Hero 区 */
 	.admin-hero {
-		padding: 32px;
+		position: relative;
+		min-height: 250px;
+		padding: 30px 38px;
 		background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
-		border-radius: 16px;
-		border: 1px solid #e1efff;
+		border-radius: 14px;
+		border: 1px solid #dce6f5;
+		box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
 	}
 
 	.hero-content {
@@ -553,9 +618,9 @@
 
 	.hero-title {
 		margin: 0;
-		font-size: 24px;
+		font-size: 30px;
 		font-weight: 900;
-		color: var(--color-text-primary);
+		color: #17233d;
 		line-height: 1.3;
 		display: flex;
 		align-items: center;
@@ -563,15 +628,14 @@
 	}
 
 	.hero-description {
-		color: #7d899b;
-		font-size: 14px;
+		color: #263b63;
+		font-size: 15px;
 		line-height: 1.6;
 	}
 
 	.hero-summary {
 		display: flex;
-		flex-direction: column;
-		gap: 8px;
+		gap: 34px;
 	}
 
 	.summary-item {
@@ -591,23 +655,31 @@
 	}
 
 	.hero-stats {
-		display: flex;
-		gap: 16px;
+		max-width: 1120px;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0;
+		padding: 16px 22px;
+		background: #fff;
+		border: 1px solid #dce6f5;
+		border-radius: 8px;
 	}
 
 	.stat-card {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 46px minmax(0, 1fr);
 		align-items: center;
-		padding: 16px;
-		background: white;
-		border-radius: 12px;
-		border: 1px solid var(--color-card-border);
-		min-width: 100px;
+		gap: 12px;
+		padding: 0 24px;
+		border-left: 1px solid #d7e2f2;
+	}
+
+	.stat-card:first-child {
+		border-left: 0;
 	}
 
 	.stat-value {
-		font-size: 24px;
+		font-size: 28px;
 		font-weight: 900;
 		color: var(--color-primary);
 	}
@@ -620,18 +692,14 @@
 
 	/* 主体工作区：三栏布局 */
 	.main-workspace {
-		display: flex;
-		gap: 24px;
+		display: grid;
+		grid-template-columns: 300px minmax(0, 1fr) 560px;
+		gap: 16px;
 		flex: 1;
 		min-height: 0;
 	}
 
 	/* 左侧：要求对象 */
-	.groups-panel {
-		width: 220px;
-		flex-shrink: 0;
-	}
-
 	.groups-tree {
 		display: flex;
 		flex-direction: column;
@@ -690,10 +758,7 @@
 	}
 
 	/* 中间：要求项映射表 */
-	.mappings-panel {
-		flex: 1;
-		min-width: 0;
-	}
+	.mappings-panel { min-width: 0; }
 
 	.admin-table-row {
 		cursor: pointer;
@@ -717,10 +782,7 @@
 	}
 
 	/* 右侧：要求项详情 */
-	.detail-panel {
-		width: 320px;
-		flex-shrink: 0;
-	}
+	.detail-panel { min-width: 0; }
 
 	.mapping-detail {
 		display: flex;
@@ -751,11 +813,100 @@
 	}
 
 	.detail-actions {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1.2fr;
 		gap: 12px;
 		padding: 16px;
 		padding-top: 0;
+	}
+
+	.admin-card {
+		background: #fff;
+		border: 1px solid #dce6f5;
+		border-radius: 8px;
+		box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+		overflow: hidden;
+	}
+
+	.admin-card-header {
+		min-height: 58px;
+		padding: 0 20px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid #e4ebf5;
+	}
+
+	.admin-card-title {
+		margin: 0;
+		color: #17233d;
+		font-size: 18px;
+		font-weight: 900;
+	}
+
+	.admin-table-container { overflow-x: auto; }
+
+	.admin-table {
+		width: 100%;
+		min-width: 760px;
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
+
+	.admin-table th,
+	.admin-table td {
+		padding: 15px 14px;
+		border-bottom: 1px solid #e8eef7;
+		text-align: left;
+		vertical-align: middle;
+		color: #17233d;
+		font-size: 13px;
+		line-height: 1.55;
+	}
+
+	.admin-table th {
+		background: #f7faff;
+		color: #66758f;
+		font-weight: 900;
+	}
+
+	.level-badge {
+		display: inline-flex;
+		min-height: 24px;
+		align-items: center;
+		padding: 3px 8px;
+		border-radius: 6px;
+		font-size: 12px;
+		font-weight: 900;
+	}
+
+	.level-core { background: #e8f0ff; color: #1268f6; }
+	.level-qualified { background: #dff8ec; color: #18a663; }
+	.level-new { background: #eef3fb; color: #66758f; }
+	.level-master { background: #efe7ff; color: #8848e8; }
+
+	.row-actions {
+		display: flex;
+		gap: 10px;
+	}
+
+	.btn-link {
+		border: 0;
+		background: transparent;
+		color: #1268f6;
+		font-size: 13px;
+		font-weight: 800;
+		cursor: pointer;
+	}
+
+	.btn-link.danger {
+		color: #d92d20;
+	}
+
+	.empty-cell {
+		padding: 26px;
+		color: #8a98ad;
+		text-align: center;
 	}
 
 	/* 编辑抽屉样式 */
@@ -906,12 +1057,7 @@
 
 	@media (max-width: 768px) {
 		.main-workspace {
-			flex-direction: column;
-		}
-
-		.groups-panel,
-		.detail-panel {
-			width: 100%;
+			grid-template-columns: 1fr;
 		}
 
 		.edit-drawer {
