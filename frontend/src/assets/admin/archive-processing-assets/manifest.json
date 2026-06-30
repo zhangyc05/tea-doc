@@ -1,0 +1,28 @@
+{
+  "module": "admin/archive-processing",
+  "created_files": [
+    "README.md",
+    "archive-processing-empty.svg",
+    "archive-processing-error.svg",
+    "archive-processing-hero-art.png",
+    "archive-processing-hero-emblem.svg",
+    "icons/icon-file-excel.svg",
+    "icons/icon-file-image.svg",
+    "icons/icon-file-pdf.svg",
+    "icons/icon-file-unknown.svg",
+    "icons/icon-file-word.svg",
+    "icons/icon-source-all.svg",
+    "icons/icon-source-department-upload.svg",
+    "icons/icon-source-development.svg",
+    "icons/icon-source-public-collection.svg",
+    "icons/icon-source-research-report.svg",
+    "icons/icon-source-teaching-research.svg",
+    "icons/icon-status-archived.svg",
+    "icons/icon-status-exception.svg",
+    "icons/icon-status-pending-complete.svg",
+    "icons/icon-status-pending-confirm.svg",
+    "icons/icon-status-pending-verify.svg",
+    "icons/icon-status-withdrawing.svg"
+  ],
+  "recommended_target_path": "src/assets/admin/archive-processing-assets"
+}
