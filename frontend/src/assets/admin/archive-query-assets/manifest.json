@@ -1,0 +1,33 @@
+{
+  "module": "admin/archive-query",
+  "recommended_target_path": "src/assets/admin/archive-query-assets",
+  "created_files": [
+    "README.md",
+    "archive-query-empty.svg",
+    "archive-query-error.svg",
+    "archive-query-hero-art.png",
+    "archive-query-hero-emblem.svg",
+    "avatars/avatar-teacher-female-01.svg",
+    "avatars/avatar-teacher-female-02.svg",
+    "avatars/avatar-teacher-female-03.svg",
+    "avatars/avatar-teacher-male-01.svg",
+    "avatars/avatar-teacher-male-02.svg",
+    "avatars/avatar-teacher-male-03.svg",
+    "icons/icon-action-reset.svg",
+    "icons/icon-action-search.svg",
+    "icons/icon-filter-college.svg",
+    "icons/icon-filter-title.svg",
+    "icons/icon-filter-update.svg",
+    "icons/icon-stat-content-complete.svg",
+    "icons/icon-stat-correction.svg",
+    "icons/icon-stat-queryable-teacher.svg",
+    "icons/icon-stat-recent-update.svg",
+    "icons/icon-tag-complete.svg",
+    "icons/icon-tag-pending.svg",
+    "icons/icon-tag-practice.svg",
+    "icons/icon-tag-research.svg",
+    "icons/icon-tag-teaching.svg",
+    "icons/icon-view-grid.svg",
+    "icons/icon-view-list.svg"
+  ]
+}
