@@ -100,6 +100,44 @@ function viewMoreRelated() {
 <template>
   <AdminLayout active-key="reflection">
     <div class="reflection-detail-page">
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb-row">
+            <div class="breadcrumb">
+              <span>发展活动</span>
+              <span class="separator">/</span>
+              <span>教学反思</span>
+              <span class="separator">/</span>
+              <span class="current">反思详情</span>
+            </div>
+          </div>
+          <button class="btn-back" @click="goBack">‹ 返回列表</button>
+
+          <div class="title-card">
+            <div class="title-icon" aria-hidden="true"></div>
+            <div class="title-content">
+              <h1 class="main-title">{{ reflectionDetail.theme }}</h1>
+              <div class="basic-info">
+                <div class="info-row">
+                  <span class="info-value">{{ reflectionDetail.teacher }}</span>
+                  <span class="info-divider">|</span>
+                  <span class="info-value">{{ reflectionDetail.department }} / {{ reflectionDetail.major }}</span>
+                  <span class="info-divider">|</span>
+                  <span class="info-value">{{ reflectionDetail.course }} / {{ reflectionDetail.class }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">触发来源：</span>
+                  <span class="info-value">{{ reflectionDetail.trigger }}</span>
+                  <span class="info-divider">|</span>
+                  <span class="info-label">提交时间：</span>
+                  <span class="info-value">{{ reflectionDetail.submitTime }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- 主体内容区域 -->
       <section class="main-section">
         <div class="detail-workspace">
@@ -255,7 +293,7 @@ function viewMoreRelated() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .breadcrumb {
@@ -287,6 +325,9 @@ function viewMoreRelated() {
 }
 
 .btn-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 16px;
   padding: 0;
   background: transparent;
   border: 0;
@@ -306,10 +347,10 @@ function viewMoreRelated() {
   display: flex;
   align-items: center;
   gap: 22px;
-  min-height: 132px;
+  min-height: 126px;
   background: #fff;
   border-radius: 8px;
-  padding: 26px 32px;
+  padding: 24px 32px;
   border: 1px solid #d9e5f7;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
@@ -640,12 +681,19 @@ function viewMoreRelated() {
   }
 
   .detail-workspace {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) 320px;
   }
 
   .sidebar {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+  }
+
+  .sidebar-card {
+    padding: 22px 20px;
+  }
+
+  .title-card {
+    padding: 22px 24px;
   }
 }
 

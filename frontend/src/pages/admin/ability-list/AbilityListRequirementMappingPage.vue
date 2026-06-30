@@ -439,17 +439,16 @@
 				</div>
 
 				<div class="drawer-form">
-					<!-- 分组1：基本信息 -->
 					<div class="form-section">
-						<h4 class="form-section-title">基本信息</h4>
-						<div class="form-group">
+						<h4 class="form-section-title"><span>1</span>基本信息</h4>
+						<div class="form-row">
 							<label class="form-label">要求来源</label>
 							<select class="form-select">
 								<option>岗位竞聘要求</option>
 								<option>聘期履职要求</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">适用对象</label>
 							<select class="form-select">
 								<option>申报讲师</option>
@@ -460,7 +459,7 @@
 								<option>教授聘期要求</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">要求原文</label>
 							<textarea
 								class="form-textarea"
@@ -471,19 +470,18 @@
 						</div>
 					</div>
 
-					<!-- 分组2：映射配置 -->
 					<div class="form-section">
-						<h4 class="form-section-title">映射配置</h4>
-						<div class="form-group">
+						<h4 class="form-section-title"><span>2</span>映射配置</h4>
+						<div class="form-row">
 							<label class="form-label">对应能力维度</label>
-							<select class="form-select">
+							<select v-model="editingMapping.indicatorDimension" class="form-select">
 								<option>教学能力</option>
 								<option>教研能力</option>
 								<option>实践能力</option>
 								<option>服务能力</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">对应能力要素</label>
 							<select class="form-select">
 								<option>教学设计与实施</option>
@@ -491,32 +489,34 @@
 								<option>教学评价与反馈</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">对应能力指标</label>
-							<select class="form-select">
+							<select v-model="editingMapping.indicatorName" class="form-select">
 								<option>教学工作量</option>
 								<option>课堂教学评价</option>
 								<option>教改项目</option>
+								<option>企业实践经历</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">要求等级</label>
-							<select class="form-select">
+							<select v-model="editingMapping.level" class="form-select">
 								<option>新手</option>
 								<option>胜任</option>
-								<option selected>骨干</option>
+								<option>骨干</option>
 								<option>名师</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">等级标准</label>
 							<textarea
 								class="form-textarea"
 								rows="2"
+								v-model="editingMapping.levelCriteria"
 								placeholder="承担核心课程教学并保持较稳定教学质量"
 							></textarea>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">制度补充条件</label>
 							<input
 								type="text"
@@ -527,10 +527,9 @@
 						</div>
 					</div>
 
-					<!-- 分组3：对照依据 -->
 					<div class="form-section">
-						<h4 class="form-section-title">对照依据</h4>
-						<div class="form-group">
+						<h4 class="form-section-title"><span>3</span>对照依据</h4>
+						<div class="form-row">
 							<label class="form-label">可引用档案事实</label>
 							<input
 								type="text"
@@ -538,7 +537,7 @@
 								placeholder="教学工作记录、课程表、授课任务记录"
 							/>
 						</div>
-						<div class="form-group">
+						<div class="form-row">
 							<label class="form-label">映射说明</label>
 							<textarea
 								class="form-textarea"
@@ -546,12 +545,16 @@
 								placeholder="系统后续将优先引用正式入档的教学工作事实进行对照"
 							></textarea>
 						</div>
-						<div class="form-group">
+						<div class="form-row radio-row">
 							<label class="form-label">确认状态</label>
-							<select class="form-select">
-								<option value="confirmed">已确认</option>
-								<option value="pending">待确认</option>
-							</select>
+							<label class="radio-option">
+								<input v-model="editingMapping.confirmStatus" type="radio" value="confirmed" />
+								已确认
+							</label>
+							<label class="radio-option">
+								<input v-model="editingMapping.confirmStatus" type="radio" value="pending" />
+								待确认
+							</label>
 						</div>
 					</div>
 				</div>
@@ -914,34 +917,36 @@
 		position: fixed;
 		inset: 0;
 		z-index: 1000;
-		background: rgba(0, 0, 0, 0.5);
+		background: rgba(15, 23, 42, 0.42);
+		backdrop-filter: blur(2px);
 		display: flex;
 		justify-content: flex-end;
 		padding: 0;
 	}
 
 	.edit-drawer {
-		width: 640px;
+		width: min(660px, 100vw);
 		height: 100%;
 		background: white;
 		display: flex;
 		flex-direction: column;
-		box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+		box-shadow: -8px 0 30px rgba(35, 64, 110, 0.18);
 	}
 
 	.drawer-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 24px;
-		border-bottom: 1px solid var(--color-card-border);
+		min-height: 76px;
+		padding: 0 28px;
+		border-bottom: 1px solid #dce6f5;
 	}
 
 	.drawer-title {
 		margin: 0;
-		font-size: 18px;
-		font-weight: 800;
-		color: var(--color-text-primary);
+		font-size: 20px;
+		font-weight: 900;
+		color: #17233d;
 	}
 
 	.drawer-close {
@@ -951,9 +956,9 @@
 		align-items: center;
 		justify-content: center;
 		border: 0;
-		border-radius: 8px;
-		background: #f5f8ff;
-		color: #7d899b;
+		border-radius: 6px;
+		background: transparent;
+		color: #263b63;
 		cursor: pointer;
 		transition: all 0.16s ease;
 	}
@@ -970,42 +975,68 @@
 
 	.drawer-form {
 		flex: 1;
-		padding: 24px;
+		padding: 0 28px 24px;
 		overflow-y: auto;
 	}
 
 	.form-section {
-		margin-bottom: 24px;
+		padding: 26px 0;
+		border-bottom: 1px solid #dce6f5;
+		margin-bottom: 0;
 	}
 
 	.form-section-title {
-		margin: 0 0 16px 0;
-		font-size: 16px;
-		font-weight: 800;
-		color: var(--color-text-primary);
+		margin: 0 0 22px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 17px;
+		font-weight: 900;
+		color: #17233d;
 	}
 
-	.form-group {
+	.form-section-title span {
+		width: 24px;
+		height: 24px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+		background: #1268f6;
+		color: #fff;
+		font-size: 13px;
+		font-weight: 900;
+	}
+
+	.form-row {
+		display: grid;
+		grid-template-columns: 130px minmax(0, 1fr);
+		align-items: start;
+		gap: 16px;
 		margin-bottom: 16px;
 	}
 
+	.form-row:last-child {
+		margin-bottom: 0;
+	}
+
 	.form-label {
-		display: block;
-		margin-bottom: 8px;
-		color: #7d899b;
-		font-size: 13px;
-		font-weight: 700;
+		padding-top: 10px;
+		color: #263b63;
+		font-size: 14px;
+		font-weight: 800;
 	}
 
 	.form-input,
 	.form-select,
 	.form-textarea {
 		width: 100%;
-		padding: 10px 12px;
-		border: 1px solid var(--color-card-border);
-		border-radius: 8px;
+		min-height: 40px;
+		padding: 10px 14px;
+		border: 1px solid #d7e2f2;
+		border-radius: 6px;
 		font-size: 14px;
-		color: var(--color-text-primary);
+		color: #17233d;
 		background: white;
 		transition: all 0.16s ease;
 		font-family: inherit;
@@ -1015,21 +1046,42 @@
 	.form-select:focus,
 	.form-textarea:focus {
 		outline: none;
-		border-color: var(--color-primary);
-		box-shadow: 0 0 0 3px rgba(47, 191, 155, 0.1);
+		border-color: #1268f6;
+		box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
 	}
 
 	.form-textarea {
 		resize: vertical;
-		min-height: 80px;
+		min-height: 78px;
+		line-height: 1.6;
+	}
+
+	.radio-row {
+		align-items: center;
+	}
+
+	.radio-option {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		margin-right: 24px;
+		color: #263b63;
+		font-size: 14px;
+		font-weight: 700;
+	}
+
+	.radio-option input {
+		width: 16px;
+		height: 16px;
 	}
 
 	.drawer-actions {
 		display: flex;
 		justify-content: space-between;
 		gap: 12px;
-		padding: 24px;
-		border-top: 1px solid var(--color-card-border);
+		padding: 20px 28px;
+		border-top: 1px solid #dce6f5;
+		background: #fff;
 	}
 
 	.drawer-actions-right {

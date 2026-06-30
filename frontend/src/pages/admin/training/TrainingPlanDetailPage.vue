@@ -128,6 +128,17 @@ function handleApplication(teacherId: string) {
       <!-- 页面头部 -->
       <section class="page-header">
         <div class="header-content">
+          <div class="breadcrumb-row">
+            <div class="breadcrumb">
+              <span>培训管理</span>
+              <span class="separator">/</span>
+              <span>计划管理</span>
+              <span class="separator">/</span>
+              <span class="current">计划详情</span>
+            </div>
+          </div>
+          <button class="btn-back" @click="goBack">‹ 返回列表</button>
+
           <!-- 标题卡 -->
           <div class="title-card">
             <div class="title-main">
@@ -488,6 +499,9 @@ function handleApplication(teacherId: string) {
 }
 
 .btn-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 14px;
   padding: 0;
   background: transparent;
   border: 0;
@@ -599,10 +613,16 @@ function handleApplication(teacherId: string) {
 }
 
 .main-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: contents;
   min-width: 0;
+}
+
+.main-content > .content-card {
+  grid-column: 1;
+}
+
+.main-content > .content-card:last-child {
+  grid-column: 1 / -1;
 }
 
 .content-card {
@@ -814,6 +834,8 @@ function handleApplication(teacherId: string) {
 
 /* 侧边栏 */
 .sidebar {
+  grid-column: 2;
+  grid-row: 1 / 5;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -919,16 +941,29 @@ function handleApplication(teacherId: string) {
   }
 
   .title-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 20px;
+    padding: 22px 24px;
   }
 
   .detail-workspace {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) 320px;
   }
 
   .sidebar {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+  }
+
+  .sidebar-card {
+    padding: 20px 18px;
+  }
+
+  .title-stat-card {
+    padding: 16px 18px;
+  }
+
+  .title-stat-card strong {
+    font-size: 24px;
   }
 }
 

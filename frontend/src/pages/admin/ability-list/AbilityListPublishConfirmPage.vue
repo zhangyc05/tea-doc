@@ -1,350 +1,520 @@
 <script setup lang="ts">
-	import { useRouter } from 'vue-router'
-	import AdminLayout from '@/layouts/AdminLayout.vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
-	const router = useRouter()
+const router = useRouter()
 
-	// 处理发布操作
-	function handlePublish() {
-	  console.log('确认发布')
-	  // 暂时不接接口
-	}
+const publishStatus = ref<'pending' | 'published'>('pending')
+const operationMessage = ref('')
 
-	// 返回修改
-	function goBack() {
-	  router.push('/admin/ability-list/execution')
-	}
+const impactCards = [
+  {
+    title: '能力指标',
+    description: '69 项指标将作为 2027 年度能力判断口径。',
+    icon: '◎',
+    tone: 'blue',
+  },
+  {
+    title: '岗位/聘期要求',
+    description: '已带入岗位/聘期要求映射，发布后用于教师对照。',
+    icon: '▣',
+    tone: 'purple',
+  },
+  {
+    title: '发展活动',
+    description: '教学反思、培训进修、企业实践、虚拟教研将按本版指标归类。',
+    icon: '▱',
+    tone: 'green',
+  },
+  {
+    title: '成长档案',
+    description: '新入档事实将优先关联本执行版指标。',
+    icon: '▤',
+    tone: 'orange',
+  },
+  {
+    title: '画像与报告',
+    description: '能力画像、岗位/聘期对照和分析报告将引用本版口径。',
+    icon: '◔',
+    tone: 'blue',
+  },
+]
+
+function handlePublish() {
+  publishStatus.value = 'published'
+  operationMessage.value = '2027 年度教师能力清单执行版已确认发布。'
+}
+
+function goBack() {
+  router.push('/admin/ability-list/execution')
+}
 </script>
 
 <template>
-	<AdminLayout active-key="ability-list-execution">
-		<div class="page-root">
-		<!-- 页面顶部 -->
-		<div class="page-breadcrumb">
-			能力清单 / 执行版 / 发布确认
-		</div>
-		<div class="page-description">
-			确认发布执行版。发布后将作为当前周期运行口径，用于后续发展活动、档案归类、岗位/聘期对照和画像报告。
-		</div>
+  <AdminLayout active-key="ability-list-execution">
+    <div class="page-root">
+      <div class="page-breadcrumb">
+        <span>能力清单</span>
+        <i>/</i>
+        <span>执行版</span>
+        <i>/</i>
+        <strong>发布确认</strong>
+      </div>
+      <div class="page-description">
+        确认发布执行版。发布后将作为当前周期运行口径，用于后续发展活动、档案归类、岗位/聘期对照和画像报告。
+        <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+      </div>
 
-		<!-- Hero 区 -->
-		<div class="admin-hero">
-			<div class="hero-content">
-				<h1 class="hero-title">2027 年度教师能力清单执行版</h1>
-				<span class="badge-status badge-warning">待发布</span>
+      <section class="admin-hero">
+        <div class="hero-icon">▤</div>
+        <div class="hero-content">
+          <div class="hero-title-row">
+            <h1 class="hero-title">2027 年度教师能力清单执行版</h1>
+            <span class="badge-status" :class="publishStatus">{{ publishStatus === 'published' ? '已发布' : '待发布' }}</span>
+          </div>
 
-				<div class="hero-summary">
-					<div class="summary-item">
-						<span class="summary-label">来源执行版：</span>
-						<span class="summary-value">2026 年度教师能力清单执行版</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">来源基准模板：</span>
-						<span class="summary-value">教师能力清单基准模板 V1.0</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">适用范围：</span>
-						<span class="summary-value">全校教师</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">指标数量：</span>
-						<span class="summary-value">69 项</span>
-					</div>
-					<div class="summary-item">
-						<span class="summary-label">最近调整：</span>
-						<span class="summary-value">沿用 2026 年度执行标准，后续补充调整</span>
-					</div>
-				</div>
-			</div>
-		</div>
+          <div class="hero-summary">
+            <div class="summary-item">
+              <span class="summary-label">来源执行版：</span>
+              <span class="summary-value">2026 年度教师能力清单执行版</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">来源基准模板：</span>
+              <span class="summary-value">教师能力清单基准模板 V1.0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">适用范围：</span>
+              <span class="summary-value">全校教师</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">指标数量：</span>
+              <span class="summary-value">69 项</span>
+            </div>
+            <div class="summary-item wide">
+              <span class="summary-label">最近调整：</span>
+              <span class="summary-value">沿用 2026 年度执行标准，后续补充调整</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span></span>
+          <b></b>
+          <i></i>
+        </div>
+      </section>
 
-		<!-- 发布影响确认 -->
-		<div class="impact-section">
-			<h2 class="section-title">发布影响确认</h2>
-			<div class="impact-cards">
-				<div class="impact-card admin-card">
-					<div class="impact-icon">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M16 4 12 8 20 8M12 12l8 8M12 12l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</div>
-					<h3 class="impact-title">能力指标</h3>
-					<p class="impact-description">69 项指标将作为 2027 年度能力判断口径。</p>
-				</div>
+      <section class="impact-section">
+        <h2 class="section-title">发布影响确认</h2>
+        <div class="impact-cards">
+          <article
+            v-for="card in impactCards"
+            :key="card.title"
+            class="impact-card"
+          >
+            <div class="impact-icon" :class="card.tone">{{ card.icon }}</div>
+            <h3 class="impact-title">{{ card.title }}</h3>
+            <p class="impact-description">{{ card.description }}</p>
+          </article>
+        </div>
+      </section>
 
-				<div class="impact-card admin-card">
-					<div class="impact-icon">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M16 4l6 6-6 6M6 16h20M6 26h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</div>
-					<h3 class="impact-title">岗位/聘期要求</h3>
-					<p class="impact-description">已带入岗位/聘期要求映射，发布后用于教师对照。</p>
-				</div>
+      <section class="notice-card">
+        <div class="notice-icon">i</div>
+        <div>
+          <h4 class="notice-title">发布说明</h4>
+          <p class="notice-text">
+            发布后，2027 年度执行版将成为当前周期默认运行口径。2026 年度执行版将保留历史引用记录，不会被覆盖。
+          </p>
+        </div>
+      </section>
 
-				<div class="impact-card admin-card">
-					<div class="impact-icon">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M16 4l-4 4 8 8 4-4M8 16h16M8 26h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</div>
-					<h3 class="impact-title">发展活动</h3>
-					<p class="impact-description">教学反思、培训进修、企业实践、虚拟教研将按本版指标归类。</p>
-				</div>
-
-				<div class="impact-card admin-card">
-					<div class="impact-icon">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<rect x="6" y="8" width="20" height="16" fill="none" stroke="currentColor" stroke-width="2" />
-							<path d="M10 20v6M16 20v6M22 20v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</div>
-					<h3 class="impact-title">成长档案</h3>
-					<p class="impact-description">新入档事实将优先关联本执行版指标。</p>
-				</div>
-
-				<div class="impact-card admin-card">
-					<div class="impact-icon">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M16 4l-4 4 8 8 4-4M8 16c0 4.4 3.6 8 8 8s8-3.6 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</div>
-					<h3 class="impact-title">画像与报告</h3>
-					<p class="impact-description">能力画像、岗位/聘期对照和分析报告将引用本版口径。</p>
-				</div>
-			</div>
-		</div>
-
-		<!-- 发布说明 -->
-		<div class="notice-section">
-			<div class="notice-card admin-card">
-				<div class="notice-icon">
-					<svg viewBox="0 0 20 20" aria-hidden="true">
-						<circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5" />
-						<path d="M9 6l2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-					</svg>
-				</div>
-				<div class="notice-content">
-					<h4 class="notice-title">发布说明</h4>
-					<p class="notice-text">
-						发布后，2027 年度执行版将成为当前周期默认运行口径。2026 年度执行版将保留历史引用记录，不会被覆盖。
-					</p>
-				</div>
-			</div>
-		</div>
-
-		<!-- 底部操作 -->
-		<div class="action-section">
-			<button class="btn-secondary" @click="goBack">返回修改</button>
-			<button class="btn-primary" @click="handlePublish">确认发布</button>
-		</div>
-		</div>
-	</AdminLayout>
+      <section class="action-section">
+        <button class="btn-secondary" @click="goBack">返回修改</button>
+        <button
+          class="btn-primary"
+          :disabled="publishStatus === 'published'"
+          @click="handlePublish"
+        >
+          {{ publishStatus === 'published' ? '已确认发布' : '确认发布' }}
+        </button>
+      </section>
+    </div>
+  </AdminLayout>
 </template>
 
 <style scoped>
-	.page-root {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		gap: 24px;
-	}
+.page-root {
+  min-height: 100vh;
+  padding: 26px 24px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #f6f9ff;
+  color: #17233d;
+}
 
-	/* 页面顶部 */
-	.page-breadcrumb {
-		color: #7d899b;
-		font-size: 13px;
-		font-weight: 700;
-	}
+.page-root *,
+.page-root *::before,
+.page-root *::after {
+  box-sizing: border-box;
+}
 
-	.page-description {
-		color: #263856;
-		font-size: 15px;
-		line-height: 1.6;
-		margin-top: 8px;
-	}
+.page-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #66758f;
+  font-size: 14px;
+  font-weight: 700;
+}
 
-	/* Hero 区 */
-	.admin-hero {
-		padding: 32px;
-		background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
-		border-radius: 16px;
-		border: 1px solid #e1efff;
-	}
+.page-breadcrumb strong {
+  color: #17233d;
+}
 
-	.hero-content {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
+.page-description {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #263b63;
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-	.hero-title {
-		margin: 0;
-		font-size: 24px;
-		font-weight: 900;
-		color: var(--color-text-primary);
-		line-height: 1.3;
-		display: flex;
-		align-items: center;
-		gap: 12px;
-	}
+.operation-message {
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 800;
+}
 
-	.hero-summary {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-	}
+.admin-hero {
+  position: relative;
+  min-height: 310px;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 390px;
+  gap: 24px;
+  padding: 48px 42px;
+  overflow: hidden;
+  border: 1px solid #dce6f5;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%);
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+}
 
-	.summary-item {
-		display: flex;
-		gap: 8px;
-		font-size: 14px;
-	}
+.hero-icon {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #1268f6;
+  color: #fff;
+  box-shadow: 0 14px 24px rgba(18, 104, 246, 0.24);
+  font-size: 38px;
+}
 
-	.summary-label {
-		color: #7d899b;
-		font-weight: 700;
-	}
+.hero-title-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
 
-	.summary-value {
-		color: #263856;
-		font-weight: 600;
-	}
+.hero-title {
+  margin: 0;
+  color: #111827;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 900;
+}
 
-	/* 发布影响确认 */
-	.impact-section {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+}
 
-	.section-title {
-		margin: 0;
-		font-size: 18px;
-		font-weight: 800;
-		color: var(--color-text-primary);
-	}
+.badge-status.pending {
+  background: #dff8ec;
+  color: #18a663;
+}
 
-	.impact-cards {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 16px;
-	}
+.badge-status.published {
+  background: #e8f0ff;
+  color: #1268f6;
+}
 
-	.impact-card {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 24px;
-		background: white;
-		border: 1px solid var(--color-card-border);
-		border-radius: 12px;
-		transition: all 0.16s ease;
-	}
+.hero-summary {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 0;
+}
 
-	.impact-card:hover {
-		border-color: var(--color-primary);
-		box-shadow: 0 4px 12px rgba(47, 191, 155, 0.1);
-	}
+.summary-item {
+  min-height: 52px;
+  padding: 0 28px;
+  border-left: 1px solid #d7e2f2;
+}
 
-	.impact-icon {
-		display: flex;
-		width: 48px;
-		height: 48px;
-		align-items: center;
-		justify-content: center;
-		border-radius: 12px;
-		background: #f2f7ff;
-		color: var(--color-primary);
-		margin-bottom: 8px;
-	}
+.summary-item:first-child,
+.summary-item.wide {
+  border-left: 0;
+  padding-left: 0;
+}
 
-	.impact-icon svg {
-		width: 24px;
-		height: 24px;
-	}
+.summary-item.wide {
+  grid-column: 1 / -1;
+}
 
-	.impact-title {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 800;
-		color: var(--color-text-primary);
-	}
+.summary-label {
+  display: block;
+  color: #4d5d75;
+  font-size: 14px;
+  font-weight: 800;
+}
 
-	.impact-description {
-		margin: 0;
-		color: #7d899b;
-		font-size: 14px;
-		line-height: 1.6;
-	}
+.summary-value {
+  display: block;
+  margin-top: 8px;
+  color: #17233d;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 700;
+}
 
-	/* 发布说明 */
-	.notice-section {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
+.hero-art {
+  position: relative;
+  min-height: 210px;
+}
 
-	.notice-card {
-		display: flex;
-		gap: 16px;
-		padding: 20px;
-		background: #fff9e6;
-		border: 1px solid #ffd700;
-		border-radius: 12px;
-		align-items: flex-start;
-	}
+.hero-art span,
+.hero-art b,
+.hero-art i {
+  position: absolute;
+  display: block;
+}
 
-	.notice-icon {
-		display: flex;
-		width: 40px;
-		height: 40px;
-		flex-shrink: 0;
-		align-items: center;
-		justify-content: center;
-		background: white;
-		border-radius: 50%;
-		color: #f59e0b;
-	}
+.hero-art span {
+  right: 110px;
+  bottom: 20px;
+  width: 82px;
+  height: 156px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1268f6, #78b8ff);
+  transform: rotate(45deg);
+}
 
-	.notice-icon svg {
-		width: 20px;
-		height: 20px;
-	}
+.hero-art b {
+  right: 24px;
+  bottom: 12px;
+  width: 88px;
+  height: 190px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #46d8d3, #9deee9);
+  transform: rotate(45deg);
+}
 
-	.notice-content {
-		flex: 1;
-	}
+.hero-art i {
+  right: 206px;
+  bottom: 52px;
+  width: 122px;
+  height: 122px;
+  border-radius: 50%;
+  background: rgba(18, 104, 246, 0.08);
+}
 
-	.notice-title {
-		margin: 0 0 8px 0;
-		font-size: 16px;
-		font-weight: 800;
-		color: #92400e;
-	}
+.section-title {
+  margin: 8px 0 18px;
+  color: #17233d;
+  font-size: 22px;
+  font-weight: 900;
+}
 
-	.notice-text {
-		margin: 0;
-		color: #92400e;
-		font-size: 14px;
-		line-height: 1.6;
-	}
+.impact-cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+}
 
-	/* 底部操作 */
-	.action-section {
-		display: flex;
-		justify-content: center;
-		gap: 16px;
-		padding: 24px 0;
-	}
+.impact-card {
+  min-height: 220px;
+  padding: 26px 24px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+}
 
-	@media (max-width: 768px) {
-		.impact-cards {
-			grid-template-columns: 1fr;
-		}
+.impact-icon {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 30px;
+  font-weight: 900;
+}
 
-		.action-section {
-			flex-direction: column-reverse;
-		}
-	}
+.impact-icon.blue {
+  color: #1268f6;
+  background: #e8f0ff;
+}
+
+.impact-icon.purple {
+  color: #8848e8;
+  background: #efe7ff;
+}
+
+.impact-icon.green {
+  color: #18a663;
+  background: #dff8ec;
+}
+
+.impact-icon.orange {
+  color: #f26a16;
+  background: #fff0df;
+}
+
+.impact-title {
+  margin: 18px 0 14px;
+  color: #17233d;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.impact-description {
+  margin: 0;
+  color: #263b63;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.notice-card {
+  min-height: 110px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 22px 28px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+}
+
+.notice-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8f0ff;
+  color: #1268f6;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.notice-title {
+  margin: 0 0 8px;
+  color: #17233d;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.notice-text {
+  margin: 0;
+  color: #263b63;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.action-section {
+  min-height: 88px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  padding: 0 38px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+}
+
+.btn-primary,
+.btn-secondary {
+  height: 46px;
+  min-width: 168px;
+  padding: 0 28px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-primary {
+  border: 1px solid #1268f6;
+  background: #1268f6;
+  color: #fff;
+}
+
+.btn-primary:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.btn-secondary {
+  border: 1px solid #cfdcf0;
+  background: #fff;
+  color: #263b63;
+}
+
+.btn-primary:not(:disabled):hover,
+.btn-secondary:hover {
+  border-color: #0d55d8;
+  background: #0d55d8;
+  color: #fff;
+}
+
+@media (max-width: 1360px) {
+  .admin-hero {
+    grid-template-columns: 80px minmax(0, 1fr);
+  }
+
+  .hero-art {
+    display: none;
+  }
+
+  .impact-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-hero,
+  .hero-summary,
+  .impact-cards,
+  .notice-card {
+    grid-template-columns: 1fr;
+  }
+
+  .page-description,
+  .hero-title-row,
+  .action-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .summary-item {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
 </style>

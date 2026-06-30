@@ -224,6 +224,7 @@ const filteredPlans = computed(() => {
               <!-- 筛选和操作区 -->
               <div class="card-header">
                 <h2 class="card-title">培训计划</h2>
+                <button class="btn-primary btn-create" @click="openDrawer">新建培训计划 ＋</button>
               </div>
               <div class="filter-section">
                 <div class="filter-row">
@@ -1140,15 +1141,22 @@ const filteredPlans = computed(() => {
   }
 
   .stats-container {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 
-  .plan-workspace {
-    grid-template-columns: 1fr;
+  .stat-card {
+    gap: 14px;
+    min-height: 168px;
+    padding: 22px 18px;
   }
 
-  .sidebar-card {
-    position: static;
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .stat-value {
+    font-size: 30px;
   }
 }
 

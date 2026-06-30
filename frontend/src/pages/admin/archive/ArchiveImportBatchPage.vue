@@ -412,7 +412,7 @@ function viewUploadedFiles() {
 .archive-batch-detail-page {
   min-height: 100vh;
   background: #f7faff;
-  padding-bottom: 24px;
+  padding-bottom: 16px;
 }
 
 .page-shell,
@@ -423,14 +423,14 @@ function viewUploadedFiles() {
 }
 
 .page-shell {
-  padding-top: 24px;
+  padding-top: 4px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   font-size: 13px;
   color: #667799;
 }
@@ -456,19 +456,19 @@ function viewUploadedFiles() {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px 24px 12px;
+  padding: 14px 24px 6px;
 }
 
 .hero-head h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.25;
   font-weight: 700;
   color: #07183d;
 }
 
 .hero-head p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   font-size: 14px;
   line-height: 1.55;
   color: #44618f;
@@ -512,8 +512,8 @@ function viewUploadedFiles() {
 .hero-body {
   position: relative;
   margin: 0 24px;
-  min-height: 116px;
-  padding: 24px 330px 20px 18px;
+  min-height: 96px;
+  padding: 14px 330px 12px 18px;
   border: 1px solid #d9e5f7;
   border-radius: 8px 8px 0 0;
   background: linear-gradient(100deg, #fff 0%, #fff 72%, #eaf3ff 100%);
@@ -527,7 +527,7 @@ function viewUploadedFiles() {
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
   column-gap: 48px;
-  row-gap: 20px;
+  row-gap: 14px;
 }
 
 .info-item {
@@ -570,7 +570,7 @@ function viewUploadedFiles() {
   right: 34px;
   bottom: 0;
   width: 226px;
-  height: 118px;
+  height: 108px;
   opacity: 0.92;
 }
 
@@ -664,8 +664,8 @@ function viewUploadedFiles() {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 24px 18px;
-  padding: 9px 16px;
+  margin: 0 24px 12px;
+  padding: 7px 16px;
   background: #eef5ff;
   border: 1px solid #d7e5ff;
   border-top: 0;
@@ -711,7 +711,7 @@ function viewUploadedFiles() {
 }
 
 .batch-workspace {
-  padding-top: 16px;
+  padding-top: 12px;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.9fr);
   gap: 16px;
@@ -722,7 +722,7 @@ function viewUploadedFiles() {
 .batch-right {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -736,13 +736,13 @@ function viewUploadedFiles() {
   background: white;
   border-radius: 10px;
   border: 1px solid #d9e5f7;
-  padding: 20px 22px;
+  padding: 14px 22px;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
 .section-title {
-  margin: 0 0 18px;
-  font-size: 18px;
+  margin: 0 0 14px;
+  font-size: 17px;
   line-height: 1.2;
   font-weight: 700;
   color: #07183d;
@@ -757,7 +757,7 @@ function viewUploadedFiles() {
 .step-item {
   display: flex;
   gap: 18px;
-  min-height: 42px;
+  min-height: 38px;
 }
 
 .step-indicator {
@@ -823,7 +823,7 @@ function viewUploadedFiles() {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
-  padding: 2px 0 12px;
+  padding: 1px 0 9px;
   flex: 1;
 }
 
@@ -864,7 +864,7 @@ function viewUploadedFiles() {
   background: white;
   border-radius: 10px;
   border: 1px solid #d9e5f7;
-  padding: 18px 22px 12px;
+  padding: 13px 22px 9px;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
@@ -879,7 +879,7 @@ function viewUploadedFiles() {
   grid-template-columns: minmax(0, 1fr) 76px 78px 112px;
   align-items: center;
   gap: 10px;
-  min-height: 43px;
+  min-height: 38px;
   padding: 0 12px;
   border-top: 1px solid #e5edf8;
   color: #10254f;
@@ -887,7 +887,7 @@ function viewUploadedFiles() {
 }
 
 .file-head {
-  min-height: 38px;
+  min-height: 34px;
   border-top: 0;
   background: #f4f7fc;
   color: #31466f;
@@ -931,7 +931,7 @@ function viewUploadedFiles() {
 }
 
 .file-count {
-  margin: 12px 0 0;
+  margin: 9px 0 0;
   color: #536b96;
   font-size: 13px;
 }
@@ -948,7 +948,7 @@ function viewUploadedFiles() {
   background: white;
   border-radius: 10px;
   border: 1px solid #d9e5f7;
-  padding: 20px 22px;
+  padding: 14px 22px;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
@@ -958,8 +958,8 @@ function viewUploadedFiles() {
 
 .result-graphic {
   width: 152px;
-  height: 96px;
-  margin: 8px auto 14px;
+  height: 78px;
+  margin: 4px auto 10px;
   border-radius: 30px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(209, 226, 255, 0.8)) 50% 16px / 72px 50px no-repeat,
@@ -969,7 +969,7 @@ function viewUploadedFiles() {
 }
 
 .placeholder-text {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   font-size: 14px;
   line-height: 1.6;
   color: #536b96;
@@ -980,7 +980,7 @@ function viewUploadedFiles() {
 }
 
 .result-summary {
-  margin: 8px 0 18px;
+  margin: 4px 0 14px;
   font-size: 16px;
   font-weight: 600;
   color: #10254f;
@@ -1002,7 +1002,7 @@ function viewUploadedFiles() {
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  min-height: 42px;
+  min-height: 37px;
   padding: 0 14px;
   border-top: 1px solid #e5edf8;
   color: #10254f;
@@ -1041,7 +1041,7 @@ function viewUploadedFiles() {
 }
 
 .result-note {
-  margin: 14px 0 0;
+  margin: 10px 0 0;
   color: #536b96;
   font-size: 13px;
   line-height: 1.6;
@@ -1057,7 +1057,7 @@ function viewUploadedFiles() {
   background: white;
   border-radius: 10px;
   border: 1px solid #d9e5f7;
-  padding: 20px 22px;
+  padding: 14px 22px;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
 }
 
@@ -1066,8 +1066,8 @@ function viewUploadedFiles() {
 }
 
 .instructions-title {
-  margin: 0 0 18px;
-  font-size: 18px;
+  margin: 0 0 14px;
+  font-size: 17px;
   line-height: 1.2;
   font-weight: 700;
   color: #07183d;
@@ -1079,7 +1079,7 @@ function viewUploadedFiles() {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 9px;
 }
 
 .instruction-item {
@@ -1104,7 +1104,7 @@ function viewUploadedFiles() {
 }
 
 .actions-section {
-  padding-top: 24px;
+  padding-top: 12px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -1114,7 +1114,7 @@ function viewUploadedFiles() {
 .btn-secondary,
 .btn-outline {
   min-width: 154px;
-  height: 48px;
+  height: 42px;
   padding: 0 22px;
   border-radius: 6px;
   font-size: 14px;
@@ -1164,7 +1164,7 @@ function viewUploadedFiles() {
   }
 
   .hero-body {
-    min-height: 138px;
+    min-height: 120px;
     padding-right: 220px;
   }
 

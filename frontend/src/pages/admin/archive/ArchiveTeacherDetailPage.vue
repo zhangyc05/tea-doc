@@ -591,6 +591,10 @@ const statusBadgeClass = (status: SourceRecord['status']) => {
 
 <style scoped>
 .archive-teacher-detail-page {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  overflow-y: auto;
   min-height: 100vh;
   background: rgba(12, 27, 54, 0.68);
   padding: 12px 0 32px;
@@ -725,24 +729,43 @@ const statusBadgeClass = (status: SourceRecord['status']) => {
   box-shadow: inset 0 0 0 1px #d9e5f7;
 }
 
+.avatar-face {
+  position: absolute;
+  left: 50%;
+  top: 28px;
+  width: 74px;
+  height: 78px;
+  transform: translateX(-50%);
+  border-radius: 36px 36px 30px 30px;
+  background:
+    radial-gradient(circle at 30px 36px, #1f2a3d 0 2px, transparent 3px),
+    radial-gradient(circle at 48px 36px, #1f2a3d 0 2px, transparent 3px),
+    radial-gradient(circle at 39px 51px, #e87762 0 3px, transparent 4px),
+    linear-gradient(#ffd9c8, #ffcdbb);
+  box-shadow: 0 22px 0 -8px #f2b9aa;
+}
+
 .avatar-face::before {
   content: '';
   position: absolute;
-  left: 35px;
-  top: 28px;
-  width: 68px;
+  left: -9px;
+  top: -18px;
+  width: 92px;
   height: 58px;
-  border-radius: 42px 42px 26px 26px;
-  background: #232638;
+  border-radius: 46px 46px 28px 28px;
+  background:
+    radial-gradient(circle at 34px 24px, transparent 0 23px, #24283a 24px),
+    #24283a;
+  clip-path: polygon(0 0, 100% 0, 98% 82%, 72% 70%, 53% 28%, 33% 70%, 4% 82%);
 }
 
 .avatar-face::after {
   content: '';
   position: absolute;
-  left: 34px;
-  bottom: 20px;
-  width: 72px;
-  height: 40px;
+  left: 0;
+  bottom: -44px;
+  width: 74px;
+  height: 44px;
   border-radius: 34px 34px 18px 18px;
   background: #5a8ff2;
 }
@@ -836,7 +859,7 @@ const statusBadgeClass = (status: SourceRecord['status']) => {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: -34px;
+  margin-top: 10px;
   width: min(660px, 62%);
   padding: 9px 14px;
   border: 1px solid #cfe0fa;

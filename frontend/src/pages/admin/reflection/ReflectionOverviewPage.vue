@@ -290,15 +290,15 @@ function viewRelatedRecords() {
                       </option>
                     </select>
                   </div>
+                  <div class="search-row">
+                    <input
+                      v-model="searchQuery"
+                      type="text"
+                      placeholder="搜索教师、课程、反思主题"
+                      class="search-input"
+                    />
+                  </div>
                   <button class="btn-reset" @click="resetFilters">重置</button>
-                </div>
-                <div class="search-row">
-                  <input
-                    v-model="searchQuery"
-                    type="text"
-                    placeholder="搜索教师、课程、反思主题"
-                    class="search-input"
-                  />
                 </div>
               </div>
 
@@ -537,7 +537,7 @@ function viewRelatedRecords() {
 
 .filter-row {
   display: grid;
-  grid-template-columns: 220px 260px 160px 1fr;
+  grid-template-columns: 220px 250px 150px minmax(220px, 1fr);
   gap: 18px;
   align-items: center;
   margin-bottom: 0;
@@ -818,21 +818,28 @@ function viewRelatedRecords() {
     width: min(100% - 32px, 1500px);
   }
 
-  .stats-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .reflection-workspace {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .sidebar-card {
-    position: static;
-    min-height: auto;
-  }
-
   .filter-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    gap: 12px;
+    min-height: 176px;
+    padding: 20px 18px;
+  }
+
+  .stat-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .stat-value {
+    font-size: 36px;
+  }
+
+  .stat-card:nth-child(4) .stat-value {
+    font-size: 26px;
+    white-space: nowrap;
   }
 
   .search-row {
@@ -844,7 +851,7 @@ function viewRelatedRecords() {
   }
 
   .reflection-table {
-    min-width: 920px;
+    min-width: 760px;
   }
 }
 

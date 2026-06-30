@@ -82,6 +82,7 @@ function resetFilters() {
   selectedDirection.value = '全部'
   selectedMaterialStatus.value = '全部'
   searchQuery.value = ''
+  reminderMessage.value = ''
 }
 
 function viewDetail(id: string) {
@@ -416,6 +417,7 @@ const filteredRecords = computed(() => {
   font-weight: 900;
   color: #0f5eef;
   margin-bottom: 12px;
+  white-space: nowrap;
 }
 
 .stat-value span {
@@ -803,11 +805,26 @@ const filteredRecords = computed(() => {
   }
 
   .stats-container {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 
-  .record-workspace {
-    grid-template-columns: 1fr;
+  .stat-card {
+    gap: 14px;
+    min-height: 168px;
+    padding: 22px 18px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .stat-value {
+    font-size: 30px;
+  }
+
+  .stat-value span {
+    font-size: 14px;
   }
 }
 
