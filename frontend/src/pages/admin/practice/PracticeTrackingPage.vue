@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // 筛选条件
@@ -9,6 +9,9 @@ const selectedMajor = ref('全部')
 const selectedCompletion = ref('全部')
 const selectedStatus = ref('全部')
 const searchQuery = ref('')
+const appliedSearchQuery = ref('')
+const activeTrackingId = ref('1')
+const operationMessage = ref('')
 
 // 统计数据
 const annualStats = {
@@ -37,7 +40,7 @@ interface PracticeTracking {
   remainingDays: number
 }
 
-const trackings: PracticeTracking[] = [
+const trackings = ref<PracticeTracking[]>([
   {
     id: '1',
     teacher: '林老师',
@@ -86,18 +89,41 @@ const trackings: PracticeTracking[] = [
     completedDays: 30,
     remainingDays: 0,
   },
-]
+])
+
+const filteredTrackings = computed(() => {
+  const keyword = appliedSearchQuery.value.trim().toLowerCase()
+
+  return trackings.value.filter((tracking) => {
+    const completionGroup = tracking.remainingDays === 0 ? '已完成 30 天' : '未完成 30 天'
+    const matchesDepartment = selectedDepartment.value === '全部' || tracking.department === selectedDepartment.value
+    const matchesMajor = selectedMajor.value === '全部' || tracking.major.includes(selectedMajor.value)
+    const matchesCompletion = selectedCompletion.value === '全部' || completionGroup === selectedCompletion.value
+    const matchesStatus = selectedStatus.value === '全部' || tracking.currentProgress === selectedStatus.value
+    const matchesKeyword = !keyword
+      || `${tracking.teacher} ${tracking.department} ${tracking.major}`.toLowerCase().includes(keyword)
+
+    return matchesDepartment && matchesMajor && matchesCompletion && matchesStatus && matchesKeyword
+  })
+})
+
+const activeTracking = computed(() => {
+  return trackings.value.find((tracking) => tracking.id === activeTrackingId.value) ?? trackings.value[0]
+})
 
 function remindApply(id: string) {
-  console.log('提醒申请', id)
+  activeTrackingId.value = id
+  const target = trackings.value.find((tracking) => tracking.id === id)
+  operationMessage.value = target ? `已提醒 ${target.teacher} 提交企业实践申请。` : '已发送提醒。'
 }
 
 function viewRecord(id: string) {
-  console.log('查看记录', id)
+  activeTrackingId.value = id
+  operationMessage.value = '已在表格中定位该教师实践状态。'
 }
 
 function exportList() {
-  console.log('导出名单')
+  operationMessage.value = `已准备导出 ${filteredTrackings.value.length} 条教师实践跟踪名单。`
 }
 
 function resetFilters() {
@@ -107,12 +133,25 @@ function resetFilters() {
   selectedCompletion.value = '全部'
   selectedStatus.value = '全部'
   searchQuery.value = ''
+  appliedSearchQuery.value = ''
+  operationMessage.value = '已重置筛选条件。'
+}
+
+function applyFilters() {
+  appliedSearchQuery.value = searchQuery.value
+  operationMessage.value = `已筛选出 ${filteredTrackings.value.length} 条实践跟踪记录。`
 }
 </script>
 
 <template>
   <AdminLayout active-key="practice-tracking">
     <div class="practice-tracking-page">
+      <section class="page-header">
+        <div class="header-content">
+          <div class="breadcrumb">企业实践 / <strong>年度实践跟踪</strong></div>
+          <p class="page-desc">根据 2026 年度教师企业实践 30 天完成情况，查看未完成教师、待审核申请和实践过程状态。</p>
+        </div>
+      </section>
 
       <!-- 统计卡区域 -->
       <section class="stats-section">
@@ -122,16 +161,25 @@ function resetFilters() {
             <h3 class="stats-group-title">年度完成情况</h3>
             <div class="stats-cards">
               <div class="stat-card">
-                <div class="stat-value">{{ annualStats.required }}</div>
-                <div class="stat-label">应完成教师</div>
+                <div class="stat-icon icon-people">●</div>
+                <div>
+                  <div class="stat-label">应完成教师</div>
+                  <div class="stat-value blue">{{ annualStats.required }} <span>人</span></div>
+                </div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{{ annualStats.completed }}</div>
-                <div class="stat-label">已完成 30 天</div>
+                <div class="stat-icon icon-done">✓</div>
+                <div>
+                  <div class="stat-label">已完成 30 天</div>
+                  <div class="stat-value green">{{ annualStats.completed }} <span>人</span></div>
+                </div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{{ annualStats.incomplete }}</div>
-                <div class="stat-label">未完成 30 天</div>
+                <div class="stat-icon icon-clock">◷</div>
+                <div>
+                  <div class="stat-label">未完成 30 天</div>
+                  <div class="stat-value orange">{{ annualStats.incomplete }} <span>人</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -141,16 +189,25 @@ function resetFilters() {
             <h3 class="stats-group-title">当前办理情况</h3>
             <div class="stats-cards">
               <div class="stat-card">
-                <div class="stat-value">{{ currentStats.pendingReview }}</div>
-                <div class="stat-label">待审核申请</div>
+                <div class="stat-icon icon-review">▤</div>
+                <div>
+                  <div class="stat-label">待审核申请</div>
+                  <div class="stat-value purple">{{ currentStats.pendingReview }} <span>条</span></div>
+                </div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{{ currentStats.inProgress }}</div>
-                <div class="stat-label">实践中</div>
+                <div class="stat-icon icon-briefcase">▣</div>
+                <div>
+                  <div class="stat-label">实践中</div>
+                  <div class="stat-value blue">{{ currentStats.inProgress }} <span>人</span></div>
+                </div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{{ currentStats.materialPending }}</div>
-                <div class="stat-label">材料待确认</div>
+                <div class="stat-icon icon-folder">▰</div>
+                <div>
+                  <div class="stat-label">待补材料</div>
+                  <div class="stat-value amber">{{ currentStats.materialPending }} <span>条</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -160,6 +217,10 @@ function resetFilters() {
       <!-- 主体内容区域 -->
       <section class="main-section">
         <div class="content-card">
+          <div class="card-header">
+            <h2 class="table-title">教师实践跟踪</h2>
+            <button class="btn-primary" @click="exportList">⇧ 导出名单</button>
+          </div>
           <!-- 筛选区 -->
           <div class="filter-section">
             <div class="filter-row">
@@ -207,8 +268,6 @@ function resetFilters() {
                   <option>已完成</option>
                 </select>
               </div>
-              <button class="btn-reset" @click="resetFilters">重置</button>
-              <button class="btn-primary" @click="exportList">导出名单</button>
             </div>
             <div class="search-row">
               <input
@@ -216,13 +275,16 @@ function resetFilters() {
                 type="text"
                 placeholder="搜索教师姓名 / 工号"
                 class="search-input"
+                @keyup.enter="applyFilters"
               />
+              <button class="btn-reset" @click="resetFilters">重置</button>
+              <button class="btn-secondary" @click="applyFilters">查询</button>
+              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
             </div>
           </div>
 
           <!-- 数据表格 -->
           <div class="table-section">
-            <h2 class="table-title">教师实践跟踪</h2>
             <div class="table-container">
               <table class="tracking-table">
                 <thead>
@@ -236,10 +298,24 @@ function resetFilters() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="tracking in trackings" :key="tracking.id">
+                  <tr
+                    v-for="tracking in filteredTrackings"
+                    :key="tracking.id"
+                    :class="{ active: activeTrackingId === tracking.id }"
+                  >
                     <td>{{ tracking.teacher }}</td>
-                    <td>{{ tracking.department }} / {{ tracking.major }}</td>
-                    <td>{{ tracking.completionStatus }}</td>
+                    <td>
+                      <div class="practice-org">{{ tracking.department }} / {{ tracking.major }}</div>
+                      <div class="practice-days">已计入 {{ tracking.completedDays }} 天，还差 {{ tracking.remainingDays }} 天</div>
+                    </td>
+                    <td>
+                      <span
+                        class="completion-badge"
+                        :class="tracking.remainingDays === 0 ? 'done' : 'undone'"
+                      >
+                        {{ tracking.remainingDays === 0 ? '已完成 30 天' : '未完成 30 天' }}
+                      </span>
+                    </td>
                     <td>
                       <span
                         class="status-badge"
@@ -280,9 +356,15 @@ function resetFilters() {
                       </button>
                     </td>
                   </tr>
+                  <tr v-if="filteredTrackings.length === 0">
+                    <td colspan="6" class="empty-cell">暂无符合条件的教师实践记录</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
+          </div>
+          <div class="selected-summary" v-if="activeTracking">
+            当前查看：{{ activeTracking.teacher }}，{{ activeTracking.currentProgress }}，{{ activeTracking.recentAction }}。
           </div>
         </div>
       </section>
@@ -293,166 +375,295 @@ function resetFilters() {
 <style scoped>
 .practice-tracking-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
 }
 
+.practice-tracking-page *,
+.practice-tracking-page *::before,
+.practice-tracking-page *::after {
+  box-sizing: border-box;
+}
+
+.page-header {
+  padding: 24px 0 18px;
+}
+
+.header-content,
+.stats-container,
+.main-section {
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.header-content {
+  padding: 0 22px;
+}
+
+.breadcrumb {
+  color: #66758f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.breadcrumb strong {
+  color: #1268f6;
+}
+
+.page-desc {
+  margin: 22px 0 0;
+  color: #344563;
+  font-size: 16px;
+  font-weight: 600;
+}
 
 .stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  background: #f6f9ff;
 }
 
 .stats-container {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
+  gap: 20px;
+}
+
+.stats-group {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
 }
 
 .stats-group-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 26px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #17233d;
 }
 
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 10px;
 }
 
 .stat-card {
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  text-align: center;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 110px;
+  padding: 14px 12px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #dce6f5;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.icon-people,
+.icon-briefcase {
+  color: #1268f6;
+  background: #e8f0ff;
+}
+
+.icon-done {
+  color: #18a663;
+  background: #dff8ec;
+}
+
+.icon-clock {
+  color: #f26a16;
+  background: #fff0df;
+}
+
+.icon-review {
+  color: #8848e8;
+  background: #efe7ff;
+}
+
+.icon-folder {
+  color: #f2a400;
+  background: #fff3d6;
 }
 
 .stat-value {
-  font-size: 32px;
+  margin-top: 8px;
+  font-size: 30px;
+  line-height: 1;
   font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
+}
+
+.stat-value span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #17233d;
+}
+
+.stat-value.blue {
+  color: #1268f6;
+}
+
+.stat-value.green {
+  color: #18a663;
+}
+
+.stat-value.orange {
+  color: #f26a16;
+}
+
+.stat-value.purple {
+  color: #8848e8;
+}
+
+.stat-value.amber {
+  color: #f2a400;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  font-size: 13px;
+  color: #17233d;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding: 0 22px 32px;
 }
 
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+}
+
+.card-header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.table-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #17233d;
 }
 
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 0 24px 16px;
 }
 
 .filter-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 150px 190px 220px 190px 190px;
+  gap: 12px;
+  align-items: center;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .filter-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #263653;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  width: 100%;
+  height: 40px;
+  padding: 0 32px 0 12px;
+  border: 1px solid #d7e2f1;
   border-radius: 6px;
   font-size: 13px;
-  background: white;
+  color: #1a2944;
+  background: #fff;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
 }
 
 .search-row {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d7e2f1;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
 }
 
 .search-input:focus {
-  border-color: var(--color-primary);
+  border-color: #1268f6;
+}
+
+.btn-reset,
+.btn-secondary,
+.btn-primary {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .btn-reset {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  background: #fff;
+  border: 1px solid #d7e2f1;
+  color: #44536c;
 }
 
-.btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
+.btn-secondary,
 .btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
+  background: #1268f6;
+  border: 1px solid #1268f6;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
 }
 
 .btn-primary:hover {
-  background: #28a38a;
+  background: #0d57d4;
+}
+
+.operation-message,
+.selected-summary {
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .table-section {
-  padding: 24px;
-}
-
-.table-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  padding: 0 24px 24px;
 }
 
 .table-container {
@@ -461,96 +672,179 @@ function resetFilters() {
 
 .tracking-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
+  border: 1px solid #dce6f5;
 }
 
 .tracking-table th {
-  padding: 12px 24px;
+  padding: 14px 16px;
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  color: #17233d;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #dce6f5;
+  background: #f8fbff;
 }
 
 .tracking-table td {
-  padding: 12px 24px;
+  padding: 18px 16px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.6;
+  color: #24314c;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #e4ecf7;
+  vertical-align: middle;
+}
+
+.tracking-table th:last-child,
+.tracking-table td:last-child {
+  border-right: none;
+}
+
+.tracking-table tr.active td {
+  background: #f4f8ff;
+}
+
+.tracking-table th:nth-child(1),
+.tracking-table td:nth-child(1) {
+  width: 9%;
+  font-weight: 700;
+}
+
+.tracking-table th:nth-child(2),
+.tracking-table td:nth-child(2) {
+  width: 28%;
+}
+
+.tracking-table th:nth-child(3),
+.tracking-table td:nth-child(3) {
+  width: 16%;
+  text-align: center;
+}
+
+.tracking-table th:nth-child(4),
+.tracking-table td:nth-child(4) {
+  width: 15%;
+  text-align: center;
+}
+
+.tracking-table th:nth-child(5),
+.tracking-table td:nth-child(5) {
+  width: 18%;
+  text-align: center;
+}
+
+.tracking-table th:nth-child(6),
+.tracking-table td:nth-child(6) {
+  width: 14%;
+  text-align: center;
 }
 
 .tracking-table tr:last-child td {
   border-bottom: none;
 }
 
+.practice-org {
+  color: #17233d;
+  font-weight: 700;
+}
+
+.practice-days {
+  margin-top: 6px;
+  color: #52617a;
+}
+
+.completion-badge,
 .status-badge {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.completion-badge.undone {
+  background: #fff0e8;
+  color: #ff613f;
+  border: 1px solid #ffd3c4;
+}
+
+.completion-badge.done {
+  background: #dff8ec;
+  color: #18a663;
+  border: 1px solid #bdeed7;
 }
 
 .status-badge.未启动申请 {
-  background: #fef3c7;
-  color: #d97706;
+  background: #eef2f7;
+  color: #344563;
+  border: 1px solid #d8e0ec;
 }
 
 .status-badge.待审核申请 {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #f0e9ff;
+  color: #8848e8;
+  border: 1px solid #ddcbff;
 }
 
 .status-badge.实践中 {
-  background: #d1fae5;
-  color: #059669;
+  background: #eaf2ff;
+  color: #1268f6;
+  border: 1px solid #cfe0ff;
 }
 
 .status-badge.已完成 {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #dff8ec;
+  color: #18a663;
+  border: 1px solid #bdeed7;
 }
 
-.btn-remind {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-remind:hover {
-  background: #28a38a;
-}
-
+.btn-remind,
 .btn-view {
-  padding: 6px 12px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0 8px;
+  background: transparent;
+  color: #1268f6;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.16s ease;
 }
 
-.btn-view:hover {
-  background: var(--color-primary);
-  color: white;
+.empty-cell {
+  height: 120px;
+  text-align: center;
+  color: #66758f;
 }
 
-@media (max-width: 768px) {
+.selected-summary {
+  padding: 0 24px 22px;
+}
+
+@media (max-width: 1320px) {
   .stats-container {
     grid-template-columns: 1fr;
   }
 
-  .stats-cards {
+  .filter-row {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-cards,
+  .filter-row {
     grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .search-row {
+    flex-wrap: wrap;
   }
 }
 </style>

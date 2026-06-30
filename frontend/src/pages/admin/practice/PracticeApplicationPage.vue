@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // 筛选条件
@@ -8,6 +8,9 @@ const selectedDepartment = ref('全部')
 const selectedStatus = ref('全部')
 const selectedTime = ref('全部')
 const searchQuery = ref('')
+const appliedSearchQuery = ref('')
+const activeApplicationId = ref('1')
+const operationMessage = ref('')
 
 // 统计数据
 const stats = {
@@ -21,7 +24,10 @@ const stats = {
 interface PracticeApplication {
   id: string
   teacher: string
+  teacherNo: string
+  department: string
   annualStatus: string
+  remainingDays: number
   company: string
   position: string
   practicePeriod: string
@@ -34,9 +40,12 @@ const applications: PracticeApplication[] = [
   {
     id: '1',
     teacher: '林老师',
+    teacherNo: 'T202401015',
+    department: '智能制造学院',
     annualStatus: '本年度已计入 18 天，还差 12 天',
+    remainingDays: 12,
     company: '山西智能装备有限公司',
-    position: '工艺改进岗',
+    position: '工艺改进实践',
     practicePeriod: '2026-07-01 至 2026-07-15，预计 15 天',
     estimatedDays: '15',
     status: '待审核',
@@ -45,9 +54,12 @@ const applications: PracticeApplication[] = [
   {
     id: '2',
     teacher: '赵老师',
+    teacherNo: 'T202401021',
+    department: '智能制造学院',
     annualStatus: '本年度已计入 10 天，还差 20 天',
-    company: '汽车零部件技术有限公司',
-    position: '生产调试岗',
+    remainingDays: 20,
+    company: '济南数控技术有限公司',
+    position: '生产线调试实践',
     practicePeriod: '2026-07-05 至 2026-07-25，预计 21 天',
     estimatedDays: '21',
     status: '待审核',
@@ -56,9 +68,12 @@ const applications: PracticeApplication[] = [
   {
     id: '3',
     teacher: '王老师',
+    teacherNo: 'T202301009',
+    department: '信息工程学院',
     annualStatus: '本年度已计入 20 天，还差 10 天',
+    remainingDays: 10,
     company: '青岛工业机器人有限公司',
-    position: '现场调试岗',
+    position: '现场调试实践',
     practicePeriod: '2026-06-10 至 2026-06-22，预计 12 天',
     estimatedDays: '12',
     status: '已同意',
@@ -66,14 +81,45 @@ const applications: PracticeApplication[] = [
   },
   {
     id: '4',
-    teacher: '孙老师',
-    annualStatus: '本年度已计入 0 天，还差 30 天',
-    company: '北京智慧装备集团',
-    position: '技术服务岗',
+    teacher: '陈老师',
+    teacherNo: 'T202401030',
+    department: '汽车工程学院',
+    annualStatus: '本年度已计入 8 天，还差 22 天',
+    remainingDays: 22,
+    company: '山木智能装备集团',
+    position: '岗位实践',
     practicePeriod: '2026-07-10 至 2026-07-30，预计 21 天',
     estimatedDays: '21',
     status: '退回修改',
-    applyTime: '2026-06-11 11:05',
+    applyTime: '2026-06-16 11:05',
+  },
+  {
+    id: '5',
+    teacher: '孙老师',
+    teacherNo: 'T202301017',
+    department: '财经商贸学院',
+    annualStatus: '本年度已计入 15 天，还差 15 天',
+    remainingDays: 15,
+    company: '济南商贸股份有限公司',
+    position: '电商运营实践',
+    practicePeriod: '2026-06-20 至 2026-07-04，预计 15 天',
+    estimatedDays: '15',
+    status: '已撤回',
+    applyTime: '2026-06-14 14:40',
+  },
+  {
+    id: '6',
+    teacher: '周老师',
+    teacherNo: 'T202401008',
+    department: '智能制造学院',
+    annualStatus: '本年度已计入 5 天，还差 25 天',
+    remainingDays: 25,
+    company: '烟台机械制造有限公司',
+    position: '设备维护实践',
+    practicePeriod: '2026-07-15 至 2026-08-13，预计 30 天',
+    estimatedDays: '30',
+    status: '待审核',
+    applyTime: '2026-06-21 08:50',
   },
 ]
 
@@ -81,6 +127,25 @@ const applications: PracticeApplication[] = [
 const currentPage = ref(1)
 const pageSize = 10
 const total = 8
+const applicationRows = ref<PracticeApplication[]>(applications)
+
+const filteredApplications = computed(() => {
+  const keyword = appliedSearchQuery.value.trim().toLowerCase()
+
+  return applicationRows.value.filter((app) => {
+    const matchesDepartment = selectedDepartment.value === '全部' || app.department === selectedDepartment.value
+    const matchesStatus = selectedStatus.value === '全部' || app.status === selectedStatus.value
+    const matchesTime = selectedTime.value === '全部' || app.practicePeriod.includes(selectedTime.value.replace('年', '-').replace('月', ''))
+    const matchesKeyword = !keyword
+      || `${app.teacher} ${app.teacherNo} ${app.company} ${app.department}`.toLowerCase().includes(keyword)
+
+    return matchesDepartment && matchesStatus && matchesTime && matchesKeyword
+  })
+})
+
+const activeApplication = computed(() => {
+  return applicationRows.value.find((app) => app.id === activeApplicationId.value) ?? applicationRows.value[0]
+})
 
 function resetFilters() {
   selectedYear.value = '2026 年度'
@@ -88,18 +153,34 @@ function resetFilters() {
   selectedStatus.value = '全部'
   selectedTime.value = '全部'
   searchQuery.value = ''
+  appliedSearchQuery.value = ''
+  operationMessage.value = '已重置筛选条件。'
 }
 
 function viewApplication(id: string) {
-  console.log('查看申请', id)
+  activeApplicationId.value = id
+  operationMessage.value = '已在表格中定位该实践申请。'
 }
 
 function approveApplication(id: string) {
-  console.log('同意申请', id)
+  const target = applicationRows.value.find((app) => app.id === id)
+  if (!target) return
+  target.status = '已同意'
+  activeApplicationId.value = id
+  operationMessage.value = `${target.teacher} 的实践申请已同意。`
 }
 
 function returnApplication(id: string) {
-  console.log('退回修改', id)
+  const target = applicationRows.value.find((app) => app.id === id)
+  if (!target) return
+  target.status = '退回修改'
+  activeApplicationId.value = id
+  operationMessage.value = `${target.teacher} 的实践申请已退回修改。`
+}
+
+function applyFilters() {
+  appliedSearchQuery.value = searchQuery.value
+  operationMessage.value = `已筛选出 ${filteredApplications.value.length} 条实践申请。`
 }
 </script>
 
@@ -114,7 +195,6 @@ function returnApplication(id: string) {
             <i class="separator">/</i>
             <span class="current">申请处理</span>
           </div>
-          <h1 class="page-title">实践申请处理</h1>
           <p class="page-description">
             处理教师提交的企业实践申请，判断是否纳入本次实践计划。
           </p>
@@ -125,20 +205,36 @@ function returnApplication(id: string) {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-value">{{ stats.pending }}</div>
-            <div class="stat-label">待审核申请</div>
+            <div class="stat-icon icon-pending">▤</div>
+            <div>
+              <div class="stat-label">待审核申请</div>
+              <div class="stat-value blue">{{ stats.pending }} <span>条</span></div>
+              <div class="stat-desc">较上月 +2</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.approved }}</div>
-            <div class="stat-label">已同意申请</div>
+            <div class="stat-icon icon-approved">✓</div>
+            <div>
+              <div class="stat-label">已同意申请</div>
+              <div class="stat-value green">{{ stats.approved }} <span>条</span></div>
+              <div class="stat-desc">较上月 +8</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.returned }}</div>
-            <div class="stat-label">退回修改</div>
+            <div class="stat-icon icon-return">↻</div>
+            <div>
+              <div class="stat-label">退回修改</div>
+              <div class="stat-value orange">{{ stats.returned }} <span>条</span></div>
+              <div class="stat-desc">较上月 -1</div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.inProgress }}</div>
-            <div class="stat-label">实践已开始</div>
+            <div class="stat-icon icon-progress">●</div>
+            <div>
+              <div class="stat-label">实践已开始</div>
+              <div class="stat-value purple">{{ stats.inProgress }} <span>人</span></div>
+              <div class="stat-desc">较上月 +3</div>
+            </div>
           </div>
         </div>
       </section>
@@ -149,50 +245,55 @@ function returnApplication(id: string) {
           <!-- 筛选区 -->
           <div class="filter-section">
             <div class="filter-row">
-              <div class="filter-item">
-                <label class="filter-label">年度</label>
+              <label class="filter-item">
+                <span class="filter-label">年度：</span>
                 <select v-model="selectedYear" class="filter-select">
                   <option>2026 年度</option>
                   <option>2025 年度</option>
                   <option>2024 年度</option>
                 </select>
-              </div>
-              <div class="filter-item">
-                <label class="filter-label">院系</label>
+              </label>
+              <label class="filter-item">
+                <span class="filter-label">院系：</span>
                 <select v-model="selectedDepartment" class="filter-select">
                   <option>全部</option>
                   <option>智能制造学院</option>
                   <option>电子信息学院</option>
                   <option>汽车工程学院</option>
+                  <option>财经商贸学院</option>
                 </select>
-              </div>
-              <div class="filter-item">
-                <label class="filter-label">申请状态</label>
+              </label>
+              <label class="filter-item">
+                <span class="filter-label">申请状态：</span>
                 <select v-model="selectedStatus" class="filter-select">
                   <option>全部</option>
                   <option>待审核</option>
                   <option>已同意</option>
                   <option>退回修改</option>
+                  <option>已撤回</option>
                 </select>
-              </div>
-              <div class="filter-item">
-                <label class="filter-label">实践时间</label>
+              </label>
+              <label class="filter-item">
+                <span class="filter-label">实践时间：</span>
                 <select v-model="selectedTime" class="filter-select">
                   <option>全部</option>
-                  <option>2026年7月</option>
-                  <option>2026年6月</option>
-                  <option>2026年5月</option>
+                  <option>2026-07</option>
+                  <option>2026-06</option>
+                  <option>2026-05</option>
                 </select>
-              </div>
-              <button class="btn-reset" @click="resetFilters">重置</button>
-            </div>
-            <div class="search-row">
+              </label>
               <input
                 v-model="searchQuery"
                 type="text"
                 placeholder="搜索教师姓名 / 工号 / 实践单位"
                 class="search-input"
+                @keyup.enter="applyFilters"
               />
+            </div>
+            <div class="search-row">
+              <button class="btn-reset" @click="resetFilters">重置</button>
+              <button class="btn-primary" @click="applyFilters">查询</button>
+              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
             </div>
           </div>
 
@@ -212,11 +313,28 @@ function returnApplication(id: string) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="app in applications" :key="app.id">
-                    <td>{{ app.teacher }}</td>
-                    <td>{{ app.annualStatus }}</td>
-                    <td>{{ app.company }} / {{ app.position }}</td>
-                    <td>{{ app.practicePeriod }}</td>
+                  <tr
+                    v-for="app in filteredApplications"
+                    :key="app.id"
+                    :class="{ active: activeApplicationId === app.id }"
+                  >
+                    <td>
+                      <div class="teacher-name">{{ app.teacher }}</div>
+                      <div class="sub-text">工号：{{ app.teacherNo }}</div>
+                      <div class="sub-text">{{ app.department }}</div>
+                    </td>
+                    <td>
+                      <div>已计入 {{ app.annualStatus.match(/已计入\s*(\d+)/)?.[1] ?? '0' }} 天</div>
+                      <div class="remaining-days">还差 {{ app.remainingDays }} 天</div>
+                    </td>
+                    <td>
+                      <div class="company-name">{{ app.company }}</div>
+                      <div class="sub-text">{{ app.position }}</div>
+                    </td>
+                    <td>
+                      <div>{{ app.practicePeriod.split('，')[0] }}</div>
+                      <div class="sub-text">预计 {{ app.estimatedDays }} 天</div>
+                    </td>
                     <td>
                       <span class="status-badge" :class="app.status">
                         {{ app.status }}
@@ -224,7 +342,7 @@ function returnApplication(id: string) {
                     </td>
                     <td>{{ app.applyTime }}</td>
                     <td>
-                      <button
+                      <div
                         v-if="app.status === '待审核'"
                         class="btn-action-group"
                       >
@@ -243,15 +361,26 @@ function returnApplication(id: string) {
                         >
                           退回修改
                         </button>
-                      </button>
-                      <button
-                        v-else
-                        class="btn-view"
-                        @click="viewApplication(app.id)"
-                      >
-                        查看申请
-                      </button>
+                      </div>
+                      <div v-else class="btn-action-group">
+                        <button
+                          class="btn-view"
+                          @click="viewApplication(app.id)"
+                        >
+                          查看申请
+                        </button>
+                        <button
+                          v-if="app.status === '已同意'"
+                          class="btn-view"
+                          @click="viewApplication(app.id)"
+                        >
+                          查看记录
+                        </button>
+                      </div>
                     </td>
+                  </tr>
+                  <tr v-if="filteredApplications.length === 0">
+                    <td colspan="7" class="empty-cell">暂无符合条件的实践申请</td>
                   </tr>
                 </tbody>
               </table>
@@ -263,9 +392,19 @@ function returnApplication(id: string) {
                 共 {{ total }} 条
               </div>
               <div class="pagination-controls">
-                <span class="page-info">{{ currentPage }} / 1 页</span>
-                <span class="page-size">10条/页</span>
+                <button class="page-button" type="button" aria-label="上一页">‹</button>
+                <button class="page-button active" type="button">{{ currentPage }}</button>
+                <button class="page-button" type="button" aria-label="下一页">›</button>
+                <span>前往</span>
+                <input class="page-input" value="1" aria-label="页码" readonly />
+                <span>页</span>
+                <select class="page-size" aria-label="每页条数">
+                  <option>{{ pageSize }} 条/页</option>
+                </select>
               </div>
+            </div>
+            <div class="selected-summary" v-if="activeApplication">
+              当前查看：{{ activeApplication.teacher }}，{{ activeApplication.status }}，{{ activeApplication.company }}。
             </div>
           </div>
         </div>
@@ -277,19 +416,29 @@ function returnApplication(id: string) {
 <style scoped>
 .practice-application-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
+}
+
+.practice-application-page *,
+.practice-application-page *::before,
+.practice-application-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 24px 0 18px;
+}
+
+.header-content,
+.stats-container,
+.main-section {
+  max-width: 1560px;
+  margin: 0 auto;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 22px;
 }
 
 .breadcrumb {
@@ -297,8 +446,8 @@ function returnApplication(id: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
+  color: #66758f;
+  margin-bottom: 12px;
 }
 
 .breadcrumb .separator {
@@ -306,287 +455,464 @@ function returnApplication(id: string) {
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
+  color: #1268f6;
   font-weight: 600;
-}
-
-.page-title {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
 }
 
 .page-description {
   margin: 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  font-size: 15px;
+  color: #344563;
+  font-weight: 600;
   line-height: 1.5;
 }
 
 .stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
+  background: #f6f9ff;
 }
 
 .stats-container {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
 .stat-card {
-  display: flex;
-  flex-direction: column;
+  min-height: 132px;
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
   align-items: center;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  gap: 18px;
+  padding: 22px 30px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+}
+
+.stat-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.icon-pending {
+  color: #1268f6;
+  background: #e8f0ff;
+}
+
+.icon-approved {
+  color: #18a663;
+  background: #dff8ec;
+}
+
+.icon-return {
+  color: #f26a16;
+  background: #fff0df;
+}
+
+.icon-progress {
+  color: #8848e8;
+  background: #efe7ff;
 }
 
 .stat-value {
-  font-size: 32px;
+  margin-top: 8px;
+  font-size: 34px;
+  line-height: 1;
   font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
+}
+
+.stat-value span {
+  font-size: 15px;
+  font-weight: 600;
+  color: #17233d;
+}
+
+.stat-value.blue {
+  color: #1268f6;
+}
+
+.stat-value.green {
+  color: #18a663;
+}
+
+.stat-value.orange {
+  color: #f26a16;
+}
+
+.stat-value.purple {
+  color: #8848e8;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  font-size: 15px;
+  color: #17233d;
   font-weight: 600;
+}
+
+.stat-desc {
+  margin-top: 10px;
+  color: #52617a;
+  font-size: 13px;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
+  padding: 0 22px 30px;
 }
 
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dce6f5;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
 }
 
 .filter-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-card-border);
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #dce6f5;
 }
 
 .filter-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 180px 180px 210px 190px minmax(260px, 1fr);
+  gap: 14px;
+  align-items: center;
 }
 
 .filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
 }
 
 .filter-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #263653;
+  white-space: nowrap;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
+  width: 100%;
+  height: 40px;
+  padding: 0 32px 0 12px;
+  border: 1px solid #d7e2f1;
   border-radius: 6px;
   font-size: 13px;
-  background: white;
+  color: #1a2944;
+  background: #fff;
   cursor: pointer;
   outline: none;
-  min-width: 140px;
 }
 
 .search-row {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d7e2f1;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
 }
 
 .search-input:focus {
-  border-color: var(--color-primary);
+  border-color: #1268f6;
+}
+
+.btn-reset,
+.btn-primary {
+  height: 40px;
+  padding: 0 22px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .btn-reset {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--color-card-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  background: #fff;
+  border: 1px solid #d7e2f1;
+  color: #44536c;
 }
 
-.btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.btn-primary {
+  background: #1268f6;
+  border: 1px solid #1268f6;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
+}
+
+.operation-message {
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .table-section {
-  padding: 24px;
+  padding: 0;
 }
 
 .table-container {
   overflow-x: auto;
+  padding: 0 20px;
 }
 
 .application-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
+  border: 1px solid #dce6f5;
 }
 
 .application-table th {
-  padding: 12px 24px;
+  padding: 13px 12px;
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  color: #17233d;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #dce6f5;
+  background: #f8fbff;
 }
 
 .application-table td {
-  padding: 12px 24px;
+  padding: 13px 12px;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  line-height: 1.6;
+  color: #24314c;
+  border-right: 1px solid #e4ecf7;
+  border-bottom: 1px solid #e4ecf7;
+  vertical-align: middle;
+}
+
+.application-table th:last-child,
+.application-table td:last-child {
+  border-right: none;
+}
+
+.application-table tr.active td {
+  background: #f4f8ff;
+}
+
+.application-table th:nth-child(1),
+.application-table td:nth-child(1) {
+  width: 13%;
+}
+
+.application-table th:nth-child(2),
+.application-table td:nth-child(2) {
+  width: 12%;
+}
+
+.application-table th:nth-child(3),
+.application-table td:nth-child(3) {
+  width: 19%;
+}
+
+.application-table th:nth-child(4),
+.application-table td:nth-child(4) {
+  width: 21%;
+}
+
+.application-table th:nth-child(5),
+.application-table td:nth-child(5) {
+  width: 10%;
+  text-align: center;
+}
+
+.application-table th:nth-child(6),
+.application-table td:nth-child(6) {
+  width: 13%;
+  text-align: center;
+}
+
+.application-table th:nth-child(7),
+.application-table td:nth-child(7) {
+  width: 12%;
+  text-align: center;
 }
 
 .application-table tr:last-child td {
   border-bottom: none;
 }
 
+.teacher-name,
+.company-name {
+  color: #17233d;
+  font-weight: 700;
+}
+
+.sub-text {
+  color: #52617a;
+  font-size: 12px;
+}
+
+.remaining-days {
+  color: #1268f6;
+  font-weight: 700;
+}
+
 .status-badge {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .status-badge.待审核 {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #eaf2ff;
+  color: #1268f6;
+  border: 1px solid #cfe0ff;
 }
 
 .status-badge.已同意 {
-  background: #d1fae5;
-  color: #059669;
+  background: #dff8ec;
+  color: #18a663;
+  border: 1px solid #bdeed7;
 }
 
 .status-badge.退回修改 {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #fff0e8;
+  color: #f26a16;
+  border: 1px solid #ffd3c4;
+}
+
+.status-badge.已撤回 {
+  background: #f0e9ff;
+  color: #8848e8;
+  border: 1px solid #ddcbff;
 }
 
 .btn-action-group {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.btn-view {
-  padding: 6px 12px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-view:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
-.btn-approve {
-  padding: 6px 12px;
-  background: var(--color-primary);
-  color: white;
+.btn-view,
+.btn-approve,
+.btn-return {
+  padding: 0;
+  background: transparent;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-approve:hover {
-  background: #28a38a;
 }
 
 .btn-return {
-  padding: 6px 12px;
-  background: white;
-  color: #dc2626;
-  border: 1px solid #dc2626;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  color: #f26a16;
 }
 
-.btn-return:hover {
-  background: #dc2626;
-  color: white;
+.empty-cell {
+  height: 120px;
+  text-align: center;
+  color: #66758f;
 }
 
 .pagination-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  border-top: 1px solid var(--color-card-border);
+  padding: 16px 20px;
 }
 
 .pagination-info {
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: #52617a;
 }
 
 .pagination-controls {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
-}
-
-.page-info,
-.page-size {
+  color: #52617a;
   font-size: 13px;
-  color: var(--color-text-hint);
 }
 
-@media (max-width: 768px) {
+.page-button,
+.page-input,
+.page-size {
+  height: 34px;
+  border: 1px solid #d7e2f1;
+  border-radius: 6px;
+  background: #fff;
+  color: #17233d;
+}
+
+.page-button {
+  min-width: 34px;
+  font-weight: 700;
+}
+
+.page-button.active {
+  background: #1268f6;
+  border-color: #1268f6;
+  color: #fff;
+}
+
+.page-input {
+  width: 52px;
+  text-align: center;
+}
+
+.page-size {
+  width: 108px;
+}
+
+.selected-summary {
+  padding: 0 20px 20px;
+  color: #1268f6;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 1320px) {
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .filter-row {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-container,
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+
   .btn-action-group {
     flex-direction: column;
-    align-items: flex-start;
+  }
+
+  .search-row,
+  .pagination-section,
+  .pagination-controls {
+    flex-wrap: wrap;
   }
 }
 </style>
