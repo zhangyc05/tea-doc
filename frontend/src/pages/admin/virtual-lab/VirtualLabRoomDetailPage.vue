@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-const roomId = route.params.roomId as string
+const roomId = computed(() => String(route.params.roomId ?? 'smart-manufacturing'))
+const operationMessage = ref('')
 
-// 顶部信息
-const roomInfo = {
+const roomInfo = ref({
   name: '智能制造课程改革虚拟教研室',
   direction: '智能制造专业课程改革',
   affiliation: '智能制造学院 | 智能制造专业群',
@@ -17,9 +17,8 @@ const roomInfo = {
   members: 28,
   createdAt: '2025-09',
   description: '围绕智能制造专业核心课程项目化改造、课程资源共建和课堂实施改进开展线上教研。',
-}
+})
 
-// 统计数据
 const stats = {
   members: 28,
   inProgressActivities: 2,
@@ -27,20 +26,21 @@ const stats = {
   recentActivityTime: '06-18',
 }
 
-// 成员数据
 interface Member {
   id: string
   name: string
+  college: string
   role: string
   activitiesParticipated: number
   recordsFormed: number
   recentParticipation: string
 }
 
-const members: Member[] = [
+const members = ref<Member[]>([
   {
     id: '1',
     name: '周明',
+    college: '智能制造学院',
     role: '负责人',
     activitiesParticipated: 6,
     recordsFormed: 6,
@@ -49,6 +49,7 @@ const members: Member[] = [
   {
     id: '2',
     name: '林老师',
+    college: '智能制造学院',
     role: '成员',
     activitiesParticipated: 4,
     recordsFormed: 3,
@@ -57,6 +58,7 @@ const members: Member[] = [
   {
     id: '3',
     name: '王老师',
+    college: '智能制造学院',
     role: '成员',
     activitiesParticipated: 3,
     recordsFormed: 2,
@@ -65,14 +67,14 @@ const members: Member[] = [
   {
     id: '4',
     name: '陈老师',
+    college: '智能制造学院',
     role: '成员',
     activitiesParticipated: 2,
     recordsFormed: 1,
     recentParticipation: '06-05',
   },
-]
+])
 
-// 近期教研活动数据
 interface Activity {
   id: string
   name: string
@@ -83,13 +85,13 @@ interface Activity {
   recentUpdate: string
 }
 
-const activities: Activity[] = [
+const activities = ref<Activity[]>([
   {
     id: 'smart-line-seminar',
     name: '智能产线课程项目化改造研讨',
     time: '06-18 14:00',
     meetingMethod: '腾讯会议',
-    participation: '18人',
+    participation: '18 人',
     recordStatus: '已形成记录',
     recentUpdate: '06-18 16:20',
   },
@@ -98,7 +100,7 @@ const activities: Activity[] = [
     name: '课程任务书优化讨论',
     time: '06-25 15:00',
     meetingMethod: '腾讯会议',
-    participation: '12人',
+    participation: '12 人',
     recordStatus: '未形成记录',
     recentUpdate: '06-20 创建',
   },
@@ -107,14 +109,13 @@ const activities: Activity[] = [
     name: '课程资源共建阶段复盘',
     time: '06-10 10:00',
     meetingMethod: '腾讯会议',
-    participation: '16人',
+    participation: '16 人',
     recordStatus: '记录异常',
     recentUpdate: '参会记录未同步',
   },
-]
+])
 
-// 已形成记录数据
-interface Record {
+interface FormedRecord {
   id: string
   title: string
   sourceActivity: string
@@ -123,7 +124,7 @@ interface Record {
   dimension: string
 }
 
-const records: Record[] = [
+const records: FormedRecord[] = [
   {
     id: 'smart-line-record',
     title: '智能产线课程项目化改造研讨记录',
@@ -143,23 +144,45 @@ const records: Record[] = [
 ]
 
 function editInfo() {
-  console.log('编辑信息')
+  operationMessage.value = `已进入 ${roomInfo.value.name} 的信息校对状态。`
 }
 
 function inviteTeacher() {
-  console.log('邀请教师')
+  members.value.push({
+    id: `invite-${members.value.length + 1}`,
+    name: '待确认教师',
+    college: '智能制造学院',
+    role: '待确认',
+    activitiesParticipated: 0,
+    recordsFormed: 0,
+    recentParticipation: '待参与',
+  })
+  operationMessage.value = '已新增待确认教师邀请记录。'
 }
 
 function createActivity() {
-  console.log('新建教研活动')
+  activities.value.unshift({
+    id: `draft-activity-${activities.value.length + 1}`,
+    name: '新增教研活动待完善',
+    time: '待安排',
+    meetingMethod: '待确认',
+    participation: '0 人',
+    recordStatus: '未形成记录',
+    recentUpdate: '刚刚创建',
+  })
+  operationMessage.value = '已创建待完善教研活动。'
 }
 
 function viewTeacher(id: string) {
-  console.log('查看教师', id)
+  const member = members.value.find((item) => item.id === id)
+  operationMessage.value = member ? `当前查看教师：${member.name}。` : '当前查看教师。'
 }
 
 function removeMember(id: string) {
-  console.log('移出成员', id)
+  const member = members.value.find((item) => item.id === id)
+  if (!member || member.role === '负责人') return
+  members.value = members.value.filter((item) => item.id !== id)
+  operationMessage.value = `已将 ${member.name} 移出当前教研室成员列表。`
 }
 
 function viewActivity(id: string) {
@@ -169,90 +192,94 @@ function viewActivity(id: string) {
 function viewRecord(id: string) {
   router.push(`/admin/virtual-lab/records/${id}`)
 }
+
+function getStatusClass(status: string): string {
+  const statusMap: Record<string, string> = {
+    已形成记录: 'success',
+    未形成记录: 'pending',
+    记录异常: 'error',
+  }
+  return statusMap[status] ?? 'pending'
+}
 </script>
 
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-room-detail-page">
-      <!-- 页面头部 -->
       <section class="page-header">
         <div class="header-content">
           <div class="breadcrumb">
             <span>虚拟教研室</span>
             <i class="separator">/</i>
-            <span class="current">智能制造课程改革虚拟教研室</span>
+            <span class="current">{{ roomInfo.name }}</span>
           </div>
-          <h1 class="page-title">{{ roomInfo.name }}</h1>
-        </div>
-        <div class="header-actions">
-          <button class="btn-secondary" @click="editInfo">编辑信息</button>
-          <button class="btn-secondary" @click="inviteTeacher">邀请教师</button>
-          <button class="btn-primary" @click="createActivity">新建教研活动</button>
         </div>
       </section>
 
-      <!-- 统计卡区域 -->
-      <section class="stats-section">
+      <section class="main-section">
+        <div class="room-profile-card">
+          <div class="room-avatar">👥</div>
+          <div class="room-profile-main">
+            <div class="room-title-row">
+              <h1>{{ roomInfo.name }}</h1>
+              <div class="header-actions">
+                <button class="btn-secondary" @click="editInfo">编辑信息</button>
+                <button class="btn-primary" @click="inviteTeacher">邀请教师</button>
+                <button class="btn-secondary" @click="createActivity">新建教研活动</button>
+              </div>
+            </div>
+            <div class="room-info-grid">
+              <span>方向：{{ roomInfo.direction }}</span>
+              <span>归属：{{ roomInfo.affiliation }}</span>
+              <span>负责人：{{ roomInfo.leader }}</span>
+              <span>成员：{{ roomInfo.members }} 人</span>
+              <span>创建时间：{{ roomInfo.createdAt }}</span>
+            </div>
+            <p>说明：{{ roomInfo.description }}</p>
+            <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
+            <span class="room-id">当前教研室 ID：{{ roomId }}</span>
+          </div>
+        </div>
+
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-value">{{ stats.members }} 人</div>
-            <div class="stat-label">成员数</div>
+            <div class="stat-icon icon-members">👥</div>
+            <div>
+              <div class="stat-label">成员数</div>
+              <div class="stat-value blue">{{ stats.members }} <span>人</span></div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.inProgressActivities }} 个</div>
-            <div class="stat-label">进行中活动</div>
+            <div class="stat-icon icon-activity">▣</div>
+            <div>
+              <div class="stat-label">进行中活动</div>
+              <div class="stat-value green">{{ stats.inProgressActivities }} <span>个</span></div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.recordsCount }} 条</div>
-            <div class="stat-label">已形成记录</div>
+            <div class="stat-icon icon-record">▤</div>
+            <div>
+              <div class="stat-label">已形成记录</div>
+              <div class="stat-value orange">{{ stats.recordsCount }} <span>条</span></div>
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ stats.recentActivityTime }}</div>
-            <div class="stat-label">最近活动时间</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 主体内容区域 -->
-      <section class="main-section">
-        <!-- 教研室信息 -->
-        <div class="content-card info-card">
-          <h2 class="card-title">教研室信息</h2>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">方向：</span>
-              <span class="info-value">{{ roomInfo.direction }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">归属：</span>
-              <span class="info-value">{{ roomInfo.affiliation }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">负责人：</span>
-              <span class="info-value">{{ roomInfo.leader }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">成员：</span>
-              <span class="info-value">{{ roomInfo.members }}人</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">创建时间：</span>
-              <span class="info-value">{{ roomInfo.createdAt }}</span>
-            </div>
-            <div class="info-item full-width">
-              <span class="info-label">说明：</span>
-              <span class="info-value">{{ roomInfo.description }}</span>
+            <div class="stat-icon icon-time">◷</div>
+            <div>
+              <div class="stat-label">最近活动时间</div>
+              <div class="stat-value purple">{{ stats.recentActivityTime }}</div>
             </div>
           </div>
         </div>
 
-        <!-- 主体两栏 -->
         <div class="two-column-layout">
-          <!-- 左侧：成员 -->
-          <div class="content-card members-card">
-            <h2 class="card-title">成员</h2>
+          <div class="content-card">
+            <div class="card-header">
+              <h2>成员</h2>
+              <button class="btn-small" @click="inviteTeacher">邀请教师</button>
+            </div>
             <div class="table-container">
-              <table class="data-table">
+              <table class="data-table member-table">
                 <thead>
                   <tr>
                     <th>教师</th>
@@ -265,21 +292,19 @@ function viewRecord(id: string) {
                 </thead>
                 <tbody>
                   <tr v-for="member in members" :key="member.id">
-                    <td>{{ member.name }}</td>
+                    <td>
+                      <div class="primary-text">{{ member.name }}</div>
+                      <div class="sub-text">{{ member.college }}</div>
+                    </td>
                     <td>{{ member.role }}</td>
                     <td>{{ member.activitiesParticipated }}</td>
                     <td>{{ member.recordsFormed }}</td>
                     <td>{{ member.recentParticipation }}</td>
                     <td>
+                      <button class="btn-link" @click="viewTeacher(member.id)">查看教师</button>
                       <button
-                        class="btn-view"
-                        @click="viewTeacher(member.id)"
-                      >
-                        查看教师
-                      </button>
-                      <button
-                        v-if="member.role === '成员'"
-                        class="btn-remove"
+                        v-if="member.role !== '负责人'"
+                        class="btn-link danger"
                         @click="removeMember(member.id)"
                       >
                         移出
@@ -289,13 +314,18 @@ function viewRecord(id: string) {
                 </tbody>
               </table>
             </div>
+            <div class="table-footer">
+              <span>共 {{ members.length }} 条</span>
+              <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
+            </div>
           </div>
 
-          <!-- 右侧：近期教研活动 -->
-          <div class="content-card activities-card">
-            <h2 class="card-title">近期教研活动</h2>
+          <div class="content-card">
+            <div class="card-header">
+              <h2>近期教研活动</h2>
+            </div>
             <div class="table-container">
-              <table class="data-table">
+              <table class="data-table activity-table">
                 <thead>
                   <tr>
                     <th>活动名称</th>
@@ -314,53 +344,58 @@ function viewRecord(id: string) {
                     <td>{{ activity.meetingMethod }}</td>
                     <td>{{ activity.participation }}</td>
                     <td>
-                      <span
-                        class="status-badge"
-                        :class="activity.recordStatus === '已形成记录' ? 'success' : activity.recordStatus === '记录异常' ? 'error' : 'pending'"
-                      >
+                      <span class="status-badge" :class="getStatusClass(activity.recordStatus)">
                         {{ activity.recordStatus }}
                       </span>
                     </td>
                     <td>{{ activity.recentUpdate }}</td>
                     <td>
-                      <button
-                        class="btn-view"
-                        @click="viewActivity(activity.id)"
-                      >
-                        查看活动
-                      </button>
+                      <button class="btn-link" @click="viewActivity(activity.id)">查看活动</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <div class="table-footer">
+              <span>共 {{ activities.length }} 条</span>
+              <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
+            </div>
           </div>
         </div>
 
-        <!-- 已形成记录区域 -->
         <div class="content-card records-card">
-          <h2 class="card-title">已形成记录</h2>
+          <div class="card-header">
+            <h2>已形成记录</h2>
+          </div>
           <div class="records-list">
-            <div
+            <article
               v-for="record in records"
               :key="record.id"
               class="record-item"
             >
-              <div class="record-info">
-                <h3 class="record-title">{{ record.title }}</h3>
-                <div class="record-meta">
-                  <span class="meta-item">来源活动：{{ record.sourceActivity }}</span>
-                  <span class="meta-item">形成时间：{{ record.formedTime }}</span>
-                  <span class="meta-item">记录内容：{{ record.content }}</span>
-                  <span class="meta-item">关联维度：{{ record.dimension }}</span>
+              <div class="record-icon">▤</div>
+              <div class="record-grid">
+                <div>
+                  <span class="sub-text">记录名称：</span>
+                  <strong>{{ record.title }}</strong>
+                  <div class="sub-text">来源活动：{{ record.sourceActivity }}</div>
+                </div>
+                <div>
+                  <span class="sub-text">形成时间：</span>
+                  <strong>{{ record.formedTime }}</strong>
+                  <div class="sub-text">记录内容：{{ record.content }}</div>
+                </div>
+                <div>
+                  <span class="sub-text">关联维度：</span>
+                  <strong>{{ record.dimension }}</strong>
                 </div>
               </div>
-              <div class="record-action">
-                <button class="btn-view" @click="viewRecord(record.id)">
-                  查看记录
-                </button>
-              </div>
-            </div>
+              <button class="btn-secondary" @click="viewRecord(record.id)">查看记录</button>
+            </article>
+          </div>
+          <div class="table-footer">
+            <span>共 {{ records.length }} 条</span>
+            <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
           </div>
         </div>
       </section>
@@ -371,29 +406,30 @@ function viewRecord(id: string) {
 <style scoped>
 .virtual-lab-room-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
+}
+
+.virtual-lab-room-detail-page *,
+.virtual-lab-room-detail-page *::before,
+.virtual-lab-room-detail-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  padding: 24px 0 14px;
 }
 
-.header-content {
-  max-width: var(--admin-content-max-width);
+.header-content,
+.main-section {
+  max-width: 1560px;
   margin: 0 auto;
-  padding: 0 24px;
-  flex: 1;
 }
 
-.header-actions {
-  padding: 0 24px;
-  display: flex;
-  gap: 12px;
+.header-content,
+.main-section {
+  padding-left: 22px;
+  padding-right: 22px;
 }
 
 .breadcrumb {
@@ -401,279 +437,428 @@ function viewRecord(id: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
+  color: #66758f;
 }
 
 .breadcrumb .separator {
-  color: var(--color-text-hint);
+  color: #9aa8bd;
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #28a38a;
-}
-
-.btn-secondary {
-  padding: 10px 20px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
-.stats-section {
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.stats-container {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.stat-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: var(--color-text-secondary);
+  color: #1268f6;
   font-weight: 600;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding-bottom: 34px;
 }
 
-.content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+.room-profile-card,
+.content-card,
+.stat-card {
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
 }
 
-.card-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.info-grid {
+.room-profile-card {
+  min-height: 188px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 20px;
+  padding: 24px 30px;
 }
 
-.info-item {
+.room-avatar {
+  width: 62px;
+  height: 62px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8f0ff;
+  color: #1268f6;
+  font-size: 28px;
+}
+
+.room-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.room-title-row h1 {
+  margin: 0;
+  color: #17233d;
+  font-size: 24px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.room-info-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 28px;
+  color: #4d5d75;
   font-size: 14px;
 }
 
-.info-item.full-width {
-  grid-column: 1 / -1;
+.room-profile-card p {
+  margin: 16px 0 0;
+  color: #4d5d75;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.info-label {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  min-width: 100px;
+.operation-message {
+  color: #1268f6 !important;
+  font-weight: 600;
 }
 
-.info-value {
-  color: var(--color-text-primary);
-  flex: 1;
+.room-id {
+  display: none;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-small,
+.btn-link {
+  height: 34px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  padding: 0 16px;
+  border: 1px solid #1268f6;
+  background: #1268f6;
+  color: #fff;
+}
+
+.btn-secondary,
+.btn-small {
+  padding: 0 16px;
+  border: 1px solid #cfdcf0;
+  background: #fff;
+  color: #1268f6;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-small:hover {
+  border-color: #0d55d8;
+  background: #0d55d8;
+  color: #fff;
+}
+
+.stats-container {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.icon-members {
+  color: #1268f6;
+  background: #e8f0ff;
+}
+
+.icon-activity {
+  color: #18a663;
+  background: #dff8ec;
+}
+
+.icon-record {
+  color: #f26a16;
+  background: #fff0df;
+}
+
+.icon-time {
+  color: #8848e8;
+  background: #efe7ff;
+}
+
+.stat-label {
+  color: #66758f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-value {
+  margin-top: 7px;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.stat-value span {
+  color: #17233d;
+  font-size: 14px;
+}
+
+.stat-value.blue {
+  color: #1268f6;
+}
+
+.stat-value.green {
+  color: #18a663;
+}
+
+.stat-value.orange {
+  color: #f26a16;
+}
+
+.stat-value.purple {
+  color: #8848e8;
 }
 
 .two-column-layout {
+  margin-top: 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 0.46fr 0.54fr;
+  gap: 16px;
+}
+
+.content-card {
+  overflow: hidden;
+}
+
+.card-header {
+  min-height: 56px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid #e4ebf5;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #17233d;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .table-container {
+  width: 100%;
   overflow-x: auto;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.member-table {
+  min-width: 640px;
+}
+
+.activity-table {
+  min-width: 790px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #e8eef7;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .data-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  background: #f7faff;
+  color: #66758f;
+  font-weight: 700;
 }
 
 .data-table td {
-  padding: 12px;
-  font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+  color: #17233d;
 }
 
-.data-table tr:last-child td {
-  border-bottom: none;
+.primary-text {
+  font-weight: 700;
+}
+
+.sub-text {
+  color: #8a98ad;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .status-badge {
-  display: inline-block;
-  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .status-badge.success {
-  background: #d1fae5;
-  color: #059669;
+  background: #dff8ec;
+  color: #18a663;
 }
 
 .status-badge.pending {
-  background: #fef3c7;
-  color: #d97706;
+  background: #fff0df;
+  color: #d85a0d;
 }
 
 .status-badge.error {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #ffe8e6;
+  color: #d92d20;
 }
 
-.btn-view {
-  padding: 6px 12px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+.btn-link {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #1268f6;
+}
+
+.btn-link + .btn-link {
+  margin-left: 10px;
+}
+
+.btn-link.danger {
+  color: #d92d20;
+}
+
+.table-footer {
+  min-height: 48px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8eef7;
+  color: #4d5d75;
+  font-size: 13px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pager button,
+.pager b {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d7e2f2;
   border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+  background: #fff;
+  color: #8a98ad;
 }
 
-.btn-view:hover {
-  background: var(--color-primary);
-  color: white;
+.pager b {
+  border-color: #1268f6;
+  background: #1268f6;
+  color: #fff;
 }
 
-.btn-remove {
-  padding: 6px 12px;
-  background: white;
-  color: #dc2626;
-  border: 1px solid #dc2626;
+.pager span {
+  min-width: 78px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d7e2f2;
   border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  margin-left: 8px;
+  background: #fff;
 }
 
-.btn-remove:hover {
-  background: #dc2626;
-  color: white;
+.records-card {
+  margin-top: 16px;
 }
 
 .records-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
+  padding: 18px;
 }
 
 .record-item {
-  padding: 20px;
-  background: #f8fafc;
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e4ebf5;
   border-radius: 8px;
-  border: 1px solid var(--color-card-border);
+  background: #fbfdff;
+}
+
+.record-icon {
+  width: 38px;
+  height: 38px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #1268f6;
+  color: #fff;
+  font-size: 20px;
 }
 
-.record-title {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.record-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 0.8fr;
+  gap: 18px;
 }
 
-.record-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.meta-item {
+.record-grid strong {
+  color: #17233d;
   font-size: 13px;
-  color: var(--color-text-secondary);
 }
 
-.record-action {
-  flex-shrink: 0;
-  margin-left: 20px;
-}
-
-@media (max-width: 1024px) {
+@media (max-width: 1360px) {
+  .room-info-grid,
   .stats-container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .two-column-layout {
@@ -681,33 +866,21 @@ function viewRecord(id: string) {
   }
 }
 
-@media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .stats-container {
+@media (max-width: 900px) {
+  .room-profile-card {
     grid-template-columns: 1fr;
   }
 
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .record-item {
+  .room-title-row,
+  .header-actions,
+  .table-footer {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
-  .record-action {
-    margin-left: 0;
-    margin-top: 12px;
+  .record-item,
+  .record-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

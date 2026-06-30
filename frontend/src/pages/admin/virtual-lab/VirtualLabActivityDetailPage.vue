@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-const activityId = route.params.activityId as string
+const activityId = computed(() => String(route.params.activityId ?? 'smart-line-seminar'))
+const operationMessage = ref('')
 
-// 活动基础信息
 const activityInfo = {
   name: '智能产线课程项目化改造研讨',
   roomName: '智能制造课程改革虚拟教研室',
   theme: '智能产线课程项目化改造',
   time: '2026-06-18 14:00 ~ 16:00',
   meetingMethod: '腾讯会议',
+  meetingNo: '827 391 602',
   initiator: '周明',
   participantsCount: 18,
   createdAt: '2026-06-12 10:30',
@@ -22,7 +23,6 @@ const activityInfo = {
   status: '已形成记录',
 }
 
-// 状态卡
 const statusCard = {
   attendanceRecord: '已同步',
   meetingMinutes: '已形成',
@@ -32,10 +32,10 @@ const statusCard = {
   dataSource: '腾讯会议',
 }
 
-// 参与教师数据
 interface Participant {
   id: string
   name: string
+  avatar: string
   role: string
   participationType: string
   timeRange: string
@@ -46,22 +46,25 @@ const participants: Participant[] = [
   {
     id: '1',
     name: '周明',
+    avatar: '周',
     role: '负责人',
     participationType: '腾讯会议参会',
-    timeRange: '14:00~16:00',
+    timeRange: '14:00 ~ 16:00',
     status: '已关联',
   },
   {
     id: '2',
     name: '林老师',
+    avatar: '林',
     role: '成员',
     participationType: '腾讯会议参会',
-    timeRange: '14:05~15:58',
+    timeRange: '14:05 ~ 15:58',
     status: '已关联',
   },
   {
     id: '3',
     name: '王老师',
+    avatar: '王',
     role: '成员',
     participationType: '任务分工',
     timeRange: '全程参与',
@@ -70,20 +73,21 @@ const participants: Participant[] = [
   {
     id: '4',
     name: '李老师',
+    avatar: '李',
     role: '成员',
     participationType: '腾讯会议参会',
-    timeRange: '14:02~15:50',
+    timeRange: '14:02 ~ 15:50',
     status: '已关联',
   },
 ]
 
-// 活动资料数据
 interface Material {
   id: string
   name: string
   source: string
   type: string
   time: string
+  tone: string
 }
 
 const materials: Material[] = [
@@ -93,6 +97,7 @@ const materials: Material[] = [
     source: '系统生成',
     type: '会议纪要',
     time: '06-18 16:20',
+    tone: 'blue',
   },
   {
     id: '2',
@@ -100,6 +105,7 @@ const materials: Material[] = [
     source: '活动负责人补充',
     type: '任务分工',
     time: '06-18 16:30',
+    tone: 'green',
   },
   {
     id: '3',
@@ -107,6 +113,7 @@ const materials: Material[] = [
     source: '林老师上传',
     type: '阶段成果',
     time: '06-18 17:10',
+    tone: 'orange',
   },
   {
     id: '4',
@@ -114,21 +121,20 @@ const materials: Material[] = [
     source: '张老师上传',
     type: '过程材料',
     time: '06-18 17:35',
+    tone: 'red',
   },
 ]
 
-// 已形成记录
 const formedRecord = {
   id: 'smart-line-record',
   title: '智能产线课程项目化改造研讨记录',
   tags: '会议纪要类',
   sourceActivity: '智能产线课程项目化改造研讨',
-  formedTime: '2026-06-18',
+  formedTime: '2026-06-18 16:20',
   content: '会议纪要、任务分工、阶段成果摘要、个人参与记录等',
   dimension: '成长档案 / 教研科研',
 }
 
-// 活动时间线
 interface TimelineItem {
   id: string
   event: string
@@ -170,15 +176,16 @@ const timeline: TimelineItem[] = [
 ]
 
 function editActivity() {
-  console.log('编辑活动')
+  operationMessage.value = '已进入活动信息校对状态。'
 }
 
 function viewMeetingRecord() {
-  console.log('查看会议记录')
+  operationMessage.value = `已定位会议记录：${activityInfo.meetingMethod} ${activityInfo.meetingNo}。`
 }
 
 function viewMaterial(id: string) {
-  console.log('查看资料', id)
+  const material = materials.find((item) => item.id === id)
+  operationMessage.value = material ? `当前查看资料：${material.name}。` : '当前查看资料。'
 }
 
 function viewRecord() {
@@ -193,9 +200,9 @@ function goBack() {
 <template>
   <AdminLayout active-key="virtual-lab">
     <div class="virtual-lab-activity-detail-page">
-      <!-- 页面头部 -->
       <section class="page-header">
         <div class="header-content">
+          <button class="back-button" @click="goBack">‹</button>
           <div class="breadcrumb">
             <span>虚拟教研室</span>
             <i class="separator">/</i>
@@ -205,204 +212,189 @@ function goBack() {
             <i class="separator">/</i>
             <span class="current">活动详情</span>
           </div>
-          <div class="title-section">
-            <h1 class="page-title">{{ activityInfo.name }}</h1>
-            <span class="status-badge success">{{ activityInfo.status }}</span>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="btn-secondary" @click="editActivity">编辑活动</button>
-          <button class="btn-secondary" @click="viewMeetingRecord">查看会议记录</button>
         </div>
       </section>
 
-      <!-- 主体内容区域 -->
       <section class="main-section">
-        <!-- 活动基础信息 -->
-        <div class="content-card info-card">
-          <h2 class="card-title">活动基础信息</h2>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">所属教研室：</span>
-              <span class="info-value">{{ activityInfo.roomName }}</span>
+        <div class="activity-profile-card">
+          <div class="activity-title-row">
+            <div>
+              <div class="title-with-status">
+                <h1>{{ activityInfo.name }}</h1>
+                <span class="status-badge success">{{ activityInfo.status }}</span>
+              </div>
+              <div class="info-grid">
+                <span>所属教研室：{{ activityInfo.roomName }}</span>
+                <span>发起人：{{ activityInfo.initiator }}</span>
+                <span>活动主题：{{ activityInfo.theme }}</span>
+                <span>参与教师：{{ activityInfo.participantsCount }} 人</span>
+                <span>活动时间：{{ activityInfo.time }}</span>
+                <span>创建时间：{{ activityInfo.createdAt }}</span>
+                <span>会议方式：{{ activityInfo.meetingMethod }}</span>
+                <span>活动说明：{{ activityInfo.description }}</span>
+              </div>
+              <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
+              <span class="activity-id">当前活动 ID：{{ activityId }}</span>
             </div>
-            <div class="info-item">
-              <span class="info-label">活动主题：</span>
-              <span class="info-value">{{ activityInfo.theme }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">活动时间：</span>
-              <span class="info-value">{{ activityInfo.time }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">会议方式：</span>
-              <span class="info-value">{{ activityInfo.meetingMethod }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">发起人：</span>
-              <span class="info-value">{{ activityInfo.initiator }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">参与教师：</span>
-              <span class="info-value">{{ activityInfo.participantsCount }} 人</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">创建时间：</span>
-              <span class="info-value">{{ activityInfo.createdAt }}</span>
-            </div>
-            <div class="info-item full-width">
-              <span class="info-label">活动说明：</span>
-              <span class="info-value">{{ activityInfo.description }}</span>
+            <div class="header-actions">
+              <button class="btn-secondary" @click="editActivity">编辑活动</button>
+              <button class="btn-primary" @click="viewMeetingRecord">查看会议记录</button>
             </div>
           </div>
         </div>
 
-        <!-- 状态卡 -->
-        <div class="content-card status-card">
-          <h2 class="card-title">状态卡</h2>
-          <div class="status-grid">
-            <div class="status-item">
-              <span class="status-label">参会记录</span>
-              <span class="status-value success">{{ statusCard.attendanceRecord }}</span>
+        <div class="status-card">
+          <div class="status-item">
+            <div class="status-icon icon-attendance">👥</div>
+            <div>
+              <span>参会记录</span>
+              <strong class="green">{{ statusCard.attendanceRecord }}</strong>
             </div>
-            <div class="status-item">
-              <span class="status-label">会议纪要</span>
-              <span class="status-value success">{{ statusCard.meetingMinutes }}</span>
+          </div>
+          <div class="status-divider"></div>
+          <div class="status-item">
+            <div class="status-icon icon-minutes">▤</div>
+            <div>
+              <span>会议纪要</span>
+              <strong class="blue">{{ statusCard.meetingMinutes }}</strong>
             </div>
-            <div class="status-item">
-              <span class="status-label">任务分工</span>
-              <span class="status-value success">{{ statusCard.taskAssignment }}</span>
+          </div>
+          <div class="status-divider"></div>
+          <div class="status-item">
+            <div class="status-icon icon-task">✓</div>
+            <div>
+              <span>任务分工</span>
+              <strong class="purple">{{ statusCard.taskAssignment }}</strong>
             </div>
-            <div class="status-item">
-              <span class="status-label">教研记录</span>
-              <span class="status-value success">{{ statusCard.researchRecord }}</span>
+          </div>
+          <div class="status-divider"></div>
+          <div class="status-item">
+            <div class="status-icon icon-record">▤</div>
+            <div>
+              <span>教研记录</span>
+              <strong class="green">{{ statusCard.researchRecord }}</strong>
             </div>
-            <div class="status-item">
-              <span class="status-label">最近同步时间</span>
-              <span class="status-value">{{ statusCard.recentSyncTime }}</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">数据来源</span>
-              <span class="status-value">{{ statusCard.dataSource }}</span>
-            </div>
+          </div>
+          <div class="status-divider"></div>
+          <div class="sync-info">
+            <span>最近同步时间：{{ statusCard.recentSyncTime }}</span>
+            <span>数据来源：{{ statusCard.dataSource }}</span>
           </div>
         </div>
 
-        <!-- 主体两栏 -->
-        <div class="two-column-layout">
-          <!-- 左侧：会议与参与情况 -->
+        <div class="two-column-layout top-layout">
           <div class="content-card participants-card">
-            <h2 class="card-title">会议与参与情况</h2>
-            <div class="meeting-info">
-              <div class="info-row">
-                <span class="info-label">会议平台：</span>
-                <span class="info-value">{{ activityInfo.meetingMethod }}</span>
+            <div class="card-header">
+              <h2>会议与参与情况</h2>
+              <button class="btn-link" @click="operationMessage = '已展示全部 18 位参与教师。'">查看全部(18) ›</button>
+            </div>
+            <div class="participants-content">
+              <div class="meeting-info">
+                <div><span>会议平台：</span><strong>{{ activityInfo.meetingMethod }}</strong></div>
+                <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="operationMessage = '会议号已复制。'">⧉</button></div>
+                <div><span>会议时间：</span><strong>{{ activityInfo.time }}</strong></div>
+                <div><span>会议主题：</span><strong>{{ activityInfo.name }}</strong></div>
+                <div><span>同步状态：</span><strong class="green">● 已同步</strong></div>
               </div>
-              <div class="info-row">
-                <span class="info-label">会议号：</span>
-                <span class="info-value">827 391 602</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">会议时间：</span>
-                <span class="info-value">{{ activityInfo.time }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">会议主题：</span>
-                <span class="info-value">{{ activityInfo.name }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">同步状态：</span>
-                <span class="status-value success">已同步</span>
+              <div class="table-container">
+                <table class="data-table participant-table">
+                  <thead>
+                    <tr>
+                      <th>教师</th>
+                      <th>教研室角色</th>
+                      <th>参与来源</th>
+                      <th>参与时间</th>
+                      <th>关联记录</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="participant in participants" :key="participant.id">
+                      <td>
+                        <span class="avatar">{{ participant.avatar }}</span>
+                        {{ participant.name }}
+                      </td>
+                      <td><span class="role-pill">{{ participant.role }}</span></td>
+                      <td>{{ participant.participationType }}</td>
+                      <td>{{ participant.timeRange }}</td>
+                      <td><span class="status-badge success">{{ participant.status }}</span></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
+          </div>
 
-            <h3 class="section-subtitle">参与教师（{{ activityInfo.participantsCount }}人）</h3>
+          <div class="content-card">
+            <div class="card-header">
+              <h2>活动资料</h2>
+            </div>
             <div class="table-container">
-              <table class="data-table">
+              <table class="data-table material-table">
                 <thead>
                   <tr>
-                    <th>教师</th>
-                    <th>角色</th>
-                    <th>参与方式</th>
-                    <th>时长</th>
-                    <th>状态</th>
+                    <th>资料名称</th>
+                    <th>来源</th>
+                    <th>类型</th>
+                    <th>时间</th>
+                    <th>操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="participant in participants" :key="participant.id">
-                    <td>{{ participant.name }}</td>
-                    <td>{{ participant.role }}</td>
-                    <td>{{ participant.participationType }}</td>
-                    <td>{{ participant.timeRange }}</td>
+                  <tr v-for="material in materials" :key="material.id">
                     <td>
-                      <span class="status-badge success">{{ participant.status }}</span>
+                      <span class="file-icon" :class="material.tone">▤</span>
+                      {{ material.name }}
                     </td>
+                    <td>{{ material.source }}</td>
+                    <td>{{ material.type }}</td>
+                    <td>{{ material.time }}</td>
+                    <td><button class="btn-link" @click="viewMaterial(material.id)">查看</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-
-          <!-- 右侧：活动资料 -->
-          <div class="content-card materials-card">
-            <h2 class="card-title">活动资料</h2>
-            <div class="materials-list">
-              <div
-                v-for="material in materials"
-                :key="material.id"
-                class="material-item"
-              >
-                <div class="material-info">
-                  <h4 class="material-name">{{ material.name }}</h4>
-                  <div class="material-meta">
-                    <span class="meta-item">{{ material.source }}</span>
-                    <span class="meta-item">{{ material.type }}</span>
-                    <span class="meta-item">{{ material.time }}</span>
-                  </div>
-                </div>
-                <div class="material-action">
-                  <button class="btn-view" @click="viewMaterial(material.id)">
-                    查看
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- 下方两栏 -->
-        <div class="two-column-layout">
-          <!-- 左侧：已形成记录 -->
-          <div class="content-card record-card">
-            <h2 class="card-title">已形成记录</h2>
+        <div class="two-column-layout bottom-layout">
+          <div class="content-card">
+            <div class="card-header">
+              <h2>已形成记录</h2>
+            </div>
             <div class="record-detail">
-              <h3 class="record-title">{{ formedRecord.title }}</h3>
-              <div class="record-meta">
-                <span class="meta-item">标签：{{ formedRecord.tags }}</span>
-                <span class="meta-item">来源活动：{{ formedRecord.sourceActivity }}</span>
-                <span class="meta-item">形成时间：{{ formedRecord.formedTime }}</span>
-                <span class="meta-item">记录内容：{{ formedRecord.content }}</span>
-                <span class="meta-item">关联维度：{{ formedRecord.dimension }}</span>
+              <div class="record-icon">▤</div>
+              <div>
+                <div class="record-title-line">
+                  <h3>{{ formedRecord.title }}</h3>
+                  <span class="tag-pill">{{ formedRecord.tags }}</span>
+                </div>
+                <div class="record-meta">
+                  <span>来源活动：{{ formedRecord.sourceActivity }}</span>
+                  <span>形成时间：{{ formedRecord.formedTime }}</span>
+                  <span>记录内容：{{ formedRecord.content }}</span>
+                  <span>关联维度：{{ formedRecord.dimension }}</span>
+                </div>
               </div>
-              <button class="btn-primary" @click="viewRecord">查看记录</button>
+              <button class="btn-primary" @click="viewRecord">查看记录 →</button>
             </div>
           </div>
 
-          <!-- 右侧：活动时间线 -->
-          <div class="content-card timeline-card">
-            <h2 class="card-title">活动时间线</h2>
+          <div class="content-card">
+            <div class="card-header">
+              <h2>活动时间线</h2>
+            </div>
             <div class="timeline-list">
               <div
                 v-for="item in timeline"
                 :key="item.id"
                 class="timeline-item"
               >
-                <div class="timeline-event">{{ item.event }}</div>
-                <div class="timeline-operator">{{ item.operator }}</div>
-                <div class="timeline-time">{{ item.time }}</div>
+                <span class="timeline-dot"></span>
+                <strong>{{ item.event }}</strong>
+                <span>{{ item.operator }}</span>
+                <time>{{ item.time }}</time>
               </div>
             </div>
-            <button class="btn-secondary" @click="goBack">返回上一页</button>
           </div>
         </div>
       </section>
@@ -413,406 +405,571 @@ function goBack() {
 <style scoped>
 .virtual-lab-activity-detail-page {
   min-height: 100vh;
-  background: var(--color-page-bg);
+  background: #f6f9ff;
+  color: #17233d;
+}
+
+.virtual-lab-activity-detail-page *,
+.virtual-lab-activity-detail-page *::before,
+.virtual-lab-activity-detail-page *::after {
+  box-sizing: border-box;
 }
 
 .page-header {
-  padding: 32px 0;
-  background: white;
-  border-bottom: 1px solid var(--color-card-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  padding: 20px 0 12px;
+}
+
+.header-content,
+.main-section {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding-left: 22px;
+  padding-right: 22px;
 }
 
 .header-content {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 0 24px;
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.header-actions {
-  padding: 0 24px;
-  display: flex;
-  gap: 12px;
+.back-button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  background: #fff;
+  color: #17233d;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: #66758f;
   font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .breadcrumb .separator {
-  color: var(--color-text-hint);
+  color: #9aa8bd;
 }
 
 .breadcrumb .current {
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.title-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
+  color: #17233d;
   font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.status-badge.success {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.btn-primary {
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #28a38a;
-}
-
-.btn-secondary {
-  padding: 10px 20px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--color-primary);
-  color: white;
 }
 
 .main-section {
-  max-width: var(--admin-content-max-width);
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding-bottom: 34px;
 }
 
+.activity-profile-card,
+.status-card,
 .content-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-card-border);
-  padding: 24px;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
 }
 
-.card-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.activity-profile-card {
+  min-height: 198px;
+  padding: 28px 32px;
+}
+
+.activity-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.title-with-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.title-with-status h1 {
+  margin: 0;
+  color: #17233d;
+  font-size: 26px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge.success {
+  background: #dff8ec;
+  color: #18a663;
 }
 
 .info-grid {
+  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px 80px;
+  color: #17233d;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
-.info-item {
-  display: flex;
+.operation-message {
+  margin: 14px 0 0;
+  color: #1268f6;
   font-size: 14px;
+  font-weight: 700;
 }
 
-.info-item.full-width {
-  grid-column: 1 / -1;
+.activity-id {
+  display: none;
 }
 
-.info-label {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  min-width: 100px;
-}
-
-.info-value {
-  color: var(--color-text-primary);
-  flex: 1;
-}
-
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.status-item {
+.header-actions {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 18px;
 }
 
-.status-label {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  font-weight: 500;
+.btn-primary,
+.btn-secondary,
+.btn-link,
+.copy-button {
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
 }
 
-.status-value {
-  font-size: 14px;
-  color: var(--color-text-primary);
-  font-weight: 600;
+.btn-primary,
+.btn-secondary {
+  height: 44px;
+  padding: 0 24px;
 }
 
-.status-value.success {
-  color: #059669;
+.btn-primary {
+  border: 1px solid #1268f6;
+  background: #1268f6;
+  color: #fff;
 }
 
-.two-column-layout {
+.btn-secondary {
+  border: 1px solid #cfdcf0;
+  background: #fff;
+  color: #17233d;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  border-color: #0d55d8;
+  background: #0d55d8;
+  color: #fff;
+}
+
+.status-card {
+  min-height: 112px;
+  margin-top: 14px;
+  padding: 20px 28px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr 1px 1.1fr;
+  align-items: center;
   gap: 20px;
 }
 
-.meeting-info {
-  margin-bottom: 24px;
+.status-divider {
+  width: 1px;
+  height: 70px;
+  background: #dce6f5;
 }
 
-.info-row {
+.status-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.status-icon {
+  width: 54px;
+  height: 54px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.icon-attendance {
+  color: #18a663;
+  background: #dff8ec;
+}
+
+.icon-minutes,
+.icon-record {
+  color: #1268f6;
+  background: #e8f0ff;
+}
+
+.icon-task {
+  color: #8848e8;
+  background: #efe7ff;
+}
+
+.status-item span,
+.sync-info span {
+  display: block;
+  color: #4d5d75;
   font-size: 14px;
-  margin-bottom: 12px;
 }
 
-.info-row .info-label {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  min-width: 100px;
+.status-item strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1;
 }
 
-.info-row .info-value {
-  color: var(--color-text-primary);
-  flex: 1;
+.green {
+  color: #18a663 !important;
 }
 
-.section-subtitle {
-  margin: 0 0 16px 0;
-  font-size: 16px;
+.blue {
+  color: #1268f6 !important;
+}
+
+.purple {
+  color: #8848e8 !important;
+}
+
+.sync-info {
+  display: grid;
+  gap: 12px;
+}
+
+.two-column-layout {
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.top-layout {
+  grid-template-columns: 1.08fr 0.76fr;
+}
+
+.bottom-layout {
+  grid-template-columns: 1.08fr 0.76fr;
+}
+
+.content-card {
+  overflow: hidden;
+}
+
+.card-header {
+  min-height: 58px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4ebf5;
+}
+
+.card-header h2 {
+  position: relative;
+  margin: 0;
+  padding-left: 16px;
+  color: #17233d;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.card-header h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 4px;
+  height: 22px;
+  border-radius: 2px;
+  background: #1268f6;
+}
+
+.btn-link {
+  border: 0;
+  background: transparent;
+  color: #1268f6;
+}
+
+.participants-content {
+  display: grid;
+  grid-template-columns: 0.36fr 0.64fr;
+}
+
+.meeting-info {
+  padding: 20px;
+  border-right: 1px solid #e4ebf5;
+}
+
+.meeting-info div {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4d5d75;
+  font-size: 13px;
+}
+
+.meeting-info span {
+  flex: 0 0 76px;
+}
+
+.meeting-info strong {
+  color: #17233d;
   font-weight: 600;
-  color: var(--color-text-primary);
+}
+
+.copy-button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #d7e2f2;
+  background: #fff;
+  color: #8a98ad;
 }
 
 .table-container {
+  width: 100%;
   overflow-x: auto;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.participant-table {
+  min-width: 620px;
+}
+
+.material-table {
+  min-width: 640px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e8eef7;
+  text-align: left;
+  vertical-align: middle;
+  color: #17233d;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .data-table th {
-  padding: 12px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
-  background: #f8fafc;
+  background: #f7faff;
+  color: #66758f;
+  font-weight: 700;
 }
 
-.data-table td {
-  padding: 12px;
-  font-size: 13px;
-  color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-card-border);
+.avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8f0ff;
+  color: #1268f6;
+  font-weight: 700;
 }
 
-.data-table tr:last-child td {
-  border-bottom: none;
-}
-
-.materials-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.material-item {
-  padding: 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid var(--color-card-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.material-name {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.material-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.meta-item {
+.role-pill,
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef3fb;
+  color: #4d5d75;
   font-size: 12px;
-  color: var(--color-text-secondary);
+  font-weight: 700;
 }
 
-.material-action {
-  flex-shrink: 0;
-  margin-left: 20px;
+.file-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
 }
 
-.btn-view {
-  padding: 6px 12px;
-  background: white;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.16s ease;
+.file-icon.blue {
+  background: #5b8ff9;
 }
 
-.btn-view:hover {
-  background: var(--color-primary);
-  color: white;
+.file-icon.green {
+  background: #36b37e;
+}
+
+.file-icon.orange {
+  background: #ff8f3d;
+}
+
+.file-icon.red {
+  background: #f25f66;
 }
 
 .record-detail {
-  padding: 20px;
-  background: #f8fafc;
+  min-height: 188px;
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  margin: 20px;
+  padding: 26px;
+  border: 1px solid #dce6f5;
   border-radius: 8px;
-  border: 1px solid var(--color-card-border);
+  background: #fbfdff;
 }
 
-.record-title {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.record-icon {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6da2ff, #1268f6);
+  color: #fff;
+  font-size: 34px;
+}
+
+.record-title-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.record-title-line h3 {
+  margin: 0;
+  color: #17233d;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .record-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.record-meta .meta-item {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 24px;
+  color: #4d5d75;
+  font-size: 14px;
 }
 
 .timeline-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
+  position: relative;
+  padding: 20px 26px 24px;
+}
+
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 34px;
+  top: 30px;
+  bottom: 34px;
+  width: 1px;
+  background: #d7e2f2;
 }
 
 .timeline-item {
-  padding: 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid var(--color-card-border);
+  position: relative;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 18px 1fr 0.8fr 0.8fr;
   align-items: center;
-}
-
-.timeline-event {
+  gap: 12px;
+  min-height: 34px;
+  color: #4d5d75;
   font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
 }
 
-.timeline-operator {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+.timeline-dot {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1268f6;
+  box-shadow: 0 0 0 2px #cfe0ff;
 }
 
-.timeline-time {
-  font-size: 13px;
-  color: var(--color-text-hint);
+.timeline-item strong {
+  color: #17233d;
 }
 
-@media (max-width: 1024px) {
-  .two-column-layout {
+.timeline-item time {
+  color: #8a98ad;
+}
+
+@media (max-width: 1360px) {
+  .status-card,
+  .top-layout,
+  .bottom-layout,
+  .participants-content {
     grid-template-columns: 1fr;
   }
 
-  .status-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .status-divider {
+    display: none;
+  }
+
+  .status-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meeting-info {
+    border-right: 0;
+    border-bottom: 1px solid #e4ebf5;
   }
 }
 
-@media (max-width: 768px) {
-  .page-header {
+@media (max-width: 900px) {
+  .activity-title-row,
+  .header-actions,
+  .title-with-status {
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-start;
   }
 
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .status-grid {
-    grid-template-columns: 1fr;
-  }
-
+  .info-grid,
+  .status-card,
+  .record-detail,
+  .record-meta,
   .timeline-item {
     grid-template-columns: 1fr;
-  }
-
-  .material-item {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .material-action {
-    margin-left: 0;
-    margin-top: 12px;
   }
 }
 </style>
