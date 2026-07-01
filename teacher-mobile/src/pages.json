@@ -14,6 +14,48 @@
       }
     },
     {
+      "path": "pages/activity/training/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-list/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-application/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-summary/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-demand/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-found/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-demand-result/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/todo/index",
       "style": {
         "navigationStyle": "custom"
