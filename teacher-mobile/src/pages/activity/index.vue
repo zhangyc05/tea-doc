@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import MobileTabBar from '../../components/MobileTabBar.vue'
+import MobileActionButton from '../../components/MobileActionButton.vue'
+import MobileCard from '../../components/MobileCard.vue'
+import MobilePageShell from '../../components/MobilePageShell.vue'
+import MobileStatusTag from '../../components/MobileStatusTag.vue'
+
+type TagTone = 'purple' | 'blue' | 'orange' | 'green'
 
 const reflectionBasis = [
   { label: '课堂报告', icon: 'book' },
@@ -7,7 +12,14 @@ const reflectionBasis = [
   { label: '评价分析', icon: 'star' },
 ]
 
-const activities = [
+const activities: Array<{
+  tag: string
+  title: string
+  desc: string
+  note: string
+  action: string
+  tone: TagTone
+}> = [
   {
     tag: '培训进修',
     title: '申请培训',
@@ -57,7 +69,7 @@ const recentActivities = [
 </script>
 
 <template>
-  <view class="activity-page">
+  <MobilePageShell class="activity-page" active="activity">
     <view class="system-status" aria-hidden="true">
       <text class="system-status__time">9:41</text>
       <view class="system-status__icons">
@@ -100,7 +112,7 @@ const recentActivities = [
       <view class="chevron"></view>
     </view>
 
-    <view class="section-card start-card">
+    <MobileCard class="section-card start-card">
       <view class="section-card__head">
         <text class="section-title">今日可开始</text>
         <view class="ready-note">
@@ -117,7 +129,7 @@ const recentActivities = [
           <view class="reflection-art__spark reflection-art__spark--two"></view>
         </view>
         <view class="start-card__main">
-          <text class="tag tag--purple">教学反思</text>
+          <MobileStatusTag tone="purple">教学反思</MobileStatusTag>
           <text class="start-card__title">我要进行教学反思</text>
           <text class="start-card__desc">可基于课堂报告、成绩报告、评价报告开始，也可录制课堂音频、上传教学资料或直接与 AI 对话开始</text>
           <view class="basis-list">
@@ -129,17 +141,17 @@ const recentActivities = [
         </view>
       </view>
 
-      <button class="primary-action">开始反思</button>
-    </view>
+      <MobileActionButton class="primary-action" variant="primary">开始反思</MobileActionButton>
+    </MobileCard>
 
-    <view class="section-card activity-card">
+    <MobileCard class="section-card activity-card">
       <text class="section-title">成长活动</text>
       <view v-for="item in activities" :key="item.title" class="activity-row">
         <view class="activity-visual" :class="`activity-visual--${item.tone}`">
           <view class="activity-visual__shape"></view>
         </view>
         <view class="activity-row__body">
-          <text class="tag" :class="`tag--${item.tone}`">{{ item.tag }}</text>
+          <MobileStatusTag :tone="item.tone">{{ item.tag }}</MobileStatusTag>
           <text class="activity-row__title">{{ item.title }}</text>
           <text class="activity-row__desc">{{ item.desc }}</text>
           <view class="activity-row__note">
@@ -147,20 +159,14 @@ const recentActivities = [
             <text>{{ item.note }}</text>
           </view>
         </view>
-        <button class="outline-action">
-          <text>{{ item.action }}</text>
-          <view class="outline-action__arrow"></view>
-        </button>
+        <MobileActionButton class="outline-action" variant="outline" arrow>{{ item.action }}</MobileActionButton>
       </view>
-    </view>
+    </MobileCard>
 
-    <view class="section-card recent-card">
+    <MobileCard class="section-card recent-card">
       <view class="section-card__head">
         <text class="section-title">最近活动</text>
-        <button class="all-link">
-          <text>全部</text>
-          <view class="all-link__arrow"></view>
-        </button>
+        <MobileActionButton class="all-link" variant="link" arrow>全部</MobileActionButton>
       </view>
       <view v-for="item in recentActivities" :key="item.title" class="recent-row">
         <view class="recent-icon" :class="`recent-icon--${item.tone}`"></view>
@@ -170,10 +176,8 @@ const recentActivities = [
         </view>
         <text class="recent-row__time">{{ item.time }}</text>
       </view>
-    </view>
-
-    <MobileTabBar active="activity" />
-  </view>
+    </MobileCard>
+  </MobilePageShell>
 </template>
 
 <style lang="scss" scoped>
@@ -311,8 +315,18 @@ const recentActivities = [
   position: relative;
   width: 88rpx;
   height: 88rpx;
+  margin: 0;
+  padding: 0;
   border: 0;
   background: transparent;
+}
+
+.notice-button::after,
+.primary-action::after,
+.outline-action::after,
+.all-link::after {
+  display: none;
+  border: 0;
 }
 
 .notice-button__bell {
@@ -448,17 +462,12 @@ const recentActivities = [
   color: #1d2742;
 }
 
-.chevron,
-.outline-action__arrow,
-.all-link__arrow {
+.chevron {
   width: 22rpx;
   height: 22rpx;
   border-top: 5rpx solid currentColor;
   border-right: 5rpx solid currentColor;
   transform: rotate(45deg);
-}
-
-.chevron {
   color: $teacher-mobile-primary;
 }
 
@@ -593,38 +602,6 @@ const recentActivities = [
   flex: 1;
 }
 
-.tag {
-  display: inline-flex;
-  width: fit-content;
-  height: 30rpx;
-  align-items: center;
-  padding: 0 14rpx;
-  border-radius: 10rpx;
-  font-size: 22rpx;
-  font-weight: 900;
-  line-height: 30rpx;
-}
-
-.tag--purple {
-  background: #efe7ff;
-  color: #7a49f5;
-}
-
-.tag--blue {
-  background: #e8f1ff;
-  color: #1f75ff;
-}
-
-.tag--orange {
-  background: #fff0e6;
-  color: #ff6c1a;
-}
-
-.tag--green {
-  background: #e7faef;
-  color: #13a95b;
-}
-
 .start-card__title {
   display: block;
   margin-top: 12rpx;
@@ -685,6 +662,8 @@ const recentActivities = [
   bottom: 24rpx;
   min-width: 132rpx;
   height: 48rpx;
+  margin: 0;
+  padding: 0 22rpx;
   border: 0;
   border-radius: 14rpx;
   background: linear-gradient(135deg, #16c96c, #02ad53);
@@ -848,6 +827,8 @@ const recentActivities = [
   height: 44rpx;
   justify-content: center;
   flex: 0 0 auto;
+  margin: 0;
+  padding: 0 18rpx;
   border: 2rpx solid $teacher-mobile-primary;
   border-radius: 14rpx;
   background: #fff;
@@ -858,30 +839,20 @@ const recentActivities = [
   white-space: nowrap;
 }
 
-.outline-action__arrow {
-  width: 16rpx;
-  height: 16rpx;
-  border-width: 4rpx;
-}
-
 .recent-card {
   margin-bottom: 0;
 }
 
 .all-link {
   gap: 8rpx;
+  margin: 0;
+  padding: 0;
   border: 0;
   background: transparent;
   color: $teacher-mobile-primary-dark;
   font-size: 31rpx;
   font-weight: 900;
   line-height: 1;
-}
-
-.all-link__arrow {
-  width: 18rpx;
-  height: 18rpx;
-  border-width: 5rpx;
 }
 
 .recent-row {

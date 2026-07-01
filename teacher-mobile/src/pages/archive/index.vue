@@ -1,19 +1,786 @@
+<script setup lang="ts">
+import MobileActionButton from '../../components/MobileActionButton.vue'
+import MobileCard from '../../components/MobileCard.vue'
+import MobilePageShell from '../../components/MobilePageShell.vue'
+
+const categories = [
+  { name: '基本信息', count: '5 条已入档', updated: '最近更新 06.14', icon: 'id' },
+  { name: '教学工作', count: '18 条已入档', updated: '最近更新 06.14', icon: 'book' },
+  { name: '教研科研', count: '9 条已入档', updated: '最近更新 06.12', icon: 'lab' },
+  { name: '企业实践', count: '3 条已入档', updated: '最近更新 06.10', icon: 'briefcase' },
+  { name: '社会服务', count: '2 条已入档', updated: '最近更新 06.08', icon: 'heart' },
+  { name: '成果荣誉', count: '6 条已入档', updated: '最近更新 06.08', icon: 'cup' },
+  { name: '个人发展', count: '7 条已入档', updated: '最近更新 06.11', icon: 'growth' },
+  { name: '考核评价', count: '2 条已入档', updated: '最近更新 06.05', icon: 'check' },
+]
+
+const recentRecords = [
+  { title: '2026 年校级教学成果奖', meta: '成果荣誉 ｜ 06.14' },
+  { title: '智能制造专业群虚拟教研活动记录', meta: '教研科研 ｜ 06.12' },
+  { title: '企业实践阶段总结', meta: '企业实践 ｜ 06.10' },
+]
+</script>
+
 <template>
-  <view class="placeholder-page">
-    <text>档案</text>
-    <MobileTabBar active="archive" />
-  </view>
+  <MobilePageShell class="archive-page" active="archive">
+    <view class="system-status" aria-hidden="true">
+      <text class="system-status__time">9:41</text>
+      <view class="system-status__icons">
+        <view class="status-signal"></view>
+        <view class="status-wifi"></view>
+        <view class="status-battery"></view>
+      </view>
+    </view>
+
+    <view class="page-head">
+      <view class="page-head__copy">
+        <text class="page-head__title">档案</text>
+        <text class="page-head__subtitle">系统已帮你整理个人成长记录</text>
+      </view>
+      <button class="notice-button" aria-label="消息通知">
+        <view class="notice-button__bell">
+          <view class="notice-button__badge">5</view>
+        </view>
+      </button>
+      <view class="leaf-ghost" aria-hidden="true"></view>
+    </view>
+
+    <view class="search-card">
+      <view class="search-icon"></view>
+      <text class="search-placeholder">输入关键词，或点右侧麦克风语音搜索</text>
+      <view class="mic-icon"></view>
+    </view>
+
+    <MobileCard class="section-card overview-card">
+      <text class="section-title">档案概览</text>
+      <view class="overview-metrics">
+        <view class="overview-item overview-item--wide">
+          <view class="metric-icon metric-icon--folder"></view>
+          <view>
+            <text class="metric-number">42</text>
+            <text class="metric-label">条已入档</text>
+          </view>
+        </view>
+        <view class="overview-item">
+          <view class="metric-icon metric-icon--grid"></view>
+          <view>
+            <text class="metric-number">8</text>
+            <text class="metric-label">类档案</text>
+          </view>
+        </view>
+        <view class="overview-item overview-item--date">
+          <view class="metric-icon metric-icon--clock"></view>
+          <view>
+            <text class="metric-label">最近更新</text>
+            <text class="metric-number metric-number--date">06.14</text>
+          </view>
+        </view>
+      </view>
+      <text class="overview-desc">正式入档的记录会用于能力画像、岗位/聘期对照和个人报告。</text>
+    </MobileCard>
+
+    <MobileCard class="section-card category-card">
+      <text class="section-title">档案分类</text>
+      <view class="category-grid">
+        <view v-for="item in categories" :key="item.name" class="category-item">
+          <view class="category-icon" :class="`category-icon--${item.icon}`"></view>
+          <view class="category-main">
+            <view class="category-title-line">
+              <text class="category-name">{{ item.name }}</text>
+              <view class="chevron"></view>
+            </view>
+            <text class="category-count">{{ item.count }}</text>
+            <text class="category-updated">{{ item.updated }}</text>
+          </view>
+        </view>
+      </view>
+    </MobileCard>
+
+    <MobileCard class="section-card recent-card">
+      <view class="section-head">
+        <text class="section-title">最近入档</text>
+        <MobileActionButton class="all-link" variant="link" arrow>查看全部</MobileActionButton>
+      </view>
+      <view v-for="record in recentRecords" :key="record.title" class="record-row">
+        <view class="record-icon"></view>
+        <view class="record-body">
+          <text class="record-title">{{ record.title }}</text>
+          <text class="record-meta">{{ record.meta }}</text>
+        </view>
+        <view class="record-arrow"></view>
+      </view>
+    </MobileCard>
+  </MobilePageShell>
 </template>
 
 <style lang="scss" scoped>
 @import '../../styles/tokens.scss';
 
-.placeholder-page {
+.archive-page {
   min-height: 100vh;
-  padding: 80rpx $teacher-mobile-page-x;
-  background: $teacher-mobile-page-bg;
+  padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(150rpx + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 14% 3%, rgba(221, 252, 238, 0.76), transparent 31%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbff 50%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
-  font-size: 40rpx;
+}
+
+.system-status,
+.system-status__icons,
+.page-head,
+.search-card,
+.overview-metrics,
+.overview-item,
+.category-title-line,
+.section-head,
+.all-link,
+.record-row {
+  display: flex;
+  align-items: center;
+}
+
+.system-status {
+  height: 42rpx;
+  justify-content: space-between;
+  padding: 0 18rpx;
+}
+
+.system-status__time {
+  color: #050812;
+  font-size: 30rpx;
   font-weight: 900;
+  line-height: 1;
+}
+
+.system-status__icons {
+  gap: 14rpx;
+}
+
+.status-signal {
+  width: 38rpx;
+  height: 26rpx;
+  background: #050812;
+  clip-path: polygon(0 70%, 18% 70%, 18% 100%, 0 100%, 0 70%, 27% 52%, 45% 52%, 45% 100%, 27% 100%, 27% 52%, 54% 32%, 72% 32%, 72% 100%, 54% 100%, 54% 32%, 82% 10%, 100% 10%, 100% 100%, 82% 100%, 82% 10%);
+}
+
+.status-wifi {
+  position: relative;
+  width: 36rpx;
+  height: 26rpx;
+  border: 8rpx solid #050812;
+  border-color: #050812 transparent transparent;
+  border-radius: 50%;
+}
+
+.status-wifi::after {
+  position: absolute;
+  right: 7rpx;
+  bottom: -9rpx;
+  width: 9rpx;
+  height: 9rpx;
+  border-radius: 50%;
+  background: #050812;
+  content: '';
+}
+
+.status-battery {
+  position: relative;
+  width: 52rpx;
+  height: 26rpx;
+  border: 4rpx solid #050812;
+  border-radius: 8rpx;
+}
+
+.status-battery::before {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 38rpx;
+  height: 10rpx;
+  border-radius: 4rpx;
+  background: #050812;
+  content: '';
+}
+
+.status-battery::after {
+  position: absolute;
+  top: 6rpx;
+  right: -9rpx;
+  width: 5rpx;
+  height: 12rpx;
+  border-radius: 0 4rpx 4rpx 0;
+  background: #050812;
+  content: '';
+}
+
+.page-head {
+  position: relative;
+  justify-content: space-between;
+  gap: 28rpx;
+  padding: 34rpx 10rpx 28rpx;
+}
+
+.page-head__copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  flex: 1;
+}
+
+.page-head__title {
+  display: block;
+  color: #080d1f;
+  font-size: 62rpx;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.04;
+}
+
+.page-head__subtitle {
+  display: block;
+  margin-top: 14rpx;
+  color: #35425e;
+  font-size: 27rpx;
+  line-height: 1.35;
+}
+
+.leaf-ghost {
+  position: absolute;
+  right: 58rpx;
+  bottom: -2rpx;
+  width: 190rpx;
+  height: 116rpx;
+  opacity: 0.12;
+}
+
+.leaf-ghost::before,
+.leaf-ghost::after {
+  position: absolute;
+  bottom: 0;
+  width: 72rpx;
+  height: 116rpx;
+  border-radius: 60rpx 60rpx 8rpx 60rpx;
+  background: #55c78a;
+  content: '';
+}
+
+.leaf-ghost::before {
+  left: 30rpx;
+  transform: rotate(-28deg);
+}
+
+.leaf-ghost::after {
+  right: 20rpx;
+  transform: rotate(24deg);
+}
+
+.notice-button,
+.all-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.notice-button::after,
+.all-link::after {
+  display: none;
+  border: 0;
+}
+
+.notice-button {
+  position: relative;
+  width: 88rpx;
+  height: 88rpx;
+  flex: 0 0 88rpx;
+}
+
+.notice-button__bell {
+  position: absolute;
+  right: 8rpx;
+  bottom: 8rpx;
+  width: 58rpx;
+  height: 58rpx;
+  border: 6rpx solid #0d1430;
+  border-top-color: transparent;
+  border-radius: 50% 50% 20rpx 20rpx;
+}
+
+.notice-button__bell::before {
+  position: absolute;
+  top: -13rpx;
+  left: 17rpx;
+  width: 18rpx;
+  height: 12rpx;
+  border: 5rpx solid #0d1430;
+  border-bottom: 0;
+  border-radius: 18rpx 18rpx 0 0;
+  content: '';
+}
+
+.notice-button__bell::after {
+  position: absolute;
+  right: 14rpx;
+  bottom: -13rpx;
+  width: 20rpx;
+  height: 5rpx;
+  border-radius: 5rpx;
+  background: #0d1430;
+  content: '';
+}
+
+.notice-button__badge {
+  position: absolute;
+  top: -28rpx;
+  right: -23rpx;
+  display: flex;
+  width: 50rpx;
+  height: 50rpx;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ff1f39;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.search-card {
+  height: 76rpx;
+  gap: 24rpx;
+  padding: 0 34rpx;
+  border: 1rpx solid rgba(231, 236, 246, 0.95);
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 42rpx rgba(35, 51, 87, 0.06);
+}
+
+.search-placeholder {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #5e6982;
+  font-size: 27rpx;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-icon {
+  position: relative;
+  width: 42rpx;
+  height: 42rpx;
+  flex: 0 0 42rpx;
+  border: 5rpx solid #69738a;
+  border-radius: 50%;
+}
+
+.search-icon::after {
+  position: absolute;
+  right: -11rpx;
+  bottom: -8rpx;
+  width: 18rpx;
+  height: 5rpx;
+  border-radius: 6rpx;
+  background: #69738a;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.mic-icon {
+  position: relative;
+  width: 36rpx;
+  height: 46rpx;
+  flex: 0 0 36rpx;
+  border: 5rpx solid #69738a;
+  border-top-width: 8rpx;
+  border-radius: 20rpx;
+}
+
+.mic-icon::before {
+  position: absolute;
+  right: -11rpx;
+  bottom: -8rpx;
+  left: -11rpx;
+  height: 26rpx;
+  border: 5rpx solid #69738a;
+  border-top: 0;
+  border-radius: 0 0 20rpx 20rpx;
+  content: '';
+}
+
+.mic-icon::after {
+  position: absolute;
+  bottom: -18rpx;
+  left: 10rpx;
+  width: 16rpx;
+  height: 5rpx;
+  border-radius: 5rpx;
+  background: #69738a;
+  content: '';
+}
+
+.section-card {
+  margin-top: 18rpx;
+  padding: 26rpx 32rpx;
+  border: 1rpx solid rgba(231, 236, 246, 0.95);
+  border-radius: 32rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 22rpx 52rpx rgba(35, 51, 87, 0.07);
+}
+
+.section-title {
+  display: block;
+  color: $teacher-mobile-text-primary;
+  font-size: 31rpx;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.overview-metrics {
+  justify-content: space-between;
+  margin-top: 22rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid $teacher-mobile-card-border;
+}
+
+.overview-item {
+  position: relative;
+  gap: 20rpx;
+  flex: 1;
+}
+
+.overview-item + .overview-item {
+  padding-left: 28rpx;
+}
+
+.overview-item + .overview-item::before {
+  position: absolute;
+  top: 11rpx;
+  bottom: 11rpx;
+  left: 0;
+  width: 1rpx;
+  background: $teacher-mobile-card-border;
+  content: '';
+}
+
+.overview-item--date {
+  justify-content: flex-end;
+}
+
+.metric-icon {
+  position: relative;
+  display: flex;
+  width: 64rpx;
+  height: 64rpx;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 64rpx;
+  border-radius: 50%;
+  background: #dff8eb;
+  color: $teacher-mobile-primary;
+}
+
+.metric-icon::before {
+  width: 34rpx;
+  height: 28rpx;
+  border-radius: 6rpx;
+  background: currentColor;
+  content: '';
+}
+
+.metric-icon--grid::before {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 4rpx;
+  background:
+    linear-gradient(currentColor 0 0) 0 0 / 14rpx 14rpx no-repeat,
+    linear-gradient(currentColor 0 0) 20rpx 0 / 14rpx 14rpx no-repeat,
+    linear-gradient(currentColor 0 0) 0 20rpx / 14rpx 14rpx no-repeat,
+    linear-gradient(currentColor 0 0) 20rpx 20rpx / 14rpx 14rpx no-repeat;
+}
+
+.metric-icon--clock::before {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+}
+
+.metric-icon--clock::after {
+  position: absolute;
+  top: 22rpx;
+  left: 34rpx;
+  width: 5rpx;
+  height: 22rpx;
+  border-radius: 5rpx;
+  background: #fff;
+  box-shadow: 9rpx 15rpx 0 -2rpx #fff;
+  content: '';
+}
+
+.metric-number,
+.metric-label {
+  display: block;
+}
+
+.metric-number {
+  color: #091024;
+  font-size: 38rpx;
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.metric-number--date {
+  margin-top: 8rpx;
+  font-size: 32rpx;
+}
+
+.metric-label {
+  margin-top: 8rpx;
+  color: #4f5b74;
+  font-size: 23rpx;
+  line-height: 1.2;
+}
+
+.overview-desc {
+  display: block;
+  overflow: hidden;
+  margin-top: 18rpx;
+  color: #526079;
+  font-size: 21rpx;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-card {
+  padding: 24rpx 24rpx;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 22rpx;
+}
+
+.category-item {
+  position: relative;
+  min-width: 0;
+  min-height: 158rpx;
+  padding: 14rpx 10rpx 12rpx;
+  border: 1rpx solid rgba(231, 236, 246, 0.95);
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12rpx 30rpx rgba(35, 51, 87, 0.05);
+}
+
+.category-icon {
+  position: relative;
+  width: 52rpx;
+  height: 52rpx;
+  margin: 0 auto 13rpx;
+  border-radius: 50%;
+  background: #dff8eb;
+  color: $teacher-mobile-primary;
+}
+
+.category-icon::before {
+  position: absolute;
+  top: 15rpx;
+  left: 15rpx;
+  width: 23rpx;
+  height: 21rpx;
+  border-radius: 6rpx;
+  background: currentColor;
+  content: '';
+}
+
+.category-icon--book::before {
+  width: 25rpx;
+  height: 25rpx;
+  border-radius: 4rpx 12rpx 12rpx 4rpx;
+  box-shadow: -9rpx 0 0 -2rpx currentColor;
+}
+
+.category-icon--lab::before {
+  top: 12rpx;
+  height: 31rpx;
+  clip-path: polygon(35% 0, 65% 0, 65% 40%, 100% 100%, 0 100%, 35% 40%);
+}
+
+.category-icon--heart::before {
+  top: 22rpx;
+  clip-path: polygon(50% 100%, 8% 54%, 8% 22%, 28% 4%, 50% 20%, 72% 4%, 92% 22%, 92% 54%);
+}
+
+.category-icon--cup::before {
+  border-radius: 6rpx 6rpx 12rpx 12rpx;
+}
+
+.category-icon--growth::before {
+  clip-path: polygon(0 76%, 18% 76%, 18% 52%, 38% 52%, 38% 32%, 58% 32%, 58% 12%, 100% 12%, 100% 32%, 75% 32%, 75% 100%, 0 100%);
+}
+
+.category-icon--check::before {
+  border-radius: 8rpx;
+}
+
+.category-title-line {
+  justify-content: space-between;
+  gap: 4rpx;
+}
+
+.category-name {
+  overflow: hidden;
+  color: #12182a;
+  font-size: 21rpx;
+  font-weight: 900;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron,
+.record-arrow {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 4rpx solid currentColor;
+  border-right: 4rpx solid currentColor;
+  transform: rotate(45deg);
+}
+
+.chevron {
+  flex: 0 0 16rpx;
+  color: #7d8799;
+}
+
+.category-count,
+.category-updated {
+  display: block;
+  color: #526079;
+  font-size: 18rpx;
+  line-height: 1.2;
+}
+
+.category-count {
+  margin-top: 9rpx;
+}
+
+.category-updated {
+  margin-top: 6rpx;
+  color: #778197;
+}
+
+.section-head {
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.all-link {
+  gap: 8rpx;
+  color: $teacher-mobile-primary-dark;
+  font-size: 25rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.record-row {
+  gap: 24rpx;
+  min-height: 76rpx;
+  padding: 17rpx 0;
+  border-bottom: 1rpx solid $teacher-mobile-card-border;
+}
+
+.record-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.record-icon {
+  position: relative;
+  width: 54rpx;
+  height: 54rpx;
+  flex: 0 0 54rpx;
+  border-radius: 50%;
+  background: #dff8eb;
+}
+
+.record-icon::before {
+  position: absolute;
+  top: 12rpx;
+  left: 16rpx;
+  width: 24rpx;
+  height: 30rpx;
+  border: 5rpx solid $teacher-mobile-primary;
+  border-radius: 4rpx;
+  content: '';
+}
+
+.record-icon::after {
+  position: absolute;
+  top: 22rpx;
+  left: 25rpx;
+  width: 16rpx;
+  height: 5rpx;
+  border-radius: 5rpx;
+  background: $teacher-mobile-primary;
+  box-shadow: 0 11rpx 0 $teacher-mobile-primary;
+  content: '';
+}
+
+.record-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.record-title {
+  display: block;
+  overflow: hidden;
+  color: #12182a;
+  font-size: 26rpx;
+  font-weight: 900;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-meta {
+  display: block;
+  margin-top: 10rpx;
+  color: #526079;
+  font-size: 22rpx;
+  line-height: 1.2;
+}
+
+.record-arrow {
+  flex: 0 0 18rpx;
+  color: #8b94a5;
+}
+
+@media (max-width: 374px) {
+  .archive-page {
+    padding-right: 22rpx;
+    padding-left: 22rpx;
+  }
+
+  .category-grid {
+    gap: 12rpx;
+  }
+
+  .category-item {
+    min-height: 204rpx;
+    padding-right: 12rpx;
+    padding-left: 12rpx;
+  }
+
+  .category-name {
+    font-size: 22rpx;
+  }
+
+  .category-count,
+  .category-updated {
+    font-size: 19rpx;
+  }
 }
 </style>

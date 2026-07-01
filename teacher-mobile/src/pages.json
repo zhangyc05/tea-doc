@@ -20,6 +20,12 @@
       }
     },
     {
+      "path": "pages/todo/certificate-detail/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/archive/index",
       "style": {
         "navigationStyle": "custom"
