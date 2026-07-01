@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
 
@@ -88,22 +89,7 @@ function showPendingAction(title: string) {
 
 <template>
   <MobilePageShell class="all-todo-page" active="todo">
-    <view class="system-status" aria-hidden="true">
-      <text class="system-status__time">9:41</text>
-      <view class="system-status__icons">
-        <view class="status-signal"></view>
-        <view class="status-wifi"></view>
-        <view class="status-battery"></view>
-      </view>
-    </view>
-
-    <view class="nav-head">
-      <button class="back-button" aria-label="返回" @tap="goBack">
-        <view class="back-button__icon"></view>
-      </button>
-      <text class="nav-title">全部待办</text>
-      <view class="nav-spacer"></view>
-    </view>
+    <MobileNavbar title="全部待办" @back="goBack" />
 
     <view class="filter-row">
       <button

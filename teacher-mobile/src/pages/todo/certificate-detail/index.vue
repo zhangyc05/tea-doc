@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
 
@@ -30,22 +31,7 @@ function goEdit() {
 
 <template>
   <MobilePageShell class="detail-page" active="todo">
-    <view class="system-status" aria-hidden="true">
-      <text class="system-status__time">9:41</text>
-      <view class="system-status__icons">
-        <view class="status-signal"></view>
-        <view class="status-wifi"></view>
-        <view class="status-battery"></view>
-      </view>
-    </view>
-
-    <view class="nav-head">
-      <button class="back-button" aria-label="返回" @tap="goBack">
-        <view class="back-button__icon"></view>
-      </button>
-      <text class="nav-title">待确认记录</text>
-      <view class="nav-spacer"></view>
-    </view>
+    <MobileNavbar title="待确认记录" size="compact" @back="goBack" />
 
     <text class="page-hint">系统已帮你识别，请确认是否属于本人</text>
 

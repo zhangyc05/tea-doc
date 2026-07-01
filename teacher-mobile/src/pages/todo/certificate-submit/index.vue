@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 
 const changes = [
@@ -31,22 +32,7 @@ function showSubmitRecord() {
 
 <template>
   <MobilePageShell class="submit-page" active="todo">
-    <view class="system-status" aria-hidden="true">
-      <text class="system-status__time">9:41</text>
-      <view class="system-status__icons">
-        <view class="status-signal"></view>
-        <view class="status-wifi"></view>
-        <view class="status-battery"></view>
-      </view>
-    </view>
-
-    <view class="nav-head">
-      <button class="back-button" aria-label="返回" @tap="goBack">
-        <view class="back-button__icon"></view>
-      </button>
-      <text class="nav-title">修改已提交</text>
-      <view class="nav-spacer"></view>
-    </view>
+    <MobileNavbar title="修改已提交" size="compact" @back="goBack" />
 
     <text class="page-hint">你已提交培训证书信息修改，系统将把修改内容提交部门核验。</text>
     <view class="leaf-mark" aria-hidden="true">

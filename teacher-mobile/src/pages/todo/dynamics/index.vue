@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
+import MobileNavbar from '../../../components/MobileNavbar.vue'
 
 type Tone = 'green' | 'blue' | 'orange' | 'purple'
 
@@ -132,25 +133,14 @@ function showDynamic(title: string) {
 
 <template>
   <MobilePageShell class="dynamics-page" active="todo">
-    <view class="system-status" aria-hidden="true">
-      <text class="system-status__time">9:41</text>
-      <view class="system-status__icons">
-        <view class="status-signal"></view>
-        <view class="status-wifi"></view>
-        <view class="status-battery"></view>
-      </view>
-    </view>
-
-    <view class="nav-head">
-      <button class="back-button" aria-label="返回" @tap="goBack">
-        <view class="back-button__icon"></view>
-      </button>
-      <text class="nav-title">全部动态</text>
+    <MobileNavbar title="全部动态" @back="goBack">
+      <template #right>
       <button class="filter-button" @tap="showFilter">
         <view class="filter-button__icon"></view>
         <text>筛选</text>
       </button>
-    </view>
+      </template>
+    </MobileNavbar>
 
     <view class="filter-tabs">
       <button

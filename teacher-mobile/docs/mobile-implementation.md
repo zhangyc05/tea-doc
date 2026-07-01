@@ -152,6 +152,7 @@ MobileActionButton
 已沉淀的基础组件只覆盖三页中重复且稳定的低业务结构：
 
 ```txt
+teacher-mobile/src/components/MobileNavbar.vue
 teacher-mobile/src/components/MobilePageShell.vue
 teacher-mobile/src/components/MobileCard.vue
 teacher-mobile/src/components/MobileStatusTag.vue
@@ -159,6 +160,7 @@ teacher-mobile/src/components/MobileActionButton.vue
 teacher-mobile/src/components/MobileTabBar.vue
 ```
 
+- `MobileNavbar` 基于 Wot Design Uni `wd-navbar` 做项目级封装，只负责状态栏、返回、居中标题和右侧操作插槽。
 - `MobilePageShell` 只负责页面背景、横向边距、底部 TabBar 和安全区预留。
 - `MobileCard` 只负责白色内容卡片的边框、圆角、背景和阴影。
 - `MobileStatusTag` 只负责紫、蓝、橙、绿四类轻量状态标签。
@@ -177,6 +179,14 @@ teacher-mobile/src/components/MobileTabBar.vue
 ```
 
 这些结构仍由具体页面根据目标图局部实现，等更多页面重复后再判断是否抽象。
+
+## 框架组件使用边界
+
+- Navbar 优先走项目级 `MobileNavbar`，内部使用 Wot Design Uni `wd-navbar`，避免每页重复手写返回、标题和右侧操作。
+- 待办二级页默认使用 `MobileNavbar`，当前已覆盖：`全部待办`、`全部动态`、`待确认记录详情`、`编辑待确认记录`、`修改已提交`。
+- 后续新增待办二级页时直接使用 `MobileNavbar`；其他模块旧页面在再次修改时顺带迁移，避免一次性影响已验收页面。
+- TabBar 暂不切换为 Wot Design Uni `wd-tabbar`。当前底部栏包含中间凸起 `AI 助手` 入口和目标图绑定的浮动胶囊样式，继续使用项目自定义 `MobileTabBar`。
+- 表单、弹窗、上传、选择器、Toast 等通用交互优先使用 Wot Design Uni。
 
 ## 详情页与操作区
 
