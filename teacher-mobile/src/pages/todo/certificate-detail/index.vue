@@ -22,6 +22,10 @@ const evidenceInfo = [
 function goBack() {
   uni.navigateBack()
 }
+
+function goEdit() {
+  uni.navigateTo({ url: '/pages/todo/certificate-edit/index' })
+}
 </script>
 
 <template>
@@ -86,7 +90,7 @@ function goBack() {
       <text class="section-title">请你确认</text>
       <text class="confirm-desc">如记录属于本人且信息无误，请直接确认；如信息有误，可先修改后再提交确认。</text>
       <MobileActionButton class="confirm-action confirm-action--primary" variant="primary">确认是我的</MobileActionButton>
-      <MobileActionButton class="confirm-action confirm-action--outline" variant="outline">信息有误，修改一下</MobileActionButton>
+      <MobileActionButton class="confirm-action confirm-action--outline" variant="outline" @tap="goEdit">信息有误，修改一下</MobileActionButton>
       <button class="reject-button">不是我的</button>
     </MobileCard>
   </MobilePageShell>

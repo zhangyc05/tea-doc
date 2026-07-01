@@ -20,7 +20,31 @@
       }
     },
     {
+      "path": "pages/todo/all/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/todo/dynamics/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/todo/certificate-detail/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/todo/certificate-edit/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/todo/certificate-submit/index",
       "style": {
         "navigationStyle": "custom"
       }

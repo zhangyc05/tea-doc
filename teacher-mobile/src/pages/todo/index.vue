@@ -60,6 +60,23 @@ const dynamics = [
     tone: 'orange',
   },
 ]
+
+function goAllTodo() {
+  uni.navigateTo({ url: '/pages/todo/all/index' })
+}
+
+function showTodoAction(action: string) {
+  if (action === '去确认') {
+    uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
+    return
+  }
+
+  uni.showToast({ title: action, icon: 'none' })
+}
+
+function goAllDynamics() {
+  uni.navigateTo({ url: '/pages/todo/dynamics/index' })
+}
 </script>
 
 <template>
@@ -109,17 +126,17 @@ const dynamics = [
         </view>
         <view class="todo-row__side">
           <text class="todo-row__state" :class="`todo-row__state--${item.tone}`">{{ item.state }}</text>
-          <MobileActionButton class="outline-action" variant="outline" arrow>{{ item.action }}</MobileActionButton>
+          <MobileActionButton class="outline-action" variant="outline" arrow @tap="showTodoAction(item.action)">{{ item.action }}</MobileActionButton>
         </view>
       </view>
 
-      <MobileActionButton class="all-todo-link" variant="link" arrow>查看全部待办</MobileActionButton>
+      <MobileActionButton class="all-todo-link" variant="link" arrow @tap="goAllTodo">查看全部待办</MobileActionButton>
     </MobileCard>
 
     <MobileCard class="section-card dynamic-card">
       <view class="dynamic-card__head">
         <text class="section-title">最近动态</text>
-        <MobileActionButton class="all-link" variant="link" arrow>全部</MobileActionButton>
+        <MobileActionButton class="all-link" variant="link" arrow @tap="goAllDynamics">全部</MobileActionButton>
       </view>
 
       <view v-for="item in dynamics" :key="item.title" class="dynamic-row">
