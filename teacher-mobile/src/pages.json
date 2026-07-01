@@ -146,6 +146,66 @@
       }
     },
     {
+      "path": "pages/activity/enterprise-plan-approved/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-plan-rejected/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-plan-edit/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-progress-detail/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-log-record/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-log-list/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-archive-success/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-proof-upload/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-proof-supplement/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/enterprise-supplement-submitted/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/todo/index",
       "style": {
         "navigationStyle": "custom"
