@@ -10,6 +10,10 @@ const secondOptions = ['增加开放式问题', '先让学生讨论', '结合企
 function goBack() {
   uni.navigateBack()
 }
+
+function goDraft() {
+  uni.navigateTo({ url: '/pages/activity/reflection-draft/index' })
+}
 </script>
 
 <template>
@@ -117,7 +121,7 @@ function goBack() {
         <text class="draft-count">2</text>
         <text>个要点</text>
       </view>
-      <MobileActionButton class="draft-button" variant="primary">生成反思草稿 ✨</MobileActionButton>
+      <MobileActionButton class="draft-button" variant="primary" @tap="goDraft">生成反思草稿</MobileActionButton>
     </view>
 
     <MobileTabBar active="activity" />
@@ -129,7 +133,7 @@ function goBack() {
 
 .reflection-guide-page {
   min-height: 100vh;
-  padding-bottom: calc(420rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 46%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -214,6 +218,7 @@ function goBack() {
 
 .evidence-bottom {
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 14rpx;
   margin-top: 16rpx;
   color: #53617b;
@@ -397,14 +402,8 @@ function goBack() {
 }
 
 .input-panel {
-  position: fixed;
-  right: 0;
-  bottom: calc(246rpx + env(safe-area-inset-bottom));
-  left: 0;
-  z-index: 46;
-  padding: 14rpx 28rpx 18rpx;
-  background: rgba(248, 252, 255, 0.92);
-  backdrop-filter: blur(12rpx);
+  margin-top: 24rpx;
+  padding: 0 28rpx;
 }
 
 .input-tip,
@@ -499,18 +498,13 @@ function goBack() {
 }
 
 .draft-actions {
-  position: fixed;
-  right: 24rpx;
-  bottom: calc(142rpx + env(safe-area-inset-bottom));
-  left: 24rpx;
-  z-index: 47;
+  margin: 24rpx 24rpx 0;
   justify-content: space-between;
   gap: 18rpx;
   padding: 22rpx 24rpx;
   border-radius: 22rpx;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 14rpx 36rpx rgba(35, 51, 87, 0.1);
-  backdrop-filter: blur(12rpx);
 }
 
 .draft-copy {

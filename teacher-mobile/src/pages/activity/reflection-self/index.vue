@@ -21,8 +21,8 @@ function goBack() {
   uni.navigateBack()
 }
 
-function goGuideChat() {
-  uni.navigateTo({ url: '/pages/activity/reflection-guide-chat/index' })
+function goAiChat() {
+  uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
 }
 </script>
 
@@ -122,7 +122,7 @@ function goGuideChat() {
         <text class="bottom-title">已添加 <text>0</text> 份材料</text>
         <text class="bottom-desc">没有材料也可以直接开始</text>
       </view>
-      <MobileActionButton class="start-button" variant="primary" @tap="goGuideChat">开始 AI 对话</MobileActionButton>
+      <MobileActionButton class="start-button" variant="primary" @tap="goAiChat">开始 AI 对话</MobileActionButton>
     </view>
 
     <MobileTabBar active="activity" />

@@ -19,6 +19,7 @@ const activities: Array<{
   note: string
   action: string
   tone: TagTone
+  actionUrl?: string
 }> = [
   {
     tag: '培训进修',
@@ -27,6 +28,7 @@ const activities: Array<{
     note: '不满足需求时，可提交培训需求',
     action: '查看培训',
     tone: 'blue',
+    actionUrl: '/pages/activity/training/index',
   },
   {
     tag: '年度要求',
@@ -35,6 +37,7 @@ const activities: Array<{
     note: '已完成部分会自动沉淀到成长档案',
     action: '记录实践',
     tone: 'orange',
+    actionUrl: '/pages/activity/enterprise-overview/index',
   },
   {
     tag: '虚拟教研',
@@ -69,6 +72,11 @@ const recentActivities = [
 
 function goReflectionStart() {
   uni.navigateTo({ url: '/pages/activity/reflection-start/index' })
+}
+
+function goActivityUrl(url?: string) {
+  if (!url) return
+  uni.navigateTo({ url })
 }
 </script>
 
@@ -163,7 +171,7 @@ function goReflectionStart() {
             <text>{{ item.note }}</text>
           </view>
         </view>
-        <MobileActionButton class="outline-action" variant="outline" arrow>{{ item.action }}</MobileActionButton>
+        <MobileActionButton class="outline-action" variant="outline" arrow @tap="goActivityUrl(item.actionUrl)">{{ item.action }}</MobileActionButton>
       </view>
     </MobileCard>
 
