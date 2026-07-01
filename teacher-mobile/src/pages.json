@@ -38,6 +38,12 @@
       }
     },
     {
+      "path": "pages/activity/training-archive-result/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/activity/training-demand/index",
       "style": {
         "navigationStyle": "custom"
@@ -51,6 +57,48 @@
     },
     {
       "path": "pages/activity/training-demand-result/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/training-need-result/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-start/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-course/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-evidence/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-scope/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-self/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/activity/reflection-guide-chat/index",
       "style": {
         "navigationStyle": "custom"
       }

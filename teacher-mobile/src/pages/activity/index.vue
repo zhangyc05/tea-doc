@@ -66,6 +66,10 @@ const recentActivities = [
     tone: 'orange',
   },
 ]
+
+function goReflectionStart() {
+  uni.navigateTo({ url: '/pages/activity/reflection-start/index' })
+}
 </script>
 
 <template>
@@ -141,7 +145,7 @@ const recentActivities = [
         </view>
       </view>
 
-      <MobileActionButton class="primary-action" variant="primary">开始反思</MobileActionButton>
+      <MobileActionButton class="primary-action" variant="primary" @tap="goReflectionStart">开始反思</MobileActionButton>
     </MobileCard>
 
     <MobileCard class="section-card activity-card">

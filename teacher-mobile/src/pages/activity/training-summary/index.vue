@@ -19,6 +19,10 @@ const certificateChoices = [
 function goBack() {
   uni.navigateBack()
 }
+
+function goArchiveResult() {
+  uni.navigateTo({ url: '/pages/activity/training-archive-result/index' })
+}
 </script>
 
 <template>
@@ -161,7 +165,7 @@ function goBack() {
         <text>材料已齐，可提交归档</text>
       </view>
       <MobileActionButton class="bottom-actions__button" variant="outline">保存草稿</MobileActionButton>
-      <MobileActionButton class="bottom-actions__button" variant="primary">提交归档</MobileActionButton>
+      <MobileActionButton class="bottom-actions__button" variant="primary" @tap="goArchiveResult">提交归档</MobileActionButton>
     </view>
   </view>
 </template>

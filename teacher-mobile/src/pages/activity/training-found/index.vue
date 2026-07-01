@@ -11,7 +11,7 @@ function goBack() {
 }
 
 function submitDemand() {
-  uni.navigateTo({ url: '/pages/activity/training-demand-result/index' })
+  uni.navigateTo({ url: '/pages/activity/training-need-result/index' })
 }
 </script>
 
