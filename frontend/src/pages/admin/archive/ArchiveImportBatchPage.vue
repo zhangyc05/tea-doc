@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getArchiveBatchStatusClass, getArchiveBatchStatusLabel } from '@/domain/admin/archive'
 import {
   cancelArchiveImportBatch,
   completeArchiveBatchRecognition,
   confirmArchiveBatchRecognition,
   ensureArchiveImportBatch,
-  type ArchiveBatchFile,
   type ArchiveUploadedFile,
 } from '@/stores/admin/archiveStore'
 
@@ -18,6 +19,8 @@ const batchId = computed(() => String(route.params.batchId || '20260620-01'))
 const batchInfo = computed(() => ensureArchiveImportBatch(batchId.value))
 const isCompleted = computed(() => batchInfo.value.status === 'recognized' || batchInfo.value.status === 'confirmed')
 const isCancelled = computed(() => batchInfo.value.status === 'cancelled')
+const batchStatusLabel = computed(() => getArchiveBatchStatusLabel(batchInfo.value.status))
+const batchStatusClass = computed(() => getArchiveBatchStatusClass(batchInfo.value.status))
 
 // 步骤进度
 const steps = computed(() => {
@@ -59,17 +62,6 @@ function stepStatusClass(status: string) {
   if (status === '处理中') return 'processing'
   if (status === '已取消') return 'cancelled'
   return 'pending'
-}
-
-function fileStatusClass(status: ArchiveBatchFile['batchStatus']) {
-  const classMap = {
-    '已接收': 'text-success',
-    '解析中': 'text-warning',
-    '已解析': 'text-success',
-    '等待处理': 'text-neutral',
-    '已取消': 'text-neutral',
-  }
-  return classMap[status] || 'text-neutral'
 }
 
 const resultRows = computed(() => [
@@ -148,7 +140,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
           <span class="current">导入批次详情</span>
         </div>
 
-        <section class="hero-card" :class="{ completed: isCompleted, cancelled: isCancelled }">
+        <section class="hero-card" :class="batchStatusClass">
           <div class="hero-head">
             <div>
               <h1>导入批次详情</h1>
@@ -162,10 +154,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
                 }}
               </p>
             </div>
-            <span class="state-pill" :class="{ completed: isCompleted, cancelled: isCancelled }">
-              <i></i>
-              {{ isCancelled ? '已取消' : isCompleted ? '识别完成' : '识别中' }}
-            </span>
+            <StatusBadge :status="batchInfo.status" :label="batchStatusLabel" />
           </div>
 
           <div class="hero-body">
@@ -192,9 +181,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
               </div>
               <div class="info-item">
                 <span class="info-label">当前状态：</span>
-                <span class="inline-status" :class="{ completed: isCompleted, cancelled: isCancelled }">
-                  {{ isCancelled ? '已取消' : isCompleted ? '识别完成' : '识别中' }}
-                </span>
+                <StatusBadge :status="batchInfo.status" :label="batchStatusLabel" />
               </div>
             </div>
             <div class="hero-illustration" aria-hidden="true">
@@ -260,7 +247,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
                   <span class="file-name">{{ file.name }}</span>
                   <span>{{ fileTypeLabel(file.type) }}</span>
                   <span>{{ file.size }}</span>
-                  <span class="file-status" :class="fileStatusClass(file.batchStatus)">{{ file.batchStatus }}</span>
+                  <StatusBadge :status="file.batchStatus" />
                 </div>
               </div>
               <p class="file-count">共 {{ batchFiles.length }} 个文件</p>
@@ -402,51 +389,6 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   color: #44618f;
 }
 
-.state-pill {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 8px;
-  min-width: 96px;
-  justify-content: center;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1px solid #b8d1ff;
-  background: #eef5ff;
-  color: #075cf2;
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.state-pill i {
-  width: 14px;
-  height: 14px;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  animation: pulse 1.6s infinite;
-}
-
-.state-pill.completed {
-  border-color: #b8ebc7;
-  background: #eaf9ee;
-  color: #139139;
-}
-
-.state-pill.cancelled {
-  border-color: #d8e0ec;
-  background: #f2f5f9;
-  color: #5b6c84;
-}
-
-.state-pill.completed i {
-  animation: none;
-}
-
-.state-pill.cancelled i {
-  animation: none;
-}
-
 .hero-body {
   position: relative;
   margin: 0 24px;
@@ -492,24 +434,6 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.inline-status {
-  padding: 3px 10px;
-  border-radius: 5px;
-  background: #eaf2ff;
-  color: #075cf2;
-  font-weight: 700;
-}
-
-.inline-status.completed {
-  background: #e9f8ee;
-  color: #139139;
-}
-
-.inline-status.cancelled {
-  background: #eef2f7;
-  color: #5b6c84;
 }
 
 .hero-illustration {
@@ -883,34 +807,6 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 600;
-}
-
-.file-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.file-status::before {
-  content: '';
-  width: 15px;
-  height: 15px;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-}
-
-.text-success {
-  color: #139139;
-}
-
-.text-warning {
-  color: #075cf2;
-}
-
-.text-neutral {
-  color: #60708b;
 }
 
 .file-count {

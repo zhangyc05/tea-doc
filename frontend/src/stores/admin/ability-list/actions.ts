@@ -4,15 +4,8 @@ import type {
   OptimizationSuggestionStatus,
   RequirementMapping,
 } from '@/domain/admin/ability-list'
+import { getOptimizationSuggestionStatusLabel } from '@/domain/admin/ability-list'
 import { initialExecutionVersion } from './initialData'
-
-const suggestionStatusLabelMap: Record<OptimizationSuggestionStatus, string> = {
-  pending: '待确认',
-  adopted: '已采纳',
-  deferred: '暂缓',
-  rejected: '已弃用',
-  applied: '已应用',
-}
 
 export function updateIndicatorInState(
   indicators: AbilityIndicator[],
@@ -76,7 +69,7 @@ export function updateOptimizationSuggestionStatusInState(
   if (!target) return null
 
   target.status = status
-  target.statusLabel = suggestionStatusLabelMap[status]
+  target.statusLabel = getOptimizationSuggestionStatusLabel(status)
   syncPendingTemplateApplications(state)
   return target
 }

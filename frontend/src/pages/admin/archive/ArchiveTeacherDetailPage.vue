@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import {
   getArchiveDefaultSourceRecords,
   getArchiveTeacherName,
@@ -23,7 +24,7 @@ const teacherArchiveFacts = computed(() => getTeacherArchiveFacts(teacherName.va
 const drawerOpen = ref(false)
 const drawerTitle = ref('')
 const drawerType = ref('')
-const actionMessage = ref('')
+const operationMessage = useOperationMessage()
 
 // 来源记录数据
 const sourceRecords = computed<ArchiveSourceRecord[]>(() => {
@@ -75,7 +76,7 @@ function exportPdf() {
   link.download = `teacher-archive-${teacherId.value}.txt`
   link.click()
   URL.revokeObjectURL(url)
-  actionMessage.value = '已生成导出文件'
+  operationMessage.set('已生成导出文件')
 }
 
 function openDrawer(type: string) {
@@ -101,8 +102,9 @@ function switchTab(tabValue: string) {
 }
 
 function viewRecordDetail(record: ArchiveSourceRecord) {
-  actionMessage.value =
-    record.status === '待说明' ? '该记录仍在补充中，可在档案处理工作台继续处理。' : `${record.title} 已在当前来源记录中展示。`
+  operationMessage.set(
+    record.status === '待说明' ? '该记录仍在补充中，可在档案处理工作台继续处理。' : `${record.title} 已在当前来源记录中展示。`,
+  )
 }
 
 function filteredRecords() {
@@ -189,7 +191,7 @@ function isFactInDrawerType(dimension: string, type: string) {
         </div>
       </section>
 
-      <p v-if="actionMessage" class="action-toast">{{ actionMessage }}</p>
+      <p v-if="operationMessage.text.value" class="action-toast">{{ operationMessage.text.value }}</p>
 
       <!-- 主体内容区 -->
       <section class="main-content">

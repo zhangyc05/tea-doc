@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import {
@@ -64,14 +65,6 @@ function viewRecord(id: string) {
   router.push(`/admin/virtual-lab/records/${id}`)
 }
 
-function getStatusClass(status: string): string {
-  const statusMap: Record<string, string> = {
-    已形成记录: 'success',
-    未形成记录: 'pending',
-    记录异常: 'error',
-  }
-  return statusMap[status] ?? 'pending'
-}
 </script>
 
 <template>
@@ -205,9 +198,7 @@ function getStatusClass(status: string): string {
                     <td>{{ activity.meetingMethod }}</td>
                     <td>{{ activity.participation }}</td>
                     <td>
-                      <span class="status-badge" :class="getStatusClass(activity.recordStatus)">
-                        {{ activity.recordStatus }}
-                      </span>
+                      <StatusBadge :status="activity.recordStatus" />
                     </td>
                     <td>{{ activity.recentUpdate }}</td>
                     <td>
@@ -580,31 +571,6 @@ function getStatusClass(status: string): string {
   color: #8a98ad;
   font-size: 12px;
   line-height: 1.5;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-badge.success {
-  background: #dff8ec;
-  color: #18a663;
-}
-
-.status-badge.pending {
-  background: #fff0df;
-  color: #d85a0d;
-}
-
-.status-badge.error {
-  background: #ffe8e6;
-  color: #d92d20;
 }
 
 .btn-link {

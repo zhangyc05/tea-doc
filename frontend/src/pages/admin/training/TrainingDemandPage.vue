@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingDemand,
@@ -225,9 +226,7 @@ function matchDemand(id: string) {
                       <td>{{ demand.direction }}</td>
                       <td>{{ demand.source }}</td>
                       <td>
-                        <span class="status-badge" :class="demand.matchStatus">
-                          {{ demand.matchStatus }}
-                        </span>
+                        <StatusBadge :status="demand.matchStatus" />
                       </td>
                       <td>{{ demand.suggestedResource }}</td>
                       <td>
@@ -642,33 +641,6 @@ function matchDemand(id: string) {
 
 .demand-table tr:last-child td {
   border-bottom: none;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.已匹配 {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.待匹配 {
-  background: #fff2e5;
-  color: #f07c1d;
-  border: 1px solid #ffd7b8;
-}
-
-.status-badge.暂不处理 {
-  background: #eef2f7;
-  color: #66758f;
-  border: 1px solid #d8e0ec;
 }
 
 .btn-view {

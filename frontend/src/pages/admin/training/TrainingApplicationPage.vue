@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approveTrainingApplication,
@@ -214,9 +215,7 @@ function rejectCurrentApplication() {
                       <td>{{ app.applyTime }}</td>
                       <td>{{ app.quotaInfo }}</td>
                       <td>
-                        <span class="status-badge" :class="app.status">
-                          {{ app.status }}
-                        </span>
+                        <StatusBadge :status="app.status" />
                       </td>
                       <td>
                         <button
@@ -646,39 +645,6 @@ function rejectCurrentApplication() {
 
 .application-table tr:last-child td {
   border-bottom: none;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.待处理 {
-  background: #eaf2ff;
-  color: #1268f6;
-  border: 1px solid #cfe0ff;
-}
-
-.status-badge.已同意 {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.未同意 {
-  background: #fff0e8;
-  color: #ff613f;
-  border: 1px solid #ffd3c4;
-}
-
-.status-badge.已取消 {
-  background: #eef2f7;
-  color: #66758f;
-  border: 1px solid #d8e0ec;
 }
 
 .btn-handle,

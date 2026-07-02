@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getVirtualLabActivityDetailMock } from '@/services/mock/virtual-lab'
@@ -95,7 +96,7 @@ function goBack() {
             <div>
               <div class="title-with-status">
                 <h1>{{ activityInfo.name }}</h1>
-                <span class="status-badge success">{{ activityInfo.status }}</span>
+                <StatusBadge :status="activityInfo.status" />
               </div>
               <div class="info-grid">
                 <span>所属教研室：{{ activityInfo.roomName }}</span>
@@ -190,7 +191,7 @@ function goBack() {
                       <td><span class="role-pill">{{ participant.role }}</span></td>
                       <td>{{ participant.participationType }}</td>
                       <td>{{ participant.timeRange }}</td>
-                      <td><span class="status-badge success">{{ participant.status }}</span></td>
+                      <td><StatusBadge :status="participant.status" /></td>
                     </tr>
                   </tbody>
                 </table>
@@ -390,23 +391,6 @@ function goBack() {
   font-size: 26px;
   line-height: 1.35;
   font-weight: 800;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 24px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.success {
-  background: #dff8ec;
-  color: #18a663;
 }
 
 .info-grid {

@@ -12,6 +12,40 @@ export type ArchiveUploadedFile = {
 export type ArchiveBatchStatus = 'recognizing' | 'recognized' | 'confirmed' | 'cancelled'
 export type ArchiveBatchFileStatus = '已接收' | '解析中' | '已解析' | '等待处理' | '已取消'
 
+export const archiveBatchStatusLabelMap: Record<ArchiveBatchStatus, string> = {
+  recognizing: '识别中',
+  recognized: '识别完成',
+  confirmed: '识别完成',
+  cancelled: '已取消',
+}
+
+export const archiveBatchStatusClassMap: Record<ArchiveBatchStatus, string> = {
+  recognizing: '',
+  recognized: 'completed',
+  confirmed: 'completed',
+  cancelled: 'cancelled',
+}
+
+export const archiveBatchFileStatusClassMap: Record<ArchiveBatchFileStatus, string> = {
+  已接收: 'text-success',
+  解析中: 'text-warning',
+  已解析: 'text-success',
+  等待处理: 'text-neutral',
+  已取消: 'text-neutral',
+}
+
+export function getArchiveBatchFileStatusClass(status: ArchiveBatchFileStatus): string {
+  return archiveBatchFileStatusClassMap[status]
+}
+
+export function getArchiveBatchStatusLabel(status: ArchiveBatchStatus): string {
+  return archiveBatchStatusLabelMap[status]
+}
+
+export function getArchiveBatchStatusClass(status: ArchiveBatchStatus): string {
+  return archiveBatchStatusClassMap[status]
+}
+
 export type ArchiveBatchFile = ArchiveUploadedFile & {
   batchStatus: ArchiveBatchFileStatus
 }
@@ -38,6 +72,19 @@ export type ArchiveImportBatch = {
 }
 
 export type ArchiveProcessingStatus = '待确认' | '待检验' | '待补充' | '异常待处理' | '拟退中' | '已入档'
+
+export const archiveProcessingStatusClassMap: Record<ArchiveProcessingStatus, string> = {
+  待确认: 'badge-warning',
+  待检验: 'badge-info',
+  待补充: 'badge-warning',
+  异常待处理: 'badge-danger',
+  拟退中: 'badge-danger',
+  已入档: 'badge-success',
+}
+
+export function getArchiveProcessingStatusClass(status: ArchiveProcessingStatus): string {
+  return archiveProcessingStatusClassMap[status]
+}
 
 export type ArchiveProcessingRecord = {
   id: string

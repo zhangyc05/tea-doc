@@ -236,6 +236,11 @@
   color: var(--color-info);
 }
 
+.badge-neutral {
+  background: var(--color-neutral-bg);
+  color: var(--color-neutral);
+}
+
 .badge-primary {
   background: var(--color-primary-light);
   color: var(--color-primary);
@@ -464,4 +469,3 @@
     flex-wrap: wrap;
   }
 }
-

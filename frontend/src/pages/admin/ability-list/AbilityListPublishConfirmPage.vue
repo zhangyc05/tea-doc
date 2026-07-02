@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListPublishConfirmMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
@@ -12,6 +14,7 @@ import {
 const router = useRouter()
 const abilityListState = getAbilityListState()
 const publishStatus = computed(() => abilityListState.executionVersion.status)
+const publishStatusLabel = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
 const operationMessage = computed(() => abilityListState.operationMessage)
 
 if (
@@ -52,7 +55,7 @@ function goBack() {
         <div class="hero-content">
           <div class="hero-title-row">
             <h1 class="hero-title">{{ abilityListState.executionVersion.title }}</h1>
-            <span class="badge-status" :class="publishStatus">{{ publishStatus === 'published' ? '已发布' : '待发布' }}</span>
+            <StatusBadge :status="publishStatus" :label="publishStatusLabel" />
           </div>
 
           <div class="hero-summary">
@@ -208,26 +211,6 @@ function goBack() {
   font-size: 32px;
   line-height: 1.3;
   font-weight: 900;
-}
-
-.badge-status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.badge-status.pending {
-  background: #dff8ec;
-  color: #18a663;
-}
-
-.badge-status.published {
-  background: #e8f0ff;
-  color: #1268f6;
 }
 
 .hero-summary {

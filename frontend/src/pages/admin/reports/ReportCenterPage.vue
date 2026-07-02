@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import {
   continueReportAnalysis,
   exportReport,
@@ -17,7 +19,7 @@ const selectedPeriod = ref('2026 年度')
 const selectedStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const tabs = ['全部', '分析报告', '分析大屏', '专题解读', '数据问答']
 const selectedReport = computed(() => reportState.reports.find(report => report.id === reportState.selectedReportId) ?? null)
@@ -40,7 +42,7 @@ const filteredReports = computed(() => {
 
 function selectTab(tab: string) {
   activeTab.value = tab
-  operationMessage.value = `已切换到「${tab}」，共 ${filteredReports.value.length} 条。`
+  operationMessage.set(`已切换到「${tab}」，共 ${filteredReports.value.length} 条。`)
 }
 
 function handleCardAction(cardId: string, action: string) {
@@ -58,7 +60,7 @@ function handleCardAction(cardId: string, action: string) {
     openReportDetail(cardId)
   }
 
-  operationMessage.value = reportState.operationMessage
+  operationMessage.fromStore(reportState)
 }
 
 function resetFilters() {
@@ -67,27 +69,19 @@ function resetFilters() {
   selectedStatus.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  operationMessage.set('已重置筛选条件。')
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredReports.value.length} 条报告。`
+  operationMessage.set(`已筛选出 ${filteredReports.value.length} 条报告。`)
 }
 
 function openAiAssistant() {
   openReportAiAssistant(filteredReports.value.map(report => report.id))
-  operationMessage.value = reportState.operationMessage
+  operationMessage.fromStore(reportState)
 }
 
-function getStatusClass(status: string): string {
-  const statusMap: Record<string, string> = {
-    已生成: 'generated',
-    待更新: 'pending-update',
-    数据不足: 'insufficient-data',
-  }
-  return statusMap[status] || ''
-}
 </script>
 
 <template>
@@ -163,7 +157,7 @@ function getStatusClass(status: string): string {
                 <span><b>生成时间：</b>{{ report.generatedTime }}</span>
                 <span>
                   <b>状态：</b>
-                  <em class="card-status" :class="getStatusClass(report.status)">{{ report.status }}</em>
+                  <StatusBadge :status="report.status" />
                 </span>
               </div>
             </div>
@@ -187,7 +181,7 @@ function getStatusClass(status: string): string {
               <h2>
                 {{ reportState.detailMode === 'dashboard' ? '大屏预览' : reportState.detailMode === 'insufficient-data' ? '原因说明' : '报告详情' }}
               </h2>
-              <span class="panel-status" :class="getStatusClass(selectedReport.status)">{{ selectedReport.status }}</span>
+              <StatusBadge :status="selectedReport.status" />
             </div>
             <div class="detail-content">
               <strong>{{ selectedReport.title }}</strong>
@@ -204,7 +198,7 @@ function getStatusClass(status: string): string {
           <section v-if="reportState.aiSession.active" class="detail-panel ai-panel">
             <div class="panel-header">
               <h2>AI 分析助手</h2>
-              <span class="panel-status generated">已准备</span>
+              <StatusBadge status="已准备" />
             </div>
             <div class="detail-content">
               <strong>{{ reportState.aiSession.prompt }}</strong>
@@ -216,7 +210,7 @@ function getStatusClass(status: string): string {
 
         <div class="assistant-row">
           <button class="ai-assistant" @click="openAiAssistant">AI 助手生成分析</button>
-          <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+          <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
         </div>
       </section>
     </div>
@@ -501,23 +495,6 @@ function getStatusClass(status: string): string {
   font-weight: 700;
 }
 
-.card-status {
-  font-style: normal;
-  font-weight: 800;
-}
-
-.card-status.generated {
-  color: #18a663;
-}
-
-.card-status.pending-update {
-  color: #f26a16;
-}
-
-.card-status.insufficient-data {
-  color: #d92d20;
-}
-
 .card-footer {
   grid-column: 2;
   display: flex;
@@ -584,11 +561,6 @@ function getStatusClass(status: string): string {
   margin: 0;
   color: #17233d;
   font-size: 17px;
-  font-weight: 800;
-}
-
-.panel-status {
-  font-size: 13px;
   font-weight: 800;
 }
 

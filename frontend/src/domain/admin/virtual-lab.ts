@@ -4,6 +4,25 @@ export const virtualLabRecordArchiveStatuses = ['待沉淀', '已生成待确认
 export type VirtualLabActivityRecordStatus = typeof virtualLabActivityRecordStatuses[number]
 export type VirtualLabRecordArchiveStatus = typeof virtualLabRecordArchiveStatuses[number]
 
+export const virtualLabActivityRecordStatusClassMap: Record<VirtualLabActivityRecordStatus, string> = {
+  已形成记录: 'success',
+  未形成记录: 'pending',
+  记录异常: 'error',
+}
+
+export const virtualLabRecordArchiveStatusClassMap: Record<VirtualLabRecordArchiveStatus, string> = {
+  待沉淀: 'pending',
+  已生成待确认档案: 'success',
+}
+
+export function getVirtualLabActivityRecordStatusClass(status: VirtualLabActivityRecordStatus): string {
+  return virtualLabActivityRecordStatusClassMap[status]
+}
+
+export function getVirtualLabRecordArchiveStatusClass(status: VirtualLabRecordArchiveStatus): string {
+  return virtualLabRecordArchiveStatusClassMap[status]
+}
+
 export type VirtualLabRoom = {
   id: string
   name: string

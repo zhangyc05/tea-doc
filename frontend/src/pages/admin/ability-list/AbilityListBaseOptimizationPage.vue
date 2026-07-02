@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
 import {
   adoptOptimizationSuggestion,
@@ -16,7 +18,7 @@ const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const suggestions = computed(() => abilityListState.optimizationSuggestions)
 const pendingApplicationCount = computed(() => abilityListState.pendingTemplateApplications.length)
@@ -58,60 +60,60 @@ const filteredSuggestions = computed(() => {
 
 function selectSource(key: string) {
   selectedSource.value = key
-  operationMessage.value = `已按建议来源筛选出 ${filteredSuggestions.value.length} 条。`
+  operationMessage.set(`已按建议来源筛选出 ${filteredSuggestions.value.length} 条。`)
 }
 
 function selectSuggestion(suggestion: OptimizationSuggestion) {
   selectedSuggestionId.value = suggestion.id
-  operationMessage.value = `已选中建议：${suggestion.issueType}。`
+  operationMessage.set(`已选中建议：${suggestion.issueType}。`)
 }
 
 function selectTag(key: string) {
   selectedTag.value = key
-  operationMessage.value = `已按问题类型筛选出 ${filteredSuggestions.value.length} 条。`
+  operationMessage.set(`已按问题类型筛选出 ${filteredSuggestions.value.length} 条。`)
 }
 
 function handleAction(action: string, suggestion: OptimizationSuggestion) {
   if (action === 'view') {
     selectSuggestion(suggestion)
-    operationMessage.value = '已在右侧展示建议详情。'
+    operationMessage.set('已在右侧展示建议详情。')
     return
   }
 
   if (action === 'adopt') {
     adoptOptimizationSuggestion(suggestion.id)
     selectedSuggestionId.value = suggestion.id
-    operationMessage.value = abilityListState.operationMessage
+    operationMessage.fromStore(abilityListState)
     return
   }
 
   if (action === 'defer') {
     updateOptimizationSuggestionStatus(suggestion.id, 'deferred')
-    operationMessage.value = '该建议已暂缓处理。'
+    operationMessage.set('该建议已暂缓处理。')
     return
   }
 
   if (action === 'reject') {
     updateOptimizationSuggestionStatus(suggestion.id, 'rejected')
-    operationMessage.value = '该建议已弃用。'
+    operationMessage.set('该建议已弃用。')
   }
 }
 
 function applyToBaseTemplate() {
   applyAdoptedSuggestionsToBaseTemplate()
-  operationMessage.value = abilityListState.operationMessage
+  operationMessage.fromStore(abilityListState)
 }
 
 function uploadPolicy() {
-  operationMessage.value = '已准备上传制度文件，用于补充优化建议来源。'
+  operationMessage.set('已准备上传制度文件，用于补充优化建议来源。')
 }
 
 function rerunAnalysis() {
-  operationMessage.value = '已重新分析运行反馈，并刷新待确认建议。'
+  operationMessage.set('已重新分析运行反馈，并刷新待确认建议。')
 }
 
 function viewVersionHistory() {
-  operationMessage.value = '已打开基准模板版本记录入口。'
+  operationMessage.set('已打开基准模板版本记录入口。')
 }
 </script>
 
@@ -127,7 +129,7 @@ function viewVersionHistory() {
       </div>
       <div class="page-description">
         基于制度文件和运行反馈形成优化建议，人工确认后再应用到基准模板。
-        <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+        <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
       </div>
 
       <section class="admin-hero">
@@ -253,7 +255,7 @@ function viewVersionHistory() {
                   <td>{{ suggestion.content }}</td>
                   <td>{{ suggestion.basis }}</td>
                   <td>
-                    <span class="badge-status" :class="`status-${suggestion.status}`">{{ suggestion.statusLabel }}</span>
+                    <StatusBadge :status="suggestion.status" />
                   </td>
                   <td>
                     <div class="action-buttons">
@@ -645,8 +647,7 @@ function viewVersionHistory() {
 }
 
 .source-badge,
-.issue-badge,
-.badge-status {
+.issue-badge {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
@@ -674,27 +675,6 @@ function viewVersionHistory() {
 .issue-badge {
   background: #fff0df;
   color: #f26a16;
-}
-
-.badge-status.status-pending {
-  background: #fff0df;
-  color: #f26a16;
-}
-
-.badge-status.status-adopted {
-  background: #dff8ec;
-  color: #18a663;
-}
-
-.badge-status.status-applied {
-  background: #e8f0ff;
-  color: #1268f6;
-}
-
-.badge-status.status-rejected,
-.badge-status.status-deferred {
-  background: #eef3fb;
-  color: #66758f;
 }
 
 .action-buttons {

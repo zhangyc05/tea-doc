@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingResourceDraft,
@@ -246,9 +247,7 @@ function showIncompleteResources() {
                       <td>{{ resource.target }}</td>
                       <td>{{ resource.source }}</td>
                       <td>
-                        <span class="status-badge" :class="resource.status">
-                          {{ resource.status }}
-                        </span>
+                        <StatusBadge :status="resource.status" />
                       </td>
                       <td>
                         <button class="btn-view" @click="viewDetail(resource.id)">
@@ -711,33 +710,6 @@ function showIncompleteResources() {
 
 .resource-table tr:last-child td {
   border-bottom: none;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.可用 {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.信息待完善 {
-  background: #fff2e5;
-  color: #f07c1d;
-  border: 1px solid #ffd7b8;
-}
-
-.status-badge.已停用 {
-  background: #eef2f7;
-  color: #66758f;
-  border: 1px solid #d8e0ec;
 }
 
 .btn-view {

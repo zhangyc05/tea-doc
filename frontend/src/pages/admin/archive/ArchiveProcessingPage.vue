@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import heroArt from '@/images/hero-art.png'
 import {
@@ -105,18 +106,6 @@ function viewSupplement() {
   archiveState.operationMessage = selectedRecord.value
     ? `${selectedRecord.value.name} 的补充说明已在待处理问题中展示。`
     : '请先选择一条处理记录。'
-}
-
-function statusBadgeClass(status: ArchiveProcessingRecord['status']) {
-  const classMap = {
-    '待确认': 'badge-warning',
-    '待检验': 'badge-info',
-    '待补充': 'badge-warning',
-    '异常待处理': 'badge-danger',
-    '拟退中': 'badge-danger',
-    '已入档': 'badge-success',
-  }
-  return classMap[status] || 'badge-neutral'
 }
 
 function countByStatus(status: ArchiveProcessingRecord['status']) {
@@ -285,9 +274,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
                   <td>{{ record.dimension }}</td>
                   <td>{{ record.source }}</td>
                   <td>
-                    <span class="badge-status" :class="statusBadgeClass(record.status)">
-                      {{ record.status }}
-                    </span>
+                    <StatusBadge :status="record.status" />
                   </td>
                   <td class="update-time">{{ record.updateTime }}</td>
                 </tr>
@@ -302,13 +289,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
             <span class="detail-eyebrow">记录详情</span>
             <div class="detail-heading-row">
               <h2 class="detail-title">{{ selectedRecord?.name }}</h2>
-              <span
-                v-if="selectedRecord"
-                class="badge-status"
-                :class="statusBadgeClass(selectedRecord.status)"
-              >
-                {{ selectedRecord.status }}
-              </span>
+              <StatusBadge v-if="selectedRecord" :status="selectedRecord.status" />
             </div>
           </div>
 
@@ -702,40 +683,6 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .update-time {
   font-size: 13px;
   color: var(--color-text-hint);
-}
-
-/* 状态徽章 */
-.badge-status {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.badge-warning {
-  background: #fffbeb;
-  color: #f59e0b;
-}
-
-.badge-info {
-  background: #eff6ff;
-  color: #3b82f6;
-}
-
-.badge-danger {
-  background: #fef2f2;
-  color: #ef4444;
-}
-
-.badge-success {
-  background: #f0fdf4;
-  color: #22c55e;
-}
-
-.badge-neutral {
-  background: #f8fafc;
-  color: #64748b;
 }
 
 /* 右侧记录详情 */
@@ -1299,12 +1246,6 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .record-name {
   color: var(--color-primary);
   font-weight: 900;
-}
-
-.badge-status {
-  height: 24px;
-  border-radius: 6px;
-  padding: 0 9px;
 }
 
 .record-detail {

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListBaseMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
@@ -152,7 +154,7 @@ function deriveExecutionVersion() {
             <div class="hero-title-group">
               <div class="hero-title-row">
                 <h1>教师能力清单基准模板 V1.0</h1>
-                <span class="badge-status badge-success">已启用</span>
+                <StatusBadge status="enabled" label="已启用" />
               </div>
               <p class="hero-subtitle">
                 维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
@@ -284,9 +286,7 @@ function deriveExecutionVersion() {
             <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
               <div class="version-card-head">
                 <strong>{{ version.versionNo }}</strong>
-                <span class="badge-status" :class="`version-${version.status}`">
-                  {{ version.status === 'published' ? '已发布' : version.status === 'pending' ? '待发布' : '历史版' }}
-                </span>
+                <StatusBadge :status="version.status" :label="getExecutionVersionStatusLabel(version.status)" />
               </div>
               <h4>{{ version.title }}</h4>
               <dl>
@@ -691,21 +691,6 @@ function deriveExecutionVersion() {
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 800;
-}
-
-.badge-status.version-published {
-  background: #dff8ec;
-  color: #18a663;
-}
-
-.badge-status.version-pending {
-  background: #fff0df;
-  color: #f26a16;
-}
-
-.badge-status.version-historical {
-  background: #eef3fb;
-  color: #66758f;
 }
 
 @media (max-width: 1280px) {

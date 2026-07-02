@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   getPracticeState,
@@ -81,6 +82,7 @@ function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
   practiceState.operationMessage = `已筛选出 ${filteredTrackings.value.length} 条实践跟踪记录。`
 }
+
 </script>
 
 <template>
@@ -252,12 +254,7 @@ function applyFilters() {
                       </span>
                     </td>
                     <td>
-                      <span
-                        class="status-badge"
-                        :class="tracking.currentProgress"
-                      >
-                        {{ tracking.currentProgress }}
-                      </span>
+                      <StatusBadge :status="tracking.currentProgress" />
                     </td>
                     <td>{{ tracking.recentAction }}</td>
                     <td>
@@ -691,8 +688,7 @@ function applyFilters() {
   color: #52617a;
 }
 
-.completion-badge,
-.status-badge {
+.completion-badge {
   display: inline-block;
   padding: 6px 12px;
   border-radius: 4px;
@@ -708,30 +704,6 @@ function applyFilters() {
 }
 
 .completion-badge.done {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.未启动申请 {
-  background: #eef2f7;
-  color: #344563;
-  border: 1px solid #d8e0ec;
-}
-
-.status-badge.待审核申请 {
-  background: #f0e9ff;
-  color: #8848e8;
-  border: 1px solid #ddcbff;
-}
-
-.status-badge.实践中 {
-  background: #eaf2ff;
-  color: #1268f6;
-  border: 1px solid #cfe0ff;
-}
-
-.status-badge.已完成 {
   background: #dff8ec;
   color: #18a663;
   border: 1px solid #bdeed7;

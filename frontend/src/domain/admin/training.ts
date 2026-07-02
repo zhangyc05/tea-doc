@@ -5,6 +5,69 @@ export type TrainingApplicationStatus = '待处理' | '已同意' | '未同意' 
 export type TrainingMaterialStatus = '待补充' | '已上传'
 export type TrainingRecordMaterialStatus = '学习中' | '待总结' | '证书待补' | '记录完整'
 
+export const trainingPlanStatusClassMap: Record<TrainingPlanStatus, string> = {
+  草稿: '草稿',
+  报名中: '报名中',
+  进行中: '进行中',
+  已完成: '已完成',
+  材料待完善: '材料待完善',
+}
+
+export const trainingApplicationStatusClassMap: Record<TrainingApplicationStatus, string> = {
+  待处理: '待处理',
+  已同意: '已同意',
+  未同意: '未同意',
+  已取消: '已取消',
+}
+
+export const trainingResourceStatusClassMap: Record<TrainingResourceStatus, string> = {
+  可用: '可用',
+  信息待完善: '信息待完善',
+  已停用: '已停用',
+}
+
+export const trainingDemandStatusClassMap: Record<TrainingDemandStatus, string> = {
+  待匹配: '待匹配',
+  已匹配: '已匹配',
+  暂不处理: '暂不处理',
+}
+
+export const trainingRecordMaterialStatusClassMap: Record<TrainingRecordMaterialStatus, string> = {
+  学习中: '学习中',
+  待总结: '待总结',
+  证书待补: '证书待补',
+  记录完整: '记录完整',
+}
+
+export const trainingMaterialStatusClassMap: Record<TrainingMaterialStatus, string> = {
+  待补充: '待补充',
+  已上传: '已上传',
+}
+
+export function getTrainingPlanStatusClass(status: TrainingPlanStatus): string {
+  return trainingPlanStatusClassMap[status]
+}
+
+export function getTrainingApplicationStatusClass(status: TrainingApplicationStatus): string {
+  return trainingApplicationStatusClassMap[status]
+}
+
+export function getTrainingResourceStatusClass(status: TrainingResourceStatus): string {
+  return trainingResourceStatusClassMap[status]
+}
+
+export function getTrainingDemandStatusClass(status: TrainingDemandStatus): string {
+  return trainingDemandStatusClassMap[status]
+}
+
+export function getTrainingRecordMaterialStatusClass(status: TrainingRecordMaterialStatus): string {
+  return trainingRecordMaterialStatusClassMap[status]
+}
+
+export function getTrainingMaterialStatusClass(status: TrainingMaterialStatus): string {
+  return trainingMaterialStatusClassMap[status]
+}
+
 export type TrainingResource = {
   id: string
   name: string
@@ -158,7 +221,7 @@ export type TrainingRelatedRecord = {
   teacher: string
   level: string
   hours: string
-  materialStatus: string
+  materialStatus: TrainingRecordMaterialStatus
 }
 
 export type TrainingRecordDetailMock = {

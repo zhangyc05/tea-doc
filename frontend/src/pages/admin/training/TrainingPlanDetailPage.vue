@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingPlanDetailMock } from '@/services/mock/training'
@@ -46,6 +47,7 @@ function handleApplication(teacherId: string) {
   if (applicationId) approveTrainingApplication(applicationId)
   operationMessage.set(`已同意 ${participant.name} 的培训申请`)
 }
+
 </script>
 
 <template>
@@ -266,10 +268,10 @@ function handleApplication(teacherId: string) {
                       <td>{{ participant.name }}</td>
                       <td>{{ participant.department }} / {{ participant.major }}</td>
                       <td>
-                        <span class="status-text" :class="participant.applicationStatus">{{ participant.applicationStatus }}</span>
+                         <StatusBadge :status="participant.applicationStatus" />
                       </td>
                       <td>
-                        <span class="status-text blue">{{ participant.participationStatus }}</span>
+                         <StatusBadge :status="participant.participationStatus" />
                       </td>
                       <td>{{ participant.materialStatus }}</td>
                       <td>
@@ -733,22 +735,6 @@ function handleApplication(teacherId: string) {
 
 .btn-handle:hover {
   color: #c75a0b;
-}
-
-.status-text {
-  font-weight: 800;
-}
-
-.status-text.已同意 {
-  color: #0ca65f;
-}
-
-.status-text.待处理 {
-  color: #f97316;
-}
-
-.status-text.blue {
-  color: #0f5eef;
 }
 
 .action-message {

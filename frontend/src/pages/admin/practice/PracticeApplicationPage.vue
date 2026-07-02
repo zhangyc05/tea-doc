@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approvePracticeApplication,
@@ -78,6 +79,7 @@ function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
   practiceState.operationMessage = `已筛选出 ${filteredApplications.value.length} 条实践申请。`
 }
+
 </script>
 
 <template>
@@ -218,9 +220,7 @@ function applyFilters() {
                       <div class="sub-text">预计 {{ app.estimatedDays }} 天</div>
                     </td>
                     <td>
-                      <span class="status-badge" :class="app.status">
-                        {{ app.status }}
-                      </span>
+                      <StatusBadge :status="app.status" />
                     </td>
                     <td>{{ app.applyTime }}</td>
                     <td>
@@ -649,39 +649,6 @@ function applyFilters() {
 .remaining-days {
   color: #1268f6;
   font-weight: 700;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.待审核 {
-  background: #eaf2ff;
-  color: #1268f6;
-  border: 1px solid #cfe0ff;
-}
-
-.status-badge.已同意 {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.退回修改 {
-  background: #fff0e8;
-  color: #f26a16;
-  border: 1px solid #ffd3c4;
-}
-
-.status-badge.已撤回 {
-  background: #f0e9ff;
-  color: #8848e8;
-  border: 1px solid #ddcbff;
 }
 
 .btn-action-group {

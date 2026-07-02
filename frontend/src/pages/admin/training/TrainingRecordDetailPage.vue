@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingRecordDetailMock } from '@/services/mock/training'
@@ -35,6 +36,7 @@ function uploadMaterial() {
 function viewRelatedRecord(recordId: string) {
   router.push(`/admin/training/records/${recordId}`)
 }
+
 </script>
 
 <template>
@@ -48,7 +50,7 @@ function viewRelatedRecord(recordId: string) {
             <div class="title-content">
               <div class="title-row">
                 <h1 class="main-title">{{ recordDetail.planName }}</h1>
-                <span class="title-status" :class="recordDetail.materialStatus">{{ recordDetail.materialStatus }}</span>
+                <StatusBadge :status="recordDetail.materialStatus" />
               </div>
               <div class="summary-info">
                 <div class="info-item">
@@ -174,9 +176,7 @@ function viewRelatedRecord(recordId: string) {
                     <tr v-for="(material, index) in certificateMaterials" :key="index">
                       <td>{{ material.name }}</td>
                       <td>
-                        <span class="status-badge" :class="material.status">
-                          {{ material.status }}
-                        </span>
+                        <StatusBadge :status="material.status" />
                       </td>
                       <td>{{ material.uploadTime }}</td>
                     </tr>
@@ -207,9 +207,7 @@ function viewRelatedRecord(recordId: string) {
                       <td>{{ related.teacher }}</td>
                       <td>{{ related.level }} / {{ related.hours }}</td>
                       <td>
-                        <span class="status-badge" :class="related.materialStatus">
-                          {{ related.materialStatus }}
-                        </span>
+                        <StatusBadge :status="related.materialStatus" />
                       </td>
                       <td>
                         <button
@@ -409,28 +407,6 @@ function viewRelatedRecord(recordId: string) {
   color: #07183d;
 }
 
-.title-status {
-  flex: none;
-  min-width: 76px;
-  height: 34px;
-  padding: 0 12px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff1e7;
-  color: #f97316;
-  font-size: 14px;
-  font-weight: 900;
-  border: 1px solid #ffd5ba;
-}
-
-.title-status.记录完整 {
-  background: #e8f8ef;
-  color: #0ca65f;
-  border-color: #bfe8d2;
-}
-
 .summary-info {
   display: flex;
   flex-direction: column;
@@ -599,48 +575,6 @@ function viewRelatedRecord(recordId: string) {
   border-radius: 50%;
   background: #0f5eef;
   box-shadow: 0 0 0 5px #eaf2ff;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 62px;
-  height: 28px;
-  padding: 0 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.status-badge.completed {
-  background: #e8f8ef;
-  color: #0ca65f;
-}
-
-.status-badge.已上传 {
-  background: #e8f8ef;
-  color: #0ca65f;
-}
-
-.status-badge.待补充 {
-  background: #fff1e7;
-  color: #f97316;
-}
-
-.status-badge.学习中 {
-  background: #eaf2ff;
-  color: #0f5eef;
-}
-
-.status-badge.待总结 {
-  background: #fff1e7;
-  color: #f97316;
-}
-
-.status-badge.记录完整 {
-  background: #e8f8ef;
-  color: #0ca65f;
 }
 
 .material-table,

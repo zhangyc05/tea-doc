@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityProfileGroupMock } from '@/services/mock/ability-profile'
 
 const router = useRouter()
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 const groupProfile = getAbilityProfileGroupMock()
 
 const schoolRadarData = groupProfile.schoolRadarData
@@ -50,7 +51,7 @@ function viewProfile(name: string) {
     router.push(`/admin/ability-profile/teacher/${teacherId}`)
     return
   }
-  operationMessage.value = `${name} 暂无独立画像页面，已保留为群体画像关注对象。`
+  operationMessage.set(`${name} 暂无独立画像页面，已保留为群体画像关注对象。`)
 }
 
 function getDimensionMeta(dimension: string) {
@@ -209,7 +210,7 @@ function getDistributionTone(index: number) {
           <div class="direction-actions">
             <button class="btn-primary" @click="viewFullAdvice">查看完整建议 <span>→</span></button>
           </div>
-          <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
+          <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
         </article>
 
         <article class="focus-card">

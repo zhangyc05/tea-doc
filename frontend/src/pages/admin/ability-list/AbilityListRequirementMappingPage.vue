@@ -1,6 +1,9 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
+	import { StatusBadge } from '@/components/common'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
+	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
+	import { useOperationMessage } from '@/lib/operationMessage'
 	import { getAbilityListRequirementMappingMock } from '@/services/mock/ability-list'
 	import {
 		confirmRequirementMapping,
@@ -38,7 +41,7 @@
 
 	// 编辑抽屉状态
 	const editingMapping = ref<RequirementMapping | null>(null)
-	const operationMessage = ref('')
+	const operationMessage = useOperationMessage()
 
 	// 统计数据
 	const stats = computed(() => ({
@@ -51,13 +54,13 @@
 	// 选择要求对象
 	function selectGroup(key: string) {
 		selectedGroup.value = key
-		operationMessage.value = `已切换要求对象：${getSelectedGroupLabel()}。`
+		operationMessage.set(`已切换要求对象：${getSelectedGroupLabel()}。`)
 	}
 
 	// 选择映射项
 	function selectMapping(mapping: RequirementMapping) {
 		selectedMappingId.value = mapping.id
-		operationMessage.value = '已在右侧展示要求项详情。'
+		operationMessage.set('已在右侧展示要求项详情。')
 	}
 
 	// 打开编辑抽屉
@@ -82,7 +85,7 @@
 			documentCondition: '待补充制度条件',
 			confirmStatus: 'pending',
 		}
-		operationMessage.value = '已创建待完善要求项。'
+		operationMessage.set('已创建待完善要求项。')
 	}
 
 	// 删除映射
@@ -90,7 +93,7 @@
 		const target = editingMapping.value || selectedMapping.value
 		deleteRequirementMapping(target.id)
 		selectedMappingId.value = mappings.value[0]?.id ?? ''
-		operationMessage.value = abilityListState.operationMessage
+		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
 	}
 
@@ -99,14 +102,14 @@
 		if (!editingMapping.value) return
 		saveRequirementMapping(editingMapping.value)
 		selectedMappingId.value = editingMapping.value.id
-		operationMessage.value = abilityListState.operationMessage
+		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
 	}
 
 	// 确认配置
 	function confirmMapping() {
 		confirmRequirementMapping(selectedMapping.value.id)
-		operationMessage.value = abilityListState.operationMessage
+		operationMessage.fromStore(abilityListState)
 	}
 
 	// 获取选中要求对象的标签
@@ -136,24 +139,8 @@
 		return classMap[level] || 'level-qualified'
 	}
 
-	// 获取状态徽章类名
-	function getStatusBadgeClass(status: string) {
-		const classMap: Record<string, string> = {
-			confirmed: 'badge-success',
-			pending: 'badge-warning',
-			unconfigured: 'badge-info',
-		}
-		return classMap[status] || 'badge-info'
-	}
-
-	// 获取状态标签
-	function getStatusLabel(status: string) {
-		const labelMap: Record<string, string> = {
-			confirmed: '已确认',
-			pending: '待确认',
-			unconfigured: '未配置',
-		}
-		return labelMap[status] || '未知'
+	function getStatusLabel(status: RequirementMappingStatus) {
+		return getRequirementMappingStatusLabel(status)
 	}
 </script>
 
@@ -164,13 +151,13 @@
 		<div class="page-breadcrumb">
 			能力清单 / 执行版 / 岗位/聘期要求映射
 		</div>
-		<div v-if="operationMessage" class="operation-message">{{ operationMessage }}</div>
+		<div v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</div>
 
 		<!-- Hero 区 -->
 		<div class="admin-hero">
 			<div class="hero-content">
 				<h1 class="hero-title">岗位/聘期要求映射</h1>
-				<span class="badge-status badge-warning">映射配置中</span>
+				<StatusBadge status="pending" label="映射配置中" />
 
 				<div class="hero-description">
 					将岗位竞聘和聘期履职要求对应到当前执行版能力指标，用于后续教师目标对照、差距分析和正式档案事实引用。
@@ -290,12 +277,7 @@
 									<td><span class="level-badge" :class="getLevelBadgeClass(mapping.level)">{{ mapping.level }}</span></td>
 									<td>{{ mapping.documentCondition }}</td>
 									<td>
-										<span
-											class="badge-status"
-											:class="getStatusBadgeClass(mapping.confirmStatus)"
-										>
-											{{ getStatusLabel(mapping.confirmStatus) }}
-										</span>
+										<StatusBadge :status="mapping.confirmStatus" :label="getStatusLabel(mapping.confirmStatus)" />
 									</td>
 									<td>
 										<div class="row-actions">
@@ -364,12 +346,7 @@
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">确认状态：</span>
-							<span
-								class="badge-status"
-								:class="getStatusBadgeClass(selectedMapping.confirmStatus)"
-							>
-								{{ getStatusLabel(selectedMapping.confirmStatus) }}
-							</span>
+							<StatusBadge :status="selectedMapping.confirmStatus" :label="getStatusLabel(selectedMapping.confirmStatus)" />
 						</div>
 					</div>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingPlanPageMock } from '@/services/mock/training'
@@ -248,9 +249,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                       <td>{{ plan.startDate }} 至 {{ plan.endDate }}</td>
                       <td>{{ plan.participation }}</td>
                       <td>
-                        <span class="status-badge" :class="plan.status">
-                          {{ plan.status }}
-                        </span>
+                        <StatusBadge :status="plan.status" />
                       </td>
                       <td>
                         <div class="participant-cell">
@@ -779,38 +778,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .plan-table td:first-child {
   color: #0f5eef;
   font-weight: 800;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 56px;
-  height: 26px;
-  padding: 0 8px;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.status-badge.报名中 {
-  background: #eaf2ff;
-  color: #0f5eef;
-}
-
-.status-badge.进行中 {
-  background: #e8f8ef;
-  color: #0ca65f;
-}
-
-.status-badge.已完成 {
-  background: #eef2f7;
-  color: #52637e;
-}
-
-.status-badge.材料待完善 {
-  background: #fff1e7;
-  color: #f97316;
 }
 
 .participant-cell {

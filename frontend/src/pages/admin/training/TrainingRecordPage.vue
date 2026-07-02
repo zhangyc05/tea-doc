@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getTrainingState } from '@/stores/admin/trainingStore'
 
@@ -188,9 +189,7 @@ const filteredRecords = computed(() => {
                       <td>{{ record.trainingDate }}</td>
                       <td>{{ record.hours }}</td>
                       <td>
-                        <span class="status-badge" :class="record.materialStatus">
-                          {{ record.materialStatus }}
-                        </span>
+                        <StatusBadge :status="record.materialStatus" />
                       </td>
                       <td>
                         <button class="btn-view" @click="viewDetail(record.id)">
@@ -575,38 +574,6 @@ const filteredRecords = computed(() => {
 .record-table td:first-child {
   font-weight: 800;
   color: #172b55;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 62px;
-  height: 28px;
-  padding: 0 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.status-badge.记录完整 {
-  background: #e8f8ef;
-  color: #0ca65f;
-}
-
-.status-badge.待总结 {
-  background: #fff1e7;
-  color: #f97316;
-}
-
-.status-badge.证书待补 {
-  background: #fff1e7;
-  color: #f97316;
-}
-
-.status-badge.学习中 {
-  background: #eaf2ff;
-  color: #0f5eef;
 }
 
 .btn-view {

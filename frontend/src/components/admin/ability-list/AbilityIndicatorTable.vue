@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {
+  getAbilityIndicatorStatusClass,
+  getAbilityIndicatorStatusLabel,
+} from '@/domain/admin/ability-list'
 import type { AbilityIndicator } from './types'
 
 const props = withDefaults(
@@ -31,30 +35,12 @@ function handleEdit(row: AbilityIndicator) {
   emit('edit', row)
 }
 
-function getStatusBadgeClass(status?: string) {
-  switch (status) {
-    case 'enabled':
-      return 'badge-success'
-    case 'disabled':
-      return 'badge-error'
-    case 'draft':
-      return 'badge-warning'
-    default:
-      return 'badge-default'
-  }
+function getStatusBadgeClass(status: AbilityIndicator['status']) {
+  return getAbilityIndicatorStatusClass(status)
 }
 
-function getStatusText(status?: string) {
-  switch (status) {
-    case 'enabled':
-      return '已启用'
-    case 'disabled':
-      return '已禁用'
-    case 'draft':
-      return '草稿'
-    default:
-      return '未知'
-  }
+function getStatusText(status: AbilityIndicator['status']) {
+  return getAbilityIndicatorStatusLabel(status)
 }
 </script>
 

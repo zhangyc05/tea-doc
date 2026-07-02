@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   confirmPracticeArchive,
   getPracticeState,
   remindPracticeMaterial,
-  type PracticeRecord,
 } from '@/stores/admin/practiceStore'
 
 const practiceState = getPracticeState()
@@ -85,17 +85,6 @@ function applyFilters() {
   practiceState.operationMessage = `已筛选出 ${filteredRecords.value.length} 条实践记录。`
 }
 
-function getStatusClass(status: PracticeRecord['currentStatus']): string {
-  const statusMap: Record<string, string> = {
-    '材料待完善': 'incomplete',
-    '待提交总结': 'incomplete',
-    '待归档确认': 'pending-archive',
-    '已归档': 'archived',
-    '实践中': 'in-progress',
-    '待企业评价': 'pending-evaluation',
-  }
-  return statusMap[status] || ''
-}
 </script>
 
 <template>
@@ -234,12 +223,7 @@ function getStatusClass(status: PracticeRecord['currentStatus']): string {
                     <td>{{ record.practicePeriod }}</td>
                     <td>{{ record.materialStatus }}</td>
                     <td>
-                      <span
-                        class="status-badge"
-                        :class="getStatusClass(record.currentStatus)"
-                      >
-                        {{ record.currentStatus }}
-                      </span>
+                      <StatusBadge :status="record.currentStatus" />
                     </td>
                     <td>{{ record.countedDays }}</td>
                     <td>{{ record.recentAction }}</td>
@@ -661,45 +645,6 @@ function getStatusClass(status: PracticeRecord['currentStatus']): string {
 .sub-text {
   color: #52617a;
   font-size: 12px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-badge.in-progress {
-  background: #eaf2ff;
-  color: #1268f6;
-  border: 1px solid #cfe0ff;
-}
-
-.status-badge.incomplete {
-  background: #fff0e8;
-  color: #f26a16;
-  border: 1px solid #ffd3c4;
-}
-
-.status-badge.pending-evaluation {
-  background: #fff0e8;
-  color: #f26a16;
-  border: 1px solid #ffd3c4;
-}
-
-.status-badge.pending-archive {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
-}
-
-.status-badge.archived {
-  background: #dff8ec;
-  color: #18a663;
-  border: 1px solid #bdeed7;
 }
 
 .btn-action-group {

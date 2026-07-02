@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListExecutionMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
@@ -60,8 +62,7 @@ const versionRows = computed(() => [
   abilityListState.executionVersion,
   ...abilityListState.versionHistory,
 ])
-const statusText = computed(() => abilityListState.executionVersion.status === 'published' ? '已发布' : '待发布')
-const statusClass = computed(() => abilityListState.executionVersion.status === 'published' ? 'badge-success' : 'badge-warning')
+const statusText = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
 const subtitle = computed(() => abilityListState.executionVersion.status === 'published'
   ? '当前周期正在使用的教师能力清单'
   : '下一周期执行版待确认发布')
@@ -102,7 +103,7 @@ function closeVersionDrawer() {
               <div class="hero-title-group">
                 <div class="hero-title-row">
                   <h1>{{ abilityListState.executionVersion.title }}</h1>
-                  <span class="badge-status" :class="statusClass">{{ statusText }}</span>
+                  <StatusBadge :status="abilityListState.executionVersion.status" :label="statusText" />
                 </div>
                 <p class="hero-subtitle">{{ subtitle }}</p>
                 <p v-if="abilityListState.operationMessage" class="operation-message">
@@ -237,9 +238,7 @@ function closeVersionDrawer() {
             <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
               <div class="version-card-head">
                 <strong>{{ version.versionNo }}</strong>
-                <span class="badge-status" :class="`version-${version.status}`">
-                  {{ version.status === 'published' ? '已发布' : version.status === 'pending' ? '待发布' : '历史版' }}
-                </span>
+                <StatusBadge :status="version.status" :label="getExecutionVersionStatusLabel(version.status)" />
               </div>
               <h4>{{ version.title }}</h4>
               <dl>
@@ -654,21 +653,6 @@ function closeVersionDrawer() {
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 800;
-}
-
-.badge-status.version-published {
-  background: #dff8ec;
-  color: #18a663;
-}
-
-.badge-status.version-pending {
-  background: #fff0df;
-  color: #f26a16;
-}
-
-.badge-status.version-historical {
-  background: #eef3fb;
-  color: #66758f;
 }
 
 /* 响应式 */
