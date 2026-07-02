@@ -21,7 +21,6 @@ teacher-mobile/  教师端手机端，UniApp + Vue 3 + TypeScript
 
 ```txt
 docs/page-coverage-ledger.md
-frontend/docs/hifi-implementation/README.md
 ```
 
 管理端任务再读取：
@@ -81,8 +80,7 @@ npm run build:mp-weixin
 ## 5. 文档更新
 
 - 页面覆盖、业务闭环、任务优先级变化：更新 `docs/page-coverage-ledger.md`。
-- 管理端页面流程和基准变化：必要时更新 `frontend/docs/hifi-implementation/README.md`。
-- 管理端设计 token、通用类、组件模式变化：更新 `frontend/docs/admin-design-system-guide.md`。
+- 管理端设计 token、页面流程、基准页或组件模式变化：更新 `frontend/docs/admin-design-system-guide.md`。
 - 手机端框架规则、组件边界或验收口径变化：更新 `teacher-mobile/docs/mobile-design-system-guide.md`。
 
 ## 6. 禁止事项

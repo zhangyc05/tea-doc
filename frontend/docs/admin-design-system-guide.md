@@ -80,5 +80,4 @@ npm run build
 
 ```txt
 docs/page-coverage-ledger.md
-frontend/docs/hifi-implementation/README.md
 ```
