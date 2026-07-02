@@ -42,4 +42,10 @@ npm run build:mp-weixin
 - `frontend/` 继续承载管理端 PC。
 - `teacher-mobile/` 承载教师手机端多端页面。
 - 手机端页面不复用管理端 PC 布局和页面源码。
-- 先完成 2-3 个手机端页面，再提炼跨页面业务组件。
+
+## 文档入口
+
+```txt
+teacher-mobile/docs/mobile-design-system-guide.md
+../docs/page-coverage-ledger.md
+```

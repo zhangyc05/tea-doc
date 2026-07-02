@@ -1,133 +1,92 @@
 # AGENTS.md
 
-## 1. 项目说明
+本仓库用于教师综合发展平台前端页面实现。所有 AI / Codex / 开发助手以本文件为入口；其他旧交接文档如与本文件冲突，以本文件为准。
 
-本仓库用于教师综合发展平台前端页面实现。
-
-当前前端工程位于：
+## 1. 工程边界
 
 ```txt
-frontend/
+frontend/        管理端 PC，Vue 3 + Vite + TypeScript + Vue Router
+teacher-mobile/  教师端手机端，UniApp + Vue 3 + TypeScript
 ```
 
-## 2. 当前唯一规划入口
+- `frontend/` 不承载教师手机端页面。
+- `teacher-mobile/` 不复用管理端 PC 路由、布局和页面样式。
+- 旧的资源库优先规划已废弃，不再把资源库页面作为管理端样板页或后续页面前置门槛。
 
-后续 AI / Codex / 开发助手执行前端页面任务时，优先读取：
+## 2. 必读入口
+
+每次任务只读取完成当前目标所需的最小上下文。
+
+通用入口：
 
 ```txt
+docs/page-coverage-ledger.md
 frontend/docs/hifi-implementation/README.md
 ```
 
-旧的高保真拆分文档和资源库优先规划已经废弃。不得继续把资源库页面作为管理端样板页或后续页面前置门槛。
-
-当前管理端 PC 基准页：
+管理端任务再读取：
 
 ```txt
-页面：管理端｜能力清单｜执行版查看页
-路由：/admin/ability-list/execution
-Vue 文件：frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue
-目标效果图：效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版查看页.png
-设计系统：frontend/docs/admin-design-system-guide.md
+frontend/docs/admin-design-system-guide.md
+当前目标页面源码
+当前目标效果图
+直接相关的 router、layout、component、mock 文件
 ```
 
-## 3. 低上下文原则
-
-每次任务只读取完成当前目标所需的最小上下文：
+教师手机端任务再读取：
 
 ```txt
-1. frontend/docs/hifi-implementation/README.md
-2. frontend/docs/admin-design-system-guide.md
-3. 当前目标页面源码
-4. 当前目标效果图
-5. 直接相关的 router、layout、component、mock 文件
+teacher-mobile/docs/mobile-design-system-guide.md
+当前目标页面源码
+当前目标效果图
+teacher-mobile/src/pages.json
+直接相关的 component、style 文件
 ```
 
-禁止为了一个页面任务重新读取全工程、历史执行记录或已废弃规划。
+禁止为了单页任务重新读取全工程、历史执行记录或已废弃规划。
 
-## 4. 页面还原流程
+## 3. 执行原则
 
-页面开发必须遵循：
+- 编码前先明确假设；需求有歧义时先询问。
+- 只写解决当前问题所需的最少代码。
+- 只修改完成任务所必需的文件和代码行。
+- 不重构无关代码，不顺手格式化相邻代码。
+- 遵循项目现有风格和组件边界。
+- 页面任务必须先识别目标效果图，再拆解区域、提取布局比例、判断组件复用。
+- 页面完成标准不是“能运行”，而是结构、比例、密度、视觉层级与目标图基本一致，并且入口、返回、提交、状态流转没有明显业务断点。
+- 已确认只做视觉态的操作，必须在台账中标记为“待业务闭环”，不得标记为业务完成。
+- 页面覆盖、业务闭环和后续优先级以 `docs/page-coverage-ledger.md` 为准。
 
-```txt
-目标效果图识别
-→ 页面区域拆解
-→ 布局比例与断点规则提取
-→ 组件提炼
-→ Vue 实现
-→ 多视口本地截图对比
-→ 修正验收
-```
+## 4. 校验命令
 
-页面完成标准不是“能运行”，而是“本地运行截图在多个桌面视口下与目标效果图的结构、比例、密度、视觉层级基本一致”。
-
-目标效果图是桌面视觉基准，不是唯一固定视口。禁止为了贴合某一张截图尺寸而把页面写死为固定宽高。
-
-## 5. 组件原则
-
-组件必须从目标效果图和当前管理端设计系统中提炼。
-
-不得先凭经验设计通用组件，再用组件拼页面。
-
-已有组件可以复用，但必须先判断是否符合目标效果图和当前基准页风格。
-
-如果已有组件无法表达目标效果图结构，应新增业务组件或升级组件。
-
-## 6. 工程基础
-
-可复用工程基础包括：
-
-```txt
-Vue 3
-Vite
-TypeScript
-Vue Router
-Tailwind CSS
-CSS Variables 设计 token
-```
-
-可复用目录包括：
-
-```txt
-frontend/src/router/
-frontend/src/layouts/
-frontend/src/components/
-frontend/src/mock/
-```
-
-本地启动：
+管理端代码修改完成后执行：
 
 ```bash
 cd frontend
-npm install
-npm run dev
-```
-
-代码修改完成后必须执行：
-
-```bash
 npm run typecheck
 npm run build
 ```
 
-纯文档修改通常不需要执行上述前端校验。
+手机端代码修改完成后执行：
 
-## 7. 提交与记录
-
-涉及页面状态、任务优先级、验收口径变化时，更新：
-
-```txt
-frontend/docs/hifi-implementation/README.md
+```bash
+cd teacher-mobile
+npm run typecheck
+npm run build:h5
+npm run build:mp-weixin
 ```
 
-涉及管理端设计 token、通用类、组件模式变化时，更新：
+纯文档修改通常不需要执行前端构建，但需要自检文档入口、路径和结论是否一致。
 
-```txt
-frontend/docs/admin-design-system-guide.md
-```
+## 5. 文档更新
 
-## 8. 禁止事项
+- 页面覆盖、业务闭环、任务优先级变化：更新 `docs/page-coverage-ledger.md`。
+- 管理端页面流程和基准变化：必要时更新 `frontend/docs/hifi-implementation/README.md`。
+- 管理端设计 token、通用类、组件模式变化：更新 `frontend/docs/admin-design-system-guide.md`。
+- 手机端框架规则、组件边界或验收口径变化：更新 `teacher-mobile/docs/mobile-design-system-guide.md`。
 
-```txt
+## 6. 禁止事项
+
 1. 禁止继续沿用旧资源库优先规划。
 2. 禁止跳过效果图识别直接写页面。
 3. 禁止只做工程骨架就标记页面完成。
@@ -135,5 +94,4 @@ frontend/docs/admin-design-system-guide.md
 5. 禁止页面出现未实现但看起来可点击的空操作。
 6. 禁止把页面写死为单一截图尺寸。
 7. 禁止只验收单一视口就标记响应式页面完成。
-8. 禁止每次任务重新加载无关历史记录或全工程上下文。
-```
+8. 禁止在构建或关键检查失败时宣称完成。

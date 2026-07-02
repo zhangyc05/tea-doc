@@ -315,18 +315,6 @@ export const adminRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/admin/archive/import',
-    name: 'AdminArchiveRecords',
-    component: AdminPlaceholderPage,
-    meta: {
-      title: '教师档案总览',
-      module: '成长档案',
-      layout: 'admin',
-      menuKey: 'archive',
-      breadcrumb: ['管理端', '成长档案', '教师档案总览'],
-    },
-  },
-  {
     path: '/admin/ability-profile/group',
     name: 'AdminAbilityProfileGroup',
     component: AbilityProfileGroupPage,
