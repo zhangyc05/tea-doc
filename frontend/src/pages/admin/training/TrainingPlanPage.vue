@@ -2,8 +2,13 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  createTrainingPlan,
+  getTrainingState,
+} from '@/stores/admin/trainingStore'
 
 const router = useRouter()
+const trainingState = getTrainingState()
 
 // 新建计划抽屉控制
 const showDrawer = ref(false)
@@ -18,82 +23,18 @@ const planNotice = ref('')
 
 // 筛选项数据
 const organizations = ['全校', '智能制造学院', '电子信息学院', '商贸管理学院', '汽车工程学院']
-const statuses = ['全部', '报名中', '进行中', '已完成', '材料待完善']
+const statuses = ['全部', '草稿', '报名中', '进行中', '已完成', '材料待完善']
 const years = ['2026 年度', '2025 年度', '2024 年度']
 const participationModes = ['全部', '自主报名', '定向推荐', '指定参加']
 
 // 统计数据
-const stats = {
-  total: 24,
-  registering: 6,
-  inProgress: 4,
-  materialIncomplete: 5,
-}
-
-// 培训计划数据
-interface TrainingPlan {
-  id: string
-  name: string
-  direction: string
-  target: string
-  startDate: string
-  endDate: string
-  participation: string
-  status: string
-  currentParticipants: number
-  maxParticipants: number
-}
-
-const trainingPlans = ref<TrainingPlan[]>([
-  {
-    id: 'summer-digital',
-    name: '2026 年暑期数字化教学能力提升培训',
-    direction: '数字化教学',
-    target: '智能制造学院、电子信息学院相关教师',
-    startDate: '2026-07-10',
-    endDate: '2026-07-14',
-    participation: '自主报名',
-    status: '报名中',
-    currentParticipants: 18,
-    maxParticipants: 30,
-  },
-  {
-    id: 'practice-ability',
-    name: '双师型教师实践能力提升培训',
-    direction: '实践教学',
-    target: '智能制造学院相关教师',
-    startDate: '2026-06-01',
-    endDate: '2026-06-07',
-    participation: '定向推荐',
-    status: '进行中',
-    currentParticipants: 24,
-    maxParticipants: 25,
-  },
-  {
-    id: 'ai-course',
-    name: 'AI 赋能课程建设专题培训',
-    direction: 'AI 课程建设',
-    target: '全校教师',
-    startDate: '2026-05-20',
-    endDate: '2026-05-21',
-    participation: '自主报名',
-    status: '材料待完善',
-    currentParticipants: 46,
-    maxParticipants: 52,
-  },
-  {
-    id: 'course-ideology',
-    name: '课程思政教学设计研修',
-    direction: '课程思政',
-    target: '现代服务学院相关教师',
-    startDate: '2026-04-12',
-    endDate: '2026-04-15',
-    participation: '指定参加',
-    status: '已完成',
-    currentParticipants: 30,
-    maxParticipants: 30,
-  },
-])
+const stats = computed(() => ({
+  total: trainingState.plans.length,
+  registering: trainingState.plans.filter(plan => plan.status === '报名中').length,
+  inProgress: trainingState.plans.filter(plan => plan.status === '进行中').length,
+  materialIncomplete: trainingState.plans.filter(plan => plan.status === '材料待完善').length,
+}))
+const trainingPlans = computed(() => trainingState.plans)
 
 // 执行提醒
 const reminders = [
@@ -115,16 +56,14 @@ function viewDetail(id: string) {
 }
 
 function saveDraft() {
-  planNotice.value = newPlan.value.name
-    ? `已保存草稿：${newPlan.value.name}`
-    : '已保存草稿，稍后可继续完善培训计划。'
+  const plan = createPlanFromForm('draft')
+  planNotice.value = `已保存草稿：${plan.name}`
   closeDrawer()
 }
 
 function saveAndPublish() {
-  planNotice.value = newPlan.value.name
-    ? `已发布培训计划：${newPlan.value.name}`
-    : '已保存并发布培训计划。'
+  const plan = createPlanFromForm('published')
+  planNotice.value = `已发布培训计划：${plan.name}`
   closeDrawer()
 }
 
@@ -170,6 +109,23 @@ const filteredPlans = computed(() => {
     return matchesStatus && matchesParticipation && matchesOrganization && matchesYear && matchesKeyword
   })
 })
+
+function createPlanFromForm(mode: 'draft' | 'published') {
+  return createTrainingPlan({
+    name: newPlan.value.name,
+    direction: newPlan.value.direction,
+    relatedDemand: newPlan.value.relatedDemand,
+    relatedResource: newPlan.value.relatedResource,
+    target: newPlan.value.target,
+    startDate: newPlan.value.startDate,
+    endDate: newPlan.value.endDate,
+    participation: newPlan.value.participation,
+    maxParticipants: Number(newPlan.value.quota) || 30,
+    quota: Number(newPlan.value.quota) || 30,
+    description: newPlan.value.description,
+    applicationRequired: newPlan.value.needApplication,
+  }, mode)
+}
 </script>
 
 <template>

@@ -2,35 +2,38 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  formVirtualLabRecordFromActivity,
+  getVirtualLabActivity,
+  getVirtualLabMaterialsByActivity,
+  getVirtualLabState,
+} from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
 const route = useRoute()
+const virtualLabState = getVirtualLabState()
 
 const activityId = computed(() => String(route.params.activityId ?? 'smart-line-seminar'))
 const operationMessage = ref('')
 
-const activityInfo = {
-  name: '智能产线课程项目化改造研讨',
-  roomName: '智能制造课程改革虚拟教研室',
-  theme: '智能产线课程项目化改造',
-  time: '2026-06-18 14:00 ~ 16:00',
-  meetingMethod: '腾讯会议',
-  meetingNo: '827 391 602',
-  initiator: '周明',
-  participantsCount: 18,
-  createdAt: '2026-06-12 10:30',
-  description: '围绕产线课程的教学内容重构、项目任务设计和实施路径优化开展研讨。',
-  status: '已形成记录',
-}
+const activityInfo = computed(() => {
+  const activity = getVirtualLabActivity(activityId.value)
+  const room = virtualLabState.rooms.find(item => item.id === activity.roomId)
+  return {
+    ...activity,
+    roomName: room?.name ?? '智能制造课程改革虚拟教研室',
+    status: activity.recordStatus,
+  }
+})
 
-const statusCard = {
-  attendanceRecord: '已同步',
-  meetingMinutes: '已形成',
-  taskAssignment: '已形成',
-  researchRecord: '已形成记录',
-  recentSyncTime: '06-18 16:20',
-  dataSource: '腾讯会议',
-}
+const statusCard = computed(() => ({
+  attendanceRecord: activityInfo.value.meetingMethod === '待确认' ? '待同步' : '已同步',
+  meetingMinutes: activityInfo.value.recordStatus === '已形成记录' ? '已形成' : '待形成',
+  taskAssignment: activityInfo.value.recordStatus === '已形成记录' ? '已形成' : '待补充',
+  researchRecord: activityInfo.value.recordStatus,
+  recentSyncTime: activityInfo.value.recentUpdate,
+  dataSource: activityInfo.value.meetingMethod,
+}))
 
 interface Participant {
   id: string
@@ -81,59 +84,8 @@ const participants: Participant[] = [
   },
 ]
 
-interface Material {
-  id: string
-  name: string
-  source: string
-  type: string
-  time: string
-  tone: string
-}
-
-const materials: Material[] = [
-  {
-    id: '1',
-    name: '会议纪要',
-    source: '系统生成',
-    type: '会议纪要',
-    time: '06-18 16:20',
-    tone: 'blue',
-  },
-  {
-    id: '2',
-    name: '任务分工表',
-    source: '活动负责人补充',
-    type: '任务分工',
-    time: '06-18 16:30',
-    tone: 'green',
-  },
-  {
-    id: '3',
-    name: '课程项目化改造方案初稿',
-    source: '林老师上传',
-    type: '阶段成果',
-    time: '06-18 17:10',
-    tone: 'orange',
-  },
-  {
-    id: '4',
-    name: '产线课程现状分析材料',
-    source: '张老师上传',
-    type: '过程材料',
-    time: '06-18 17:35',
-    tone: 'red',
-  },
-]
-
-const formedRecord = {
-  id: 'smart-line-record',
-  title: '智能产线课程项目化改造研讨记录',
-  tags: '会议纪要类',
-  sourceActivity: '智能产线课程项目化改造研讨',
-  formedTime: '2026-06-18 16:20',
-  content: '会议纪要、任务分工、阶段成果摘要、个人参与记录等',
-  dimension: '成长档案 / 教研科研',
-}
+const materials = computed(() => getVirtualLabMaterialsByActivity(activityId.value))
+const formedRecord = computed(() => virtualLabState.records.find(record => record.sourceActivityId === activityId.value) ?? null)
 
 interface TimelineItem {
   id: string
@@ -180,16 +132,23 @@ function editActivity() {
 }
 
 function viewMeetingRecord() {
-  operationMessage.value = `已定位会议记录：${activityInfo.meetingMethod} ${activityInfo.meetingNo}。`
+  operationMessage.value = `已定位会议记录：${activityInfo.value.meetingMethod} ${activityInfo.value.meetingNo}。`
 }
 
 function viewMaterial(id: string) {
-  const material = materials.find((item) => item.id === id)
+  const material = materials.value.find((item) => item.id === id)
   operationMessage.value = material ? `当前查看资料：${material.name}。` : '当前查看资料。'
 }
 
 function viewRecord() {
-  router.push(`/admin/virtual-lab/records/${formedRecord.id}`)
+  if (!formedRecord.value) {
+    const record = formVirtualLabRecordFromActivity(activityId.value)
+    operationMessage.value = virtualLabState.operationMessage
+    if (!record) return
+    router.push(`/admin/virtual-lab/records/${record.id}`)
+    return
+  }
+  router.push(`/admin/virtual-lab/records/${formedRecord.value.id}`)
 }
 
 function goBack() {
@@ -361,12 +320,12 @@ function goBack() {
             <div class="card-header">
               <h2>已形成记录</h2>
             </div>
-            <div class="record-detail">
+            <div v-if="formedRecord" class="record-detail">
               <div class="record-icon">▤</div>
               <div>
                 <div class="record-title-line">
                   <h3>{{ formedRecord.title }}</h3>
-                  <span class="tag-pill">{{ formedRecord.tags }}</span>
+                  <span class="tag-pill">会议纪要类</span>
                 </div>
                 <div class="record-meta">
                   <span>来源活动：{{ formedRecord.sourceActivity }}</span>
@@ -376,6 +335,22 @@ function goBack() {
                 </div>
               </div>
               <button class="btn-primary" @click="viewRecord">查看记录 →</button>
+            </div>
+            <div v-else class="record-detail">
+              <div class="record-icon">▤</div>
+              <div>
+                <div class="record-title-line">
+                  <h3>当前活动尚未形成教研记录</h3>
+                  <span class="tag-pill">待形成</span>
+                </div>
+                <div class="record-meta">
+                  <span>来源活动：{{ activityInfo.name }}</span>
+                  <span>形成状态：{{ activityInfo.recordStatus }}</span>
+                  <span>记录内容：待系统汇总会议纪要、任务分工和阶段成果</span>
+                  <span>关联维度：成长档案 / 教研科研</span>
+                </div>
+              </div>
+              <button class="btn-primary" @click="viewRecord">形成并查看记录 →</button>
             </div>
           </div>
 

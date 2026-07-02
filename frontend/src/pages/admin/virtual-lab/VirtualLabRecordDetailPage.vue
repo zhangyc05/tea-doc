@@ -2,26 +2,23 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  getVirtualLabMaterialsByActivity,
+  getVirtualLabRecord,
+  getVirtualLabState,
+  sendVirtualLabRecordToArchive,
+} from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
 const route = useRoute()
+const virtualLabState = getVirtualLabState()
 
 const recordId = computed(() => String(route.params.recordId ?? 'smart-line-record'))
 const operationMessage = ref('')
 
-const recordInfo = {
-  title: '智能产线课程项目化改造研讨记录',
-  sourceActivity: '智能产线课程项目化改造研讨',
-  roomName: '智能制造课程改革虚拟教研室',
-  activityTime: '2026-06-18 14:00 ~ 16:00',
-  meetingMethod: '腾讯会议',
-  formedTime: '2026-06-18 16:20',
-  recordSource: '系统根据活动与会议数据生成',
-  currentStatus: '已形成教研记录',
-  keyDimension: '成长档案 / 教研科研',
-}
+const recordInfo = computed(() => getVirtualLabRecord(recordId.value))
 
-const recordContent = {
+const recordContent = computed(() => ({
   summary: '本次研讨围绕智能产线课程项目化改造展开，重点讨论课程任务书结构、项目案例组织、课堂实施路径和成果共建方式。',
   mainTopics: [
     '调整课程项目任务结构，突出真实生产场景。',
@@ -38,7 +35,7 @@ const recordContent = {
     '已形成《智能产线课程项目化改造方案初稿》',
     '已形成课程任务书调整清单',
   ],
-}
+}))
 
 interface ParticipationRecord {
   id: string
@@ -92,66 +89,10 @@ const participationRecords: ParticipationRecord[] = [
   },
 ]
 
-interface SourceMaterial {
-  id: string
-  name: string
-  type: string
-  source: string
-  time: string
-  description: string
-  tone: string
-}
-
-const sourceMaterials: SourceMaterial[] = [
-  {
-    id: '1',
-    name: '腾讯会议参会记录',
-    type: '参会记录',
-    source: '腾讯会议',
-    time: '2026-06-18 16:05',
-    description: '会议参会人员与时长记录',
-    tone: 'blue',
-  },
-  {
-    id: '2',
-    name: '会议纪要',
-    type: '会议纪要',
-    source: '系统生成',
-    time: '2026-06-18 16:20',
-    description: '系统基于会议生成的纪要',
-    tone: 'green',
-  },
-  {
-    id: '3',
-    name: '任务分工表',
-    type: '任务分工',
-    source: '活动负责人补充',
-    time: '2026-06-18 16:30',
-    description: '活动负责人补充任务分工内容',
-    tone: 'purple',
-  },
-  {
-    id: '4',
-    name: '智能产线课程项目化改造方案初稿',
-    type: '阶段成果',
-    source: '林老师上传',
-    time: '2026-06-18 17:10',
-    description: '课程改造方案初稿材料',
-    tone: 'orange',
-  },
-  {
-    id: '5',
-    name: '课堂实施流程文档',
-    type: '过程材料',
-    source: '李老师上传',
-    time: '2026-06-18 17:25',
-    description: '课堂实施流程与安排说明',
-    tone: 'blue',
-  },
-]
+const sourceMaterials = computed(() => getVirtualLabMaterialsByActivity(recordInfo.value.sourceActivityId))
 
 function viewSourceActivity() {
-  router.push('/admin/virtual-lab/activities/smart-line-seminar')
+  router.push(`/admin/virtual-lab/activities/${recordInfo.value.sourceActivityId}`)
 }
 
 function viewSourceMaterials() {
@@ -160,8 +101,13 @@ function viewSourceMaterials() {
 }
 
 function viewMaterial(id: string) {
-  const material = sourceMaterials.find((item) => item.id === id)
+  const material = sourceMaterials.value.find((item) => item.id === id)
   operationMessage.value = material ? `当前查看来源资料：${material.name}。` : '当前查看来源资料。'
+}
+
+function sendToArchive() {
+  sendVirtualLabRecordToArchive(recordId.value)
+  operationMessage.value = virtualLabState.operationMessage
 }
 </script>
 
@@ -189,6 +135,7 @@ function viewMaterial(id: string) {
             <div class="header-actions">
               <button class="btn-secondary" @click="viewSourceActivity">查看来源活动</button>
               <button class="btn-primary" @click="viewSourceMaterials">查看来源资料</button>
+              <button class="btn-primary" @click="sendToArchive">生成档案待确认</button>
             </div>
           </div>
         </div>

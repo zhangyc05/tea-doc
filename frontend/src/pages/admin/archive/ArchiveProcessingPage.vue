@@ -3,16 +3,13 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import heroArt from '@/images/hero-art.png'
-
-interface ProcessingRecord {
-  id: string
-  name: string
-  teacher: string
-  dimension: string
-  source: string
-  status: '待确认' | '待检验' | '待补充' | '异常待处理' | '拟退中' | '已入档'
-  updateTime: string
-}
+import {
+  confirmArchiveRecord,
+  getArchiveState,
+  markArchiveRecordException,
+  returnArchiveRecord,
+  type ArchiveProcessingRecord,
+} from '@/stores/admin/archiveStore'
 
 interface RecordDetail {
   teacher: string
@@ -30,107 +27,65 @@ interface RecordDetail {
 }
 
 const router = useRouter()
+const archiveState = getArchiveState()
 
 // 统计数据
-const stats = {
-  pendingConfirm: 18,
-  pendingVerify: 7,
-  pendingSupplement: 6,
-  exception: 4,
-  returning: 3,
-}
-
-const statCards = [
-  { label: '待确认', value: stats.pendingConfirm, tone: 'confirm', icon: 'clock' },
-  { label: '待检验', value: stats.pendingVerify, tone: 'verify', icon: 'shield' },
-  { label: '待补充', value: stats.pendingSupplement, tone: 'supplement', icon: 'folder' },
-  { label: '异常待处理', value: stats.exception, tone: 'exception', icon: 'alert' },
-  { label: '拟退中', value: stats.returning, tone: 'returning', icon: 'edit' },
-]
+const statCards = computed(() => [
+  { label: '待确认', value: countByStatus('待确认'), tone: 'confirm', icon: 'clock' },
+  { label: '待检验', value: countByStatus('待检验'), tone: 'verify', icon: 'shield' },
+  { label: '待补充', value: countByStatus('待补充'), tone: 'supplement', icon: 'folder' },
+  { label: '异常待处理', value: countByStatus('异常待处理'), tone: 'exception', icon: 'alert' },
+  { label: '拟退中', value: countByStatus('拟退中'), tone: 'returning', icon: 'edit' },
+])
 
 // 筛选条件
 const statusFilter = ref('全部待处理')
 const sourceFilter = ref('全部来源')
 
-const statusOptions = [
-  { label: '全部待处理', value: '全部待处理', count: 38 },
-  { label: '待确认', value: '待确认', count: 18 },
-  { label: '待检验', value: '待检验', count: 7 },
-  { label: '待补充', value: '待补充', count: 6 },
-  { label: '异常待处理', value: '异常待处理', count: 4 },
-  { label: '拟退中', value: '拟退中', count: 3 },
-  { label: '已入档', value: '已入档', count: 126 },
-]
-
-const sourceOptions = [
-  { label: '全部来源', value: '全部来源', count: 38 },
-  { label: '发展活动', value: '发展活动', count: 8 },
-  { label: '部门上报', value: '部门上报', count: 12 },
-  { label: '教研成果', value: '教研成果', count: 9 },
-  { label: '公开征集', value: '公开征集', count: 6 },
-  { label: '科研申报', value: '科研申报', count: 3 },
-]
-
-// 处理记录数据
-const processingRecords = ref<ProcessingRecord[]>([
-  {
-    id: '1',
-    name: '教学能力大赛获奖证书',
-    teacher: '蒋老师',
-    dimension: '成果荣誉',
-    source: '教务处发起',
-    status: '待确认',
-    updateTime: '06-18 14:29',
-  },
-  {
-    id: '2',
-    name: '精品课程建设立项材料',
-    teacher: '林老师',
-    dimension: '教师培训',
-    source: '部门上报',
-    status: '待补充',
-    updateTime: '06-18 15:40',
-  },
-  {
-    id: '3',
-    name: '公开课获校级优秀奖',
-    teacher: '王老师',
-    dimension: '教师培训',
-    source: '公开征集',
-    status: '待检验',
-    updateTime: '06-18 16:10',
-  },
-  {
-    id: '4',
-    name: '企业实践记录材料——赵',
-    teacher: '赵老师',
-    dimension: '企业实践',
-    source: '部门上报',
-    status: '异常待处理',
-    updateTime: '06-18 16:49',
-  },
-  {
-    id: '5',
-    name: '课题结题成果鉴定申请',
-    teacher: '孙老师',
-    dimension: '科研申报',
-    source: '科研申报',
-    status: '拟退中',
-    updateTime: '06-18 17:35',
-  },
-  {
-    id: '6',
-    name: '教育案例教学评比记录',
-    teacher: '刘老师',
-    dimension: '教学工作',
-    source: '科研申报',
-    status: '待确认',
-    updateTime: '06-18 17:25',
-  },
+const statusOptions = computed(() => [
+  { label: '全部待处理', value: '全部待处理', count: archiveState.processingRecords.filter(record => record.status !== '已入档').length },
+  { label: '待确认', value: '待确认', count: countByStatus('待确认') },
+  { label: '待检验', value: '待检验', count: countByStatus('待检验') },
+  { label: '待补充', value: '待补充', count: countByStatus('待补充') },
+  { label: '异常待处理', value: '异常待处理', count: countByStatus('异常待处理') },
+  { label: '拟退中', value: '拟退中', count: countByStatus('拟退中') },
+  { label: '已入档', value: '已入档', count: countByStatus('已入档') },
 ])
 
+const sourceOptions = computed(() => {
+  const sources = ['发展活动', '部门上报', '教研成果', '公开征集', '科研申报']
+  return [
+    { label: '全部来源', value: '全部来源', count: archiveState.processingRecords.length },
+    ...sources.map(source => ({
+      label: source,
+      value: source,
+      count: archiveState.processingRecords.filter(record => record.source === source).length,
+    })),
+  ]
+})
+
 // 选中的记录详情
-const selectedRecord = ref<ProcessingRecord | null>(processingRecords.value[1]) // 默认选中"精品课程建设立项材料"
+const searchKeyword = ref('')
+const selectedRecordId = ref('2')
+
+const processingRecords = computed(() => {
+  return archiveState.processingRecords.filter(record => {
+    const matchesStatus = statusFilter.value === '全部待处理'
+      ? record.status !== '已入档'
+      : record.status === statusFilter.value
+    const matchesSource = sourceFilter.value === '全部来源' || record.source === sourceFilter.value
+    const matchesKeyword = !searchKeyword.value
+      || record.name.includes(searchKeyword.value)
+      || record.teacher.includes(searchKeyword.value)
+    return matchesStatus && matchesSource && matchesKeyword
+  })
+})
+
+const selectedRecord = computed(() => {
+  return archiveState.processingRecords.find(record => record.id === selectedRecordId.value)
+    ?? processingRecords.value[0]
+    ?? null
+})
 
 const recordDetail = computed<RecordDetail | null>(() => {
   if (!selectedRecord.value) return null
@@ -145,19 +100,11 @@ const recordDetail = computed<RecordDetail | null>(() => {
       achievementType: '精品课程建设',
       projectTime: '2024-03',
       achievementLevel: '校级别',
-      uploader: '陈老师',
-      uploadBatch: '2026 年度课程建设项目 6 批',
-      originalFile: '2026 年度课程建设项目 6 批名单.xlsx',
-      issues: [
-        '缺少立项文件编号',
-        '缺少课程负责人任命文件',
-        '缺少课程负责人承诺书',
-      ],
-      processingHistory: [
-        '2026-06-18 15:10 教务处上传材料',
-        '2026-06-18 15:25 系统识别并生成待处理记录',
-        '2026-06-19 09:30 待审核人员确认',
-      ],
+      uploader: selectedRecord.value.uploader,
+      uploadBatch: selectedRecord.value.uploadBatch,
+      originalFile: selectedRecord.value.originalFile,
+      issues: selectedRecord.value.issues,
+      processingHistory: selectedRecord.value.processingHistory,
     }
   }
 
@@ -166,20 +113,16 @@ const recordDetail = computed<RecordDetail | null>(() => {
     teacher: selectedRecord.value.teacher,
     dimension: selectedRecord.value.dimension,
     updateTime: `2026-${selectedRecord.value.updateTime}`,
-    uploader: '陈老师',
-    uploadBatch: '2026 年度课程建设项目 6 批',
-    originalFile: '2026 年度课程建设项目 6 批名单.xlsx',
-    issues: [],
-    processingHistory: [
-      `2026-${selectedRecord.value.updateTime} 系统识别并生成待处理记录`,
-    ],
+    uploader: selectedRecord.value.uploader,
+    uploadBatch: selectedRecord.value.uploadBatch,
+    originalFile: selectedRecord.value.originalFile,
+    issues: selectedRecord.value.issues,
+    processingHistory: selectedRecord.value.processingHistory,
   }
 })
 
-const searchKeyword = ref('')
-
-function selectRecord(record: ProcessingRecord) {
-  selectedRecord.value = record
+function selectRecord(record: ArchiveProcessingRecord) {
+  selectedRecordId.value = record.id
 }
 
 function goToImport() {
@@ -187,22 +130,24 @@ function goToImport() {
 }
 
 function confirmArchive() {
-  console.log('确认入档', selectedRecord.value)
+  if (selectedRecord.value) confirmArchiveRecord(selectedRecord.value.id)
 }
 
 function returnRecord() {
-  console.log('再次退回', selectedRecord.value)
+  if (selectedRecord.value) returnArchiveRecord(selectedRecord.value.id)
 }
 
 function markException() {
-  console.log('标记异常', selectedRecord.value)
+  if (selectedRecord.value) markArchiveRecordException(selectedRecord.value.id)
 }
 
 function viewSupplement() {
-  console.log('查看补充说明', selectedRecord.value)
+  archiveState.operationMessage = selectedRecord.value
+    ? `${selectedRecord.value.name} 的补充说明已在待处理问题中展示。`
+    : '请先选择一条处理记录。'
 }
 
-function statusBadgeClass(status: ProcessingRecord['status']) {
+function statusBadgeClass(status: ArchiveProcessingRecord['status']) {
   const classMap = {
     '待确认': 'badge-warning',
     '待检验': 'badge-info',
@@ -212,6 +157,10 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
     '已入档': 'badge-success',
   }
   return classMap[status] || 'badge-neutral'
+}
+
+function countByStatus(status: ArchiveProcessingRecord['status']) {
+  return archiveState.processingRecords.filter(record => record.status === status).length
 }
 </script>
 
@@ -277,6 +226,13 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
               </svg>
               <span>发展活动中已完成确认的记录将直接入档，不在此处重复处理。</span>
             </div>
+            <div v-if="archiveState.operationMessage" class="hero-tip operation-tip">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="7" />
+                <path d="M7 10l2 2 4-4" />
+              </svg>
+              <span>{{ archiveState.operationMessage }}</span>
+            </div>
           </div>
         </div>
       </section>
@@ -341,7 +297,7 @@ function statusBadgeClass(status: ProcessingRecord['status']) {
             <span class="filter-separator">|</span>
             <button class="filter-link">{{ sourceFilter }}</button>
             <span class="filter-separator">|</span>
-            <span class="filter-text">共 6 条</span>
+            <span class="filter-text">共 {{ processingRecords.length }} 条</span>
           </div>
 
           <div class="records-table">

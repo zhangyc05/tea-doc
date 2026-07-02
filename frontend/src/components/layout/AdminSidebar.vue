@@ -83,7 +83,6 @@ const navItems: AdminNavItem[] = [
   },
   { key: 'virtual-lab', label: '虚拟教研室', to: '/admin/virtual-lab', icon: 'lab' },
   { key: 'reports', label: '分析报告', to: '/admin/reports', icon: 'report' },
-  { key: 'system', label: '系统管理', to: '/admin/system', icon: 'system' },
 ]
 
 const expandedKeys = ref<Set<string>>(new Set())

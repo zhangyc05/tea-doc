@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  confirmPracticeArchive,
+  getPracticeState,
+  remindPracticeMaterial,
+  type PracticeRecord,
+} from '@/stores/admin/practiceStore'
+
+const practiceState = getPracticeState()
 
 // 筛选条件
 const selectedDepartment = ref('全部')
@@ -9,101 +17,17 @@ const selectedDays = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeRecordId = ref('1')
-const operationMessage = ref('')
 
 // 统计数据
-const stats = {
-  inProgress: 12,
-  summaryPending: 6,
-  evaluationPending: 5,
-  archivePending: 9,
-  archived: 48,
-}
+const stats = computed(() => ({
+  inProgress: practiceState.records.filter(record => record.currentStatus === '实践中').length,
+  summaryPending: practiceState.records.filter(record => record.currentStatus === '待提交总结').length,
+  evaluationPending: practiceState.records.filter(record => record.currentStatus === '待企业评价').length,
+  archivePending: practiceState.records.filter(record => record.currentStatus === '待归档确认').length,
+  archived: practiceState.records.filter(record => record.currentStatus === '已归档').length,
+}))
 
-// 实践记录数据
-interface PracticeRecord {
-  id: string
-  teacher: string
-  department: string
-  major: string
-  company: string
-  position: string
-  practicePeriod: string
-  materialStatus: string
-  currentStatus: string
-  countedDays: string
-  recentAction: string
-}
-
-const records: PracticeRecord[] = [
-  {
-    id: '1',
-    teacher: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    company: '山西智能装备有限公司',
-    position: '工艺改进实践',
-    practicePeriod: '2026-07-01 至 2026-07-15 / 15 天',
-    materialStatus: '日志完整 | 总结待提交 | 评价待上传',
-    currentStatus: '待提交总结',
-    countedDays: '暂未计入',
-    recentAction: '07-15 完成实践',
-  },
-  {
-    id: '2',
-    teacher: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    company: '青岛工业机器人有限公司',
-    position: '现场调试实践',
-    practicePeriod: '2026-06-10 至 2026-06-22 / 12 天',
-    materialStatus: '日志完整 | 总结已交 | 评价已上传',
-    currentStatus: '待归档确认',
-    countedDays: '归档后计入',
-    recentAction: '06-24 提交总结',
-  },
-  {
-    id: '3',
-    teacher: '陈老师',
-    department: '智能制造学院',
-    major: '数控技术',
-    company: '山西智能装备集团',
-    position: '岗位实践',
-    practicePeriod: '2026-05-01 至 2026-05-30 / 30 天',
-    materialStatus: '材料完整',
-    currentStatus: '已归档',
-    countedDays: '已计入',
-    recentAction: '06-02 已归档',
-  },
-  {
-    id: '4',
-    teacher: '赵老师',
-    department: '电子信息学院',
-    major: '软件技术',
-    company: '济南智联科技有限公司',
-    position: '项目开发实践',
-    practicePeriod: '2026-07-08 至 2026-07-28 / 21 天',
-    materialStatus: '日志待补 | 总结未提交 | 评价待上传',
-    currentStatus: '实践中',
-    countedDays: '暂未计入',
-    recentAction: '07-18 提交日报',
-  },
-  {
-    id: '5',
-    teacher: '孙老师',
-    department: '智能制造学院',
-    major: '应用电子技术',
-    company: '济南高端制造有限公司',
-    position: '产线优化实践',
-    practicePeriod: '2026-06-01 至 2026-06-18 / 18 天',
-    materialStatus: '日志完整 | 总结已交 | 评价待上传',
-    currentStatus: '待企业评价',
-    countedDays: '暂未计入',
-    recentAction: '06-19 企业反馈缺失',
-  },
-]
-
-const recordRows = ref<PracticeRecord[]>(records)
+const recordRows = computed(() => practiceState.records)
 
 const filteredRecords = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -129,45 +53,39 @@ function resetFilters() {
   selectedDays.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  practiceState.operationMessage = '已重置筛选条件。'
 }
 
 function viewDetail(id: string) {
   activeRecordId.value = id
-  operationMessage.value = '已在表格中定位该实践记录。'
+  practiceState.operationMessage = '已在表格中定位该实践记录。'
 }
 
 function remindMaterial(id: string) {
   activeRecordId.value = id
-  const target = recordRows.value.find((record) => record.id === id)
-  operationMessage.value = target ? `已提醒 ${target.teacher} 补充实践材料。` : '已发送补材料提醒。'
+  remindPracticeMaterial(id)
 }
 
 function confirmArchive(id: string) {
-  const target = recordRows.value.find((record) => record.id === id)
-  if (!target) return
-  target.currentStatus = '已归档'
-  target.countedDays = '已计入'
-  target.recentAction = '已确认归档'
+  confirmPracticeArchive(id)
   activeRecordId.value = id
-  operationMessage.value = `${target.teacher} 的实践记录已确认归档。`
 }
 
 function viewArchive(id: string) {
   activeRecordId.value = id
-  operationMessage.value = '已在表格中定位已归档记录。'
+  practiceState.operationMessage = '已在表格中定位已归档记录。'
 }
 
 function exportRecords() {
-  operationMessage.value = `已准备导出 ${filteredRecords.value.length} 条实践记录。`
+  practiceState.operationMessage = `已准备导出 ${filteredRecords.value.length} 条实践记录。`
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredRecords.value.length} 条实践记录。`
+  practiceState.operationMessage = `已筛选出 ${filteredRecords.value.length} 条实践记录。`
 }
 
-function getStatusClass(status: string): string {
+function getStatusClass(status: PracticeRecord['currentStatus']): string {
   const statusMap: Record<string, string> = {
     '材料待完善': 'incomplete',
     '待提交总结': 'incomplete',
@@ -279,7 +197,7 @@ function getStatusClass(status: string): string {
             <div class="search-row">
               <button class="btn-reset" @click="resetFilters">重置</button>
               <button class="btn-secondary" @click="applyFilters">查询</button>
-              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+              <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
 
@@ -331,7 +249,7 @@ function getStatusClass(status: string): string {
                           查看详情
                         </button>
                         <button
-                          v-if="record.currentStatus === '材料待完善' || record.currentStatus === '待提交总结' || record.currentStatus === '待企业评价' || record.currentStatus === '实践中'"
+                          v-if="record.currentStatus === '待提交总结' || record.currentStatus === '待企业评价' || record.currentStatus === '实践中'"
                           class="btn-remind"
                           @click="remindMaterial(record.id)"
                         >

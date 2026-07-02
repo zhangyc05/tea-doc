@@ -2,71 +2,19 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getTrainingState } from '@/stores/admin/trainingStore'
 
 const router = useRouter()
+const trainingState = getTrainingState()
 
 // 统计数据
-const stats = {
-  totalRecords: 286,
-  totalTeachers: 192,
-  totalHours: 5840,
-  materialIncomplete: 30,
-}
-
-// 培训记录数据
-interface TrainingRecord {
-  id: string
-  teacher: string
-  department: string
-  major: string
-  planName: string
-  trainingDate: string
-  hours: string
-  materialStatus: string
-}
-
-const records: TrainingRecord[] = [
-  {
-    id: 'digital-training-lin',
-    teacher: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    planName: '职业教育数字化教学能力提升培训',
-    trainingDate: '2026-05-10 至 2026-05-14',
-    hours: '32 学时',
-    materialStatus: '证书待补',
-  },
-  {
-    id: 'ai-course-chen',
-    teacher: '陈老师',
-    department: '电子信息学院',
-    major: '软件技术',
-    planName: 'AI 赋能课程建设专题培训',
-    trainingDate: '2026-05-20 至 2026-05-21',
-    hours: '16 学时',
-    materialStatus: '待总结',
-  },
-  {
-    id: 'practice-training-wang',
-    teacher: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    planName: '双师型教师实践能力提升培训',
-    trainingDate: '2026-06-01 至 2026-06-07',
-    hours: '40 学时',
-    materialStatus: '学习中',
-  },
-  {
-    id: 'ideology-course-zhao',
-    teacher: '赵老师',
-    department: '现代服务学院',
-    major: '电子商务',
-    planName: '课程思政教学设计研修',
-    trainingDate: '2026-04-12 至 2026-04-15',
-    hours: '24 学时',
-    materialStatus: '记录完整',
-  },
-]
+const stats = computed(() => ({
+  totalRecords: trainingState.records.length,
+  totalTeachers: new Set(trainingState.records.map(record => record.teacher)).size,
+  totalHours: trainingState.records.reduce((total, record) => total + Number.parseInt(record.hours, 10), 0),
+  materialIncomplete: trainingState.records.filter(record => record.materialStatus !== '记录完整').length,
+}))
+const records = computed(() => trainingState.records)
 
 // 筛选条件
 const selectedOrganization = ref('全校')
@@ -96,7 +44,7 @@ function viewIncompleteMaterials() {
 
 const filteredRecords = computed(() => {
   const keyword = searchQuery.value.trim()
-  return records.filter((record) => {
+  return records.value.filter((record) => {
     const matchesOrganization = selectedOrganization.value === '全校'
       || record.department.includes(selectedOrganization.value)
     const matchesYear = selectedYear.value === '全部'

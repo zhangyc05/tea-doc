@@ -2,6 +2,10 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  getArchiveSourceRecordsForFact,
+  getTeacherArchiveFacts,
+} from '@/stores/admin/archiveStore'
 
 interface SourceRecord {
   id: string
@@ -17,6 +21,18 @@ const route = useRoute()
 const router = useRouter()
 
 const teacherId = computed(() => route.params.teacherId || 'lin')
+const teacherName = computed(() => {
+  const names: Record<string, string> = {
+    lin: '林老师',
+    jiang: '蒋老师',
+    wang: '王老师',
+    zhao: '赵老师',
+    sun: '孙老师',
+    liu: '刘老师',
+  }
+  return names[String(teacherId.value)] ?? '林老师'
+})
+const teacherArchiveFacts = computed(() => getTeacherArchiveFacts(teacherName.value))
 
 // 来源记录抽屉状态
 const drawerOpen = ref(false)
@@ -26,6 +42,20 @@ const actionMessage = ref('')
 
 // 来源记录数据
 const sourceRecords = computed<SourceRecord[]>(() => {
+  const archivedRecords = getTeacherArchiveFacts(teacherName.value)
+    .filter(fact => isFactInDrawerType(fact.dimension, drawerType.value))
+    .flatMap(fact => {
+      return getArchiveSourceRecordsForFact(fact.id).map(record => ({
+        id: fact.id,
+        title: fact.title,
+        source: record.source,
+        status: '已确认入档' as const,
+        archiveTime: fact.archiveTime,
+        content: `${fact.title} 已由档案处理工作台确认入档，来源文件：${record.originalFile}。`,
+        buttonText: '查看记录详情',
+      }))
+    })
+
   if (drawerType.value === '基本信息') {
     return [
       {
@@ -40,6 +70,7 @@ const sourceRecords = computed<SourceRecord[]>(() => {
     ]
   } else if (drawerType.value === '教学工作') {
     return [
+      ...archivedRecords,
       {
         id: '1',
         title: '2026春季学期授课记录',
@@ -88,6 +119,7 @@ const sourceRecords = computed<SourceRecord[]>(() => {
     ]
   } else if (drawerType.value === '教研科研') {
     return [
+      ...archivedRecords,
       {
         id: '1',
         title: '学术论文发表记录',
@@ -100,6 +132,7 @@ const sourceRecords = computed<SourceRecord[]>(() => {
     ]
   } else {
     return [
+      ...archivedRecords,
       {
         id: '1',
         title: '示例记录',
@@ -191,6 +224,13 @@ const tabClass = (tabValue: string) => {
 
 const statusBadgeClass = (status: SourceRecord['status']) => {
   return status === '已确认入档' ? 'badge-success' : 'badge-warning'
+}
+
+function isFactInDrawerType(dimension: string, type: string) {
+  if (dimension === type) return true
+  if (type === '教学工作' && dimension === '教师培训') return true
+  if (type === '个人发展' && dimension === '教师培训') return true
+  return false
 }
 </script>
 
@@ -481,6 +521,16 @@ const statusBadgeClass = (status: SourceRecord['status']) => {
                 <p class="info-text">
                   本档案正文由已确认入档记录生成。当前有1条课程建设支撑材料仍待说明，确认前不写入正文。
                 </p>
+                <div v-if="teacherArchiveFacts.length > 0" class="content-cards">
+                  <div
+                    v-for="fact in teacherArchiveFacts"
+                    :key="fact.id"
+                    class="content-card"
+                  >
+                    <h4 class="card-title">{{ fact.title }}</h4>
+                    <p class="card-content">{{ fact.dimension }} · {{ fact.archiveTime }} 确认入档</p>
+                  </div>
+                </div>
               </div>
               <div class="info-sidebar">
                 <button class="btn-source" @click="openDrawer('教学工作')">

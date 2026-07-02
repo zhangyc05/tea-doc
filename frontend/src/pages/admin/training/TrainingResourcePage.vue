@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  addTrainingResourceDraft,
+  getTrainingState,
+} from '@/stores/admin/trainingStore'
+
+const trainingState = getTrainingState()
 
 // 筛选条件
 const selectedStatus = ref('全部')
@@ -10,119 +16,15 @@ const selectedSource = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeResourceId = ref('1')
-const operationMessage = ref('')
 
 // 统计数据
-const stats = {
-  total: 68,
-  available: 52,
-  incomplete: 10,
-  sourceTypes: 4,
-}
-
-// 培训资源数据
-interface TrainingResource {
-  id: string
-  name: string
-  direction: string
-  level: string
-  hours: string
-  institution: string
-  target: string
-  source: string
-  status: string
-}
-
-const resources = ref<TrainingResource[]>([
-  {
-    id: '1',
-    name: '职业教育数字化教学能力提升培训',
-    direction: '数字化教学',
-    level: '省级',
-    hours: '32学时',
-    institution: '省职业教育教师发展中心',
-    target: '相关专业教师',
-    source: '外部机构',
-    status: '可用',
-  },
-  {
-    id: '2',
-    name: 'AI 赋能课程建设专题培训',
-    direction: 'AI 课程建设',
-    level: '校级',
-    hours: '16学时',
-    institution: '教师发展中心',
-    target: '全校教师',
-    source: '校内建设',
-    status: '可用',
-  },
-  {
-    id: '3',
-    name: '双师型教师实践能力提升培训',
-    direction: '实践教学',
-    level: '企业培训',
-    hours: '40学时',
-    institution: '智能制造合作企业',
-    target: '工科专业教师',
-    source: '企业合作',
-    status: '可用',
-  },
-  {
-    id: '4',
-    name: '课程思政教学设计研修',
-    direction: '课程思政',
-    level: '市级',
-    hours: '24学时',
-    institution: '市教师发展联盟',
-    target: '课程负责人',
-    source: '外部机构',
-    status: '信息待完善',
-  },
-  {
-    id: '5',
-    name: '教学评价能力提升培训',
-    direction: '教学评价',
-    level: '省级',
-    hours: '20学时',
-    institution: '教育评估中心',
-    target: '教学骨干',
-    source: '外部机构',
-    status: '可用',
-  },
-  {
-    id: '6',
-    name: '教学资源建设公开课',
-    direction: '数字化教学',
-    level: '公开课程',
-    hours: '8学时',
-    institution: '公开平台',
-    target: '需自主学习教师',
-    source: '公开课程',
-    status: '已停用',
-  },
-  {
-    id: '7',
-    name: '教师教学创新能力提升工作坊',
-    direction: '教学创新',
-    level: '校级',
-    hours: '16学时',
-    institution: '教师发展中心',
-    target: '全校教师',
-    source: '校内建设',
-    status: '可用',
-  },
-  {
-    id: '8',
-    name: '企业实践教学案例开发培训',
-    direction: '实践教学',
-    level: '企业培训',
-    hours: '24学时',
-    institution: '合作企业联合体',
-    target: '专业教师',
-    source: '企业合作',
-    status: '可用',
-  },
-])
+const stats = computed(() => ({
+  total: trainingState.resources.length,
+  available: trainingState.resources.filter(resource => resource.status === '可用').length,
+  incomplete: trainingState.resources.filter(resource => resource.status === '信息待完善').length,
+  sourceTypes: new Set(trainingState.resources.map(resource => resource.source)).size,
+}))
+const resources = computed(() => trainingState.resources)
 
 // 右侧资源概览
 const resourceOverview = {
@@ -174,37 +76,25 @@ function resetFilters() {
   selectedSource.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  trainingState.operationMessage = '已重置筛选条件。'
 }
 
 function viewDetail(id: string) {
   activeResourceId.value = id
-  operationMessage.value = '已在右侧展示资源摘要。'
+  trainingState.operationMessage = '已在右侧展示资源摘要。'
 }
 
 function addResource() {
-  const draftId = `draft-${resources.value.length + 1}`
-  resources.value.unshift({
-    id: draftId,
-    name: '新增培训资源待完善',
-    direction: '数字化教学',
-    level: '校级',
-    hours: '待补充',
-    institution: '教师发展中心',
-    target: '待明确',
-    source: '校内建设',
-    status: '信息待完善',
-  })
-  activeResourceId.value = draftId
+  const draft = addTrainingResourceDraft()
+  activeResourceId.value = draft.id
   selectedStatus.value = '信息待完善'
   appliedSearchQuery.value = ''
   searchQuery.value = ''
-  operationMessage.value = '已创建待完善资源草稿。'
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredResources.value.length} 条资源。`
+  trainingState.operationMessage = `已筛选出 ${filteredResources.value.length} 条资源。`
 }
 
 function showIncompleteResources() {
@@ -214,7 +104,7 @@ function showIncompleteResources() {
   selectedSource.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已切换到待完善资源。'
+  trainingState.operationMessage = '已切换到待完善资源。'
 }
 </script>
 
@@ -325,7 +215,7 @@ function showIncompleteResources() {
                   <button class="btn-secondary" @click="applyFilters">查询</button>
                   <button class="btn-primary" @click="addResource">＋ 新增资源</button>
                 </div>
-                <div v-if="operationMessage" class="operation-message">{{ operationMessage }}</div>
+                <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
               </div>
 
               <!-- 数据表格 -->

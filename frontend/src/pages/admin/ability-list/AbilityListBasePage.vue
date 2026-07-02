@@ -4,6 +4,11 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import {
+  deriveNextExecutionVersion,
+  getAbilityListState,
+  updateBaseTemplateIndicator,
+} from '@/stores/admin/abilityListStore'
 import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
 import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
@@ -25,18 +30,8 @@ type AbilityNode = {
   children?: AbilityChild[]
 }
 
-type Indicator = {
-  key: string
-  name: string
-  novice: string
-  competent: string
-  backbone: string
-  expert: string
-  basis: string
-  status: 'enabled'
-}
-
 const router = useRouter()
+const abilityListState = getAbilityListState()
 
 const abilityTree: AbilityNode[] = [
   {
@@ -72,97 +67,47 @@ const abilityTree: AbilityNode[] = [
   },
 ]
 
-const indicators: Indicator[] = [
-  {
-    key: 'teaching-workload',
-    name: '教学工作量（课时/学期）',
-    novice: '≥64',
-    competent: '≥96',
-    backbone: '≥128',
-    expert: '≥160',
-    basis: '教学工作记录',
-    status: 'enabled',
-  },
-  {
-    key: 'teaching-evaluation',
-    name: '课堂教学评价（学生评分）',
-    novice: '≥80分',
-    competent: '≥85分',
-    backbone: '≥90分',
-    expert: '≥95分',
-    basis: '教学质量评价',
-    status: 'enabled',
-  },
-  {
-    key: 'listening-hours',
-    name: '听课课时（课时/学期）',
-    novice: '≥8',
-    competent: '≥16',
-    backbone: '≥24',
-    expert: '≥32',
-    basis: '教学活动记录',
-    status: 'enabled',
-  },
-  {
-    key: 'teaching-compliance',
-    name: '教学规范执行',
-    novice: '≥80%',
-    competent: '≥90%',
-    backbone: '≥95%',
-    expert: '≥98%',
-    basis: '教学规范检查',
-    status: 'enabled',
-  },
-  {
-    key: 'teaching-resource-construction',
-    name: '教学资源建设（门/年）',
-    novice: '≥1',
-    competent: '≥2',
-    backbone: '≥3',
-    expert: '≥5',
-    basis: '课程资源记录',
-    status: 'enabled',
-  },
-  {
-    key: 'it-teaching-level',
-    name: '信息化教学应用水平',
-    novice: '≥60分',
-    competent: '≥75分',
-    backbone: '≥85分',
-    expert: '≥95分',
-    basis: '信息化应用评价',
-    status: 'enabled',
-  },
-]
-
 const selectedAbility = ref('teaching-design')
-const selectedIndicator = ref<Indicator | null>(null)
+const selectedIndicator = ref<AbilityIndicator | null>(null)
+const editingIndicator = ref<AbilityIndicator | null>(null)
+const showVersionDrawer = ref(false)
 const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
 // 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
-const normalizedIndicators = computed<AbilityIndicator[]>(() =>
-  indicators.map(item => ({
-    key: item.key,
-    name: item.name,
-    novice: item.novice,
-    competent: item.competent,
-    backbone: item.backbone,
-    expert: item.expert,
-    basisLabel: item.basis,
-    status: item.status,
-  })),
-)
+const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.baseTemplateIndicators)
+const versionRows = computed(() => [
+  abilityListState.executionVersion,
+  ...abilityListState.versionHistory,
+])
 
 function selectAbility(key: string) {
   selectedAbility.value = key
 }
 
 function selectIndicator(indicator: AbilityIndicator) {
-  selectedIndicator.value = indicator as unknown as Indicator
+  selectedIndicator.value = indicator
 }
 
 function editIndicator(indicator: AbilityIndicator) {
-  console.log('编辑指标：', indicator)
+  editingIndicator.value = { ...indicator }
+}
+
+function closeEditDrawer() {
+  editingIndicator.value = null
+}
+
+function saveIndicatorEdit() {
+  if (!editingIndicator.value) return
+
+  updateBaseTemplateIndicator(editingIndicator.value.key, {
+    name: editingIndicator.value.name,
+    novice: editingIndicator.value.novice,
+    competent: editingIndicator.value.competent,
+    backbone: editingIndicator.value.backbone,
+    expert: editingIndicator.value.expert,
+    basisLabel: editingIndicator.value.basisLabel,
+  })
+  closeEditDrawer()
 }
 
 function isAbilityExpanded(key: string) {
@@ -211,11 +156,16 @@ function goToOptimization() {
 }
 
 function goToVersionHistory() {
-  console.log('查看版本记录')
+  showVersionDrawer.value = true
+}
+
+function closeVersionDrawer() {
+  showVersionDrawer.value = false
 }
 
 function deriveExecutionVersion() {
-  console.log('派生执行版')
+  deriveNextExecutionVersion()
+  router.push('/admin/ability-list/execution/publish-confirm')
 }
 
 </script>
@@ -278,6 +228,9 @@ function deriveExecutionVersion() {
 
             <p class="hero-note">
               可基于制度文件和运行反馈形成优化建议，确认后再应用到基准模板。
+              <span v-if="abilityListState.operationMessage" class="operation-message">
+                {{ abilityListState.operationMessage }}
+              </span>
             </p>
           </div>
         </div>
@@ -295,6 +248,102 @@ function deriveExecutionVersion() {
         @row-click="selectIndicator"
         @edit-indicator="editIndicator"
       />
+
+      <div v-if="editingIndicator" class="edit-drawer-overlay" @click="closeEditDrawer">
+        <div class="edit-drawer" @click.stop>
+          <div class="drawer-header">
+            <h3 class="drawer-title">编辑基准模板指标</h3>
+            <button class="drawer-close" @click="closeEditDrawer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="drawer-tip">
+            保存后会形成待确认调整，后续可派生到执行版。
+          </div>
+
+          <div class="drawer-form">
+            <div class="form-group">
+              <label class="form-label">指标名称</label>
+              <input v-model="editingIndicator.name" class="form-input" type="text" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">新手</label>
+                <input v-model="editingIndicator.novice" class="form-input" type="text" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">胜任</label>
+                <input v-model="editingIndicator.competent" class="form-input" type="text" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">骨干</label>
+                <input v-model="editingIndicator.backbone" class="form-input" type="text" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">名师</label>
+                <input v-model="editingIndicator.expert" class="form-input" type="text" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">建议依据</label>
+              <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
+            </div>
+          </div>
+
+          <div class="drawer-actions">
+            <button class="btn-secondary" @click="closeEditDrawer">取消</button>
+            <button class="btn-primary" @click="saveIndicatorEdit">保存调整</button>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showVersionDrawer" class="edit-drawer-overlay" @click="closeVersionDrawer">
+        <div class="edit-drawer version-drawer" @click.stop>
+          <div class="drawer-header">
+            <h3 class="drawer-title">能力清单版本记录</h3>
+            <button class="drawer-close" @click="closeVersionDrawer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="drawer-tip">
+            展示当前执行版和已归档历史版，后续用于版本追溯和派生依据确认。
+          </div>
+
+          <div class="version-list">
+            <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
+              <div class="version-card-head">
+                <strong>{{ version.versionNo }}</strong>
+                <span class="badge-status" :class="`version-${version.status}`">
+                  {{ version.status === 'published' ? '已发布' : version.status === 'pending' ? '待发布' : '历史版' }}
+                </span>
+              </div>
+              <h4>{{ version.title }}</h4>
+              <dl>
+                <div>
+                  <dt>发布时间</dt>
+                  <dd>{{ version.publishedAt }}</dd>
+                </div>
+                <div>
+                  <dt>来源</dt>
+                  <dd>{{ version.source }}</dd>
+                </div>
+                <div>
+                  <dt>操作人</dt>
+                  <dd>{{ version.operator }}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   </AdminLayout>
 </template>
@@ -499,6 +548,201 @@ function deriveExecutionVersion() {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.6;
+}
+
+.operation-message {
+  display: inline-flex;
+  margin-left: 10px;
+  color: #18845a;
+  font-weight: 850;
+}
+
+.edit-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(15, 23, 42, 0.28);
+}
+
+.edit-drawer {
+  display: flex;
+  width: 540px;
+  max-width: calc(100vw - 72px);
+  height: 100%;
+  flex-direction: column;
+  background: #fff;
+  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.18);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.drawer-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.drawer-close {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f8ff;
+  color: #7d899b;
+  cursor: pointer;
+}
+
+.drawer-close:hover {
+  background: #eaf2ff;
+  color: var(--color-primary);
+}
+
+.drawer-tip {
+  padding: 16px 24px;
+  border-bottom: 1px solid #edf2f7;
+  background: #f8fbff;
+  color: #60708a;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.drawer-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.form-input {
+  min-height: 38px;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 750;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.12);
+}
+
+.drawer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--color-card-border);
+}
+
+.version-drawer {
+  width: 620px;
+}
+
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.version-card {
+  border: 1px solid #e3ebf6;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+}
+
+.version-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.version-card-head strong {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.version-card h4 {
+  margin: 10px 0 14px;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.version-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.version-card dt {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.version-card dd {
+  margin: 4px 0 0;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.badge-status.version-published {
+  background: #dff8ec;
+  color: #18a663;
+}
+
+.badge-status.version-pending {
+  background: #fff0df;
+  color: #f26a16;
+}
+
+.badge-status.version-historical {
+  background: #eef3fb;
+  color: #66758f;
 }
 
 @media (max-width: 1280px) {

@@ -1,6 +1,15 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
+	import {
+		confirmRequirementMapping,
+		deleteRequirementMapping,
+		getAbilityListState,
+		saveRequirementMapping,
+		type RequirementMapping,
+	} from '@/stores/admin/abilityListStore'
+
+	const abilityListState = getAbilityListState()
 
 	// Mock 数据：要求对象
 	const requirementGroups = [
@@ -24,58 +33,31 @@
 		},
 	]
 
-	// Mock 数据：要求项映射表
-	const mappings = ref([
-		{
-			id: '1',
-			requirementText: '近三年承担不少于 2 门专业课程教学',
-			indicatorDimension: '教学能力',
-			indicatorName: '教学工作量',
-			level: '骨干',
-			levelCriteria: '近三年专业课程授课门数 ≥ 2',
-			documentCondition: '近三年专业课程授课门数 ≥ 2',
-			confirmStatus: 'confirmed',
-		},
-		{
-			id: '2',
-			requirementText: '主持或参与校级以上教改项目',
-			indicatorDimension: '教研能力',
-			indicatorName: '教改项目',
-			level: '胜任',
-			levelCriteria: '校级及以上教改项目 ≥ 1',
-			documentCondition: '校级及以上教改项目 ≥ 1',
-			confirmStatus: 'pending',
-		},
-		{
-			id: '3',
-			requirementText: '近三年教学质量评价达到良好及以上',
-			indicatorDimension: '教学能力',
-			indicatorName: '课堂教学评价',
-			level: '胜任',
-			levelCriteria: '近三年综合评价等级 ≥ 良好',
-			documentCondition: '近三年综合评价等级 ≥ 良好',
-			confirmStatus: 'confirmed',
-		},
-		{
-			id: '4',
-			requirementText: '具有企事业实践或社会服务经历',
-			indicatorDimension: '实践能力',
-			indicatorName: '企业实践经历',
-			level: '胜任',
-			levelCriteria: '累计企业实践天数 ≥ 30',
-			documentCondition: '累计企业实践天数 ≥ 30',
-			confirmStatus: 'unconfigured',
-		},
-	])
+	const emptyMapping: RequirementMapping = {
+		id: '',
+		requirementText: '暂无要求项',
+		indicatorDimension: '教学能力',
+		indicatorName: '教学工作量',
+		level: '胜任',
+		levelCriteria: '待补充等级标准',
+		documentCondition: '待补充制度条件',
+		confirmStatus: 'pending',
+	}
+
+	const mappings = computed(() => abilityListState.requirementMappings)
 
 	// 当前选中的要求对象
 	const selectedGroup = ref('associate-professor')
 
-	// 当前选中的映射项
-	const selectedMapping = ref(mappings.value[0])
+	const selectedMappingId = ref(mappings.value[0]?.id ?? '')
+	const selectedMapping = computed(() => {
+		return mappings.value.find(mapping => mapping.id === selectedMappingId.value)
+			?? mappings.value[0]
+			?? emptyMapping
+	})
 
 	// 编辑抽屉状态
-	const editingMapping = ref<typeof mappings.value[0] | null>(null)
+	const editingMapping = ref<RequirementMapping | null>(null)
 	const operationMessage = ref('')
 
 	// 统计数据
@@ -93,13 +75,13 @@
 	}
 
 	// 选择映射项
-	function selectMapping(mapping: typeof mappings.value[0]) {
-		selectedMapping.value = mapping
+	function selectMapping(mapping: RequirementMapping) {
+		selectedMappingId.value = mapping.id
 		operationMessage.value = '已在右侧展示要求项详情。'
 	}
 
 	// 打开编辑抽屉
-	function openEditDrawer(mapping?: typeof mappings.value[0]) {
+	function openEditDrawer(mapping?: RequirementMapping) {
 		editingMapping.value = { ...(mapping || selectedMapping.value) }
 	}
 
@@ -111,7 +93,7 @@
 	// 新增要求项
 	function addNewMapping() {
 		editingMapping.value = {
-			id: `new-${mappings.value.length + 1}`,
+			id: `new-${Date.now()}`,
 			requirementText: '新增要求项待完善',
 			indicatorDimension: '教学能力',
 			indicatorName: '教学工作量',
@@ -126,31 +108,25 @@
 	// 删除映射
 	function deleteMapping() {
 		const target = editingMapping.value || selectedMapping.value
-		mappings.value = mappings.value.filter((item) => item.id !== target.id)
-		selectedMapping.value = mappings.value[0]
-		operationMessage.value = '已删除当前要求项映射。'
+		deleteRequirementMapping(target.id)
+		selectedMappingId.value = mappings.value[0]?.id ?? ''
+		operationMessage.value = abilityListState.operationMessage
 		closeEditDrawer()
 	}
 
 	// 保存映射
 	function saveMapping() {
 		if (!editingMapping.value) return
-		const index = mappings.value.findIndex((item) => item.id === editingMapping.value?.id)
-		if (index >= 0) {
-			mappings.value[index] = { ...editingMapping.value }
-			selectedMapping.value = mappings.value[index]
-		} else {
-			mappings.value.unshift({ ...editingMapping.value })
-			selectedMapping.value = mappings.value[0]
-		}
-		operationMessage.value = '已保存要求项映射。'
+		saveRequirementMapping(editingMapping.value)
+		selectedMappingId.value = editingMapping.value.id
+		operationMessage.value = abilityListState.operationMessage
 		closeEditDrawer()
 	}
 
 	// 确认配置
 	function confirmMapping() {
-		selectedMapping.value.confirmStatus = 'confirmed'
-		operationMessage.value = '该要求项映射已确认配置。'
+		confirmRequirementMapping(selectedMapping.value.id)
+		operationMessage.value = abilityListState.operationMessage
 	}
 
 	// 获取选中要求对象的标签

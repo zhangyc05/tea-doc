@@ -1,153 +1,26 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getReflectionOverviewMock } from '@/services/mock/reflection'
 
 const router = useRouter()
+const route = useRoute()
+const reflectionOverview = getReflectionOverviewMock()
 
 // 筛选条件
 const selectedOrganization = ref('全校')
 const selectedSemester = ref('2025-2026 第2学期')
 const selectedTrigger = ref('全部')
-const searchQuery = ref('')
+const searchQuery = ref(String(route.query.keyword || ''))
+const activeIssueKeyword = ref(String(route.query.keyword || ''))
 
-// 筛选项
-const organizations = ['全校', '智能制造学院', '信息工程学院', '商贸管理学院', '汽车工程学院']
-const semesters = ['2025-2026 第2学期', '2025-2026 第1学期', '2024-2025 第2学期']
-const triggers = ['全部', '评教反馈', '成绩波动', '教学异常']
-
-// 教学反思记录数据
-interface Reflection {
-  id: string
-  teacher: string
-  department: string
-  major: string
-  course: string
-  class: string
-  theme: string
-  trigger: string
-  submitTime: string
-}
-
-const reflections: Reflection[] = [
-  {
-    id: 'project-participation',
-    teacher: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    course: '智能制造基础',
-    class: '23机电1班',
-    theme: '项目实训环节学生参与度不足',
-    trigger: '评教反馈',
-    submitTime: '2026-06-18 14:20',
-  },
-  {
-    id: 'class-interaction',
-    teacher: '王老师',
-    department: '信息工程学院',
-    major: '软件技术',
-    course: 'Java程序设计',
-    class: '23软工2班',
-    theme: '课堂互动反馈不足',
-    trigger: '评教反馈',
-    submitTime: '2026-06-18 10:15',
-  },
-  {
-    id: 'preparation-difference',
-    teacher: '张老师',
-    department: '商贸管理学院',
-    major: '电子商务',
-    course: '电子商务运营',
-    class: '23电商1班',
-    theme: '学生课前准备差异明显',
-    trigger: '成绩波动',
-    submitTime: '2026-06-17 16:45',
-  },
-  {
-    id: 'theory-practice-link',
-    teacher: '刘老师',
-    department: '汽车工程学院',
-    major: '新能源汽车技术',
-    course: '新能源汽车构造',
-    class: '24新能源1班',
-    theme: '理论与实践链接不够紧密',
-    trigger: '教学异常',
-    submitTime: '2026-06-17 09:30',
-  },
-  {
-    id: 'case-depth',
-    teacher: '陈老师',
-    department: '文化旅游学院',
-    major: '旅游管理',
-    course: '旅游市场营销',
-    class: '23旅管2班',
-    theme: '案例分析深度不足',
-    trigger: '评教反馈',
-    submitTime: '2026-06-16 15:20',
-  },
-  {
-    id: 'feedback-timeliness',
-    teacher: '赵老师',
-    department: '建筑工程学院',
-    major: '建筑工程技术',
-    course: '建筑CAD',
-    class: '23建工3班',
-    theme: '作业反馈不够及时',
-    trigger: '教学异常',
-    submitTime: '2026-06-16 11:05',
-  },
-  {
-    id: 'evaluation-standards',
-    teacher: '孙老师',
-    department: '艺术设计学院',
-    major: '数字媒体技术',
-    course: 'UI界面设计',
-    class: '24数媒1班',
-    theme: '项目评价标准需要清晰',
-    trigger: '成绩波动',
-    submitTime: '2026-06-15 17:40',
-  },
-  {
-    id: 'practice-design',
-    teacher: '周老师',
-    department: '外语学院',
-    major: '应用英语',
-    course: '综合英语2',
-    class: '23英语1班',
-    theme: '课堂练习设计需要优化',
-    trigger: '评教反馈',
-    submitTime: '2026-06-15 14:10',
-  },
-]
-
-// 共性观察数据
-const commonIssues = [
-  {
-    rank: 1,
-    issue: '课堂互动反馈不足',
-    count: 68,
-  },
-  {
-    rank: 2,
-    issue: '项目任务分层不够清晰',
-    count: 53,
-  },
-  {
-    rank: 3,
-    issue: '课前准备差异明显',
-    count: 47,
-  },
-]
-
-// 统计数据
-const stats = {
-  reflectionCount: 326,
-  teacherCount: 214,
-  teacherPercentage: 68,
-  courseCount: 87,
-  mainTrigger: '评教反馈',
-  triggerPercentage: 42,
-}
+const organizations = reflectionOverview.organizations
+const semesters = reflectionOverview.semesters
+const triggers = reflectionOverview.triggers
+const reflections = reflectionOverview.reflections
+const commonIssues = reflectionOverview.commonIssues
+const stats = reflectionOverview.stats
 
 const filteredReflections = computed(() => {
   const keyword = searchQuery.value.trim().toLowerCase()
@@ -175,10 +48,13 @@ function resetFilters() {
   selectedSemester.value = '2025-2026 第2学期'
   selectedTrigger.value = '全部'
   searchQuery.value = ''
+  activeIssueKeyword.value = ''
 }
 
 function viewRelatedRecords() {
-  searchQuery.value = commonIssues[0].issue
+  const issue = commonIssues[0].issue
+  searchQuery.value = issue
+  activeIssueKeyword.value = issue
   selectedTrigger.value = '全部'
 }
 </script>
@@ -265,6 +141,9 @@ function viewRelatedRecords() {
 
               <!-- 筛选区 -->
               <div class="filter-section">
+                <p v-if="activeIssueKeyword" class="issue-filter-message">
+                  当前问题定位：{{ activeIssueKeyword }}
+                </p>
                 <div class="filter-row">
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
@@ -533,6 +412,17 @@ function viewRelatedRecords() {
 /* 筛选区 */
 .filter-section {
   padding: 18px;
+}
+
+.issue-filter-message {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #cfe0ff;
+  border-radius: 6px;
+  background: #f3f7ff;
+  color: #174ea6;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .filter-row {

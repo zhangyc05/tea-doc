@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  addTrainingDemand,
+  getTrainingState,
+  matchTrainingDemand,
+} from '@/stores/admin/trainingStore'
+
+const trainingState = getTrainingState()
 
 // 统计数据
 const stats = {
@@ -10,70 +17,7 @@ const stats = {
   fromManagement: 16,
 }
 
-// 培训需求列表
-interface TrainingDemand {
-  id: string
-  teacher: string
-  department: string
-  major: string
-  direction: string
-  source: string
-  matchStatus: string
-  suggestedResource: string
-}
-
-const demands = ref<TrainingDemand[]>([
-  {
-    id: '1',
-    teacher: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    direction: '数字化教学',
-    source: '能力画像观察',
-    matchStatus: '已匹配',
-    suggestedResource: '职业教育数字化教学能力提升培训',
-  },
-  {
-    id: '2',
-    teacher: '陈老师',
-    department: '电子信息学院',
-    major: '软件技术',
-    direction: 'AI 赋能课程建设',
-    source: '教师主动提出',
-    matchStatus: '待匹配',
-    suggestedResource: '暂无合适资源',
-  },
-  {
-    id: '3',
-    teacher: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    direction: '实训课程组织',
-    source: '管理主动添加',
-    matchStatus: '已匹配',
-    suggestedResource: '双师型教师实践能力提升培训',
-  },
-  {
-    id: '4',
-    teacher: '赵老师',
-    department: '现代服务学院',
-    major: '电子商务',
-    direction: '课程思政设计',
-    source: '教师主动提出',
-    matchStatus: '暂不处理',
-    suggestedResource: '—',
-  },
-  {
-    id: '5',
-    teacher: '孙老师',
-    department: '外语学院',
-    major: '应用英语',
-    direction: '数字资源建设',
-    source: '能力画像观察',
-    matchStatus: '已匹配',
-    suggestedResource: '数字化教学资源建设培训',
-  },
-])
+const demands = computed(() => trainingState.demands)
 
 // 筛选条件
 const selectedOrganization = ref('全校')
@@ -83,7 +27,6 @@ const selectedMatchStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeDemandId = ref('1')
-const operationMessage = ref('')
 
 const filteredDemands = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -113,39 +56,28 @@ function resetFilters() {
   selectedMatchStatus.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  trainingState.operationMessage = '已重置筛选条件。'
 }
 
 function viewDetail(id: string) {
   activeDemandId.value = id
-  operationMessage.value = '已在右侧展示需求摘要。'
+  trainingState.operationMessage = '已在右侧展示需求摘要。'
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredDemands.value.length} 条需求。`
+  trainingState.operationMessage = `已筛选出 ${filteredDemands.value.length} 条需求。`
 }
 
 function addDemand() {
-  const draftId = `draft-${demands.value.length + 1}`
-  demands.value.unshift({
-    id: draftId,
-    teacher: '待分配',
-    department: '智能制造学院',
-    major: '待确认专业',
-    direction: 'AI 赋能课程建设',
-    source: '管理主动添加',
-    matchStatus: '待匹配',
-    suggestedResource: '暂无合适资源',
-  })
-  activeDemandId.value = draftId
+  const demand = addTrainingDemand()
+  activeDemandId.value = demand.id
   selectedMatchStatus.value = '待匹配'
   selectedSource.value = '全部'
   selectedDirection.value = '全部'
   selectedOrganization.value = '全校'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已新增一条待匹配需求。'
 }
 
 function showPendingDemands() {
@@ -155,7 +87,12 @@ function showPendingDemands() {
   selectedDirection.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已切换到待匹配需求。'
+  trainingState.operationMessage = '已切换到待匹配需求。'
+}
+
+function matchDemand(id: string) {
+  matchTrainingDemand(id, '1')
+  activeDemandId.value = id
 }
 </script>
 
@@ -259,7 +196,7 @@ function showPendingDemands() {
                 <div class="search-row">
                   <button class="btn-reset" @click="resetFilters">重置</button>
                   <button class="btn-secondary" @click="applyFilters">查询</button>
-                  <div v-if="operationMessage" class="operation-message">{{ operationMessage }}</div>
+                  <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
                 </div>
               </div>
 
@@ -296,6 +233,13 @@ function showPendingDemands() {
                       <td>
                         <button class="btn-view" @click="viewDetail(demand.id)">
                           查看
+                        </button>
+                        <button
+                          v-if="demand.matchStatus === '待匹配'"
+                          class="btn-view"
+                          @click="matchDemand(demand.id)"
+                        >
+                          匹配资源
                         </button>
                       </td>
                     </tr>

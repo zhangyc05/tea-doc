@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  continueReportAnalysis,
+  exportReport,
+  getReportState,
+  openReportAiAssistant,
+  openReportDetail,
+  regenerateReport,
+} from '@/stores/admin/reportStore'
 
+const reportState = getReportState()
 const activeTab = ref('全部')
 const selectedTarget = ref('全部')
 const selectedPeriod = ref('2026 年度')
@@ -11,99 +20,12 @@ const appliedSearchQuery = ref('')
 const operationMessage = ref('')
 
 const tabs = ['全部', '分析报告', '分析大屏', '专题解读', '数据问答']
-
-interface ReportCard {
-  id: string
-  title: string
-  type: string
-  target: string
-  basis: string
-  generatedTime: string
-  status: string
-  buttons: string[]
-  icon: string
-  tone: string
-}
-
-const reports = ref<ReportCard[]>([
-  {
-    id: '1',
-    title: '2026 年度学校教师发展分析报告',
-    type: '分析报告',
-    target: '全校教师',
-    basis: '正式档案事实 | 执行版能力清单',
-    generatedTime: '06-24 10:20',
-    status: '已生成',
-    buttons: ['查看', '继续分析', '重新生成'],
-    icon: '▤',
-    tone: 'blue',
-  },
-  {
-    id: '2',
-    title: '智能制造学院企业实践完成情况分析',
-    type: '分析报告',
-    target: '智能制造学院',
-    basis: '企业实践记录 | 成长档案企业实践维度',
-    generatedTime: '06-23 16:40',
-    status: '已生成',
-    buttons: ['查看', '继续分析'],
-    icon: '▣',
-    tone: 'green',
-  },
-  {
-    id: '3',
-    title: '全校教师能力结构分析大屏',
-    type: '分析大屏',
-    target: '全校',
-    basis: '能力画像 | 正式档案事实',
-    generatedTime: '06-22 14:10',
-    status: '已生成',
-    buttons: ['查看大屏', '继续分析'],
-    icon: '▱',
-    tone: 'purple',
-  },
-  {
-    id: '4',
-    title: '虚拟教研室运行情况分析',
-    type: '专题解读',
-    target: '虚拟教研室',
-    basis: '教研活动记录 | 已形成教研记录',
-    generatedTime: '06-21 11:30',
-    status: '待更新',
-    buttons: ['查看', '更新'],
-    icon: '●',
-    tone: 'orange',
-  },
-  {
-    id: '5',
-    title: '成长档案事实覆盖分析',
-    type: '图表解读',
-    target: '全校',
-    basis: '成长档案正式事实',
-    generatedTime: '06-20 09:50',
-    status: '数据不足',
-    buttons: ['查看原因'],
-    icon: '◔',
-    tone: 'teal',
-  },
-  {
-    id: '6',
-    title: '岗位 / 聘期要求对照问答',
-    type: '数据问答',
-    target: '教师发展管理',
-    basis: '岗位画像 | 聘期要求 | 正式档案事实',
-    generatedTime: '06-19 15:00',
-    status: '已生成',
-    buttons: ['查看', '继续追问'],
-    icon: '●●',
-    tone: 'chat',
-  },
-])
+const selectedReport = computed(() => reportState.reports.find(report => report.id === reportState.selectedReportId) ?? null)
 
 const filteredReports = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
 
-  return reports.value.filter((report) => {
+  return reportState.reports.filter((report) => {
     const matchesTab = activeTab.value === '全部'
       || report.type === activeTab.value
       || (activeTab.value === '专题解读' && report.type === '图表解读')
@@ -122,15 +44,21 @@ function selectTab(tab: string) {
 }
 
 function handleCardAction(cardId: string, action: string) {
-  const report = reports.value.find((item) => item.id === cardId)
-  if (!report) return
-
   if (action === '重新生成' || action === '更新') {
-    report.status = '已生成'
-    report.generatedTime = '刚刚'
+    regenerateReport(cardId)
+  } else if (action === '导出') {
+    exportReport(cardId)
+  } else if (action === '继续分析' || action === '继续追问') {
+    continueReportAnalysis(cardId, action)
+  } else if (action === '查看大屏') {
+    openReportDetail(cardId, 'dashboard')
+  } else if (action === '查看原因') {
+    openReportDetail(cardId, 'insufficient-data')
+  } else {
+    openReportDetail(cardId)
   }
 
-  operationMessage.value = `${report.title}：${action}。`
+  operationMessage.value = reportState.operationMessage
 }
 
 function resetFilters() {
@@ -148,7 +76,8 @@ function applyFilters() {
 }
 
 function openAiAssistant() {
-  operationMessage.value = 'AI 助理已准备基于当前筛选结果生成分析。'
+  openReportAiAssistant(filteredReports.value.map(report => report.id))
+  operationMessage.value = reportState.operationMessage
 }
 
 function getStatusClass(status: string): string {
@@ -250,6 +179,44 @@ function getStatusClass(status: string): string {
             </div>
           </article>
           <div v-if="filteredReports.length === 0" class="empty-panel">暂无符合条件的分析报告</div>
+        </div>
+
+        <div v-if="selectedReport || reportState.aiSession.active" class="detail-grid">
+          <section v-if="selectedReport" class="detail-panel">
+            <div class="panel-header">
+              <h2>
+                {{ reportState.detailMode === 'dashboard' ? '大屏预览' : reportState.detailMode === 'insufficient-data' ? '原因说明' : '报告详情' }}
+              </h2>
+              <span class="panel-status" :class="getStatusClass(selectedReport.status)">{{ selectedReport.status }}</span>
+            </div>
+            <div class="detail-content">
+              <strong>{{ selectedReport.title }}</strong>
+              <p>分析对象：{{ selectedReport.target }}</p>
+              <p>分析依据：{{ selectedReport.basis }}</p>
+              <p>生成时间：{{ selectedReport.generatedTime }}</p>
+              <p>导出状态：{{ selectedReport.exportStatus }}</p>
+              <div class="history-list">
+                <span v-for="item in selectedReport.actionHistory" :key="item">{{ item }}</span>
+              </div>
+            </div>
+          </section>
+
+          <section v-if="reportState.aiSession.active" class="detail-panel ai-panel">
+            <div class="panel-header">
+              <h2>AI 分析助手</h2>
+              <span class="panel-status generated">已准备</span>
+            </div>
+            <div class="detail-content">
+              <strong>{{ reportState.aiSession.prompt }}</strong>
+              <p>来源报告：{{ selectedReport?.title || '当前筛选结果' }}</p>
+              <p>下一步可基于当前报告依据继续生成追问、解读或管理建议。</p>
+            </div>
+          </section>
+        </div>
+
+        <div class="assistant-row">
+          <button class="ai-assistant" @click="openAiAssistant">AI 助手生成分析</button>
+          <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
         </div>
       </section>
     </div>
@@ -587,8 +554,81 @@ function getStatusClass(status: string): string {
   text-align: center;
 }
 
+.detail-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.detail-panel {
+  min-height: 210px;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  overflow: hidden;
+}
+
+.panel-header {
+  min-height: 58px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid #e4ebf5;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #17233d;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.panel-status {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.detail-content {
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+  color: #4d5d75;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.detail-content strong {
+  color: #17233d;
+  font-size: 16px;
+}
+
+.detail-content p {
+  margin: 0;
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-list span {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f1f6ff;
+  color: #1268f6;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .assistant-row {
   display: flex;
+  align-items: center;
+  gap: 16px;
   justify-content: flex-end;
   margin-top: 34px;
 }
@@ -621,6 +661,10 @@ function getStatusClass(status: string): string {
 
 @media (max-width: 900px) {
   .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid {
     grid-template-columns: 1fr;
   }
 

@@ -1,0 +1,157 @@
+import { describe, expect, it, beforeEach } from 'vitest'
+import {
+  adoptOptimizationSuggestion,
+  applyAdoptedSuggestionsToBaseTemplate,
+  confirmRequirementMapping,
+  deleteRequirementMapping,
+  deriveNextExecutionVersion,
+  getAbilityListState,
+  publishExecutionVersion,
+  resetAbilityListState,
+  saveRequirementMapping,
+  updateBaseTemplateIndicator,
+  updateExecutionIndicator,
+} from './abilityListStore'
+
+describe('ability list business state', () => {
+  beforeEach(() => {
+    resetAbilityListState()
+  })
+
+  it('updates an execution indicator and marks it as a draft adjustment', () => {
+    updateExecutionIndicator('execution-indicator-0', {
+      novice: '>= 72',
+      competent: '>= 108',
+      basisLabel: '调整后的课时规则',
+    })
+
+    const target = getAbilityListState().executionIndicators.find(
+      indicator => indicator.key === 'execution-indicator-0',
+    )
+
+    expect(target?.novice).toBe('>= 72')
+    expect(target?.competent).toBe('>= 108')
+    expect(target?.basisLabel).toBe('调整后的课时规则')
+    expect(target?.status).toBe('draft')
+  })
+
+  it('updates a base template indicator and marks it as a draft adjustment', () => {
+    updateBaseTemplateIndicator('base-teaching-workload', {
+      novice: '≥72',
+      competent: '≥108',
+      basisLabel: '调整后的教学工作记录',
+    })
+
+    const target = getAbilityListState().baseTemplateIndicators.find(
+      indicator => indicator.key === 'base-teaching-workload',
+    )
+
+    expect(target?.novice).toBe('≥72')
+    expect(target?.competent).toBe('≥108')
+    expect(target?.basisLabel).toBe('调整后的教学工作记录')
+    expect(target?.status).toBe('draft')
+  })
+
+  it('derives the next execution version as a pending version', () => {
+    const nextVersion = deriveNextExecutionVersion()
+
+    expect(nextVersion.title).toBe('2027 年度教师能力清单执行版')
+    expect(nextVersion.status).toBe('pending')
+    expect(getAbilityListState().executionVersion.title).toBe(nextVersion.title)
+  })
+
+  it('publishes the derived execution version for other pages to read', () => {
+    deriveNextExecutionVersion()
+    publishExecutionVersion()
+
+    expect(getAbilityListState().executionVersion.status).toBe('published')
+    expect(getAbilityListState().operationMessage).toBe('2027 年度教师能力清单执行版已确认发布。')
+  })
+
+  it('moves the previous published execution version into history when publishing a new version', () => {
+    deriveNextExecutionVersion()
+    publishExecutionVersion()
+
+    const historicalVersion = getAbilityListState().versionHistory.find(
+      version => version.title === '2026 年度教师能力清单执行版',
+    )
+
+    expect(historicalVersion?.status).toBe('historical')
+    expect(historicalVersion?.versionNo).toBe('V2026')
+    expect(historicalVersion?.publishedAt).toBe('2026-06-08 20:30')
+    expect(historicalVersion?.source).toBe('教师能力清单基准模板 V1.0')
+    expect(historicalVersion?.operator).toBe('教务处管理员')
+  })
+
+  it('moves adopted optimization suggestions into the pending application list', () => {
+    adoptOptimizationSuggestion('suggestion-enterprise-practice')
+
+    const state = getAbilityListState()
+    const adopted = state.optimizationSuggestions.find(
+      suggestion => suggestion.id === 'suggestion-enterprise-practice',
+    )
+
+    expect(adopted?.status).toBe('adopted')
+    expect(adopted?.statusLabel).toBe('已采纳')
+    expect(state.pendingTemplateApplications).toHaveLength(1)
+    expect(state.pendingTemplateApplications[0]?.targetIndicator.name).toBe('企业实践成果转化')
+  })
+
+  it('applies adopted optimization suggestions to the base template indicators', () => {
+    adoptOptimizationSuggestion('suggestion-enterprise-practice')
+    const result = applyAdoptedSuggestionsToBaseTemplate()
+
+    const state = getAbilityListState()
+    const appliedIndicator = state.baseTemplateIndicators.find(
+      indicator => indicator.key === 'base-enterprise-practice-output',
+    )
+    const appliedSuggestion = state.optimizationSuggestions.find(
+      suggestion => suggestion.id === 'suggestion-enterprise-practice',
+    )
+
+    expect(result).toBe(1)
+    expect(appliedIndicator?.name).toBe('企业实践成果转化')
+    expect(appliedIndicator?.status).toBe('draft')
+    expect(appliedSuggestion?.status).toBe('applied')
+    expect(state.pendingTemplateApplications).toHaveLength(0)
+  })
+
+  it('adds a new requirement mapping as a pending item', () => {
+    saveRequirementMapping({
+      id: 'new-mapping',
+      requirementText: '近三年完成校级公开课不少于 1 次',
+      indicatorDimension: '教学能力',
+      indicatorName: '课堂教学评价',
+      level: '胜任',
+      levelCriteria: '校级公开课次数 ≥ 1',
+      documentCondition: '校级公开课次数 ≥ 1',
+      confirmStatus: 'pending',
+    })
+
+    const target = getAbilityListState().requirementMappings.find(mapping => mapping.id === 'new-mapping')
+
+    expect(target?.requirementText).toContain('公开课')
+    expect(target?.confirmStatus).toBe('pending')
+  })
+
+  it('edits and confirms an existing requirement mapping', () => {
+    saveRequirementMapping({
+      ...getAbilityListState().requirementMappings[1],
+      level: '骨干',
+      documentCondition: '校级及以上教改项目 ≥ 2',
+    })
+    confirmRequirementMapping('2')
+
+    const target = getAbilityListState().requirementMappings.find(mapping => mapping.id === '2')
+
+    expect(target?.level).toBe('骨干')
+    expect(target?.documentCondition).toBe('校级及以上教改项目 ≥ 2')
+    expect(target?.confirmStatus).toBe('confirmed')
+  })
+
+  it('deletes a requirement mapping', () => {
+    deleteRequirementMapping('4')
+
+    expect(getAbilityListState().requirementMappings.some(mapping => mapping.id === '4')).toBe(false)
+  })
+})

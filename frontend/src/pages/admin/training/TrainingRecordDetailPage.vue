@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  getTrainingRecordById,
+  getTrainingState,
+  uploadTrainingCertificate,
+} from '@/stores/admin/trainingStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -9,25 +14,8 @@ const route = useRoute()
 // 从路由参数获取记录ID
 const recordId = route.params.recordId as string
 const materialMessage = ref('')
-
-// 记录详情数据
-const recordDetail = ref({
-  name: '职业教育数字化教学能力提升培训',
-  teacher: '林老师',
-  department: '智能制造学院',
-  major: '机电一体化技术',
-  level: '省级培训',
-  hours: '32 学时',
-  startDate: '2026-05-10',
-  endDate: '2026-05-14',
-  institution: '省职业教育教师发展中心',
-  status: '证书待补',
-  destination: '成长档案 / 个人发展维度',
-  source: '教师端培训记录',
-  method: '教师填写 + AI 总结草稿 + 教师确认',
-  updateTime: '2026-05-15 09:30',
-  mode: '线上 + 线下',
-})
+const trainingState = getTrainingState()
+const recordDetail = computed(() => getTrainingRecordById(recordId) ?? trainingState.records[0])
 
 // 学习记录
 const learningRecords = [
@@ -43,18 +31,7 @@ const trainingSummary = ref({
 })
 
 // 证书材料
-const certificateMaterials = ref([
-  {
-    name: '培训结业证书',
-    status: '待补充',
-    uploadTime: '—',
-  },
-  {
-    name: '学习证明材料',
-    status: '已上传',
-    uploadTime: '2026-05-15 10:20',
-  },
-])
+const certificateMaterials = computed(() => recordDetail.value?.materials ?? [])
 
 // 相关培训记录
 const relatedRecords = [
@@ -89,11 +66,7 @@ function goBack() {
 }
 
 function uploadMaterial() {
-  const certificate = certificateMaterials.value.find((material) => material.name === '培训结业证书')
-  if (!certificate) return
-  certificate.status = '已上传'
-  certificate.uploadTime = '2026-05-18 10:00'
-  recordDetail.value.status = '记录完整'
+  uploadTrainingCertificate(recordId)
   materialMessage.value = '培训结业证书已补充，记录材料已完整。'
 }
 
@@ -112,8 +85,8 @@ function viewRelatedRecord(recordId: string) {
             <div class="title-icon" aria-hidden="true"></div>
             <div class="title-content">
               <div class="title-row">
-                <h1 class="main-title">{{ recordDetail.name }}</h1>
-                <span class="title-status" :class="recordDetail.status">{{ recordDetail.status }}</span>
+                <h1 class="main-title">{{ recordDetail.planName }}</h1>
+                <span class="title-status" :class="recordDetail.materialStatus">{{ recordDetail.materialStatus }}</span>
               </div>
               <div class="summary-info">
                 <div class="info-item">
@@ -151,7 +124,7 @@ function viewRelatedRecord(recordId: string) {
                 <div class="info-grid">
                   <div class="info-row">
                     <span class="info-label">培训名称：</span>
-                    <span class="info-value">{{ recordDetail.name }}</span>
+                    <span class="info-value">{{ recordDetail.planName }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">培训机构：</span>

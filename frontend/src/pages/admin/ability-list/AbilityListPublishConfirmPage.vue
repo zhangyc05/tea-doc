@@ -1,12 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  deriveNextExecutionVersion,
+  getAbilityListState,
+  publishExecutionVersion,
+} from '@/stores/admin/abilityListStore'
 
 const router = useRouter()
+const abilityListState = getAbilityListState()
+const publishStatus = computed(() => abilityListState.executionVersion.status)
+const operationMessage = computed(() => abilityListState.operationMessage)
 
-const publishStatus = ref<'pending' | 'published'>('pending')
-const operationMessage = ref('')
+if (
+  abilityListState.executionVersion.status === 'published'
+  && abilityListState.executionVersion.title === '2026 年度教师能力清单执行版'
+) {
+  deriveNextExecutionVersion()
+}
 
 const impactCards = [
   {
@@ -42,8 +54,7 @@ const impactCards = [
 ]
 
 function handlePublish() {
-  publishStatus.value = 'published'
-  operationMessage.value = '2027 年度教师能力清单执行版已确认发布。'
+  publishExecutionVersion()
 }
 
 function goBack() {
@@ -70,26 +81,26 @@ function goBack() {
         <div class="hero-icon">▤</div>
         <div class="hero-content">
           <div class="hero-title-row">
-            <h1 class="hero-title">2027 年度教师能力清单执行版</h1>
+            <h1 class="hero-title">{{ abilityListState.executionVersion.title }}</h1>
             <span class="badge-status" :class="publishStatus">{{ publishStatus === 'published' ? '已发布' : '待发布' }}</span>
           </div>
 
           <div class="hero-summary">
             <div class="summary-item">
               <span class="summary-label">来源执行版：</span>
-              <span class="summary-value">2026 年度教师能力清单执行版</span>
+              <span class="summary-value">{{ abilityListState.executionVersion.sourceTitle }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">来源基准模板：</span>
-              <span class="summary-value">教师能力清单基准模板 V1.0</span>
+              <span class="summary-value">{{ abilityListState.executionVersion.templateTitle }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">适用范围：</span>
-              <span class="summary-value">全校教师</span>
+              <span class="summary-value">{{ abilityListState.executionVersion.scope }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">指标数量：</span>
-              <span class="summary-value">69 项</span>
+              <span class="summary-value">{{ abilityListState.executionVersion.indicatorCount }} 项</span>
             </div>
             <div class="summary-item wide">
               <span class="summary-label">最近调整：</span>

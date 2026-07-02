@@ -2,39 +2,20 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-
-interface BatchFile {
-  id: string
-  name: string
-  type: 'Excel' | 'ZIP' | 'PDF'
-  size: string
-  status: '已接收' | '解析中' | '已解析' | '等待处理'
-}
-
-interface RecognitionResult {
-  totalRecords: number
-  pendingConfirm: number
-  needSupplement: number
-  needVerify: number
-  exception: number
-  duplicate: number
-}
+import {
+  completeArchiveBatchRecognition,
+  confirmArchiveBatchRecognition,
+  ensureArchiveImportBatch,
+  type ArchiveBatchFile,
+  type ArchiveUploadedFile,
+} from '@/stores/admin/archiveStore'
 
 const route = useRoute()
 const router = useRouter()
 
-// 批次信息
-const batchInfo = {
-  name: '教务处教师发展资料_2026-06-20_01',
-  submitter: '陈老师',
-  submitTime: '2026-06-20 10:24',
-  department: '教务处',
-  period: '2026 年度',
-}
-
-// 当前状态：识别中或识别完成
-const isCompleted = computed(() => route.query.status === 'completed')
 const batchId = computed(() => String(route.params.batchId || '20260620-01'))
+const batchInfo = computed(() => ensureArchiveImportBatch(batchId.value))
+const isCompleted = computed(() => batchInfo.value.status === 'recognized' || batchInfo.value.status === 'confirmed')
 
 // 步骤进度
 const steps = computed(() => {
@@ -58,94 +39,10 @@ const steps = computed(() => {
 })
 
 // 批次文件
-const batchFiles = computed<BatchFile[]>(() => {
-  if (isCompleted.value) {
-    return [
-      {
-        id: '1',
-        name: '2026年度课程建设项目名单件名单.xlsx',
-        type: 'Excel',
-        size: '1.8MB',
-        status: '已解析',
-      },
-      {
-        id: '2',
-        name: '精品课程建设立项材料.zip',
-        type: 'ZIP',
-        size: '24.6MB',
-        status: '已解析',
-      },
-      {
-        id: '3',
-        name: '教学成果申报通知.pdf',
-        type: 'PDF',
-        size: '3.2MB',
-        status: '已解析',
-      },
-      {
-        id: '4',
-        name: '教师培训证书扫描件.zip',
-        type: 'ZIP',
-        size: '18.4MB',
-        status: '已解析',
-      },
-    ]
-  } else {
-    return [
-      {
-        id: '1',
-        name: '2026年度课程建设项目名单件名单.xlsx',
-        type: 'Excel',
-        size: '1.8MB',
-        status: '已接收',
-      },
-      {
-        id: '2',
-        name: '精品课程建设立项材料.zip',
-        type: 'ZIP',
-        size: '24.6MB',
-        status: '解析中',
-      },
-      {
-        id: '3',
-        name: '教学成果申报通知.pdf',
-        type: 'PDF',
-        size: '3.2MB',
-        status: '已解析',
-      },
-      {
-        id: '4',
-        name: '教师培训证书扫描件.zip',
-        type: 'ZIP',
-        size: '18.4MB',
-        status: '等待处理',
-      },
-    ]
-  }
-})
+const batchFiles = computed(() => batchInfo.value.files)
 
 // 识别结果
-const recognitionResult = computed<RecognitionResult>(() => {
-  if (isCompleted.value) {
-    return {
-      totalRecords: 36,
-      pendingConfirm: 18,
-      needSupplement: 7,
-      needVerify: 6,
-      exception: 3,
-      duplicate: 2,
-    }
-  } else {
-    return {
-      totalRecords: 0,
-      pendingConfirm: 0,
-      needSupplement: 0,
-      needVerify: 0,
-      exception: 0,
-      duplicate: 0,
-    }
-  }
-})
+const recognitionResult = computed(() => batchInfo.value.recognitionResult)
 
 function stepStatusClass(status: string) {
   if (status === '已完成') return 'completed'
@@ -153,7 +50,7 @@ function stepStatusClass(status: string) {
   return 'pending'
 }
 
-function fileStatusClass(status: BatchFile['status']) {
+function fileStatusClass(status: ArchiveBatchFile['batchStatus']) {
   const classMap = {
     '已接收': 'text-success',
     '解析中': 'text-warning',
@@ -196,10 +93,11 @@ function returnToProcessing() {
 }
 
 function refreshStatus() {
-  router.push(`/admin/archive/import/${batchId.value}?status=completed`)
+  completeArchiveBatchRecognition(batchId.value)
 }
 
 function confirmResult() {
+  confirmArchiveBatchRecognition(batchId.value)
   router.push('/admin/archive/processing')
 }
 
@@ -209,6 +107,17 @@ function cancelTask() {
 
 function viewUploadedFiles() {
   router.push('/admin/archive/import')
+}
+
+function fileTypeLabel(type: ArchiveUploadedFile['type']) {
+  const labels = {
+    excel: 'Excel',
+    zip: 'ZIP',
+    pdf: 'PDF',
+    word: 'Word',
+    image: '图片',
+  }
+  return labels[type]
 }
 </script>
 
@@ -332,9 +241,9 @@ function viewUploadedFiles() {
                 </div>
                 <div v-for="file in batchFiles" :key="file.id" class="file-row">
                   <span class="file-name">{{ file.name }}</span>
-                  <span>{{ file.type }}</span>
+                  <span>{{ fileTypeLabel(file.type) }}</span>
                   <span>{{ file.size }}</span>
-                  <span class="file-status" :class="fileStatusClass(file.status)">{{ file.status }}</span>
+                  <span class="file-status" :class="fileStatusClass(file.batchStatus)">{{ file.batchStatus }}</span>
                 </div>
               </div>
               <p class="file-count">共 {{ batchFiles.length }} 个文件</p>

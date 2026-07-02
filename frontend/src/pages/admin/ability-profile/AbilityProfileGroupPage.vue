@@ -3,64 +3,14 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
+import { getAbilityProfileGroupMock } from '@/services/mock/ability-profile'
 
 const router = useRouter()
+const operationMessage = ref('')
+const groupProfile = getAbilityProfileGroupMock()
 
-// 雷达图数据
-const schoolRadarData = [
-  { label: '教学能力', value: 72 },
-  { label: '教研能力', value: 61 },
-  { label: '实践能力', value: 54 },
-  { label: '服务能力', value: 49 },
-]
-
-// 能力维度数据
-const abilityDimensions = [
-  {
-    dimension: '教学能力',
-    index: 72,
-    composition: '课程建设、课堂教学、教学评价、教学改革、数字化教学等',
-    distribution: [
-      { label: '新手', percentage: 12 },
-      { label: '胜任', percentage: 38 },
-      { label: '骨干', percentage: 36 },
-      { label: '名师', percentage: 14 },
-    ],
-  },
-  {
-    dimension: '教研能力',
-    index: 61,
-    composition: '课题研究、专业建设、课程改革、教学成果培育等',
-    distribution: [
-      { label: '新手', percentage: 18 },
-      { label: '胜任', percentage: 42 },
-      { label: '骨干', percentage: 28 },
-      { label: '名师', percentage: 12 },
-    ],
-  },
-  {
-    dimension: '实践能力',
-    index: 54,
-    composition: '企业实践、产教融合、真实项目转化、实践基地建设等',
-    distribution: [
-      { label: '新手', percentage: 22 },
-      { label: '胜任', percentage: 44 },
-      { label: '骨干', percentage: 24 },
-      { label: '名师', percentage: 10 },
-    ],
-  },
-  {
-    dimension: '服务能力',
-    index: 49,
-    composition: '社会服务、学生发展支持、团队协作、学校重点任务等',
-    distribution: [
-      { label: '新手', percentage: 25 },
-      { label: '胜任', percentage: 46 },
-      { label: '骨干', percentage: 20 },
-      { label: '名师', percentage: 9 },
-    ],
-  },
-]
+const schoolRadarData = groupProfile.schoolRadarData
+const abilityDimensions = groupProfile.abilityDimensions
 
 const dimensionMeta: Record<string, { icon: string; tone: string }> = {
   教学能力: { icon: 'book', tone: 'blue' },
@@ -69,96 +19,38 @@ const dimensionMeta: Record<string, { icon: string; tone: string }> = {
   服务能力: { icon: 'heart', tone: 'purple' },
 }
 
-// 发展支持方向
-const developmentDirections = [
-  {
-    title: '课程建设经验扩散',
-    observation: '观察：教学能力指数较高，课程建设和服务分布不均。',
-    keyDimension: '教学能力',
-  },
-  {
-    title: '企业实践专项支持',
-    observation: '观察：实践能力下的成果转化要素相对较低。',
-    keyDimension: '实践能力',
-  },
-  {
-    title: '教研共研带动',
-    observation: '观察：教研能力整体偏中游，骨干教师占比偏低。',
-    keyDimension: '教研能力',
-  },
-  {
-    title: '服务记录口径统一',
-    observation: '观察：服务记录缺口较多，口径不一致。',
-    keyDimension: '服务能力',
-  },
-]
-
+const developmentDirections = groupProfile.developmentDirections
 const directionTones = ['blue', 'green', 'orange', 'purple']
 
 // 重点关注对象数据
 const focusObjects = ref('院系')
 
-const focusTabs = [
-  { label: '院系', value: '院系' },
-  { label: '专业', value: '专业' },
-  { label: '教师', value: '教师' },
-]
-
-const focusData: Record<string, Array<{ name: string; type: string; dimension: string; reason: string }>> = {
-  院系: [
-    {
-      name: '智能制造学院',
-      type: '重点支持',
-      dimension: '实践 / 成果转化',
-      reason: '成果转化材料不足，转化证明偏少',
-    },
-    {
-      name: '汽车工程学院',
-      type: '重点支持',
-      dimension: '实践 / 企业实践',
-      reason: '企业实践记录不足，实践时间偏少',
-    },
-    {
-      name: '信息工程学院',
-      type: '优势巩固',
-      dimension: '教研 / 课题研究',
-      reason: '教研成果丰富，可示范带动',
-    },
-    {
-      name: '商贸管理学院',
-      type: '需关注',
-      dimension: '服务 / 社会服务',
-      reason: '服务记录口径不一致，数据质量待提升',
-    },
-  ],
-  专业: [
-    {
-      name: '机电工程专业',
-      type: '重点支持',
-      dimension: '实践 / 成果转化',
-      reason: '成果转化材料不足，转化证明偏少',
-    },
-  ],
-  教师: [
-    {
-      name: '林老师',
-      type: '重点支持',
-      dimension: '教学 / 实践',
-      reason: '教学能力较突出，实践成果需要培育',
-    },
-  ],
-}
+const focusTabs = groupProfile.focusTabs
+const focusData = groupProfile.focusData
 
 function switchTab(tabValue: string) {
   focusObjects.value = tabValue
 }
 
 function viewFullAdvice() {
-  console.log('查看完整建议')
+  router.push('/admin/ability-profile/teacher?focus=重点支持')
 }
 
 function viewProfile(name: string) {
-  console.log('查看画像', name)
+  const teacherMap: Record<string, string> = {
+    林老师: 'lin',
+    陈老师: 'chen',
+    王老师: 'wang',
+    刘老师: 'liu',
+    赵老师: 'zhao',
+    周老师: 'zhou',
+  }
+  const teacherId = teacherMap[name]
+  if (teacherId) {
+    router.push(`/admin/ability-profile/teacher/${teacherId}`)
+    return
+  }
+  operationMessage.value = `${name} 暂无独立画像页面，已保留为群体画像关注对象。`
 }
 
 function getDimensionMeta(dimension: string) {
@@ -317,6 +209,7 @@ function getDistributionTone(index: number) {
           <div class="direction-actions">
             <button class="btn-primary" @click="viewFullAdvice">查看完整建议 <span>→</span></button>
           </div>
+          <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
         </article>
 
         <article class="focus-card">

@@ -2,175 +2,47 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  createVirtualLabActivity,
+  getVirtualLabActivitiesByRoom,
+  getVirtualLabMembersByRoom,
+  getVirtualLabRecordsByRoom,
+  getVirtualLabRoom,
+  getVirtualLabState,
+  inviteVirtualLabMember,
+  removeVirtualLabMember,
+} from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
 const route = useRoute()
+const virtualLabState = getVirtualLabState()
 
 const roomId = computed(() => String(route.params.roomId ?? 'smart-manufacturing'))
 const operationMessage = ref('')
 
-const roomInfo = ref({
-  name: '智能制造课程改革虚拟教研室',
-  direction: '智能制造专业课程改革',
-  affiliation: '智能制造学院 | 智能制造专业群',
-  leader: '周明',
-  members: 28,
-  createdAt: '2025-09',
-  description: '围绕智能制造专业核心课程项目化改造、课程资源共建和课堂实施改进开展线上教研。',
-})
-
-const stats = {
-  members: 28,
-  inProgressActivities: 2,
-  recordsCount: 6,
-  recentActivityTime: '06-18',
-}
-
-interface Member {
-  id: string
-  name: string
-  college: string
-  role: string
-  activitiesParticipated: number
-  recordsFormed: number
-  recentParticipation: string
-}
-
-const members = ref<Member[]>([
-  {
-    id: '1',
-    name: '周明',
-    college: '智能制造学院',
-    role: '负责人',
-    activitiesParticipated: 6,
-    recordsFormed: 6,
-    recentParticipation: '06-18',
-  },
-  {
-    id: '2',
-    name: '林老师',
-    college: '智能制造学院',
-    role: '成员',
-    activitiesParticipated: 4,
-    recordsFormed: 3,
-    recentParticipation: '06-18',
-  },
-  {
-    id: '3',
-    name: '王老师',
-    college: '智能制造学院',
-    role: '成员',
-    activitiesParticipated: 3,
-    recordsFormed: 2,
-    recentParticipation: '06-12',
-  },
-  {
-    id: '4',
-    name: '陈老师',
-    college: '智能制造学院',
-    role: '成员',
-    activitiesParticipated: 2,
-    recordsFormed: 1,
-    recentParticipation: '06-05',
-  },
-])
-
-interface Activity {
-  id: string
-  name: string
-  time: string
-  meetingMethod: string
-  participation: string
-  recordStatus: string
-  recentUpdate: string
-}
-
-const activities = ref<Activity[]>([
-  {
-    id: 'smart-line-seminar',
-    name: '智能产线课程项目化改造研讨',
-    time: '06-18 14:00',
-    meetingMethod: '腾讯会议',
-    participation: '18 人',
-    recordStatus: '已形成记录',
-    recentUpdate: '06-18 16:20',
-  },
-  {
-    id: 'task-discussion',
-    name: '课程任务书优化讨论',
-    time: '06-25 15:00',
-    meetingMethod: '腾讯会议',
-    participation: '12 人',
-    recordStatus: '未形成记录',
-    recentUpdate: '06-20 创建',
-  },
-  {
-    id: 'resource-review',
-    name: '课程资源共建阶段复盘',
-    time: '06-10 10:00',
-    meetingMethod: '腾讯会议',
-    participation: '16 人',
-    recordStatus: '记录异常',
-    recentUpdate: '参会记录未同步',
-  },
-])
-
-interface FormedRecord {
-  id: string
-  title: string
-  sourceActivity: string
-  formedTime: string
-  content: string
-  dimension: string
-}
-
-const records: FormedRecord[] = [
-  {
-    id: 'smart-line-record',
-    title: '智能产线课程项目化改造研讨记录',
-    sourceActivity: '智能产线课程项目化改造研讨',
-    formedTime: '2026-06-18',
-    content: '会议纪要、任务分工、阶段成果摘要',
-    dimension: '成长档案 / 教研科研',
-  },
-  {
-    id: 'standard-revision-record',
-    title: '课程标准修订交流记录',
-    sourceActivity: '课程标准修订交流',
-    formedTime: '2026-05-22',
-    content: '会议纪要、修订建议摘要',
-    dimension: '成长档案 / 教研科研',
-  },
-]
+const roomInfo = computed(() => getVirtualLabRoom(roomId.value))
+const members = computed(() => getVirtualLabMembersByRoom(roomId.value))
+const activities = computed(() => getVirtualLabActivitiesByRoom(roomId.value))
+const records = computed(() => getVirtualLabRecordsByRoom(roomId.value))
+const stats = computed(() => ({
+  members: roomInfo.value.members,
+  inProgressActivities: roomInfo.value.inProgressActivities,
+  recordsCount: roomInfo.value.recordsCount,
+  recentActivityTime: roomInfo.value.recentTime,
+}))
 
 function editInfo() {
   operationMessage.value = `已进入 ${roomInfo.value.name} 的信息校对状态。`
 }
 
 function inviteTeacher() {
-  members.value.push({
-    id: `invite-${members.value.length + 1}`,
-    name: '待确认教师',
-    college: '智能制造学院',
-    role: '待确认',
-    activitiesParticipated: 0,
-    recordsFormed: 0,
-    recentParticipation: '待参与',
-  })
-  operationMessage.value = '已新增待确认教师邀请记录。'
+  inviteVirtualLabMember(roomId.value)
+  operationMessage.value = virtualLabState.operationMessage
 }
 
 function createActivity() {
-  activities.value.unshift({
-    id: `draft-activity-${activities.value.length + 1}`,
-    name: '新增教研活动待完善',
-    time: '待安排',
-    meetingMethod: '待确认',
-    participation: '0 人',
-    recordStatus: '未形成记录',
-    recentUpdate: '刚刚创建',
-  })
-  operationMessage.value = '已创建待完善教研活动。'
+  createVirtualLabActivity(roomId.value)
+  operationMessage.value = virtualLabState.operationMessage
 }
 
 function viewTeacher(id: string) {
@@ -179,10 +51,8 @@ function viewTeacher(id: string) {
 }
 
 function removeMember(id: string) {
-  const member = members.value.find((item) => item.id === id)
-  if (!member || member.role === '负责人') return
-  members.value = members.value.filter((item) => item.id !== id)
-  operationMessage.value = `已将 ${member.name} 移出当前教研室成员列表。`
+  removeVirtualLabMember(roomId.value, id)
+  operationMessage.value = virtualLabState.operationMessage
 }
 
 function viewActivity(id: string) {

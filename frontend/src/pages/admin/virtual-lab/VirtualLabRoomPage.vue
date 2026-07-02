@@ -2,8 +2,10 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { createVirtualLabRoom, getVirtualLabState } from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
+const virtualLabState = getVirtualLabState()
 
 const selectedDepartment = ref('全部')
 const selectedMajor = ref('全部')
@@ -13,107 +15,17 @@ const appliedSearchQuery = ref('')
 const viewMode = ref<'card' | 'table'>('card')
 const operationMessage = ref('')
 
-const stats = {
-  totalRooms: 18,
-  departments: 8,
-  inProgressActivities: 26,
-  recordsCount: 64,
-}
-
-interface RoomCard {
-  id: string
-  name: string
-  direction: string
-  affiliation: string
-  leader: string
-  members: number
-  inProgressActivities: number
-  recordsCount: number
-  recentActivity: string
-  recentTime: string
-}
-
-const rooms: RoomCard[] = [
-  {
-    id: 'smart-manufacturing',
-    name: '智能制造课程改革虚拟教研室',
-    direction: '智能制造专业课程改革',
-    affiliation: '智能制造学院 | 智能制造专业群',
-    leader: '周明',
-    members: 28,
-    inProgressActivities: 2,
-    recordsCount: 6,
-    recentActivity: '智能产线课程项目化改造研讨',
-    recentTime: '06-18',
-  },
-  {
-    id: 'robot-teaching',
-    name: '工业机器人教学资源共建教研室',
-    direction: '机器人技术课程资源共建',
-    affiliation: '智能制造学院 | 工业机器人技术专业',
-    leader: '李倩',
-    members: 16,
-    inProgressActivities: 1,
-    recordsCount: 4,
-    recentActivity: '工业机器人实训资源复盘',
-    recentTime: '06-12',
-  },
-  {
-    id: 'digital-teaching',
-    name: '数字化教学方法研究教研室',
-    direction: 'AI辅助教学与课堂评价',
-    affiliation: '教务处 | 跨院系',
-    leader: '王磊',
-    members: 35,
-    inProgressActivities: 0,
-    recordsCount: 9,
-    recentActivity: '课堂数据应用专题研讨',
-    recentTime: '06-05',
-  },
-  {
-    id: 'new-energy-vehicles',
-    name: '新能源汽车课程群教研室',
-    direction: '新能源汽车课程群建设',
-    affiliation: '交通工程学院 | 新能源汽车专业群',
-    leader: '陈芳',
-    members: 21,
-    inProgressActivities: 1,
-    recordsCount: 5,
-    recentActivity: '课程标准修订交流',
-    recentTime: '05-22',
-  },
-  {
-    id: 'modern-service',
-    name: '现代服务业课程设计教研室',
-    direction: '服务类课程设计与评价',
-    affiliation: '现代服务学院 | 电子商务专业群',
-    leader: '赵婷',
-    members: 18,
-    inProgressActivities: 1,
-    recordsCount: 3,
-    recentActivity: '课程任务书优化讨论',
-    recentTime: '05-17',
-  },
-  {
-    id: 'preschool-edu',
-    name: '学前教育实践教学教研室',
-    direction: '实践教学与保教融合',
-    affiliation: '教育学院 | 学前教育专业群',
-    leader: '刘欣',
-    members: 24,
-    inProgressActivities: 2,
-    recordsCount: 7,
-    recentActivity: '保教融合案例共研',
-    recentTime: '06-09',
-  },
-]
-
-const roomRows = ref<RoomCard[]>(rooms)
+const stats = computed(() => ({
+  totalRooms: virtualLabState.rooms.length,
+  departments: new Set(virtualLabState.rooms.map(room => room.affiliation.split('|')[0]?.trim())).size,
+  inProgressActivities: virtualLabState.rooms.reduce((total, room) => total + room.inProgressActivities, 0),
+  recordsCount: virtualLabState.rooms.reduce((total, room) => total + room.recordsCount, 0),
+}))
 
 const filteredRooms = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
 
-  return roomRows.value.filter((room) => {
+  return virtualLabState.rooms.filter((room) => {
     const matchesDepartment = selectedDepartment.value === '全部' || room.affiliation.includes(selectedDepartment.value)
     const matchesMajor = selectedMajor.value === '全部' || room.affiliation.includes(selectedMajor.value)
     const matchesActivity = selectedActivity.value === '全部'
@@ -127,26 +39,14 @@ const filteredRooms = computed(() => {
 })
 
 function createRoom() {
-  const draftId = `draft-${roomRows.value.length + 1}`
-  roomRows.value.unshift({
-    id: draftId,
-    name: '新增虚拟教研室待完善',
-    direction: '待补充教研方向',
-    affiliation: '智能制造学院 | 待确认专业群',
-    leader: '待指定',
-    members: 0,
-    inProgressActivities: 0,
-    recordsCount: 0,
-    recentActivity: '待创建首次教研活动',
-    recentTime: '待安排',
-  })
+  createVirtualLabRoom()
   selectedDepartment.value = '全部'
   selectedMajor.value = '全部'
   selectedActivity.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
   viewMode.value = 'card'
-  operationMessage.value = '已创建待完善教研室草稿。'
+  operationMessage.value = virtualLabState.operationMessage
 }
 
 function resetFilters() {

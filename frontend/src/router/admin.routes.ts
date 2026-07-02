@@ -1,8 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-const AdminPlaceholderPage = () => import('@/pages/admin/AdminPlaceholderPage.vue')
 const ReportCenterPage = () => import('@/pages/admin/reports/ReportCenterPage.vue')
-const ResourceLibraryPage = () => import('@/pages/admin/training/ResourceLibraryPage.vue')
 const AbilityListBasePage = () => import('@/pages/admin/ability-list/AbilityListBasePage.vue')
 const AbilityListBaseOptimizationPage = () => import('@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue')
 const AbilityListExecutionPage = () => import('@/pages/admin/ability-list/AbilityListExecutionPage.vue')
@@ -300,18 +298,6 @@ export const adminRoutes: RouteRecordRaw[] = [
       layout: 'admin',
       menuKey: 'virtual-lab',
       breadcrumb: ['管理端', '虚拟教研室', '教研记录详情'],
-    },
-  },
-  {
-    path: '/admin/system',
-    name: 'AdminSystem',
-    component: AdminPlaceholderPage,
-    meta: {
-      title: '系统管理',
-      module: '系统管理',
-      layout: 'admin',
-      menuKey: 'system',
-      breadcrumb: ['管理端', '系统管理'],
     },
   },
   {

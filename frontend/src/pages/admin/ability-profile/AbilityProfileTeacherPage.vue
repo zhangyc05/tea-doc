@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getAbilityProfileTeacherListMock } from '@/services/mock/ability-profile'
 
 const router = useRouter()
+const route = useRoute()
+const teacherListProfile = getAbilityProfileTeacherListMock()
 
 const viewMode = ref<'list' | 'card'>('list')
 
@@ -11,99 +14,30 @@ const searchQuery = ref('')
 const selectedCollege = ref('全部学院')
 const selectedTitle = ref('全部职称')
 const selectedType = ref('全部类型')
-const selectedFocus = ref('全部')
+const selectedFocus = ref(String(route.query.focus || '全部'))
 
-const colleges = ['全部学院', '智能制造学院', '电子信息学院', '财经学院', '计算机学院', '外国语学院', '艺术设计学院']
-const titles = ['全部职称', '讲师', '副教授', '教授']
-const teacherTypes = ['全部类型', '教学实践型', '教研成长型', '实践带动型', '综合发展型']
-const focusTypes = ['全部', '重点支持', '持续观察', '优势样本']
-
-interface Teacher {
-  id: string
-  name: string
-  college: string
-  title: string
-  developmentIndex: number
-  teacherType: string
-  basicAbilityStatus: string
-  tags: string[]
-  focusType: string
-}
-
-const teachers: Teacher[] = [
-  {
-    id: 'lin',
-    name: '林老师',
-    college: '智能制造学院',
-    title: '讲师',
-    developmentIndex: 76,
-    teacherType: '教学实践型',
-    basicAbilityStatus: '达标',
-    tags: ['课程建设基础较好', '实践教学成效突出', '教研成果持续积累'],
-    focusType: '重点支持',
-  },
-  {
-    id: 'chen',
-    name: '陈老师',
-    college: '电子信息学院',
-    title: '副教授',
-    developmentIndex: 72,
-    teacherType: '教研成长型',
-    basicAbilityStatus: '达标',
-    tags: ['教研方向逐步明确', '科研成果持续积累', '课程改革有潜力'],
-    focusType: '持续观察',
-  },
-  {
-    id: 'wang',
-    name: '王老师',
-    college: '财经学院',
-    title: '讲师',
-    developmentIndex: 81,
-    teacherType: '实践带动型',
-    basicAbilityStatus: '达标',
-    tags: ['实践教学能力突出', '校企合作成效明显', '服务贡献较大'],
-    focusType: '优势样本',
-  },
-  {
-    id: 'liu',
-    name: '刘老师',
-    college: '计算机学院',
-    title: '副教授',
-    developmentIndex: 68,
-    teacherType: '教研成长型',
-    basicAbilityStatus: '达标',
-    tags: ['课程建设有提升空间', '教研成果持续积累', '服务贡献继续观察'],
-    focusType: '持续观察',
-  },
-  {
-    id: 'zhao',
-    name: '赵老师',
-    college: '外国语学院',
-    title: '讲师',
-    developmentIndex: 79,
-    teacherType: '综合发展型',
-    basicAbilityStatus: '达标',
-    tags: ['教学表现稳定优秀', '教研能力持续提升', '学生指导成效良好'],
-    focusType: '优势样本',
-  },
-  {
-    id: 'zhou',
-    name: '周老师',
-    college: '艺术设计学院',
-    title: '讲师',
-    developmentIndex: 71,
-    teacherType: '实践带动型',
-    basicAbilityStatus: '达标',
-    tags: ['实践成果转化可提升', '课程建设基础较好', '服务育人持续关注'],
-    focusType: '重点支持',
-  },
-]
+const colleges = teacherListProfile.colleges
+const titles = teacherListProfile.titles
+const teacherTypes = teacherListProfile.teacherTypes
+const focusTypes = teacherListProfile.focusTypes
+const teachers = teacherListProfile.teachers
 
 const currentPage = ref(1)
 const pageSize = 12
 const total = 142
 const totalPages = Math.ceil(total / pageSize)
 const avatarTones = ['tone-blue', 'tone-cyan', 'tone-green', 'tone-indigo', 'tone-orange', 'tone-purple']
+const filteredTeachers = computed(() => {
+  const keyword = searchQuery.value.trim()
+  return teachers.filter((teacher) => {
+    const matchesKeyword = !keyword || teacher.name.includes(keyword) || teacher.id.includes(keyword.toLowerCase())
+    const matchesCollege = selectedCollege.value === '全部学院' || teacher.college === selectedCollege.value
+    const matchesTitle = selectedTitle.value === '全部职称' || teacher.title === selectedTitle.value
+    const matchesType = selectedType.value === '全部类型' || teacher.teacherType === selectedType.value
+    const matchesFocus = selectedFocus.value === '全部' || teacher.focusType === selectedFocus.value
+    return matchesKeyword && matchesCollege && matchesTitle && matchesType && matchesFocus
+  })
+})
 
 function switchViewMode(mode: 'list' | 'card') {
   viewMode.value = mode
@@ -195,7 +129,7 @@ function getAvatarTone(index: number): string {
         </header>
 
         <div v-if="viewMode === 'card'" class="cards-grid">
-          <article v-for="(teacher, index) in teachers" :key="teacher.id" class="teacher-card">
+          <article v-for="(teacher, index) in filteredTeachers" :key="teacher.id" class="teacher-card">
             <span class="focus-badge card-badge" :class="getFocusTypeClass(teacher.focusType)">
               {{ teacher.focusType }}
             </span>
@@ -235,7 +169,7 @@ function getAvatarTone(index: number): string {
         </div>
 
         <div v-else class="teacher-table">
-          <article v-for="(teacher, index) in teachers" :key="teacher.id" class="teacher-row">
+          <article v-for="(teacher, index) in filteredTeachers" :key="teacher.id" class="teacher-row">
             <div class="teacher-identity">
               <div class="avatar-figure" :class="getAvatarTone(index)">
                 <span class="avatar-hair"></span>

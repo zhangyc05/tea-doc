@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getReflectionDetailMock } from '@/services/mock/reflection'
 
 const router = useRouter()
 const route = useRoute()
@@ -9,76 +10,12 @@ const route = useRoute()
 // 从路由参数获取反思ID
 const reflectionId = route.params.reflectionId as string
 const sourceMessage = ref('')
+const reflectionDetailMock = getReflectionDetailMock(reflectionId)
 
-// 反思详情数据
-const reflectionDetail = ref({
-  theme: '项目实训环节学生参与度不足',
-  teacher: '林老师',
-  department: '智能制造学院',
-  major: '机电一体化技术',
-  course: '智能制造基础',
-  class: '23机电1班',
-  trigger: '评教反馈',
-  submitTime: '2026-06-18 14:20',
-  source: '教师端教学反思',
-  method: 'AI 草稿 + 教师确认',
-  destination: '成长档案 / 教学工作维度',
-})
-
-// 教学反思内容
-const reflectionContent = {
-  background: '本次反思关联《智能制造基础》项目实训环节，授课对象为 23 机电 1 班。课程进入综合项目阶段后，学生需要完成设备选型、流程拆解和小组协作任务。',
-  observation: '学生评教反馈中，多名学生提到项目任务说明不够清晰，课堂问答参与度偏低。课堂过程记录显示，部分小组在任务拆分阶段用时较长。',
-  analysis: '主要问题不是学生不参与，而是项目任务层级和评价标准呈现不够清楚，导致基础较弱学生难以快速判断自己应承担的任务。',
-  suggestion: '后续可在项目开始前增加任务分层说明，将项目拆分为基础任务、提升任务和拓展任务，并在课堂中增加阶段性检查点，帮助学生及时校准进度。',
-}
-
-// 来源数据
-const sourceData = {
-  trigger: '评教反馈',
-  relatedData: [
-    '学生评教反馈',
-    '课堂过程记录',
-    '教师补充说明',
-  ],
-}
-
-// 相关反思记录
-interface RelatedReflection {
-  id: string
-  theme: string
-  course: string
-  class: string
-  trigger: string
-  submitTime: string
-}
-
-const relatedReflections: RelatedReflection[] = [
-  {
-    id: 'class-interaction',
-    theme: '课堂互动反馈不足',
-    course: '智能制造基础 / 23机电1班',
-    class: '23机电1班',
-    trigger: '评教反馈',
-    submitTime: '2026-06-12 10:15',
-  },
-  {
-    id: 'task-clarity',
-    theme: '项目任务分层不够清晰',
-    course: '智能制造基础 / 23机电1班',
-    class: '23机电1班',
-    trigger: '教师主动记录',
-    submitTime: '2026-06-10 16:30',
-  },
-  {
-    id: 'progress-difference',
-    theme: '实训任务进度差异明显',
-    course: '智能制造基础 / 23机电1班',
-    class: '23机电1班',
-    trigger: '课堂过程记录',
-    submitTime: '2026-06-08 09:40',
-  },
-]
+const reflectionDetail = ref(reflectionDetailMock.reflectionDetail)
+const reflectionContent = reflectionDetailMock.reflectionContent
+const sourceData = reflectionDetailMock.sourceData
+const relatedReflections = reflectionDetailMock.relatedReflections
 
 function goBack() {
   router.push('/admin/reflection')

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  approveTrainingApplication,
+  getTrainingState,
+  rejectTrainingApplication,
+} from '@/stores/admin/trainingStore'
+
+const trainingState = getTrainingState()
 
 // 统计数据
 const stats = {
@@ -10,78 +17,7 @@ const stats = {
   closing: 3,
 }
 
-// 申请数据
-interface TrainingApplication {
-  id: string
-  applicant: string
-  department: string
-  major: string
-  trainingName: string
-  reason: string
-  applyTime: string
-  quotaInfo: string
-  status: string
-}
-
-const applications: TrainingApplication[] = [
-  {
-    id: '1',
-    applicant: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    trainingName: '2026 年暑期数字化教学能力提升培训',
-    reason: '希望提升课堂数据应用能力',
-    applyTime: '2026-06-21 10:20',
-    quotaInfo: '18 / 30',
-    status: '待处理',
-  },
-  {
-    id: '2',
-    applicant: '陈老师',
-    department: '电子信息学院',
-    major: '软件技术',
-    trainingName: 'AI 赋能课程建设专题培训',
-    reason: '课程建设需要使用 AI 工具',
-    applyTime: '2026-06-22 09:15',
-    quotaInfo: '46 / 52',
-    status: '待处理',
-  },
-  {
-    id: '3',
-    applicant: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    trainingName: '双师型教师实践能力提升培训',
-    reason: '与本学期实训课程相关',
-    applyTime: '2026-06-20 16:40',
-    quotaInfo: '24 / 25',
-    status: '已同意',
-  },
-  {
-    id: '4',
-    applicant: '赵老师',
-    department: '现代服务学院',
-    major: '电子商务',
-    trainingName: '课程思政教学设计研修',
-    reason: '申请参加本次专题研修',
-    applyTime: '2026-06-18 14:30',
-    quotaInfo: '30 / 30',
-    status: '未同意',
-  },
-  {
-    id: '5',
-    applicant: '孙老师',
-    department: '外语学院',
-    major: '应用英语',
-    trainingName: '数字化教学资源建设培训',
-    reason: '计划优化课程资源设计',
-    applyTime: '2026-06-17 11:05',
-    quotaInfo: '12 / 20',
-    status: '已取消',
-  },
-]
-
-const applicationRows = ref<TrainingApplication[]>(applications)
+const applicationRows = computed(() => trainingState.applications)
 const selectedOrganization = ref('全校')
 const selectedStatus = ref('全部')
 const selectedTraining = ref('全部')
@@ -89,7 +25,6 @@ const selectedYear = ref('2026 年度')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeApplicationId = ref('1')
-const operationMessage = ref('')
 
 const filteredApplications = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -110,21 +45,18 @@ const activeApplication = computed(() => {
 })
 
 function handleApplication(id: string) {
-  const target = applicationRows.value.find((app) => app.id === id)
-  if (!target) return
-  target.status = '已同意'
+  approveTrainingApplication(id)
   activeApplicationId.value = id
-  operationMessage.value = `${target.applicant} 的申请已同意。`
 }
 
 function viewDetail(id: string) {
   activeApplicationId.value = id
-  operationMessage.value = '已在右侧展示申请摘要。'
+  trainingState.operationMessage = '已在右侧展示申请摘要。'
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredApplications.value.length} 条申请。`
+  trainingState.operationMessage = `已筛选出 ${filteredApplications.value.length} 条申请。`
 }
 
 function resetFilters() {
@@ -134,7 +66,7 @@ function resetFilters() {
   selectedYear.value = '2026 年度'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  trainingState.operationMessage = '已重置筛选条件。'
 }
 
 function showPendingApplications() {
@@ -144,7 +76,12 @@ function showPendingApplications() {
   selectedYear.value = '2026 年度'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已切换到待处理申请。'
+  trainingState.operationMessage = '已切换到待处理申请。'
+}
+
+function rejectCurrentApplication() {
+  if (!activeApplication.value || activeApplication.value.status !== '待处理') return
+  rejectTrainingApplication(activeApplication.value.id)
 }
 </script>
 
@@ -246,7 +183,7 @@ function showPendingApplications() {
                   />
                   <button class="btn-reset" type="button" @click="resetFilters">重置</button>
                   <button class="btn-primary" type="button" @click="applyFilters">查询</button>
-                  <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+                  <span v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</span>
                 </div>
               </div>
               <!-- 数据表格 -->
@@ -347,6 +284,14 @@ function showPendingApplications() {
                 <div class="reminder-title">当前查看申请</div>
                 <div class="selected-name">{{ activeApplication.applicant }} · {{ activeApplication.trainingName }}</div>
                 <div class="reminder-desc">{{ activeApplication.department }} / {{ activeApplication.major }}</div>
+                <button
+                  v-if="activeApplication.status === '待处理'"
+                  class="outline-action"
+                  type="button"
+                  @click="rejectCurrentApplication"
+                >
+                  退回申请
+                </button>
               </div>
               <button class="outline-action" type="button" @click="showPendingApplications">
                 查看待处理申请

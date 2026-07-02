@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  adoptOptimizationSuggestion,
+  applyAdoptedSuggestionsToBaseTemplate,
+  getAbilityListState,
+  updateOptimizationSuggestionStatus,
+  type OptimizationSuggestion,
+} from '@/stores/admin/abilityListStore'
+
+const abilityListState = getAbilityListState()
 
 const suggestionSources = [
   { key: 'all', label: '全部建议', icon: '●' },
@@ -8,65 +17,6 @@ const suggestionSources = [
   { key: 'feedback', label: '运行反馈', icon: '▣' },
   { key: 'manual', label: '人工补充', icon: '▲' },
 ]
-
-interface Suggestion {
-  id: string
-  source: string
-  sourceLabel: string
-  issueType: string
-  keyLocation: string
-  content: string
-  basis: string
-  status: string
-  statusLabel: string
-}
-
-const suggestions = ref<Suggestion[]>([
-  {
-    id: '1',
-    source: 'feedback',
-    sourceLabel: '运行反馈',
-    issueType: '标准缺失',
-    keyLocation: '实施能力 / 企业实践成果转化',
-    content: '新增“企业实践成果转化”指标，用于评估企业实践中的成果产出记录',
-    basis: '本职群第 26 条成果材料未能给出清晰映射来源',
-    status: 'pending',
-    statusLabel: '待确认',
-  },
-  {
-    id: '2',
-    source: 'policy',
-    sourceLabel: '制度文件',
-    issueType: '标准不清',
-    keyLocation: '教研能力 / 教研资源',
-    content: '细化“教研资源”评估说明，区分主编、参与等不同一般参与',
-    basis: '2026年师资培养办法第三章第十二条',
-    status: 'pending',
-    statusLabel: '待确认',
-  },
-  {
-    id: '3',
-    source: 'feedback',
-    sourceLabel: '运行反馈',
-    issueType: '标准过宽',
-    keyLocation: '教学能力 / 教学资源建设',
-    content: '调整“覆盖多领域教学资源建设标准”，并补充说明适用范围',
-    basis: '课堂教学创新试点组织、院系反馈材料普遍表述资源',
-    status: 'pending',
-    statusLabel: '待确认',
-  },
-  {
-    id: '4',
-    source: 'manual',
-    sourceLabel: '人工补充',
-    issueType: '要求映射问题',
-    keyLocation: '服务能力 / 社会服务记录',
-    content: '补充与岗位和聘期要求的中间路径说明，提升后续映射溯源',
-    basis: '管理类人工补充建议',
-    status: 'adopted',
-    statusLabel: '已采纳',
-  },
-])
 
 const filterTags = [
   { key: 'all', label: '全部' },
@@ -78,12 +28,15 @@ const filterTags = [
 ]
 
 const selectedSource = ref('all')
-const selectedSuggestionId = ref('1')
+const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
 const operationMessage = ref('')
 
+const suggestions = computed(() => abilityListState.optimizationSuggestions)
+const pendingApplicationCount = computed(() => abilityListState.pendingTemplateApplications.length)
+
 const stats = computed(() => ({
-  total: 18,
+  total: suggestions.value.length + 14,
   policy: 8,
   feedback: 6,
   manual: 4,
@@ -122,7 +75,7 @@ function selectSource(key: string) {
   operationMessage.value = `已按建议来源筛选出 ${filteredSuggestions.value.length} 条。`
 }
 
-function selectSuggestion(suggestion: Suggestion) {
+function selectSuggestion(suggestion: OptimizationSuggestion) {
   selectedSuggestionId.value = suggestion.id
   operationMessage.value = `已选中建议：${suggestion.issueType}。`
 }
@@ -132,13 +85,7 @@ function selectTag(key: string) {
   operationMessage.value = `已按问题类型筛选出 ${filteredSuggestions.value.length} 条。`
 }
 
-function updateSuggestionStatus(suggestion: Suggestion, status: string, label: string) {
-  suggestion.status = status
-  suggestion.statusLabel = label
-  selectedSuggestionId.value = suggestion.id
-}
-
-function handleAction(action: string, suggestion: Suggestion) {
+function handleAction(action: string, suggestion: OptimizationSuggestion) {
   if (action === 'view') {
     selectSuggestion(suggestion)
     operationMessage.value = '已在右侧展示建议详情。'
@@ -146,21 +93,27 @@ function handleAction(action: string, suggestion: Suggestion) {
   }
 
   if (action === 'adopt') {
-    updateSuggestionStatus(suggestion, 'adopted', '已采纳')
-    operationMessage.value = '该建议已采纳，待统一应用到基准模板。'
+    adoptOptimizationSuggestion(suggestion.id)
+    selectedSuggestionId.value = suggestion.id
+    operationMessage.value = abilityListState.operationMessage
     return
   }
 
   if (action === 'defer') {
-    updateSuggestionStatus(suggestion, 'deferred', '暂缓')
+    updateOptimizationSuggestionStatus(suggestion.id, 'deferred')
     operationMessage.value = '该建议已暂缓处理。'
     return
   }
 
   if (action === 'reject') {
-    updateSuggestionStatus(suggestion, 'rejected', '已弃用')
+    updateOptimizationSuggestionStatus(suggestion.id, 'rejected')
     operationMessage.value = '该建议已弃用。'
   }
+}
+
+function applyToBaseTemplate() {
+  applyAdoptedSuggestionsToBaseTemplate()
+  operationMessage.value = abilityListState.operationMessage
 }
 
 function uploadPolicy() {
@@ -235,6 +188,13 @@ function viewVersionHistory() {
           <div class="hero-actions">
             <button class="btn-primary" @click="uploadPolicy">⇧ 上传制度文件</button>
             <button class="btn-secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</button>
+            <button
+              class="btn-secondary"
+              :disabled="pendingApplicationCount === 0"
+              @click="applyToBaseTemplate"
+            >
+              应用到基准模板（{{ pendingApplicationCount }}）
+            </button>
             <button class="btn-link-large" @click="viewVersionHistory">查看版本记录 ›</button>
           </div>
         </div>
@@ -315,6 +275,7 @@ function viewVersionHistory() {
                       <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('adopt', suggestion)">采纳</button>
                       <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('defer', suggestion)">暂缓</button>
                       <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('reject', suggestion)">弃用</button>
+                      <button v-if="suggestion.status === 'adopted'" class="btn-link" @click.stop="applyToBaseTemplate">应用</button>
                     </div>
                   </td>
                 </tr>
@@ -362,8 +323,27 @@ function viewVersionHistory() {
           </div>
 
           <div v-if="selectedSuggestion" class="detail-actions">
-            <button class="btn-primary" @click="handleAction('adopt', selectedSuggestion)">采纳并应用</button>
-            <button class="btn-secondary" @click="handleAction('defer', selectedSuggestion)">暂缓处理</button>
+            <button
+              v-if="selectedSuggestion.status === 'pending'"
+              class="btn-primary"
+              @click="handleAction('adopt', selectedSuggestion)"
+            >
+              采纳建议
+            </button>
+            <button
+              v-if="selectedSuggestion.status === 'adopted'"
+              class="btn-primary"
+              @click="applyToBaseTemplate"
+            >
+              应用到基准模板
+            </button>
+            <button
+              v-if="selectedSuggestion.status === 'pending'"
+              class="btn-secondary"
+              @click="handleAction('defer', selectedSuggestion)"
+            >
+              暂缓处理
+            </button>
           </div>
         </aside>
       </div>
@@ -505,6 +485,11 @@ function viewVersionHistory() {
   display: flex;
   align-items: center;
   gap: 18px;
+}
+
+.hero-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .hero-art {
@@ -713,6 +698,11 @@ function viewVersionHistory() {
 .badge-status.status-adopted {
   background: #dff8ec;
   color: #18a663;
+}
+
+.badge-status.status-applied {
+  background: #e8f0ff;
+  color: #1268f6;
 }
 
 .badge-status.status-rejected,

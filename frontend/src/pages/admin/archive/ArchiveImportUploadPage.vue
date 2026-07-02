@@ -2,51 +2,21 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-
-interface UploadedFile {
-  id: string
-  name: string
-  size: string
-  status: '已上传' | '上传中' | '上传失败'
-  type: 'excel' | 'zip' | 'pdf' | 'word' | 'image'
-}
+import {
+  addArchiveUploadedFiles,
+  createArchiveImportBatch,
+  getArchiveState,
+  removeArchiveUploadedFile,
+  type ArchiveUploadedFile,
+} from '@/stores/admin/archiveStore'
 
 const router = useRouter()
+const archiveState = getArchiveState()
 
 const currentStep = ref(1)
 const isDragging = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
-
-const uploadedFiles = ref<UploadedFile[]>([
-  {
-    id: '1',
-    name: '2026年度课程建设项目名单件名单.xlsx',
-    size: '1.8MB',
-    status: '已上传',
-    type: 'excel',
-  },
-  {
-    id: '2',
-    name: '精品课程建设立项材料.zip',
-    size: '24.6MB',
-    status: '已上传',
-    type: 'zip',
-  },
-  {
-    id: '3',
-    name: '教学成果申报通知.pdf',
-    size: '3.2MB',
-    status: '已上传',
-    type: 'pdf',
-  },
-  {
-    id: '4',
-    name: '教师培训证书扫描件.zip',
-    size: '18.4MB',
-    status: '已上传',
-    type: 'zip',
-  },
-])
+const uploadedFiles = computed(() => archiveState.uploadedFiles)
 
 const steps = ['上传资料', '系统识别', '确认结果', '生成待处理记录']
 
@@ -92,7 +62,7 @@ function handleFileChange(event: Event) {
 }
 
 function appendFiles(files: File[]) {
-  const mapped = files.map((file, index) => {
+  const mapped = files.map((file, index): ArchiveUploadedFile => {
     const id = `${Date.now()}-${index}`
     return {
       id,
@@ -102,22 +72,23 @@ function appendFiles(files: File[]) {
       type: getFileType(file.name),
     }
   })
-  uploadedFiles.value = [...uploadedFiles.value, ...mapped]
+  addArchiveUploadedFiles(mapped)
 }
 
 function removeFile(fileId: string) {
-  uploadedFiles.value = uploadedFiles.value.filter(file => file.id !== fileId)
+  removeArchiveUploadedFile(fileId)
 }
 
 function startRecognition() {
-  router.push('/admin/archive/import/20260620-01?status=recognizing')
+  const batch = createArchiveImportBatch()
+  router.push(`/admin/archive/import/${batch.id}`)
 }
 
 function cancelUpload() {
   router.back()
 }
 
-function getFileType(name: string): UploadedFile['type'] {
+function getFileType(name: string): ArchiveUploadedFile['type'] {
   const lowerName = name.toLowerCase()
   if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls')) return 'excel'
   if (lowerName.endsWith('.pdf')) return 'pdf'
@@ -126,7 +97,7 @@ function getFileType(name: string): UploadedFile['type'] {
   return 'zip'
 }
 
-function fileTypeLabel(type: UploadedFile['type']) {
+function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   const labels = {
     excel: 'XLS',
     zip: 'ZIP',

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  approvePracticeApplication,
+  getPracticeState,
+  returnPracticeApplication,
+} from '@/stores/admin/practiceStore'
+
+const practiceState = getPracticeState()
 
 // 筛选条件
 const selectedYear = ref('2026 年度')
@@ -10,124 +17,19 @@ const selectedTime = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeApplicationId = ref('1')
-const operationMessage = ref('')
-
 // 统计数据
-const stats = {
-  pending: 8,
-  approved: 36,
-  returned: 5,
-  inProgress: 12,
-}
-
-// 实践申请数据
-interface PracticeApplication {
-  id: string
-  teacher: string
-  teacherNo: string
-  department: string
-  annualStatus: string
-  remainingDays: number
-  company: string
-  position: string
-  practicePeriod: string
-  estimatedDays: string
-  status: string
-  applyTime: string
-}
-
-const applications: PracticeApplication[] = [
-  {
-    id: '1',
-    teacher: '林老师',
-    teacherNo: 'T202401015',
-    department: '智能制造学院',
-    annualStatus: '本年度已计入 18 天，还差 12 天',
-    remainingDays: 12,
-    company: '山西智能装备有限公司',
-    position: '工艺改进实践',
-    practicePeriod: '2026-07-01 至 2026-07-15，预计 15 天',
-    estimatedDays: '15',
-    status: '待审核',
-    applyTime: '2026-06-20 10:35',
-  },
-  {
-    id: '2',
-    teacher: '赵老师',
-    teacherNo: 'T202401021',
-    department: '智能制造学院',
-    annualStatus: '本年度已计入 10 天，还差 20 天',
-    remainingDays: 20,
-    company: '济南数控技术有限公司',
-    position: '生产线调试实践',
-    practicePeriod: '2026-07-05 至 2026-07-25，预计 21 天',
-    estimatedDays: '21',
-    status: '待审核',
-    applyTime: '2026-06-18 16:20',
-  },
-  {
-    id: '3',
-    teacher: '王老师',
-    teacherNo: 'T202301009',
-    department: '信息工程学院',
-    annualStatus: '本年度已计入 20 天，还差 10 天',
-    remainingDays: 10,
-    company: '青岛工业机器人有限公司',
-    position: '现场调试实践',
-    practicePeriod: '2026-06-10 至 2026-06-22，预计 12 天',
-    estimatedDays: '12',
-    status: '已同意',
-    applyTime: '2026-06-08 09:15',
-  },
-  {
-    id: '4',
-    teacher: '陈老师',
-    teacherNo: 'T202401030',
-    department: '汽车工程学院',
-    annualStatus: '本年度已计入 8 天，还差 22 天',
-    remainingDays: 22,
-    company: '山木智能装备集团',
-    position: '岗位实践',
-    practicePeriod: '2026-07-10 至 2026-07-30，预计 21 天',
-    estimatedDays: '21',
-    status: '退回修改',
-    applyTime: '2026-06-16 11:05',
-  },
-  {
-    id: '5',
-    teacher: '孙老师',
-    teacherNo: 'T202301017',
-    department: '财经商贸学院',
-    annualStatus: '本年度已计入 15 天，还差 15 天',
-    remainingDays: 15,
-    company: '济南商贸股份有限公司',
-    position: '电商运营实践',
-    practicePeriod: '2026-06-20 至 2026-07-04，预计 15 天',
-    estimatedDays: '15',
-    status: '已撤回',
-    applyTime: '2026-06-14 14:40',
-  },
-  {
-    id: '6',
-    teacher: '周老师',
-    teacherNo: 'T202401008',
-    department: '智能制造学院',
-    annualStatus: '本年度已计入 5 天，还差 25 天',
-    remainingDays: 25,
-    company: '烟台机械制造有限公司',
-    position: '设备维护实践',
-    practicePeriod: '2026-07-15 至 2026-08-13，预计 30 天',
-    estimatedDays: '30',
-    status: '待审核',
-    applyTime: '2026-06-21 08:50',
-  },
-]
+const stats = computed(() => ({
+  pending: practiceState.applications.filter(app => app.status === '待审核').length,
+  approved: practiceState.applications.filter(app => app.status === '已同意').length,
+  returned: practiceState.applications.filter(app => app.status === '退回修改').length,
+  inProgress: practiceState.trackings.filter(item => item.currentProgress === '实践中').length,
+}))
 
 // 分页
 const currentPage = ref(1)
 const pageSize = 10
-const total = 8
-const applicationRows = ref<PracticeApplication[]>(applications)
+const total = computed(() => practiceState.applications.length)
+const applicationRows = computed(() => practiceState.applications)
 
 const filteredApplications = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -154,33 +56,27 @@ function resetFilters() {
   selectedTime.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  practiceState.operationMessage = '已重置筛选条件。'
 }
 
 function viewApplication(id: string) {
   activeApplicationId.value = id
-  operationMessage.value = '已在表格中定位该实践申请。'
+  practiceState.operationMessage = '已在表格中定位该实践申请。'
 }
 
 function approveApplication(id: string) {
-  const target = applicationRows.value.find((app) => app.id === id)
-  if (!target) return
-  target.status = '已同意'
+  approvePracticeApplication(id)
   activeApplicationId.value = id
-  operationMessage.value = `${target.teacher} 的实践申请已同意。`
 }
 
 function returnApplication(id: string) {
-  const target = applicationRows.value.find((app) => app.id === id)
-  if (!target) return
-  target.status = '退回修改'
+  returnPracticeApplication(id)
   activeApplicationId.value = id
-  operationMessage.value = `${target.teacher} 的实践申请已退回修改。`
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredApplications.value.length} 条实践申请。`
+  practiceState.operationMessage = `已筛选出 ${filteredApplications.value.length} 条实践申请。`
 }
 </script>
 
@@ -279,7 +175,7 @@ function applyFilters() {
             <div class="search-row">
               <button class="btn-reset" @click="resetFilters">重置</button>
               <button class="btn-primary" @click="applyFilters">查询</button>
-              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+              <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
 

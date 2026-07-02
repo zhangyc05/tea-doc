@@ -1,20 +1,30 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityTreeNode, AbilityIndicator } from '@/components/admin/ability-list/types'
+import {
+  deriveNextExecutionVersion,
+  getAbilityListState,
+  updateExecutionIndicator,
+} from '@/stores/admin/abilityListStore'
 import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
 import iconAbilityTeaching from '@/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg'
 import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/icon-ability-research.svg'
 import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
 import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
+const router = useRouter()
+const abilityListState = getAbilityListState()
+
 // 编辑抽屉状态
 const editingIndicator = ref<AbilityIndicator | null>(null)
+const showVersionDrawer = ref(false)
 
 // 打开编辑抽屉
 function openEditDrawer(indicator: AbilityIndicator) {
-  editingIndicator.value = indicator
+  editingIndicator.value = { ...indicator }
 }
 
 // 关闭编辑抽屉
@@ -24,96 +34,19 @@ function closeEditDrawer() {
 
 // 保存编辑
 function saveEdit() {
-  console.log('保存编辑：', editingIndicator.value)
+  if (!editingIndicator.value) return
+
+  updateExecutionIndicator(editingIndicator.value.key, {
+    name: editingIndicator.value.name,
+    novice: editingIndicator.value.novice,
+    competent: editingIndicator.value.competent,
+    backbone: editingIndicator.value.backbone,
+    expert: editingIndicator.value.expert,
+    basisLabel: editingIndicator.value.basisLabel,
+  })
   closeEditDrawer()
 }
 
-// 旧的执行版数据结构
-const oldAbilityTree = [
-  {
-    id: 'basic',
-    label: '基本能力',
-    color: 'blue',
-    children: [],
-  },
-  {
-    id: 'teaching',
-    label: '教学能力',
-    color: 'teaching-blue',
-    children: ['教学设计与实施', '教学资源开发', '教学评价与反馈', '教学创新与改进'],
-  },
-  {
-    id: 'research',
-    label: '教研能力',
-    color: 'orange',
-    children: [],
-  },
-  {
-    id: 'practice',
-    label: '实践能力',
-    color: 'green',
-    children: [],
-  },
-  {
-    id: 'service',
-    label: '服务能力',
-    color: 'purple',
-    children: [],
-  },
-]
-
-const oldIndicators = [
-  {
-    name: '教学工作量（课时/学期）',
-    novice: '≥ 64',
-    competent: '≥ 96',
-    backbone: '≥ 128',
-    master: '≥ 160',
-    rule: '实达课时数',
-  },
-  {
-    name: '课堂教学评价（学生评教均分）',
-    novice: '≥ 80分',
-    competent: '≥ 85分',
-    backbone: '≥ 90分',
-    master: '≥ 95分',
-    rule: '学生评教平均分',
-  },
-  {
-    name: '听课课时（课时/学期）',
-    novice: '≥ 8',
-    competent: '≥ 16',
-    backbone: '≥ 24',
-    master: '≥ 32',
-    rule: '学期内听课总课时',
-  },
-  {
-    name: '教学规范执行',
-    novice: '≥ 80%',
-    competent: '≥ 90%',
-    backbone: '≥ 95%',
-    master: '≥ 98%',
-    rule: '教学规范符合率',
-  },
-  {
-    name: '教学资源建设（门/年）',
-    novice: '≥ 1',
-    competent: '≥ 2',
-    backbone: '≥ 3',
-    master: '≥ 5',
-    rule: '有效教学资源数量',
-  },
-  {
-    name: '信息化教学应用水平',
-    novice: '≥ 60分',
-    competent: '≥ 75分',
-    backbone: '≥ 85分',
-    master: '≥ 95分',
-    rule: '信息化应用综合得分',
-  },
-]
-
-// 数据映射：将旧的执行版结构映射为新组件结构
 const normalizedAbilityTree: AbilityTreeNode[] = [
   {
     key: 'basic',
@@ -153,18 +86,29 @@ const normalizedAbilityTree: AbilityTreeNode[] = [
   },
 ]
 
-const normalizedIndicators = computed<AbilityIndicator[]>(() =>
-  oldIndicators.map((item, index) => ({
-    key: `execution-indicator-${index}`,
-    name: item.name,
-    novice: item.novice,
-    competent: item.competent,
-    backbone: item.backbone,
-    expert: item.master,
-    basisLabel: item.rule,
-    status: 'enabled',
-  })),
-)
+const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.executionIndicators)
+const versionRows = computed(() => [
+  abilityListState.executionVersion,
+  ...abilityListState.versionHistory,
+])
+const statusText = computed(() => abilityListState.executionVersion.status === 'published' ? '已发布' : '待发布')
+const statusClass = computed(() => abilityListState.executionVersion.status === 'published' ? 'badge-success' : 'badge-warning')
+const subtitle = computed(() => abilityListState.executionVersion.status === 'published'
+  ? '当前周期正在使用的教师能力清单'
+  : '下一周期执行版待确认发布')
+
+function deriveNextVersion() {
+  deriveNextExecutionVersion()
+  router.push('/admin/ability-list/execution/publish-confirm')
+}
+
+function openVersionDrawer() {
+  showVersionDrawer.value = true
+}
+
+function closeVersionDrawer() {
+  showVersionDrawer.value = false
+}
 </script>
 
 <template>
@@ -188,33 +132,38 @@ const normalizedIndicators = computed<AbilityIndicator[]>(() =>
             <div class="hero-heading-row">
               <div class="hero-title-group">
                 <div class="hero-title-row">
-                  <h1>2026 年度教师能力清单执行版</h1>
-                  <span class="badge-status badge-success">已发布</span>
+                  <h1>{{ abilityListState.executionVersion.title }}</h1>
+                  <span class="badge-status" :class="statusClass">{{ statusText }}</span>
                 </div>
-                <p class="hero-subtitle">当前周期正在使用的教师能力清单</p>
+                <p class="hero-subtitle">{{ subtitle }}</p>
+                <p v-if="abilityListState.operationMessage" class="operation-message">
+                  {{ abilityListState.operationMessage }}
+                </p>
               </div>
 
               <div class="hero-actions">
-                <button class="primary-action btn-primary">
+                <button class="primary-action btn-primary" @click="deriveNextVersion">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
                 </button>
-                <button class="secondary-action btn-secondary">历史版本</button>
+                <button class="secondary-action btn-secondary" @click="openVersionDrawer">历史版本</button>
               </div>
             </div>
 
             <div class="hero-summary-strip admin-summary-strip">
               <div class="summary-item admin-summary-item source-item">
                 <span class="admin-summary-label">基准版</span>
-                <button class="admin-summary-link template-link">职业院校教师能力清单 V1.0</button>
+                <button class="admin-summary-link template-link">
+                  {{ abilityListState.executionVersion.templateTitle }}
+                </button>
               </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">适用范围</span>
-                <strong class="admin-summary-value">全校教师</strong>
+                <strong class="admin-summary-value">{{ abilityListState.executionVersion.scope }}</strong>
               </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">最近更新</span>
-                <strong class="admin-summary-value">2026-06-08 20:30</strong>
+                <strong class="admin-summary-value">{{ abilityListState.executionVersion.lastUpdated }}</strong>
               </div>
             </div>
           </div>
@@ -258,31 +207,31 @@ const normalizedIndicators = computed<AbilityIndicator[]>(() =>
             </div>
             <div class="form-group">
               <label class="form-label">指标名称</label>
-              <input class="form-input" type="text" :value="editingIndicator?.name || ''" />
+              <input v-model="editingIndicator.name" class="form-input" type="text" />
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">新手</label>
-                <input class="form-input" type="text" :value="editingIndicator?.novice || ''" />
+                <input v-model="editingIndicator.novice" class="form-input" type="text" />
               </div>
               <div class="form-group">
                 <label class="form-label">胜任</label>
-                <input class="form-input" type="text" :value="editingIndicator?.competent || ''" />
+                <input v-model="editingIndicator.competent" class="form-input" type="text" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">骨干</label>
-                <input class="form-input" type="text" :value="editingIndicator?.backbone || ''" />
+                <input v-model="editingIndicator.backbone" class="form-input" type="text" />
               </div>
               <div class="form-group">
                 <label class="form-label">名师</label>
-                <input class="form-input" type="text" :value="editingIndicator?.expert || ''" />
+                <input v-model="editingIndicator.expert" class="form-input" type="text" />
               </div>
             </div>
             <div class="form-group">
               <label class="form-label">计算规则</label>
-              <input class="form-input" type="text" :value="editingIndicator?.basisLabel || ''" />
+              <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
             </div>
             <div class="form-group">
               <label class="form-label">状态</label>
@@ -296,6 +245,49 @@ const normalizedIndicators = computed<AbilityIndicator[]>(() =>
           <div class="drawer-actions">
             <button class="btn-secondary" @click="closeEditDrawer">取消</button>
             <button class="btn-primary" @click="saveEdit">保存</button>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showVersionDrawer" class="edit-drawer-overlay" @click="closeVersionDrawer">
+        <div class="edit-drawer version-drawer" @click.stop>
+          <div class="drawer-header">
+            <h3 class="drawer-title">执行版历史版本</h3>
+            <button class="drawer-close" @click="closeVersionDrawer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="drawer-tip">
+            展示当前执行版和历史执行版，用于确认当前周期口径和历史引用关系。
+          </div>
+
+          <div class="version-list">
+            <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
+              <div class="version-card-head">
+                <strong>{{ version.versionNo }}</strong>
+                <span class="badge-status" :class="`version-${version.status}`">
+                  {{ version.status === 'published' ? '已发布' : version.status === 'pending' ? '待发布' : '历史版' }}
+                </span>
+              </div>
+              <h4>{{ version.title }}</h4>
+              <dl>
+                <div>
+                  <dt>发布时间</dt>
+                  <dd>{{ version.publishedAt }}</dd>
+                </div>
+                <div>
+                  <dt>来源</dt>
+                  <dd>{{ version.source }}</dd>
+                </div>
+                <div>
+                  <dt>操作人</dt>
+                  <dd>{{ version.operator }}</dd>
+                </div>
+              </dl>
+            </article>
           </div>
         </div>
       </div>
@@ -439,6 +431,17 @@ const normalizedIndicators = computed<AbilityIndicator[]>(() =>
   font-size: clamp(12px, 0.75vw, 14px);
   font-weight: 700;
   line-height: 1.4;
+}
+
+.operation-message {
+  display: inline-flex;
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #ecfdf3;
+  color: #18845a;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .hero-actions {
@@ -623,6 +626,80 @@ const normalizedIndicators = computed<AbilityIndicator[]>(() =>
   padding: 16px 24px;
   border-top: 1px solid var(--color-card-border);
   background: #fff;
+}
+
+.version-drawer {
+  width: 620px;
+}
+
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.version-card {
+  border: 1px solid #e3ebf6;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+}
+
+.version-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.version-card-head strong {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.version-card h4 {
+  margin: 10px 0 14px;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.version-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.version-card dt {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.version-card dd {
+  margin: 4px 0 0;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.badge-status.version-published {
+  background: #dff8ec;
+  color: #18a663;
+}
+
+.badge-status.version-pending {
+  background: #fff0df;
+  color: #f26a16;
+}
+
+.badge-status.version-historical {
+  background: #eef3fb;
+  color: #66758f;
 }
 
 /* 响应式 */

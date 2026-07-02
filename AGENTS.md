@@ -21,6 +21,7 @@ teacher-mobile/  教师端手机端，UniApp + Vue 3 + TypeScript
 
 ```txt
 docs/page-coverage-ledger.md
+docs/business-logic-map.md
 ```
 
 管理端任务再读取：
@@ -54,7 +55,8 @@ teacher-mobile/src/pages.json
 - 页面任务必须先识别目标效果图，再拆解区域、提取布局比例、判断组件复用。
 - 页面完成标准不是“能运行”，而是结构、比例、密度、视觉层级与目标图基本一致，并且入口、返回、提交、状态流转没有明显业务断点。
 - 已确认只做视觉态的操作，必须在台账中标记为“待业务闭环”，不得标记为业务完成。
-- 页面覆盖、业务闭环和后续优先级以 `docs/page-coverage-ledger.md` 为准。
+- 页面覆盖和后续优先级以 `docs/page-coverage-ledger.md` 为准。
+- 业务对象、状态流转和跨页面闭环以 `docs/business-logic-map.md` 为准。
 
 ## 4. 校验命令
 
@@ -62,6 +64,7 @@ teacher-mobile/src/pages.json
 
 ```bash
 cd frontend
+npm run test
 npm run typecheck
 npm run build
 ```
@@ -80,6 +83,7 @@ npm run build:mp-weixin
 ## 5. 文档更新
 
 - 页面覆盖、业务闭环、任务优先级变化：更新 `docs/page-coverage-ledger.md`。
+- 业务对象、状态枚举、跨页面流转变化：更新 `docs/business-logic-map.md`。
 - 管理端设计 token、页面流程、基准页或组件模式变化：更新 `frontend/docs/admin-design-system-guide.md`。
 - 手机端框架规则、组件边界或验收口径变化：更新 `teacher-mobile/docs/mobile-design-system-guide.md`。
 

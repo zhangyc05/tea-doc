@@ -3,90 +3,20 @@ import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
+import { getAbilityProfileTeacherDetailMock } from '@/services/mock/ability-profile'
 
 const router = useRouter()
 const route = useRoute()
 
 const teacherId = route.params.teacherId as string
+const teacherDetailProfile = getAbilityProfileTeacherDetailMock(teacherId)
 
-const teacherInfo = ref({
-  name: teacherId === 'chen' ? '陈老师' : '林老师',
-  college: teacherId === 'chen' ? '电子信息学院' : '智能制造学院',
-  title: teacherId === 'chen' ? '副教授' : '讲师',
-  year: 2,
-  period: '2026 年度',
-  version: '2026 年度执行版能力清单',
-  dataBasis: '正式档案事实',
-  updateTime: '2026-06-19',
-})
-
-const developmentIndex = ref({
-  score: teacherId === 'chen' ? 72 : 76,
-  total: 100,
-  teacherType: teacherId === 'chen' ? '教研成长型' : '教学实践型',
-  abilityStage: '骨干教师',
-  basicAbility: '达标',
-  typeBasis: '教学能力较突出 | 实践能力较突出 | 教研、服务保持稳定',
-})
-
-const baselineData = ref([
-  { year: 2026, status: '基线已形成' },
-  { year: 2027, status: '待形成' },
-  { year: 2028, status: '待形成' },
-])
-
-const radarData = ref([
-  { label: '教学能力', value: 88 },
-  { label: '教研能力', value: 68 },
-  { label: '实践能力', value: 79 },
-  { label: '服务能力', value: 72 },
-])
-
-const abilityDimensions = ref([
-  {
-    dimension: '教学能力',
-    index: 88,
-    composition: '课程建设、课堂教学、教学评价、教学改进等',
-  },
-  {
-    dimension: '教研能力',
-    index: 68,
-    composition: '课题研究、专业建设、课程改革、成果培育等',
-  },
-  {
-    dimension: '实践能力',
-    index: 79,
-    composition: '企业实践、产教融合、校企合作、成果转化等',
-  },
-  {
-    dimension: '服务能力',
-    index: 72,
-    composition: '社会服务、学生支持、团队协作、重点任务等',
-  },
-])
-
-const supportDirections = ref([
-  {
-    feature: '课程建设基础较好',
-    direction: '课程建设经验沉淀',
-    focus: '适合沉淀课程建设、教学评价、教学改进相关经验',
-  },
-  {
-    feature: '实践转化具备基础',
-    direction: '实践成果转化支持',
-    focus: '关注企业实践成果、校企合作成果的转化表达与应用材料沉淀',
-  },
-  {
-    feature: '教研成果持续积累',
-    direction: '教研成果继续培育',
-    focus: '适合围绕课题共研、成果培育、教研协作继续支持',
-  },
-  {
-    feature: '服务贡献继续观察',
-    direction: '服务贡献持续观察',
-    focus: '继续观察社会服务、学生支持、重点任务贡献的稳定性',
-  },
-])
+const teacherInfo = ref(teacherDetailProfile.teacherInfo)
+const developmentIndex = ref(teacherDetailProfile.developmentIndex)
+const baselineData = ref(teacherDetailProfile.baselineData)
+const radarData = ref(teacherDetailProfile.radarData)
+const abilityDimensions = ref(teacherDetailProfile.abilityDimensions)
+const supportDirections = ref(teacherDetailProfile.supportDirections)
 
 function goBack() {
   router.push('/admin/ability-profile/teacher')

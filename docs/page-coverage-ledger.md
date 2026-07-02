@@ -4,13 +4,15 @@
 
 本台账用于对齐“效果图是否已转为可运行页面”和“业务逻辑是否已闭环”。当前结论先按工程扫描建立，后续每个模块修正时逐图细化。
 
+业务对象、状态流转和跨页面闭环统一记录在 `docs/business-logic-map.md`。本文件只保留逐图覆盖、页面映射和推进优先级。
+
 ## 总览
 
 ```txt
 效果图总数：178
 管理端 PC 效果图：36
 教师手机端效果图：142
-管理端 Vue 页面：33
+管理端 Vue 文件：31
 教师手机端 UniApp 页面：83
 ```
 
@@ -34,61 +36,102 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 模块 | 效果图数 | 当前源码/路由状态 | 结论 |
 | --- | ---: | --- | --- |
 | 能力清单 | 7 | 已有 `ability-list` 页面与路由 | 已完成逐图源码/路由映射，待视觉截图验收和业务闭环审计 |
-| 成长档案 | 7 | 已有档案处理、导入、查阅、详情页面 | 已完成逐图源码/路由映射，待视觉截图验收和业务闭环审计 |
-| 能力画像 | 4 | 已有群体画像、教师画像、教师详情页面 | 列表/卡片视图可能是同页多状态，需截图确认 |
-| 发展活动 | 17 | 教学反思、培训、企业实践、虚拟教研均有页面 | 培训管理已完成逐图源码/路由映射，其余活动模块待细化 |
-| 分析报告 | 1 | 已有报告卡片页 | 待确认按钮业务闭环 |
+| 成长档案 | 7 | 已有档案处理、导入、查阅、详情页面 | 已完成逐图源码/路由映射；上传识别到处理记录主链已接入本地业务状态，教师详情事实读取待补 |
+| 能力画像 | 4 | 已有群体画像、教师画像、教师详情页面 | 已确认群体画像、教师画像列表、教师详情的数据关系；按钮空动作已处理 |
+| 发展活动 | 17 | 教学反思、培训、企业实践、虚拟教研均有页面 | 培训管理已完成逐图源码/路由映射和本地闭环；教学反思已完成列表-详情-问题定位审计；企业实践已完成申请-跟踪-归档主链；虚拟教研已完成教研室-活动-记录-档案沉淀主链 |
+| 分析报告 | 1 | 已有报告卡片页 | 已完成报告查看、导出、重新生成、更新、AI 分析助手的本地行为闭环 |
 
 ### 逐图台账：能力清单
 
 | 效果图 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png` | `frontend/src/pages/admin/ability-list/AbilityListBasePage.vue` | `/admin/ability-list/base` | 默认页，`active-key="ability-list-base"` | 已映射；存在“查看版本记录”“派生执行版”仅 `console.log` 的业务闭环风险 |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版优化建议.png` | `frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue` | `/admin/ability-list/base/optimization` | 从基准模板页 `goToOptimization()` 进入；支持建议筛选、采纳、暂缓、弃用的本地状态 | 已映射；待截图确认优化建议页密度和右侧详情 |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png` | `frontend/src/pages/admin/ability-list/AbilityListBasePage.vue` | `/admin/ability-list/base` | 默认页，`active-key="ability-list-base"` | 已映射；编辑指标、查看版本记录、派生执行版均已接入本地业务状态 |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版优化建议.png` | `frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue` | `/admin/ability-list/base/optimization` | 从基准模板页 `goToOptimization()` 进入；支持建议筛选、采纳、暂缓、弃用、应用到基准模板的本地状态 | 已映射；已接入优化建议到基准模板的本地闭环 |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版查看页.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 默认页，`active-key="ability-list-execution"` | 已映射；当前基准页 |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版指标编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 点击指标行编辑触发 `editingIndicator`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存仅关闭抽屉并 `console.log`，待业务闭环 |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版发布确认.png` | `frontend/src/pages/admin/ability-list/AbilityListPublishConfirmPage.vue` | `/admin/ability-list/execution/publish-confirm` | 发布确认页，`publishStatus` 从 `pending` 切为 `published` | 已映射；待确认入口是否从执行版页完整连通 |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 默认页，左侧对象树、中间映射表、右侧详情 | 已映射；待业务审计“确认配置/删除/新增”的状态规则 |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 点击“编辑映射”或行内“编辑”触发 `editingMapping`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存会更新本地 `mappings` |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版指标编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 点击指标行编辑触发 `editingIndicator`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存会更新 `abilityListStore.executionIndicators` 并标记为草稿调整 |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版发布确认.png` | `frontend/src/pages/admin/ability-list/AbilityListPublishConfirmPage.vue` | `/admin/ability-list/execution/publish-confirm` | 发布确认页，`publishStatus` 从 `pending` 切为 `published` | 已映射；基准模板页和执行版页均可派生下一周期执行版并进入发布确认页，发布后旧执行版进入历史版记录 |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 默认页，左侧对象树、中间映射表、右侧详情 | 已映射；新增、编辑、删除、确认配置均已接入 `abilityListStore.requirementMappings` |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 点击“编辑映射”或行内“编辑”触发 `editingMapping`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存会更新 `abilityListStore.requirementMappings` |
 
 ### 逐图台账：成长档案
 
 | 效果图 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜档案处理.png` | `frontend/src/pages/admin/archive/ArchiveProcessingPage.vue` | `/admin/archive/processing` | 默认页，左侧统计和筛选，中间处理记录列表，右侧记录详情 | 已映射；确认入档、退回、异常、补充说明当前为本地/日志式反馈 |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入部门资料｜上传资料页.png` | `frontend/src/pages/admin/archive/ArchiveImportUploadPage.vue` | `/admin/archive/import` | 上传资料页，点击“开始识别”进入批次详情 `?status=recognizing` | 已映射；上传文件仅前端本地列表状态 |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入批次详情｜识别中.png` | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | `/admin/archive/import/:batchId?status=recognizing` | `isCompleted=false`；展示识别中、结果占位、刷新状态按钮 | 已映射；刷新跳转到 `?status=completed` |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入批次详情｜识别完成.png` | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | `/admin/archive/import/:batchId?status=completed` | `isCompleted=true`；展示识别结果、查看上传文件、确认识别结果 | 已映射；确认后返回档案处理页 |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜档案处理.png` | `frontend/src/pages/admin/archive/ArchiveProcessingPage.vue` | `/admin/archive/processing` | 默认页，左侧统计和筛选，中间处理记录列表，右侧记录详情 | 已映射；处理记录读取 `archiveStore.processingRecords`，确认入档、退回、异常、补充说明均已改为本地状态动作 |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入部门资料｜上传资料页.png` | `frontend/src/pages/admin/archive/ArchiveImportUploadPage.vue` | `/admin/archive/import` | 上传资料页，点击“开始识别”创建导入批次并进入批次详情 | 已映射；上传文件接入 `archiveStore.uploadedFiles` |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入批次详情｜识别中.png` | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | `/admin/archive/import/:batchId` | 批次 `status='recognizing'`；展示识别中、结果占位、刷新状态按钮 | 已映射；刷新调用 `completeArchiveBatchRecognition()` |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入批次详情｜识别完成.png` | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | `/admin/archive/import/:batchId` | 批次 `status='recognized'` 或 `confirmed`；展示识别结果、查看上传文件、确认识别结果 | 已映射；确认调用 `confirmArchiveBatchRecognition()` 并生成处理记录 |
 | `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜教师档案查阅.png` | `frontend/src/pages/admin/archive/ArchiveQueryPage.vue` | `/admin/archive/query` | 默认查询页，`viewMode='card'`，教师卡片列表 | 已映射；列表/筛选为前端本地状态 |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜阅读档案详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 从档案查阅页 `viewTeacherDetail()` 进入；档案阅读详情 | 已映射；打印/导出为前端模拟动作 |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜来源详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 点击档案详情内来源入口触发 `drawerOpen`，展示“来源记录”抽屉 | 已映射为同页抽屉状态；来源详情不单独路由 |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜阅读档案详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 从档案查阅页 `viewTeacherDetail()` 进入；档案阅读详情 | 已映射；读取 `archiveStore.teacherArchiveFacts` 展示已入档事实，打印/导出为前端模拟动作 |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜来源详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 点击档案详情内来源入口触发 `drawerOpen`，展示“来源记录”抽屉 | 已映射为同页抽屉状态；来源记录按当前栏目合并 `archiveStore` 中已入档事实 |
 
 ### 逐图台账：培训管理
 
 | 效果图 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜资源库.png` | `frontend/src/pages/admin/training/TrainingResourcePage.vue` | `/admin/training/resources` | 默认资源库页，资源列表、右侧资源摘要、筛选和新增本地状态 | 已映射；`ResourceLibraryPage.vue` 也存在但当前未挂路由，需后续确认清理或替换 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜需求管理.png` | `frontend/src/pages/admin/training/TrainingDemandPage.vue` | `/admin/training/demands` | 默认需求管理页，需求表格、右侧需求摘要、待匹配筛选 | 已映射；新增需求只插入本地模拟数据 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜申请处理.png` | `frontend/src/pages/admin/training/TrainingApplicationPage.vue` | `/admin/training/applications` | 默认申请处理页，申请表格、右侧申请摘要、同意处理本地状态 | 已映射；退回/同意流程需业务规则审计 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜记录总览.png` | `frontend/src/pages/admin/training/TrainingRecordPage.vue` | `/admin/training/records` | 默认记录总览页，记录表格、材料状态筛选 | 已映射；“查看材料待完善记录”为本地筛选 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训记录详情.png` | `frontend/src/pages/admin/training/TrainingRecordDetailPage.vue` | `/admin/training/records/:recordId` | 从记录总览 `viewDetail()` 进入；记录详情、总结和证书材料 | 已映射；上传材料是本地提示状态 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训计划｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanPage.vue` | `/admin/training/plans` | 默认计划管理页，计划表格、提醒、相关计划筛选 | 已映射；页面名为计划管理，效果图称“培训计划｜附属流程” |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜新建培训计划｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanPage.vue` | `/admin/training/plans` | 点击“新建培训计划”触发 `showDrawer`，展示新建计划抽屉 | 已映射为同页抽屉状态；保存草稿/发布仅本地提示 |
-| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训计划详情｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanDetailPage.vue` | `/admin/training/plans/:planId` | 从计划管理 `viewDetail()` 进入；计划基本信息、关联需求、安排、参与教师 | 已映射；同意申请为本地状态，教师详情跳转到成长档案详情 |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜资源库.png` | `frontend/src/pages/admin/training/TrainingResourcePage.vue` | `/admin/training/resources` | 默认资源库页，资源列表、右侧资源摘要、筛选和新增本地状态 | 已映射；资源读取 `trainingStore.resources`，新增资源草稿写入共享状态 |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜需求管理.png` | `frontend/src/pages/admin/training/TrainingDemandPage.vue` | `/admin/training/demands` | 默认需求管理页，需求表格、右侧需求摘要、待匹配筛选 | 已映射；新增需求、匹配资源已接入 `trainingStore.demands` |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜申请处理.png` | `frontend/src/pages/admin/training/TrainingApplicationPage.vue` | `/admin/training/applications` | 默认申请处理页，申请表格、右侧申请摘要、同意和退回处理 | 已映射；同意/退回接入 `trainingStore.applications` 并同步计划详情参与名单 |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜记录总览.png` | `frontend/src/pages/admin/training/TrainingRecordPage.vue` | `/admin/training/records` | 默认记录总览页，记录表格、材料状态筛选 | 已映射；记录读取 `trainingStore.records`，详情上传证书后可同步材料状态 |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训记录详情.png` | `frontend/src/pages/admin/training/TrainingRecordDetailPage.vue` | `/admin/training/records/:recordId` | 从记录总览 `viewDetail()` 进入；记录详情、总结和证书材料 | 已映射；上传证书写入 `trainingStore.records`，并生成成长档案待确认处理记录 |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训计划｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanPage.vue` | `/admin/training/plans` | 默认计划管理页，计划表格、提醒、相关计划筛选 | 已映射；计划读取 `trainingStore.plans`，页面名为计划管理，效果图称“培训计划｜附属流程” |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜新建培训计划｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanPage.vue` | `/admin/training/plans` | 点击“新建培训计划”触发 `showDrawer`，展示新建计划抽屉 | 已映射为同页抽屉状态；保存草稿/发布会插入 `trainingStore.plans` |
+| `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训计划详情｜附属流程.png` | `frontend/src/pages/admin/training/TrainingPlanDetailPage.vue` | `/admin/training/plans/:planId` | 从计划管理 `viewDetail()` 进入；计划基本信息、关联需求、安排、参与教师 | 已映射；计划详情读取同一计划数据，申请处理状态可同步参与教师 |
+
+### 逐图台账：教学反思
+
+| 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
+| --- | --- | --- | --- | --- |
+| 教学反思总览 | `frontend/src/pages/admin/reflection/ReflectionOverviewPage.vue` | `/admin/reflection` | 反思记录列表、筛选、共性观察、相关记录过滤 | 已映射；支持接收 `keyword` query 并按共性问题过滤 |
+| 教学反思详情 | `frontend/src/pages/admin/reflection/ReflectionDetailPage.vue` | `/admin/reflection/:reflectionId` | 反思内容、来源数据、相关反思、记录去向 | 已映射；来源数据页面内反馈，相关反思和更多相关记录均已闭环到详情或列表 |
+
+### 逐图台账：企业实践
+
+| 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
+| --- | --- | --- | --- | --- |
+| 年度实践跟踪 | `frontend/src/pages/admin/practice/PracticeTrackingPage.vue` | `/admin/practice/tracking` | 年度完成情况、当前办理情况、教师实践跟踪列表 | 已映射；读取 `practiceStore.trackings`，申请同意和归档会同步跟踪状态 |
+| 申请处理 | `frontend/src/pages/admin/practice/PracticeApplicationPage.vue` | `/admin/practice/applications` | 实践申请列表、筛选、同意、退回 | 已映射；申请同意/退回写入 `practiceStore.applications` 并同步跟踪和记录 |
+| 记录总览 | `frontend/src/pages/admin/practice/PracticeRecordPage.vue` | `/admin/practice/records` | 实践记录列表、材料状态、确认归档 | 已映射；确认归档写入 `practiceStore.records`，并生成成长档案待确认处理记录 |
+
+### 逐图台账：虚拟教研
+
+| 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
+| --- | --- | --- | --- | --- |
+| 虚拟教研室列表 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue` | `/admin/virtual-lab` | 教研室统计、筛选、卡片/表格视图、查看详情 | 已映射；读取 `virtualLabStore.rooms`，新增教研室草稿写入共享状态 |
+| 虚拟教研室详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue` | `/admin/virtual-lab/rooms/:roomId` | 教研室基本信息、成员、近期活动、已形成记录 | 已映射；按 `roomId` 读取成员、活动、记录，邀请教师/移出成员/新建活动均写入 `virtualLabStore` |
+| 教研活动详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabActivityDetailPage.vue` | `/admin/virtual-lab/activities/:activityId` | 活动信息、会议参与、活动资料、已形成记录、时间线 | 已映射；按 `activityId` 读取活动，未形成记录时可生成教研记录并进入记录详情 |
+| 教研记录详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue` | `/admin/virtual-lab/records/:recordId` | 记录正文、参与记录、来源资料、来源活动 | 已映射；按 `recordId` 读取记录，来源活动真实跳转，生成档案待确认会写入 `archiveStore.processingRecords` |
+
+### 逐图台账：分析报告
+
+| 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
+| --- | --- | --- | --- | --- |
+| 分析报告中心 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | `/admin/reports` | 报告卡片、筛选、详情面板、AI 分析会话 | 已映射；读取 `reportStore.reports`，查看/查看大屏/查看原因打开同页面板，导出/更新/重新生成/继续分析/继续追问/AI 助手均写入共享状态 |
 
 ### 已处理问题
 
 | 日期 | 问题 | 位置 | 处理 |
 | --- | --- | --- | --- |
 | 2026-07-02 | `/admin/archive/import` 路由重复 | `frontend/src/router/admin.routes.ts` | 删除无菜单入口、无效果图对应的“教师档案总览”占位路由，保留导入上传页 |
+| 2026-07-02 | 能力清单执行版编辑、派生、发布仅页面局部状态 | `frontend/src/pages/admin/ability-list/*` | 新增 `frontend/src/stores/admin/abilityListStore.ts`，执行版指标编辑、下一周期派生、发布确认共享本地业务状态 |
+| 2026-07-02 | 优化建议采纳后不能应用到基准模板 | `frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue`、`AbilityListBasePage.vue` | 优化建议改为共享业务状态，采纳后进入待应用集合，应用后写入基准模板指标 |
+| 2026-07-02 | 基准模板编辑、版本记录和要求映射仍有局部状态 | `frontend/src/pages/admin/ability-list/*` | 基准模板编辑、版本记录、历史版、要求映射均已接入 `abilityListStore`，并补充 store 单测 |
+| 2026-07-02 | 成长档案上传识别、确认结果、处理动作没有跨页面业务状态 | `frontend/src/pages/admin/archive/*` | 新增 `frontend/src/stores/admin/archiveStore.ts`，上传文件、导入批次、识别结果、处理记录、入档事实均接入本地业务状态 |
+| 2026-07-02 | 教师档案详情不读取处理页确认入档事实 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 档案详情读取 `archiveStore.teacherArchiveFacts`，来源抽屉按栏目合并对应事实来源 |
+| 2026-07-02 | 培训管理资源、需求、计划、申请、记录材料均为页面局部状态 | `frontend/src/pages/admin/training/*` | 新增 `frontend/src/stores/admin/trainingStore.ts`，资源草稿、需求匹配、计划草稿/发布、申请处理、记录材料和成长档案沉淀均接入共享状态 |
+| 2026-07-02 | 能力画像群体页存在 `console.log` 空动作 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue` | “查看完整建议”跳教师画像重点支持筛选；教师对象跳画像详情；院系/专业对象给出页面内降级提示 |
+| 2026-07-02 | 教学反思详情“查看更多相关记录”跳列表但列表不读取问题关键词 | `frontend/src/pages/admin/reflection/*` | 反思总览读取 `keyword` query，并显示当前问题定位提示；共性观察筛选和详情更多相关记录形成闭环 |
+| 2026-07-02 | 企业实践申请、跟踪、记录归档为页面局部状态 | `frontend/src/pages/admin/practice/*` | 新增 `frontend/src/stores/admin/practiceStore.ts`，申请同意/退回、年度跟踪、记录归档和成长档案待确认记录均接入共享状态 |
+| 2026-07-02 | 虚拟教研室、活动、记录和档案沉淀为页面局部状态 | `frontend/src/pages/admin/virtual-lab/*` | 新增 `frontend/src/stores/admin/virtualLabStore.ts`，教研室、成员、活动、记录和成长档案待确认记录均接入共享状态 |
+| 2026-07-02 | 分析报告按钮只写页面提示，导出、查看、生成、AI 助手行为不明确 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | 新增 `frontend/src/stores/admin/reportStore.ts`，报告详情、导出状态、重新生成/更新、AI 分析会话均接入共享状态 |
+| 2026-07-02 | `/admin/system` 只有占位页且无管理端效果图对应 | `frontend/src/router/admin.routes.ts`、`frontend/src/components/layout/AdminSidebar.vue` | 删除系统管理占位路由、侧边栏入口和 `AdminPlaceholderPage.vue` |
+| 2026-07-02 | 培训资源存在未挂路由页面 | `frontend/src/pages/admin/training/ResourceLibraryPage.vue` | 保留已映射效果图的 `TrainingResourcePage.vue`，删除未挂路由旧页面 |
 
 ### 待处理问题
 
 | 优先级 | 问题 | 位置 | 建议 |
 | --- | --- | --- | --- |
-| P1 | 存在占位页路由 | `/admin/system` | 台账标记为非效果图页面或补真实页面 |
 | P1 | 多个按钮仅写 `operationMessage` 或 `console.log` | 管理端多页面 | 模块审计时区分视觉态与业务闭环 |
-| P2 | 培训资源存在未挂路由页面 | `frontend/src/pages/admin/training/ResourceLibraryPage.vue` | 确认是否替换当前 `TrainingResourcePage.vue`，否则清理未使用页面 |
 
 ### 业务逻辑审计起点
 
@@ -96,16 +139,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 
 | 模块 | 风险点 | 位置 | 建议处理 |
 | --- | --- | --- | --- |
-| 能力清单 | 基准模板页“编辑指标”“查看版本记录”“派生执行版”仅 `console.log`，但页面上是明确操作按钮 | `frontend/src/pages/admin/ability-list/AbilityListBasePage.vue` | 明确这些按钮是否保留；保留则补抽屉/页面/状态反馈，否则降级为不可点击说明 |
-| 能力清单 | 执行版指标编辑抽屉保存仅 `console.log` 并关闭，未更新列表数据 | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | 先做本地状态更新，后续再接接口 |
-| 能力清单 | 发布确认页可切换已发布状态，但执行版列表/入口不感知发布结果 | `frontend/src/pages/admin/ability-list/AbilityListPublishConfirmPage.vue` | 明确发布后的返回页提示和执行版状态口径 |
-| 成长档案 | 档案处理页“确认入档/再次退回/标记异常/查看补充说明”均为 `console.log` | `frontend/src/pages/admin/archive/ArchiveProcessingPage.vue` | 至少补本地状态变更和右侧处理记录更新 |
-| 成长档案 | 导入批次“确认识别结果”直接返回档案处理页，但不生成可见待处理记录 | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | 返回后应能看到对应批次生成的待处理记录或提示 |
-| 成长档案 | 档案详情“来源记录”抽屉只展示统一来源列表，未按打开的档案栏目过滤 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 按 `drawerType` 过滤来源记录或明确为全量来源记录 |
-| 培训管理 | 资源、需求、申请页面大量操作只更新右侧摘要或提示，不形成跨页面数据 | `frontend/src/pages/admin/training/TrainingResourcePage.vue`、`TrainingDemandPage.vue`、`TrainingApplicationPage.vue` | 先定义资源-需求-计划-申请-记录的数据流口径 |
-| 培训管理 | 新建培训计划保存/发布只显示提示，未把新计划加入列表 | `frontend/src/pages/admin/training/TrainingPlanPage.vue` | 保存草稿/发布后应插入计划列表并体现状态 |
-| 培训管理 | 计划详情“同意申请”只更新当前详情页参与教师状态，申请处理页不感知 | `frontend/src/pages/admin/training/TrainingPlanDetailPage.vue` | 明确申请处理和计划详情是否共享同一申请状态 |
-| 培训管理 | 培训记录详情“上传证书”只改当前页材料状态，记录总览不感知 | `frontend/src/pages/admin/training/TrainingRecordDetailPage.vue` | 上传后记录总览材料状态应同步变为完整 |
+| 成长档案 | 导入批次“取消本次任务”只返回档案处理页，未形成取消状态 | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | 补 `cancelled` 批次状态或明确取消不留痕 |
 
 ### 当前管理端源码页面
 
@@ -142,7 +176,7 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue
 frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 ```
 
-说明：`AdminPlaceholderPage.vue` 和 `ability-profile/components/SimpleRadarChart.vue` 不计入效果图页面。
+说明：`ability-profile/components/SimpleRadarChart.vue` 是组件，不计入效果图页面。
 
 ## 教师手机端
 
@@ -171,8 +205,8 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 
 ## 下一步推进计划
 
-1. 先定义管理端三组模块的数据流口径：能力清单发布流、档案导入/处理流、培训资源-需求-计划-申请-记录流。
-2. 按上方“业务逻辑审计起点”逐项收敛：能闭环的先做本地状态闭环，暂不实现的按钮降级或标注。
-3. 建立手机端逐图台账，优先档案、AI 助手、我的。
-4. 继续细化管理端剩余模块：能力画像、教学反思、企业实践、虚拟教研、分析报告。
-5. 对所有“视觉态按钮”标记业务闭环状态，避免误报完成。
+1. 继续扫描并迁移其它页面内大段 mock 数组到 mock service。
+2. 继续迁移页面内仍保留的业务 interface 到 domain types。
+3. 统一 operationMessage、状态枚举和状态文案映射。
+4. 管理端工程重构稳定后，再进入设计系统重构。
+5. 管理端重构阶段完成后，建立手机端逐图台账，优先档案、AI 助手、我的。

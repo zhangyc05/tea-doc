@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  approveTrainingApplication,
+  getTrainingPlanById,
+} from '@/stores/admin/trainingStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -10,38 +14,20 @@ const route = useRoute()
 const planId = route.params.planId as string
 const actionMessage = ref('')
 
-// 计划详情数据
-const planDetail = ref({
-  name: '2026 年暑期数字化教学能力提升培训',
-  direction: '数字化教学',
-  target: '智能制造学院、电子信息学院相关教师',
-  startDate: '2026-07-10',
-  endDate: '2026-07-14',
-  participation: '自主报名',
-  status: '报名中',
-  currentParticipants: 18,
-  maxParticipants: 30,
-  relatedDemand: '数字化教学能力提升需求',
-  relatedResource: '职业教育数字化教学能力提升培训',
-  description: '本次培训旨在提升教师的数字化教学能力，掌握现代教育技术和方法。',
-  organization: '教师发展中心',
-  provider: '省职业教育教师发展中心',
-  applicationRequired: '需要',
-  quota: 30,
-  applicationStartDate: '2026-06-20',
-  applicationEndDate: '2026-07-05',
-  location: '教师发展中心 302 实训室',
-  entry: '腾讯会议链接，开课前开放',
-  schedule: [
-    { date: '2026-07-10', content: '开班仪式，数字化教学理念介绍' },
-    { date: '2026-07-11', content: '数字化教学工具实操训练' },
-    { date: '2026-07-12', content: '在线教学设计与实施' },
-    { date: '2026-07-13', content: '教学数据分析与应用' },
-    { date: '2026-07-14', content: '总结交流，结业考核' },
-  ],
-  materialRequirements: ['培训总结', '培训证书'],
-  recordDestination: '成长档案 / 个人发展维度',
-})
+const planDetail = computed(() => getTrainingPlanById(planId) ?? getTrainingPlanById('summer-digital')!)
+const applicationStartDate = '2026-06-20'
+const applicationEndDate = '2026-07-05'
+const location = '教师发展中心 302 实训室'
+const entry = '腾讯会议链接，开课前开放'
+const schedule = [
+  { date: '2026-07-10', content: '开班仪式，数字化教学理念介绍' },
+  { date: '2026-07-11', content: '数字化教学工具实操训练' },
+  { date: '2026-07-12', content: '在线教学设计与实施' },
+  { date: '2026-07-13', content: '教学数据分析与应用' },
+  { date: '2026-07-14', content: '总结交流，结业考核' },
+]
+const materialRequirements = ['培训总结', '培训证书']
+const recordDestination = '成长档案 / 个人发展维度'
 
 const relatedDemands = [
   {
@@ -66,45 +52,7 @@ const progressNodes = [
   { label: '培训结束', date: '2026-07-14', active: false },
 ]
 
-// 参与教师数据
-const participants = ref([
-  {
-    id: 'lin',
-    name: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    applicationStatus: '已同意',
-    participationStatus: '待开始',
-    materialStatus: '—',
-  },
-  {
-    id: 'chen',
-    name: '陈老师',
-    department: '电子信息学院',
-    major: '软件技术',
-    applicationStatus: '待处理',
-    participationStatus: '待开始',
-    materialStatus: '—',
-  },
-  {
-    id: 'wang',
-    name: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    applicationStatus: '已同意',
-    participationStatus: '待开始',
-    materialStatus: '—',
-  },
-  {
-    id: 'zhao',
-    name: '赵老师',
-    department: '现代服务学院',
-    major: '电子商务',
-    applicationStatus: '已同意',
-    participationStatus: '待开始',
-    materialStatus: '—',
-  },
-])
+const participants = computed(() => planDetail.value.participants)
 
 function goBack() {
   router.push('/admin/training/plans')
@@ -117,7 +65,8 @@ function viewTeacherDetail(teacherId: string) {
 function handleApplication(teacherId: string) {
   const participant = participants.value.find((item) => item.id === teacherId)
   if (!participant) return
-  participant.applicationStatus = '已同意'
+  const applicationId = teacherId === 'lin' ? '1' : teacherId === 'chen' ? '2' : ''
+  if (applicationId) approveTrainingApplication(applicationId)
   actionMessage.value = `已同意 ${participant.name} 的培训申请`
 }
 </script>
@@ -230,7 +179,7 @@ function handleApplication(teacherId: string) {
                   </div>
                   <div class="info-row">
                     <span class="info-label">材料要求：</span>
-                    <span class="info-value">{{ planDetail.materialRequirements.join('、') }}</span>
+                    <span class="info-value">{{ materialRequirements.join('、') }}</span>
                   </div>
                 </div>
               </div>
@@ -273,11 +222,11 @@ function handleApplication(teacherId: string) {
                 <div class="arrangement-grid">
                   <div class="info-row">
                     <span class="info-label">报名时间：</span>
-                    <span class="info-value">{{ planDetail.applicationStartDate }} 至 {{ planDetail.applicationEndDate }}</span>
+                    <span class="info-value">{{ applicationStartDate }} 至 {{ applicationEndDate }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">培训地点：</span>
-                    <span class="info-value">{{ planDetail.location }}</span>
+                    <span class="info-value">{{ location }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">培训时间：</span>
@@ -285,7 +234,7 @@ function handleApplication(teacherId: string) {
                   </div>
                   <div class="info-row">
                     <span class="info-label">线上入口：</span>
-                    <span class="info-value">{{ planDetail.entry }}</span>
+                    <span class="info-value">{{ entry }}</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">培训方式：</span>
@@ -413,7 +362,7 @@ function handleApplication(teacherId: string) {
               <div class="sidebar-content">
                 <div class="material-list">
                   <div
-                    v-for="(material, index) in planDetail.materialRequirements"
+                    v-for="(material, index) in materialRequirements"
                     :key="index"
                     class="material-item"
                   >
@@ -428,7 +377,7 @@ function handleApplication(teacherId: string) {
               <h3 class="sidebar-title">后续记录</h3>
               <div class="sidebar-content">
                 <p class="destination-text">
-                  已进入{{ planDetail.recordDestination }}。
+                  已进入{{ recordDestination }}。
                 </p>
                 <p class="destination-text">
                   可用于个人培训经历记录、聘期要求对照和个人发展报告统计。

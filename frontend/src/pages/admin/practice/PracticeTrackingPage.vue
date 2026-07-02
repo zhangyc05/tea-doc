@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import {
+  getPracticeState,
+  remindPracticeApplication,
+} from '@/stores/admin/practiceStore'
+
+const practiceState = getPracticeState()
 
 // 筛选条件
 const selectedYear = ref('2026 年度')
@@ -11,85 +17,20 @@ const selectedStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeTrackingId = ref('1')
-const operationMessage = ref('')
 
 // 统计数据
-const annualStats = {
-  required: 126,
-  completed: 82,
-  incomplete: 44,
-}
+const annualStats = computed(() => ({
+  required: practiceState.trackings.length,
+  completed: practiceState.trackings.filter(item => item.remainingDays === 0).length,
+  incomplete: practiceState.trackings.filter(item => item.remainingDays > 0).length,
+}))
 
-const currentStats = {
-  pendingReview: 8,
-  inProgress: 12,
-  materialPending: 6,
-}
-
-// 教师实践跟踪数据
-interface PracticeTracking {
-  id: string
-  teacher: string
-  department: string
-  major: string
-  completionStatus: string
-  currentProgress: string
-  recentAction: string
-  requiredDays: number
-  completedDays: number
-  remainingDays: number
-}
-
-const trackings = ref<PracticeTracking[]>([
-  {
-    id: '1',
-    teacher: '林老师',
-    department: '智能制造学院',
-    major: '机电一体化技术',
-    completionStatus: '未完成 30 天，已计入 18 天，还差 12 天',
-    currentProgress: '未启动申请',
-    recentAction: '暂无本年度申请',
-    requiredDays: 30,
-    completedDays: 18,
-    remainingDays: 12,
-  },
-  {
-    id: '2',
-    teacher: '王老师',
-    department: '智能制造学院',
-    major: '工业机器人技术',
-    completionStatus: '未完成 30 天，已计入 20 天，还差 10 天',
-    currentProgress: '实践中',
-    recentAction: '06-10 已提交实践申请',
-    requiredDays: 30,
-    completedDays: 20,
-    remainingDays: 10,
-  },
-  {
-    id: '3',
-    teacher: '赵老师',
-    department: '智能制造学院',
-    major: '机器人一体化专业',
-    completionStatus: '未完成 30 天，已计入 20 天，还差 10 天',
-    currentProgress: '待审核申请',
-    recentAction: '06-18 提交申请',
-    requiredDays: 30,
-    completedDays: 20,
-    remainingDays: 10,
-  },
-  {
-    id: '4',
-    teacher: '陈老师',
-    department: '电子信息学院',
-    major: '软件技术专业',
-    completionStatus: '已完成 30 天',
-    currentProgress: '已完成',
-    recentAction: '05-22 实践记录已归档',
-    requiredDays: 30,
-    completedDays: 30,
-    remainingDays: 0,
-  },
-])
+const currentStats = computed(() => ({
+  pendingReview: practiceState.trackings.filter(item => item.currentProgress === '待审核申请').length,
+  inProgress: practiceState.trackings.filter(item => item.currentProgress === '实践中').length,
+  materialPending: practiceState.records.filter(item => item.currentStatus !== '已归档').length,
+}))
+const trackings = computed(() => practiceState.trackings)
 
 const filteredTrackings = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -113,17 +54,16 @@ const activeTracking = computed(() => {
 
 function remindApply(id: string) {
   activeTrackingId.value = id
-  const target = trackings.value.find((tracking) => tracking.id === id)
-  operationMessage.value = target ? `已提醒 ${target.teacher} 提交企业实践申请。` : '已发送提醒。'
+  remindPracticeApplication(id)
 }
 
 function viewRecord(id: string) {
   activeTrackingId.value = id
-  operationMessage.value = '已在表格中定位该教师实践状态。'
+  practiceState.operationMessage = '已在表格中定位该教师实践状态。'
 }
 
 function exportList() {
-  operationMessage.value = `已准备导出 ${filteredTrackings.value.length} 条教师实践跟踪名单。`
+  practiceState.operationMessage = `已准备导出 ${filteredTrackings.value.length} 条教师实践跟踪名单。`
 }
 
 function resetFilters() {
@@ -134,12 +74,12 @@ function resetFilters() {
   selectedStatus.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  practiceState.operationMessage = '已重置筛选条件。'
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredTrackings.value.length} 条实践跟踪记录。`
+  practiceState.operationMessage = `已筛选出 ${filteredTrackings.value.length} 条实践跟踪记录。`
 }
 </script>
 
@@ -274,7 +214,7 @@ function applyFilters() {
               />
               <button class="btn-reset" @click="resetFilters">重置</button>
               <button class="btn-secondary" @click="applyFilters">查询</button>
-              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+              <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
 
