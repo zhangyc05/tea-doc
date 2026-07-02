@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 type TabKey = 'todo' | 'archive' | 'assistant' | 'activity' | 'profile'
 
 const props = defineProps<{
@@ -187,3 +187,4 @@ function handleTab(path: string) {
   box-shadow: 19rpx 0 0 #09b85a;
 }
 </style>
+
