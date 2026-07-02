@@ -2,32 +2,14 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-
-interface TeacherCard {
-  id: string
-  name: string
-  college: string
-  title: string
-  cycle: string
-  year: string
-  description: string
-  tags: string[]
-  lastUpdate: string
-}
+import { getArchiveQueryMock } from '@/services/mock/archive'
 
 const router = useRouter()
 
 // Hero 区域背景图
 const heroArtImage = new URL('@/images/hero-art.png', import.meta.url).href
 
-// 统计数据
-const stats = {
-  totalTeachers: 428,
-  hasArchive: 428,
-  recentUpdate: 236,
-  needsImprovement: 36,
-  hasCorrection: 18,
-}
+const { stats, collegeOptions, titleOptions, updateOptions, teacherCards } = getArchiveQueryMock()
 
 // 筛选条件
 const searchKeyword = ref('')
@@ -35,82 +17,8 @@ const collegeFilter = ref('全部学院')
 const titleFilter = ref('全部职称')
 const updateFilter = ref('全部')
 
-const collegeOptions = ['全部学院', '智能制造学院', '电子信息学院', '财经学院', '计算机学院', '外国语学院', '艺术设计学院']
-const titleOptions = ['全部职称', '讲师', '副教授', '教授']
-const updateOptions = ['全部', '近期有更新', '内容待完善', '有更正记录']
-
 // 视图切换
 const viewMode = ref('card')
-
-// 教师卡片数据
-const teacherCards = ref<TeacherCard[]>([
-  {
-    id: 'lin',
-    name: '林老师',
-    college: '智能制造学院',
-    title: '讲师',
-    cycle: '2026年度发展周期',
-    year: '聘期第2年',
-    description: '本学期承担 3 门专业课程教学，教学评价良好，已入选至数智课程建设成果 1 项，企业实践基地 20 天。近30日补充课程建设材料 1 条，可支持岗位对照。',
-    tags: ['教学工作较完整', '企业实践已入档', '近30日有更新'],
-    lastUpdate: '2026-06-18',
-  },
-  {
-    id: 'chen',
-    name: '陈老师',
-    college: '电子信息学院',
-    title: '副教授',
-    cycle: '2026年度发展周期',
-    year: '聘期第3年',
-    description: '科研项目阶段成果已入档 2 项，正在推进专利申报。本学期指导学生竞赛获奖 1 项，教学反思记录较完整。近30日更新科研成果材料，可用于岗位对照。',
-    tags: ['教研成果较突出', '有项目记录', '近30日有更新'],
-    lastUpdate: '2026-06-16',
-  },
-  {
-    id: 'wang',
-    name: '王老师',
-    college: '财经学院',
-    title: '讲师',
-    cycle: '2026年度发展周期',
-    year: '聘期第1年',
-    description: '完成 2 门课程教学，学生反馈良好，积极参与教研活动，教研记录已入档。近30日补充听课评课记录，可进一步完善档案。',
-    tags: ['教学稳步推进', '教研参与积极', '近30日有更新'],
-    lastUpdate: '2026-06-17',
-  },
-  {
-    id: 'liu',
-    name: '刘老师',
-    college: '计算机学院',
-    title: '副教授',
-    cycle: '2026年度发展周期',
-    year: '聘期第4年',
-    description: '主持省级教改项目 1 项，阶段成果已入档。课程思政建设成效良好，相关材料已归档。近30日更新项目结题材料，已用于岗位对照。',
-    tags: ['教研成果较突出', '已用于岗位对照', '近30日有更新'],
-    lastUpdate: '2026-06-15',
-  },
-  {
-    id: 'zhao',
-    name: '赵老师',
-    college: '外国语学院',
-    title: '讲师',
-    cycle: '2026年度发展周期',
-    year: '聘期第2年',
-    description: '承担 2 门课程教学，课堂互动与评价过程记录完整。参与课程建设，建设过程证据逐步编写课程课件。档案信息较完整，建议补充企业实践经历。',
-    tags: ['教学工作较完整', '课程建设进行中', '待补充完善'],
-    lastUpdate: '2026-06-12',
-  },
-  {
-    id: 'zhou',
-    name: '周老师',
-    college: '艺术设计学院',
-    title: '讲师',
-    cycle: '2026年度发展周期',
-    year: '聘期第1年',
-    description: '实践教学活动参与度高，相关材料已入档。作品指导记录完整，学生作品获奖 2 项。近30日补充其他成果材料，可进一步完善档案。',
-    tags: ['实践教学突出', '成果转化进行中', '近30日有更新'],
-    lastUpdate: '2026-06-14',
-  },
-])
 
 function resetFilters() {
   searchKeyword.value = ''

@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
+import { getTrainingPlanDetailMock } from '@/services/mock/training'
 import {
   approveTrainingApplication,
   getTrainingPlanById,
@@ -12,45 +14,20 @@ const route = useRoute()
 
 // 从路由参数获取计划ID
 const planId = route.params.planId as string
-const actionMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const planDetail = computed(() => getTrainingPlanById(planId) ?? getTrainingPlanById('summer-digital')!)
-const applicationStartDate = '2026-06-20'
-const applicationEndDate = '2026-07-05'
-const location = '教师发展中心 302 实训室'
-const entry = '腾讯会议链接，开课前开放'
-const schedule = [
-  { date: '2026-07-10', content: '开班仪式，数字化教学理念介绍' },
-  { date: '2026-07-11', content: '数字化教学工具实操训练' },
-  { date: '2026-07-12', content: '在线教学设计与实施' },
-  { date: '2026-07-13', content: '教学数据分析与应用' },
-  { date: '2026-07-14', content: '总结交流，结业考核' },
-]
-const materialRequirements = ['培训总结', '培训证书']
-const recordDestination = '成长档案 / 个人发展维度'
-
-const relatedDemands = [
-  {
-    direction: '数字化教学',
-    source: '能力画像观察',
-    target: '24 名教师',
-    note: '课堂数据应用与数字资源建设需求集中',
-  },
-  {
-    direction: 'AI 赋能课程建设',
-    source: '教师主动提出',
-    target: '8 名教师',
-    note: '教师主动提出相关学习需求',
-  },
-]
-
-const progressNodes = [
-  { label: '计划创建', date: '2026-06-10', active: true },
-  { label: '计划发布', date: '2026-06-18', active: true },
-  { label: '报名截止', date: '2026-07-05', active: true },
-  { label: '培训开始', date: '2026-07-10', active: false },
-  { label: '培训结束', date: '2026-07-14', active: false },
-]
+const {
+  applicationStartDate,
+  applicationEndDate,
+  location,
+  entry,
+  schedule,
+  materialRequirements,
+  recordDestination,
+  relatedDemands,
+  progressNodes,
+} = getTrainingPlanDetailMock()
 
 const participants = computed(() => planDetail.value.participants)
 
@@ -67,7 +44,7 @@ function handleApplication(teacherId: string) {
   if (!participant) return
   const applicationId = teacherId === 'lin' ? '1' : teacherId === 'chen' ? '2' : ''
   if (applicationId) approveTrainingApplication(applicationId)
-  actionMessage.value = `已同意 ${participant.name} 的培训申请`
+  operationMessage.set(`已同意 ${participant.name} 的培训申请`)
 }
 </script>
 
@@ -272,7 +249,7 @@ function handleApplication(teacherId: string) {
                 <h2 class="card-title">参与教师</h2>
               </div>
               <div class="card-body">
-                <p v-if="actionMessage" class="action-message">{{ actionMessage }}</p>
+                <p v-if="operationMessage.text.value" class="action-message">{{ operationMessage.text.value }}</p>
                 <table class="participants-table">
                   <thead>
                     <tr>

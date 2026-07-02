@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import { getAbilityListBaseMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -18,54 +19,16 @@ import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/i
 import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
 import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
-type AbilityChild = {
-  key: string
-  label: string
-}
-
-type AbilityNode = {
-  key: string
-  label: string
-  icon: string
-  children?: AbilityChild[]
-}
-
 const router = useRouter()
 const abilityListState = getAbilityListState()
 
-const abilityTree: AbilityNode[] = [
-  {
-    key: 'basic',
-    label: '基本能力',
-    icon: iconAbilityBasic,
-  },
-  {
-    key: 'teaching',
-    label: '教学能力',
-    icon: iconAbilityTeaching,
-    children: [
-      { key: 'teaching-design', label: '教学设计与实施' },
-      { key: 'teaching-resource', label: '教学资源开发' },
-      { key: 'teaching-evaluation', label: '教学评价与反馈' },
-      { key: 'teaching-innovation', label: '教学创新与改进' },
-    ],
-  },
-  {
-    key: 'research',
-    label: '教研能力',
-    icon: iconAbilityResearch,
-  },
-  {
-    key: 'practice',
-    label: '实践能力',
-    icon: iconAbilityPractice,
-  },
-  {
-    key: 'service',
-    label: '服务能力',
-    icon: iconAbilityService,
-  },
-]
+const { abilityTree } = getAbilityListBaseMock({
+  basic: iconAbilityBasic,
+  teaching: iconAbilityTeaching,
+  research: iconAbilityResearch,
+  practice: iconAbilityPractice,
+  service: iconAbilityService,
+})
 
 const selectedAbility = ref('teaching-design')
 const selectedIndicator = ref<AbilityIndicator | null>(null)

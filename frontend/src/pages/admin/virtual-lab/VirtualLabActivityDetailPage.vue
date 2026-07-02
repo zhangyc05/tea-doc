@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
+import { getVirtualLabActivityDetailMock } from '@/services/mock/virtual-lab'
 import {
   formVirtualLabRecordFromActivity,
   getVirtualLabActivity,
@@ -14,7 +16,7 @@ const route = useRoute()
 const virtualLabState = getVirtualLabState()
 
 const activityId = computed(() => String(route.params.activityId ?? 'smart-line-seminar'))
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const activityInfo = computed(() => {
   const activity = getVirtualLabActivity(activityId.value)
@@ -35,115 +37,28 @@ const statusCard = computed(() => ({
   dataSource: activityInfo.value.meetingMethod,
 }))
 
-interface Participant {
-  id: string
-  name: string
-  avatar: string
-  role: string
-  participationType: string
-  timeRange: string
-  status: string
-}
-
-const participants: Participant[] = [
-  {
-    id: '1',
-    name: '周明',
-    avatar: '周',
-    role: '负责人',
-    participationType: '腾讯会议参会',
-    timeRange: '14:00 ~ 16:00',
-    status: '已关联',
-  },
-  {
-    id: '2',
-    name: '林老师',
-    avatar: '林',
-    role: '成员',
-    participationType: '腾讯会议参会',
-    timeRange: '14:05 ~ 15:58',
-    status: '已关联',
-  },
-  {
-    id: '3',
-    name: '王老师',
-    avatar: '王',
-    role: '成员',
-    participationType: '任务分工',
-    timeRange: '全程参与',
-    status: '已关联',
-  },
-  {
-    id: '4',
-    name: '李老师',
-    avatar: '李',
-    role: '成员',
-    participationType: '腾讯会议参会',
-    timeRange: '14:02 ~ 15:50',
-    status: '已关联',
-  },
-]
+const { participants, timeline } = getVirtualLabActivityDetailMock()
 
 const materials = computed(() => getVirtualLabMaterialsByActivity(activityId.value))
 const formedRecord = computed(() => virtualLabState.records.find(record => record.sourceActivityId === activityId.value) ?? null)
 
-interface TimelineItem {
-  id: string
-  event: string
-  operator: string
-  time: string
-}
-
-const timeline: TimelineItem[] = [
-  {
-    id: '1',
-    event: '活动创建',
-    operator: '周明',
-    time: '06-12 10:30',
-  },
-  {
-    id: '2',
-    event: '会议开始',
-    operator: '腾讯会议',
-    time: '06-18 14:00',
-  },
-  {
-    id: '3',
-    event: '会议结束',
-    operator: '腾讯会议',
-    time: '06-18 16:00',
-  },
-  {
-    id: '4',
-    event: '系统生成会议纪要',
-    operator: '系统',
-    time: '06-18 16:20',
-  },
-  {
-    id: '5',
-    event: '教研记录形成',
-    operator: '系统',
-    time: '06-18 16:20',
-  },
-]
-
 function editActivity() {
-  operationMessage.value = '已进入活动信息校对状态。'
+  operationMessage.set('已进入活动信息校对状态。')
 }
 
 function viewMeetingRecord() {
-  operationMessage.value = `已定位会议记录：${activityInfo.value.meetingMethod} ${activityInfo.value.meetingNo}。`
+  operationMessage.set(`已定位会议记录：${activityInfo.value.meetingMethod} ${activityInfo.value.meetingNo}。`)
 }
 
 function viewMaterial(id: string) {
   const material = materials.value.find((item) => item.id === id)
-  operationMessage.value = material ? `当前查看资料：${material.name}。` : '当前查看资料。'
+  operationMessage.set(material ? `当前查看资料：${material.name}。` : '当前查看资料。')
 }
 
 function viewRecord() {
   if (!formedRecord.value) {
     const record = formVirtualLabRecordFromActivity(activityId.value)
-    operationMessage.value = virtualLabState.operationMessage
+    operationMessage.fromStore(virtualLabState)
     if (!record) return
     router.push(`/admin/virtual-lab/records/${record.id}`)
     return
@@ -192,7 +107,7 @@ function goBack() {
                 <span>会议方式：{{ activityInfo.meetingMethod }}</span>
                 <span>活动说明：{{ activityInfo.description }}</span>
               </div>
-              <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
+              <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
               <span class="activity-id">当前活动 ID：{{ activityId }}</span>
             </div>
             <div class="header-actions">
@@ -245,12 +160,12 @@ function goBack() {
           <div class="content-card participants-card">
             <div class="card-header">
               <h2>会议与参与情况</h2>
-              <button class="btn-link" @click="operationMessage = '已展示全部 18 位参与教师。'">查看全部(18) ›</button>
+              <button class="btn-link" @click="operationMessage.set('已展示全部 18 位参与教师。')">查看全部(18) ›</button>
             </div>
             <div class="participants-content">
               <div class="meeting-info">
                 <div><span>会议平台：</span><strong>{{ activityInfo.meetingMethod }}</strong></div>
-                <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="operationMessage = '会议号已复制。'">⧉</button></div>
+                <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="operationMessage.set('会议号已复制。')">⧉</button></div>
                 <div><span>会议时间：</span><strong>{{ activityInfo.time }}</strong></div>
                 <div><span>会议主题：</span><strong>{{ activityInfo.name }}</strong></div>
                 <div><span>同步状态：</span><strong class="green">● 已同步</strong></div>

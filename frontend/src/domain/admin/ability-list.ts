@@ -49,6 +49,67 @@ export type ExecutionVersion = {
   operator: string
 }
 
+export type AbilityListIconMap = {
+  basic: string
+  teaching: string
+  research: string
+  practice: string
+  service: string
+}
+
+export type AbilityListTreeChild = {
+  key: string
+  label: string
+}
+
+export type AbilityListTreeNode = {
+  key: string
+  label: string
+  icon: string
+  color?: 'blue' | 'orange' | 'green' | 'purple' | 'gray'
+  children?: AbilityListTreeChild[]
+}
+
+export type AbilityListOption = {
+  key: string
+  label: string
+  icon?: string
+}
+
+export type AbilityListImpactCard = {
+  title: string
+  description: string
+  icon: string
+  tone: string
+}
+
+export type RequirementGroup = {
+  key: string
+  label: string
+  children: AbilityListTreeChild[]
+}
+
+export type AbilityListBaseMock = {
+  abilityTree: AbilityListTreeNode[]
+}
+
+export type AbilityListExecutionMock = {
+  abilityTree: AbilityListTreeNode[]
+}
+
+export type AbilityListOptimizationMock = {
+  suggestionSources: AbilityListOption[]
+  filterTags: AbilityListOption[]
+}
+
+export type AbilityListPublishConfirmMock = {
+  impactCards: AbilityListImpactCard[]
+}
+
+export type AbilityListRequirementMappingMock = {
+  requirementGroups: RequirementGroup[]
+}
+
 export type AbilityListState = {
   baseTemplateIndicators: AbilityIndicator[]
   executionVersion: ExecutionVersion

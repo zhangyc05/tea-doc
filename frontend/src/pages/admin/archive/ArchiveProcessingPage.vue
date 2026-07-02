@@ -4,6 +4,10 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import heroArt from '@/images/hero-art.png'
 import {
+  createArchiveProcessingRecordDetail,
+  getArchiveProcessingMock,
+} from '@/services/mock/archive'
+import {
   confirmArchiveRecord,
   getArchiveState,
   markArchiveRecordException,
@@ -11,23 +15,9 @@ import {
   type ArchiveProcessingRecord,
 } from '@/stores/admin/archiveStore'
 
-interface RecordDetail {
-  teacher: string
-  dimension: string
-  updateTime: string
-  courseName?: string
-  achievementType?: string
-  projectTime?: string
-  achievementLevel?: string
-  uploader: string
-  uploadBatch: string
-  originalFile: string
-  issues: string[]
-  processingHistory: string[]
-}
-
 const router = useRouter()
 const archiveState = getArchiveState()
+const { sourceOptions: archiveSourceOptions } = getArchiveProcessingMock()
 
 // 统计数据
 const statCards = computed(() => [
@@ -53,10 +43,9 @@ const statusOptions = computed(() => [
 ])
 
 const sourceOptions = computed(() => {
-  const sources = ['发展活动', '部门上报', '教研成果', '公开征集', '科研申报']
   return [
     { label: '全部来源', value: '全部来源', count: archiveState.processingRecords.length },
-    ...sources.map(source => ({
+    ...archiveSourceOptions.map(source => ({
       label: source,
       value: source,
       count: archiveState.processingRecords.filter(record => record.source === source).length,
@@ -87,38 +76,9 @@ const selectedRecord = computed(() => {
     ?? null
 })
 
-const recordDetail = computed<RecordDetail | null>(() => {
+const recordDetail = computed(() => {
   if (!selectedRecord.value) return null
-
-  // 默认展示精品课程建设立项材料的详情
-  if (selectedRecord.value.id === '2') {
-    return {
-      teacher: '林老师',
-      dimension: '教师培训',
-      updateTime: '2026-06-18 15:40',
-      courseName: '智能制造基础',
-      achievementType: '精品课程建设',
-      projectTime: '2024-03',
-      achievementLevel: '校级别',
-      uploader: selectedRecord.value.uploader,
-      uploadBatch: selectedRecord.value.uploadBatch,
-      originalFile: selectedRecord.value.originalFile,
-      issues: selectedRecord.value.issues,
-      processingHistory: selectedRecord.value.processingHistory,
-    }
-  }
-
-  // 其他记录的通用详情
-  return {
-    teacher: selectedRecord.value.teacher,
-    dimension: selectedRecord.value.dimension,
-    updateTime: `2026-${selectedRecord.value.updateTime}`,
-    uploader: selectedRecord.value.uploader,
-    uploadBatch: selectedRecord.value.uploadBatch,
-    originalFile: selectedRecord.value.originalFile,
-    issues: selectedRecord.value.issues,
-    processingHistory: selectedRecord.value.processingHistory,
-  }
+  return createArchiveProcessingRecordDetail(selectedRecord.value)
 })
 
 function selectRecord(record: ArchiveProcessingRecord) {

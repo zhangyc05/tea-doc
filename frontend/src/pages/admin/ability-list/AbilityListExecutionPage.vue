@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
-import type { AbilityTreeNode, AbilityIndicator } from '@/components/admin/ability-list/types'
+import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import { getAbilityListExecutionMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -17,6 +18,13 @@ import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/ic
 
 const router = useRouter()
 const abilityListState = getAbilityListState()
+const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
+  basic: iconAbilityBasic,
+  teaching: iconAbilityTeaching,
+  research: iconAbilityResearch,
+  practice: iconAbilityPractice,
+  service: iconAbilityService,
+})
 
 // 编辑抽屉状态
 const editingIndicator = ref<AbilityIndicator | null>(null)
@@ -46,45 +54,6 @@ function saveEdit() {
   })
   closeEditDrawer()
 }
-
-const normalizedAbilityTree: AbilityTreeNode[] = [
-  {
-    key: 'basic',
-    label: '基本能力',
-    icon: iconAbilityBasic,
-    color: 'blue',
-  },
-  {
-    key: 'teaching',
-    label: '教学能力',
-    icon: iconAbilityTeaching,
-    color: 'blue',
-    children: [
-      { key: 'teaching-design', label: '教学设计与实施' },
-      { key: 'teaching-resource', label: '教学资源开发' },
-      { key: 'teaching-evaluation', label: '教学评价与反馈' },
-      { key: 'teaching-innovation', label: '教学创新与改进' },
-    ],
-  },
-  {
-    key: 'research',
-    label: '教研能力',
-    icon: iconAbilityResearch,
-    color: 'orange',
-  },
-  {
-    key: 'practice',
-    label: '实践能力',
-    icon: iconAbilityPractice,
-    color: 'green',
-  },
-  {
-    key: 'service',
-    label: '服务能力',
-    icon: iconAbilityService,
-    color: 'purple',
-  },
-]
 
 const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.executionIndicators)
 const versionRows = computed(() => [

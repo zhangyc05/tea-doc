@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import { createVirtualLabRoom, getVirtualLabState } from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
@@ -13,7 +14,7 @@ const selectedActivity = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const viewMode = ref<'card' | 'table'>('card')
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const stats = computed(() => ({
   totalRooms: virtualLabState.rooms.length,
@@ -46,7 +47,7 @@ function createRoom() {
   searchQuery.value = ''
   appliedSearchQuery.value = ''
   viewMode.value = 'card'
-  operationMessage.value = virtualLabState.operationMessage
+  operationMessage.fromStore(virtualLabState)
 }
 
 function resetFilters() {
@@ -55,12 +56,12 @@ function resetFilters() {
   selectedActivity.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
-  operationMessage.value = '已重置筛选条件。'
+  operationMessage.set('已重置筛选条件。')
 }
 
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
-  operationMessage.value = `已筛选出 ${filteredRooms.value.length} 个教研室。`
+  operationMessage.set(`已筛选出 ${filteredRooms.value.length} 个教研室。`)
 }
 
 function viewDetail(roomId: string) {
@@ -171,7 +172,7 @@ function viewDetail(roomId: string) {
             <div class="search-row">
               <button class="btn-reset" @click="resetFilters">重置</button>
               <button class="btn-secondary" @click="applyFilters">查询</button>
-              <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
+              <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
             </div>
           </div>
 

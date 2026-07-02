@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import type { ArchiveProcessingRecord, ArchiveUploadedFile } from '@/domain/admin/archive'
 import {
   addArchiveUploadedFilesInState,
+  cancelArchiveImportBatchInState,
   completeArchiveBatchRecognitionInState,
   confirmArchiveBatchRecognitionInState,
   confirmArchiveRecordInState,
@@ -57,6 +58,10 @@ export function ensureArchiveImportBatch(batchId: string) {
 
 export function completeArchiveBatchRecognition(batchId: string) {
   return completeArchiveBatchRecognitionInState(state, batchId)
+}
+
+export function cancelArchiveImportBatch(batchId: string) {
+  return cancelArchiveImportBatchInState(state, batchId)
 }
 
 export function confirmArchiveBatchRecognition(batchId: string) {

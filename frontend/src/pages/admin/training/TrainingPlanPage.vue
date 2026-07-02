@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
+import { getTrainingPlanPageMock } from '@/services/mock/training'
 import {
   createTrainingPlan,
   getTrainingState,
@@ -19,13 +21,17 @@ const selectedStatus = ref('全部')
 const selectedYear = ref('2026 年度')
 const selectedParticipation = ref('全部')
 const searchQuery = ref('')
-const planNotice = ref('')
+const operationMessage = useOperationMessage()
 
-// 筛选项数据
-const organizations = ['全校', '智能制造学院', '电子信息学院', '商贸管理学院', '汽车工程学院']
-const statuses = ['全部', '草稿', '报名中', '进行中', '已完成', '材料待完善']
-const years = ['2026 年度', '2025 年度', '2024 年度']
-const participationModes = ['全部', '自主报名', '定向推荐', '指定参加']
+const {
+  organizations,
+  statuses,
+  years,
+  participationModes,
+  reminders,
+  applicationOptions,
+  materialOptions,
+} = getTrainingPlanPageMock()
 
 // 统计数据
 const stats = computed(() => ({
@@ -35,13 +41,6 @@ const stats = computed(() => ({
   materialIncomplete: trainingState.plans.filter(plan => plan.status === '材料待完善').length,
 }))
 const trainingPlans = computed(() => trainingState.plans)
-
-// 执行提醒
-const reminders = [
-  '草稿待发布：2 个培训计划已创建，尚未发布。',
-  '报名即将截止：3 个培训计划将在 3 天内结束报名。',
-  '材料待完善：5 个培训计划已结束，仍有教师待确认总结或补充证书。',
-]
 
 function openDrawer() {
   showDrawer.value = true
@@ -57,13 +56,13 @@ function viewDetail(id: string) {
 
 function saveDraft() {
   const plan = createPlanFromForm('draft')
-  planNotice.value = `已保存草稿：${plan.name}`
+  operationMessage.set(`已保存草稿：${plan.name}`)
   closeDrawer()
 }
 
 function saveAndPublish() {
   const plan = createPlanFromForm('published')
-  planNotice.value = `已发布培训计划：${plan.name}`
+  operationMessage.set(`已发布培训计划：${plan.name}`)
   closeDrawer()
 }
 
@@ -90,9 +89,6 @@ const newPlan = ref({
   materialRequirements: [],
   description: '',
 })
-
-const applicationOptions = ['需要', '不需要']
-const materialOptions = ['培训总结', '培训证书', '其他材料']
 
 const filteredPlans = computed(() => {
   const keyword = searchQuery.value.trim()
@@ -226,7 +222,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                     class="search-input"
                   />
                 </div>
-                <p v-if="planNotice" class="plan-notice">{{ planNotice }}</p>
+                <p v-if="operationMessage.text.value" class="plan-notice">{{ operationMessage.text.value }}</p>
               </div>
 
               <!-- 数据表格 -->

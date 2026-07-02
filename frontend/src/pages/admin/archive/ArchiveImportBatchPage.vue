@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
+  cancelArchiveImportBatch,
   completeArchiveBatchRecognition,
   confirmArchiveBatchRecognition,
   ensureArchiveImportBatch,
@@ -16,9 +17,18 @@ const router = useRouter()
 const batchId = computed(() => String(route.params.batchId || '20260620-01'))
 const batchInfo = computed(() => ensureArchiveImportBatch(batchId.value))
 const isCompleted = computed(() => batchInfo.value.status === 'recognized' || batchInfo.value.status === 'confirmed')
+const isCancelled = computed(() => batchInfo.value.status === 'cancelled')
 
 // 步骤进度
 const steps = computed(() => {
+  if (isCancelled.value) {
+    return [
+      { label: '已接收上传文件', status: '已完成' },
+      { label: '已取消识别任务', status: '已取消' },
+      { label: '未生成档案处理记录', status: '已取消' },
+    ]
+  }
+
   if (isCompleted.value) {
     return [
       { label: '已接收上传文件', status: '已完成' },
@@ -47,6 +57,7 @@ const recognitionResult = computed(() => batchInfo.value.recognitionResult)
 function stepStatusClass(status: string) {
   if (status === '已完成') return 'completed'
   if (status === '处理中') return 'processing'
+  if (status === '已取消') return 'cancelled'
   return 'pending'
 }
 
@@ -56,6 +67,7 @@ function fileStatusClass(status: ArchiveBatchFile['batchStatus']) {
     '解析中': 'text-warning',
     '已解析': 'text-success',
     '等待处理': 'text-neutral',
+    '已取消': 'text-neutral',
   }
   return classMap[status] || 'text-neutral'
 }
@@ -63,27 +75,27 @@ function fileStatusClass(status: ArchiveBatchFile['batchStatus']) {
 const resultRows = computed(() => [
   {
     label: '可生成待确认记录',
-    value: isCompleted.value ? recognitionResult.value.pendingConfirm : '--',
+    value: isCompleted.value && !isCancelled.value ? recognitionResult.value.pendingConfirm : '--',
     tone: 'blue',
   },
   {
     label: '需要补充',
-    value: isCompleted.value ? recognitionResult.value.needSupplement : '--',
+    value: isCompleted.value && !isCancelled.value ? recognitionResult.value.needSupplement : '--',
     tone: 'orange',
   },
   {
     label: '需要核验',
-    value: isCompleted.value ? recognitionResult.value.needVerify : '--',
+    value: isCompleted.value && !isCancelled.value ? recognitionResult.value.needVerify : '--',
     tone: 'green',
   },
   {
     label: '异常待处理',
-    value: isCompleted.value ? recognitionResult.value.exception : '--',
+    value: isCompleted.value && !isCancelled.value ? recognitionResult.value.exception : '--',
     tone: 'red',
   },
   {
     label: '疑似重复',
-    value: isCompleted.value ? recognitionResult.value.duplicate : '--',
+    value: isCompleted.value && !isCancelled.value ? recognitionResult.value.duplicate : '--',
     tone: 'purple',
   },
 ])
@@ -102,6 +114,7 @@ function confirmResult() {
 }
 
 function cancelTask() {
+  cancelArchiveImportBatch(batchId.value)
   router.push('/admin/archive/processing')
 }
 
@@ -135,21 +148,23 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
           <span class="current">导入批次详情</span>
         </div>
 
-        <section class="hero-card" :class="{ completed: isCompleted }">
+        <section class="hero-card" :class="{ completed: isCompleted, cancelled: isCancelled }">
           <div class="hero-head">
             <div>
               <h1>导入批次详情</h1>
               <p>
                 {{
-                  isCompleted
-                    ? '资料已识别完成，系统已整理资料内容、关联教师和建议归档维度。请确认识别结果后生成待处理记录。'
-                    : '资料已提交，系统正在后台识别资料内容、关联教师和建议归档维度。识别完成后，需人工确认后才会生成待处理记录。'
+                  isCancelled
+                    ? '本次导入任务已取消，系统不会继续识别资料，也不会生成档案处理记录。'
+                    : isCompleted
+                      ? '资料已识别完成，系统已整理资料内容、关联教师和建议归档维度。请确认识别结果后生成待处理记录。'
+                      : '资料已提交，系统正在后台识别资料内容、关联教师和建议归档维度。识别完成后，需人工确认后才会生成待处理记录。'
                 }}
               </p>
             </div>
-            <span class="state-pill" :class="{ completed: isCompleted }">
+            <span class="state-pill" :class="{ completed: isCompleted, cancelled: isCancelled }">
               <i></i>
-              {{ isCompleted ? '识别完成' : '识别中' }}
+              {{ isCancelled ? '已取消' : isCompleted ? '识别完成' : '识别中' }}
             </span>
           </div>
 
@@ -177,8 +192,8 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
               </div>
               <div class="info-item">
                 <span class="info-label">当前状态：</span>
-                <span class="inline-status" :class="{ completed: isCompleted }">
-                  {{ isCompleted ? '识别完成' : '识别中' }}
+                <span class="inline-status" :class="{ completed: isCompleted, cancelled: isCancelled }">
+                  {{ isCancelled ? '已取消' : isCompleted ? '识别完成' : '识别中' }}
                 </span>
               </div>
             </div>
@@ -188,13 +203,15 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
             </div>
           </div>
 
-          <div class="tip-banner" :class="{ success: isCompleted }">
-            <span class="tip-icon">{{ isCompleted ? '✓' : 'i' }}</span>
+          <div class="tip-banner" :class="{ success: isCompleted, cancelled: isCancelled }">
+            <span class="tip-icon">{{ isCancelled ? '!' : isCompleted ? '✓' : 'i' }}</span>
             <span class="tip-text">
               {{
-                isCompleted
-                  ? '识别已完成，请查看识别结果并确认后生成待处理记录。'
-                  : '你可以先离开当前页面，识别完成后再回来查看结果。'
+                isCancelled
+                  ? '本批次已取消，返回档案处理页后不会出现该批次生成的待处理记录。'
+                  : isCompleted
+                    ? '识别已完成，请查看识别结果并确认后生成待处理记录。'
+                    : '你可以先离开当前页面，识别完成后再回来查看结果。'
               }}
             </span>
           </div>
@@ -258,7 +275,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
               <h3 class="section-title">识别结果</h3>
               <div v-if="!isCompleted" class="result-placeholder">
                 <div class="result-graphic" aria-hidden="true"></div>
-                <p class="placeholder-text">系统正在整理本批次资料，识别完成后将在这里展示结果。</p>
+                <p class="placeholder-text">
+                  {{ isCancelled ? '本批次已取消，不再展示识别结果。' : '系统正在整理本批次资料，识别完成后将在这里展示结果。' }}
+                </p>
               </div>
               <div v-else class="result-data">
                 <p class="result-summary">共识别出 <strong>{{ recognitionResult.totalRecords }}</strong> 条教师相关记录</p>
@@ -282,20 +301,20 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
                 <ul class="instructions-list">
                   <li class="instruction-item">
                     <span class="instruction-text">
-                      {{ isCompleted ? '资料识别已完成，尚未直接写入教师档案。' : '资料识别在后台进行，不会直接写入教师档案。' }}
+                      {{ isCancelled ? '本批次已取消，不会写入教师档案。' : isCompleted ? '资料识别已完成，尚未直接写入教师档案。' : '资料识别在后台进行，不会直接写入教师档案。' }}
                     </span>
                   </li>
                   <li class="instruction-item">
                     <span class="instruction-text">
-                      {{ isCompleted ? '请先确认识别结果，再生成待处理记录。' : '识别完成后，需人工确认后才会生成待处理记录。' }}
+                      {{ isCancelled ? '取消后不会生成待处理记录。' : isCompleted ? '请先确认识别结果，再生成待处理记录。' : '识别完成后，需人工确认后才会生成待处理记录。' }}
                     </span>
                   </li>
                   <li class="instruction-item">
                     <span class="instruction-text">
-                      {{ isCompleted ? '生成待处理记录后，可在档案处理工作台继续处理。' : '如部分文件暂时无法识别，系统会先处理其余资料。' }}
+                      {{ isCancelled ? '如需重新导入，请回到上传资料页重新创建批次。' : isCompleted ? '生成待处理记录后，可在档案处理工作台继续处理。' : '如部分文件暂时无法识别，系统会先处理其余资料。' }}
                     </span>
                   </li>
-                  <li class="instruction-item" v-if="isCompleted">
+                  <li class="instruction-item" v-if="isCompleted && !isCancelled">
                     <span class="instruction-text">如发现识别不准确，可在下一步中调整。</span>
                   </li>
                 </ul>
@@ -308,10 +327,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
       <!-- 底部操作按钮 -->
       <section class="actions-section">
         <button class="btn-secondary" @click="returnToProcessing">返回档案处理</button>
-        <button v-if="!isCompleted" class="btn-outline" @click="cancelTask">取消本次任务</button>
-        <button v-if="!isCompleted" class="btn-primary" @click="refreshStatus">刷新状态</button>
-        <button v-if="isCompleted" class="btn-outline" @click="viewUploadedFiles">查看上传文件</button>
-        <button v-if="isCompleted" class="btn-primary" @click="confirmResult">确认识别结果</button>
+        <button v-if="!isCompleted && !isCancelled" class="btn-outline" @click="cancelTask">取消本次任务</button>
+        <button v-if="!isCompleted && !isCancelled" class="btn-primary" @click="refreshStatus">刷新状态</button>
+        <button v-if="isCompleted && !isCancelled" class="btn-outline" @click="viewUploadedFiles">查看上传文件</button>
+        <button v-if="isCompleted && !isCancelled" class="btn-primary" @click="confirmResult">确认识别结果</button>
       </section>
     </div>
   </AdminLayout>
@@ -414,7 +433,17 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   color: #139139;
 }
 
+.state-pill.cancelled {
+  border-color: #d8e0ec;
+  background: #f2f5f9;
+  color: #5b6c84;
+}
+
 .state-pill.completed i {
+  animation: none;
+}
+
+.state-pill.cancelled i {
   animation: none;
 }
 
@@ -430,6 +459,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .hero-card.completed .hero-body {
   background: linear-gradient(100deg, #fff 0%, #fff 72%, #edf9ef 100%);
+}
+
+.hero-card.cancelled .hero-body {
+  background: linear-gradient(100deg, #fff 0%, #fff 72%, #f2f5f9 100%);
 }
 
 .info-grid {
@@ -472,6 +505,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .inline-status.completed {
   background: #e9f8ee;
   color: #139139;
+}
+
+.inline-status.cancelled {
+  background: #eef2f7;
+  color: #5b6c84;
 }
 
 .hero-illustration {
@@ -539,6 +577,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   box-shadow: 0 12px 24px rgba(36, 165, 71, 0.2);
 }
 
+.hero-card.cancelled .doc-card {
+  background: linear-gradient(135deg, #9aa9bd, #60708b);
+  box-shadow: 0 12px 24px rgba(96, 112, 139, 0.16);
+}
+
 .lens {
   position: absolute;
   right: 16px;
@@ -565,8 +608,16 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   border-color: rgba(28, 164, 67, 0.72);
 }
 
+.hero-card.cancelled .lens {
+  border-color: rgba(96, 112, 139, 0.58);
+}
+
 .hero-card.completed .lens::after {
   background: #1ca443;
+}
+
+.hero-card.cancelled .lens::after {
+  background: #60708b;
 }
 
 .tip-banner {
@@ -595,6 +646,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   border-color: #c9efd3;
 }
 
+.tip-banner.cancelled {
+  background: #f2f5f9;
+  border-color: #d8e0ec;
+}
+
 .tip-icon {
   display: inline-flex;
   align-items: center;
@@ -612,6 +668,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .success .tip-icon {
   background: #139139;
+}
+
+.cancelled .tip-icon {
+  background: #6c7a90;
 }
 
 .tip-text {
@@ -713,6 +773,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   animation: pulse 2s infinite;
 }
 
+.step-item.cancelled .step-dot {
+  background: #eef2f7;
+  color: #6c7a90;
+}
+
 .step-line {
   position: absolute;
   top: 28px;
@@ -725,6 +790,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .step-item.completed .step-line {
   background: #c8eecf;
+}
+
+.step-item.cancelled .step-line {
+  background: #d8e0ec;
 }
 
 .step-content {
@@ -761,6 +830,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .step-item.processing .step-status {
   background: #eaf2ff;
   color: #075cf2;
+}
+
+.step-item.cancelled .step-status {
+  background: #eef2f7;
+  color: #6c7a90;
 }
 
 .files-section {

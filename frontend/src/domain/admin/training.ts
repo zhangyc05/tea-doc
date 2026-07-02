@@ -101,6 +101,72 @@ export type TrainingRecord = {
   materials: TrainingMaterial[]
 }
 
+export type TrainingPlanPageMock = {
+  organizations: string[]
+  statuses: string[]
+  years: string[]
+  participationModes: string[]
+  reminders: string[]
+  applicationOptions: string[]
+  materialOptions: string[]
+}
+
+export type TrainingPlanScheduleItem = {
+  date: string
+  content: string
+}
+
+export type TrainingRelatedDemand = {
+  direction: string
+  source: string
+  target: string
+  note: string
+}
+
+export type TrainingProgressNode = {
+  label: string
+  date: string
+  active: boolean
+}
+
+export type TrainingPlanDetailMock = {
+  applicationStartDate: string
+  applicationEndDate: string
+  location: string
+  entry: string
+  schedule: TrainingPlanScheduleItem[]
+  materialRequirements: string[]
+  recordDestination: string
+  relatedDemands: TrainingRelatedDemand[]
+  progressNodes: TrainingProgressNode[]
+}
+
+export type TrainingLearningRecord = {
+  date: string
+  content: string
+  status: string
+}
+
+export type TrainingSummary = {
+  content: string
+  submitTime: string
+}
+
+export type TrainingRelatedRecord = {
+  id: string
+  name: string
+  teacher: string
+  level: string
+  hours: string
+  materialStatus: string
+}
+
+export type TrainingRecordDetailMock = {
+  learningRecords: TrainingLearningRecord[]
+  trainingSummary: TrainingSummary
+  relatedRecords: TrainingRelatedRecord[]
+}
+
 export type TrainingState = {
   resources: TrainingResource[]
   demands: TrainingDemand[]

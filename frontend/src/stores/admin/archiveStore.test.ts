@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   addArchiveUploadedFiles,
+  cancelArchiveImportBatch,
   completeArchiveBatchRecognition,
   confirmArchiveBatchRecognition,
   confirmArchiveRecord,
@@ -48,6 +49,18 @@ describe('archive business state', () => {
     expect(completedBatch?.status).toBe('recognized')
     expect(completedBatch?.recognitionResult.totalRecords).toBe(36)
     expect(completedBatch?.recognitionResult.pendingConfirm).toBe(18)
+  })
+
+  it('cancels a recognizing batch without generating processing records', () => {
+    const batch = createArchiveImportBatch()
+
+    const cancelledBatch = cancelArchiveImportBatch(batch.id)
+    const state = getArchiveState()
+
+    expect(cancelledBatch?.status).toBe('cancelled')
+    expect(cancelledBatch?.files.every(file => file.batchStatus === '已取消')).toBe(true)
+    expect(state.processingRecords.some(record => record.batchId === batch.id)).toBe(false)
+    expect(state.operationMessage).toContain('已取消')
   })
 
   it('generates processing records from a confirmed recognition batch', () => {

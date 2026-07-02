@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
+import { getTrainingRecordDetailMock } from '@/services/mock/training'
 import {
   getTrainingRecordById,
   getTrainingState,
@@ -13,53 +15,13 @@ const route = useRoute()
 
 // 从路由参数获取记录ID
 const recordId = route.params.recordId as string
-const materialMessage = ref('')
+const operationMessage = useOperationMessage()
 const trainingState = getTrainingState()
 const recordDetail = computed(() => getTrainingRecordById(recordId) ?? trainingState.records[0])
-
-// 学习记录
-const learningRecords = [
-  { date: '2026-05-10', content: '完成数字化教学资源建设专题学习，记录了课程资源颗粒化设计方法。', status: '已完成' },
-  { date: '2026-05-12', content: '参与课堂数据分析工具实操，记录了学生学习行为数据的使用场景。', status: '已完成' },
-  { date: '2026-05-14', content: '完成培训结课学习记录，补充了后续在课程建设中的应用想法。', status: '已完成' },
-]
-
-// 培训总结
-const trainingSummary = ref({
-  content: '通过本次培训，我深入了解了数字化教学的理念和方法，掌握了多种数字化教学工具的使用技巧。特别是在在线教学设计和教学数据分析方面，获得了实用的经验和工具。在今后的教学工作中，我将积极应用所学知识，提升课堂教学效果和学生学习体验。',
-  submitTime: '2026-05-16 18:30',
-})
+const { learningRecords, trainingSummary, relatedRecords } = getTrainingRecordDetailMock()
 
 // 证书材料
 const certificateMaterials = computed(() => recordDetail.value?.materials ?? [])
-
-// 相关培训记录
-const relatedRecords = [
-  {
-    id: 'ai-course-chen',
-    name: '双师型教师实践能力提升培训',
-    teacher: '林老师',
-    level: '企业培训',
-    hours: '40 学时',
-    materialStatus: '学习中',
-  },
-  {
-    id: 'practice-training-wang',
-    name: 'AI 赋能课程建设专题培训',
-    teacher: '陈老师',
-    level: '校级',
-    hours: '16 学时',
-    materialStatus: '待总结',
-  },
-  {
-    id: 'ideology-course-zhao',
-    name: '课程思政教学设计研修',
-    teacher: '赵老师',
-    level: '市级',
-    hours: '24 学时',
-    materialStatus: '记录完整',
-  },
-]
 
 function goBack() {
   router.push('/admin/training/records')
@@ -67,7 +29,7 @@ function goBack() {
 
 function uploadMaterial() {
   uploadTrainingCertificate(recordId)
-  materialMessage.value = '培训结业证书已补充，记录材料已完整。'
+  operationMessage.set('培训结业证书已补充，记录材料已完整。')
 }
 
 function viewRelatedRecord(recordId: string) {
@@ -199,7 +161,7 @@ function viewRelatedRecord(recordId: string) {
                 </button>
               </div>
               <div class="card-body">
-                <p v-if="materialMessage" class="material-message">{{ materialMessage }}</p>
+                <p v-if="operationMessage.text.value" class="material-message">{{ operationMessage.text.value }}</p>
                 <table class="material-table">
                   <thead>
                     <tr>

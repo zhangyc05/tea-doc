@@ -9,8 +9,8 @@ export type ArchiveUploadedFile = {
   type: ArchiveUploadedFileType
 }
 
-export type ArchiveBatchStatus = 'recognizing' | 'recognized' | 'confirmed'
-export type ArchiveBatchFileStatus = '已接收' | '解析中' | '已解析' | '等待处理'
+export type ArchiveBatchStatus = 'recognizing' | 'recognized' | 'confirmed' | 'cancelled'
+export type ArchiveBatchFileStatus = '已接收' | '解析中' | '已解析' | '等待处理' | '已取消'
 
 export type ArchiveBatchFile = ArchiveUploadedFile & {
   batchStatus: ArchiveBatchFileStatus
@@ -62,6 +62,63 @@ export type TeacherArchiveFact = {
   title: string
   sourceRecordId: string
   archiveTime: string
+}
+
+export type ArchiveQueryStats = {
+  totalTeachers: number
+  hasArchive: number
+  recentUpdate: number
+  needsImprovement: number
+  hasCorrection: number
+}
+
+export type ArchiveTeacherCard = {
+  id: string
+  name: string
+  college: string
+  title: string
+  cycle: string
+  year: string
+  description: string
+  tags: string[]
+  lastUpdate: string
+}
+
+export type ArchiveQueryMock = {
+  stats: ArchiveQueryStats
+  collegeOptions: string[]
+  titleOptions: string[]
+  updateOptions: string[]
+  teacherCards: ArchiveTeacherCard[]
+}
+
+export type ArchiveProcessingMock = {
+  sourceOptions: string[]
+}
+
+export type ArchiveRecordDetail = {
+  teacher: string
+  dimension: string
+  updateTime: string
+  courseName?: string
+  achievementType?: string
+  projectTime?: string
+  achievementLevel?: string
+  uploader: string
+  uploadBatch: string
+  originalFile: string
+  issues: string[]
+  processingHistory: string[]
+}
+
+export type ArchiveSourceRecord = {
+  id: string
+  title: string
+  source: string
+  status: '已确认入档' | '待说明'
+  archiveTime: string
+  content: string
+  buttonText: string
 }
 
 export type ArchiveState = {

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { useOperationMessage } from '@/lib/operationMessage'
 import {
   createVirtualLabActivity,
   getVirtualLabActivitiesByRoom,
@@ -18,7 +19,7 @@ const route = useRoute()
 const virtualLabState = getVirtualLabState()
 
 const roomId = computed(() => String(route.params.roomId ?? 'smart-manufacturing'))
-const operationMessage = ref('')
+const operationMessage = useOperationMessage()
 
 const roomInfo = computed(() => getVirtualLabRoom(roomId.value))
 const members = computed(() => getVirtualLabMembersByRoom(roomId.value))
@@ -32,27 +33,27 @@ const stats = computed(() => ({
 }))
 
 function editInfo() {
-  operationMessage.value = `已进入 ${roomInfo.value.name} 的信息校对状态。`
+  operationMessage.set(`已进入 ${roomInfo.value.name} 的信息校对状态。`)
 }
 
 function inviteTeacher() {
   inviteVirtualLabMember(roomId.value)
-  operationMessage.value = virtualLabState.operationMessage
+  operationMessage.fromStore(virtualLabState)
 }
 
 function createActivity() {
   createVirtualLabActivity(roomId.value)
-  operationMessage.value = virtualLabState.operationMessage
+  operationMessage.fromStore(virtualLabState)
 }
 
 function viewTeacher(id: string) {
   const member = members.value.find((item) => item.id === id)
-  operationMessage.value = member ? `当前查看教师：${member.name}。` : '当前查看教师。'
+  operationMessage.set(member ? `当前查看教师：${member.name}。` : '当前查看教师。')
 }
 
 function removeMember(id: string) {
   removeVirtualLabMember(roomId.value, id)
-  operationMessage.value = virtualLabState.operationMessage
+  operationMessage.fromStore(virtualLabState)
 }
 
 function viewActivity(id: string) {
@@ -96,7 +97,7 @@ function getStatusClass(status: string): string {
               <span>创建时间：{{ roomInfo.createdAt }}</span>
             </div>
             <p>说明：{{ roomInfo.description }}</p>
-            <p v-if="operationMessage" class="operation-message">{{ operationMessage }}</p>
+            <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
             <span class="room-id">当前教研室 ID：{{ roomId }}</span>
           </div>
         </div>

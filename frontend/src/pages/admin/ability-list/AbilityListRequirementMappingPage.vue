@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
+	import { getAbilityListRequirementMappingMock } from '@/services/mock/ability-list'
 	import {
 		confirmRequirementMapping,
 		deleteRequirementMapping,
@@ -10,28 +11,7 @@
 	} from '@/stores/admin/abilityListStore'
 
 	const abilityListState = getAbilityListState()
-
-	// Mock 数据：要求对象
-	const requirementGroups = [
-		{
-			key: 'position-competition',
-			label: '岗位竞聘要求',
-			children: [
-				{ key: 'lecturer', label: '申报讲师' },
-				{ key: 'associate-professor', label: '申报副教授' },
-				{ key: 'professor', label: '申报教授' },
-			],
-		},
-		{
-			key: 'tenure-requirements',
-			label: '聘期履职要求',
-			children: [
-				{ key: 'lecturer-tenure', label: '讲师聘期要求' },
-				{ key: 'associate-professor-tenure', label: '副教授聘期要求' },
-				{ key: 'professor-tenure', label: '教授聘期要求' },
-			],
-		},
-	]
+	const { requirementGroups } = getAbilityListRequirementMappingMock()
 
 	const emptyMapping: RequirementMapping = {
 		id: '',

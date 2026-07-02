@@ -3,35 +3,20 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
+  getArchiveDefaultSourceRecords,
+  getArchiveTeacherName,
+} from '@/services/mock/archive'
+import type { ArchiveSourceRecord } from '@/domain/admin/archive'
+import {
   getArchiveSourceRecordsForFact,
   getTeacherArchiveFacts,
 } from '@/stores/admin/archiveStore'
-
-interface SourceRecord {
-  id: string
-  title: string
-  source: string
-  status: '已确认入档' | '待说明'
-  archiveTime: string
-  content: string
-  buttonText: string
-}
 
 const route = useRoute()
 const router = useRouter()
 
 const teacherId = computed(() => route.params.teacherId || 'lin')
-const teacherName = computed(() => {
-  const names: Record<string, string> = {
-    lin: '林老师',
-    jiang: '蒋老师',
-    wang: '王老师',
-    zhao: '赵老师',
-    sun: '孙老师',
-    liu: '刘老师',
-  }
-  return names[String(teacherId.value)] ?? '林老师'
-})
+const teacherName = computed(() => getArchiveTeacherName(String(teacherId.value)))
 const teacherArchiveFacts = computed(() => getTeacherArchiveFacts(teacherName.value))
 
 // 来源记录抽屉状态
@@ -41,7 +26,7 @@ const drawerType = ref('')
 const actionMessage = ref('')
 
 // 来源记录数据
-const sourceRecords = computed<SourceRecord[]>(() => {
+const sourceRecords = computed<ArchiveSourceRecord[]>(() => {
   const archivedRecords = getTeacherArchiveFacts(teacherName.value)
     .filter(fact => isFactInDrawerType(fact.dimension, drawerType.value))
     .flatMap(fact => {
@@ -56,94 +41,7 @@ const sourceRecords = computed<SourceRecord[]>(() => {
       }))
     })
 
-  if (drawerType.value === '基本信息') {
-    return [
-      {
-        id: '1',
-        title: '教师基本信息',
-        source: '人事系统',
-        status: '已确认入档',
-        archiveTime: '2026-06-12',
-        content: '林老师基本信息已确认，包含学历、入职时间、研究方向等信息。',
-        buttonText: '查看记录详情',
-      },
-    ]
-  } else if (drawerType.value === '教学工作') {
-    return [
-      ...archivedRecords,
-      {
-        id: '1',
-        title: '2026春季学期授课记录',
-        source: '教务系统',
-        status: '已确认入档',
-        archiveTime: '2026-06-12',
-        content: '本发展周期内承担《机电系统控制技术》《电气控制与PLC应用》《工业机器人技术》3门课程教学任务。',
-        buttonText: '查看记录详情',
-      },
-      {
-        id: '2',
-        title: '《机电系统控制技术》学生教学评价结果',
-        source: '教学评价系统',
-        status: '已确认入档',
-        archiveTime: '2026-06-16',
-        content: '学生教学评价整体稳定，课程反馈较好。',
-        buttonText: '查看记录详情',
-      },
-      {
-        id: '3',
-        title: '课程建设成果《机电系统控制技术》阶段材料',
-        source: '院系上传',
-        status: '已确认入档',
-        archiveTime: '2026-06-18',
-        content: '课程建设已有1项确认入档。',
-        buttonText: '查看记录详情',
-      },
-      {
-        id: '4',
-        title: '课堂教学照片（第5周）',
-        source: '教学活动沉淀',
-        status: '已确认入档',
-        archiveTime: '2026-06-08',
-        content: '教学过程记录完整。',
-        buttonText: '查看记录详情',
-      },
-      {
-        id: '5',
-        title: '《机电系统控制技术》课程建设支撑材料',
-        source: '教师补充材料',
-        status: '待说明',
-        archiveTime: '待确认',
-        content: '该材料仍在补充中，当前不写入正文，仅作待说明提示。',
-        buttonText: '查看处理情况',
-      },
-    ]
-  } else if (drawerType.value === '教研科研') {
-    return [
-      ...archivedRecords,
-      {
-        id: '1',
-        title: '学术论文发表记录',
-        source: '科研系统',
-        status: '已确认入档',
-        archiveTime: '2026-06-15',
-        content: '发表学术论文1篇，相关成果已提交并确认入档。',
-        buttonText: '查看记录详情',
-      },
-    ]
-  } else {
-    return [
-      ...archivedRecords,
-      {
-        id: '1',
-        title: '示例记录',
-        source: '系统导入',
-        status: '已确认入档',
-        archiveTime: '2026-06-18',
-        content: '示例记录内容。',
-        buttonText: '查看记录详情',
-      },
-    ]
-  }
+  return [...archivedRecords, ...getArchiveDefaultSourceRecords(drawerType.value)]
 })
 
 // 标签页状态
@@ -202,7 +100,7 @@ function switchTab(tabValue: string) {
   activeTab.value = tabValue
 }
 
-function viewRecordDetail(record: SourceRecord) {
+function viewRecordDetail(record: ArchiveSourceRecord) {
   actionMessage.value =
     record.status === '待说明' ? '该记录仍在补充中，可在档案处理工作台继续处理。' : `${record.title} 已在当前来源记录中展示。`
 }
@@ -222,7 +120,7 @@ const tabClass = (tabValue: string) => {
   return activeTab.value === tabValue ? 'active' : ''
 }
 
-const statusBadgeClass = (status: SourceRecord['status']) => {
+const statusBadgeClass = (status: ArchiveSourceRecord['status']) => {
   return status === '已确认入档' ? 'badge-success' : 'badge-warning'
 }
 

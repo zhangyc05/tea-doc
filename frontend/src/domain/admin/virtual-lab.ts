@@ -77,6 +77,49 @@ export type VirtualLabRecord = {
   archiveStatus: VirtualLabRecordArchiveStatus
 }
 
+export type VirtualLabActivityParticipant = {
+  id: string
+  name: string
+  avatar: string
+  role: string
+  participationType: string
+  timeRange: string
+  status: string
+}
+
+export type VirtualLabActivityTimelineItem = {
+  id: string
+  event: string
+  operator: string
+  time: string
+}
+
+export type VirtualLabRecordContent = {
+  summary: string
+  mainTopics: string[]
+  taskAssignment: string[]
+  stageResults: string[]
+}
+
+export type VirtualLabParticipationRecord = {
+  id: string
+  teacher: string
+  avatar: string
+  participationType: string
+  contribution: string
+  relatedMaterials: string
+}
+
+export type VirtualLabActivityDetailMock = {
+  participants: VirtualLabActivityParticipant[]
+  timeline: VirtualLabActivityTimelineItem[]
+}
+
+export type VirtualLabRecordDetailMock = {
+  recordContent: VirtualLabRecordContent
+  participationRecords: VirtualLabParticipationRecord[]
+}
+
 export type VirtualLabState = {
   rooms: VirtualLabRoom[]
   members: VirtualLabMember[]

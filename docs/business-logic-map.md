@@ -101,7 +101,7 @@
 | 对象 | 应有状态 | 当前前端状态 | 判断 |
 | --- | --- | --- | --- |
 | 上传文件 | 上传中、已上传、上传失败 | `archiveStore.uploadedFiles` | 已接入模块级本地状态 |
-| 导入批次 | 识别中、识别完成、已确认生成记录、已取消 | `archiveStore.importBatches.status` 支持 `recognizing`、`recognized`、`confirmed` | 已完成前三类本地闭环，取消待补 |
+| 导入批次 | 识别中、识别完成、已确认生成记录、已取消 | `archiveStore.importBatches.status` 支持 `recognizing`、`recognized`、`confirmed`、`cancelled` | 已完成本地闭环 |
 | 识别结果 | 待确认、待补充、待核验、异常、重复 | `ArchiveRecognitionResult` | 确认后可生成处理记录 |
 | 处理记录 | 待确认、待检验、待补充、异常待处理、拟退中、已入档 | `archiveStore.processingRecords` | 已完成确认入档、退回补充、标记异常和处理历史本地闭环 |
 | 教师档案事实 | 草稿、待确认、已入档、已更正、已退回 | `archiveStore.teacherArchiveFacts` 已在确认入档时写入，并由档案详情页读取 | 已完成已入档事实本地闭环，其余状态待后续细化 |
@@ -129,15 +129,16 @@
 | 上传资料 | 开始识别 | 创建 `archiveStore.importBatches` 并进入批次详情 | 已完成本地闭环 |
 | 批次详情 | 刷新状态 | 调用 `completeArchiveBatchRecognition()`，批次改为识别完成 | 已完成本地闭环 |
 | 批次详情 | 确认识别结果 | 调用 `confirmArchiveBatchRecognition()`，生成处理记录后返回档案处理页 | 已完成本地闭环 |
+| 批次详情 | 取消本次任务 | 调用 `cancelArchiveImportBatch()`，批次改为 `cancelled`，文件状态改为“已取消”，不生成处理记录 | 已完成本地闭环 |
 | 档案处理 | 确认入档、再次退回、标记异常、查看补充说明 | 修改 `archiveStore.processingRecords`，确认入档写入 `teacherArchiveFacts` | 已完成本地闭环 |
 | 档案查阅 | 查看教师档案 | `router.push('/admin/archive/teacher/:teacherId')` | 已闭环到页面 |
 | 档案详情 | 来源详情抽屉 | 页面内打开抽屉，并按当前栏目合并 `archiveStore.teacherArchiveFacts` 来源记录 | 已完成本地事实来源过滤 |
 
 ### 4.5 第一批修复顺序
 
-1. 批次取消形成明确状态。
-2. 后续工程重构阶段将 `archiveStore` 拆为 domain types / initialData / actions。
-3. 教师档案事实的更正、退回、草稿状态留到后续业务审计细化。
+成长档案主链本地闭环已完成。后续工程重构阶段再处理：
+
+1. 教师档案事实的更正、退回、草稿状态留到后续业务审计细化。
 
 ## 5. 管理端：培训管理
 
@@ -445,13 +446,14 @@
 | 项目 | 当前状态 | 后续动作 |
 | --- | --- | --- |
 | store 目标结构 | 能力清单、成长档案、培训管理、企业实践、虚拟教研、分析报告已拆为 `domain/admin/*`、`stores/admin/<module>/initialData.ts`、`stores/admin/<module>/actions.ts`、薄 store | 后续新增业务 store 按同一结构落地 |
-| domain types | 已建立 `ability-list.ts`、`archive.ts`、`training.ts`、`practice.ts`、`virtual-lab.ts`、`report.ts`、`ability-profile.ts`、`reflection.ts`；对应 store 或 mock service 已从 domain 导入业务类型 | 后续继续扫描页面内仍保留的业务 interface |
+| domain types | 已建立 `ability-list.ts`、`archive.ts`、`training.ts`、`practice.ts`、`virtual-lab.ts`、`report.ts`、`ability-profile.ts`、`reflection.ts`；对应 store 或 mock service 已从 domain 导入业务类型；能力清单展示类型已归入 `ability-list.ts`，档案查阅、处理详情和来源记录类型已归入 `archive.ts`，培训管理展示类型已归入 `training.ts`，虚拟教研详情展示类型已归入 `virtual-lab.ts` | 后续继续扫描页面内仍保留的业务 interface |
 | 测试入口 | `frontend/package.json` 已增加 `npm run test`，AGENTS 已把管理端验证命令更新为 test/typecheck/build | 后续增加模块级测试约定 |
-| mock service | 已建立 `frontend/src/services/mock/ability-profile.ts`、`frontend/src/services/mock/reflection.ts`，能力画像和教学反思页面已改为从 service 获取 mock 数据 | 后续继续扫描其它页面内大段 mock 数组 |
+| mock service | 已建立 `frontend/src/services/mock/ability-list.ts`、`frontend/src/services/mock/ability-profile.ts`、`frontend/src/services/mock/reflection.ts`、`frontend/src/services/mock/archive.ts`、`frontend/src/services/mock/training.ts`、`frontend/src/services/mock/virtual-lab.ts`，能力清单展示配置、能力画像、教学反思、档案查阅/处理/详情、培训计划/详情/记录详情、虚拟教研活动详情和记录详情已改为从 service 获取 mock 数据 | 后续继续扫描其它页面内大段 mock 数组 |
+| operationMessage | 已建立 `frontend/src/lib/operationMessage.ts`，并在虚拟教研室列表页、教研室详情页、活动详情页、记录详情页、培训计划页、培训计划详情页、培训记录详情页试点页面局部消息的 `set` / `clear` / `fromStore` 模式 | 后续按模块逐步替换零散 `operationMessage` / `actionMessage` / `materialMessage` / `planNotice` |
 
 ## 12. 下一步执行顺序
 
-1. 继续扫描并迁移其它页面内大段 mock 数组到 mock service。
-2. 继续迁移页面内仍保留的业务 interface 到 domain types。
-3. 统一 operationMessage、状态枚举和状态文案映射。
+1. 继续推广 `useOperationMessage`，统一页面局部消息和 store 消息回填方式。
+2. 统一状态枚举和状态文案映射。
+3. 抽取状态徽章、详情抽屉、右侧摘要面板、筛选栏和表格空状态。
 4. 工程重构完成后再进入管理端设计系统重构。

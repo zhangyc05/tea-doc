@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getAbilityListPublishConfirmMock } from '@/services/mock/ability-list'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -20,38 +21,7 @@ if (
   deriveNextExecutionVersion()
 }
 
-const impactCards = [
-  {
-    title: '能力指标',
-    description: '69 项指标将作为 2027 年度能力判断口径。',
-    icon: '◎',
-    tone: 'blue',
-  },
-  {
-    title: '岗位/聘期要求',
-    description: '已带入岗位/聘期要求映射，发布后用于教师对照。',
-    icon: '▣',
-    tone: 'purple',
-  },
-  {
-    title: '发展活动',
-    description: '教学反思、培训进修、企业实践、虚拟教研将按本版指标归类。',
-    icon: '▱',
-    tone: 'green',
-  },
-  {
-    title: '成长档案',
-    description: '新入档事实将优先关联本执行版指标。',
-    icon: '▤',
-    tone: 'orange',
-  },
-  {
-    title: '画像与报告',
-    description: '能力画像、岗位/聘期对照和分析报告将引用本版口径。',
-    icon: '◔',
-    tone: 'blue',
-  },
-]
+const { impactCards } = getAbilityListPublishConfirmMock()
 
 function handlePublish() {
   publishExecutionVersion()

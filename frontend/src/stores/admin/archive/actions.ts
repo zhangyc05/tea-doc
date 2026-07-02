@@ -59,6 +59,18 @@ export function completeArchiveBatchRecognitionInState(state: ArchiveState, batc
   return batch
 }
 
+export function cancelArchiveImportBatchInState(state: ArchiveState, batchId: string) {
+  const batch = ensureArchiveImportBatchInState(state, batchId)
+  batch.status = 'cancelled'
+  batch.files = batch.files.map(file => ({
+    ...file,
+    batchStatus: '已取消',
+  }))
+  batch.recognitionResult = { ...emptyRecognitionResult }
+  state.operationMessage = `导入批次 ${batch.name} 已取消。`
+  return batch
+}
+
 export function confirmArchiveBatchRecognitionInState(state: ArchiveState, batchId: string) {
   const batch = completeArchiveBatchRecognitionInState(state, batchId)
   batch.status = 'confirmed'

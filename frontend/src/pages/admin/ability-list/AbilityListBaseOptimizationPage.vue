@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
 import {
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
@@ -10,22 +11,7 @@ import {
 } from '@/stores/admin/abilityListStore'
 
 const abilityListState = getAbilityListState()
-
-const suggestionSources = [
-  { key: 'all', label: '全部建议', icon: '●' },
-  { key: 'policy', label: '制度文件', icon: '▤' },
-  { key: 'feedback', label: '运行反馈', icon: '▣' },
-  { key: 'manual', label: '人工补充', icon: '▲' },
-]
-
-const filterTags = [
-  { key: 'all', label: '全部' },
-  { key: 'missing', label: '标签缺失' },
-  { key: 'unclear', label: '标签不清' },
-  { key: 'duplicate', label: '标准重复' },
-  { key: 'wide', label: '标准过宽' },
-  { key: 'mapping', label: '要求映射问题' },
-]
+const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
