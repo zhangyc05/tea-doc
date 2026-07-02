@@ -452,8 +452,8 @@ function submitAgain() {
 .upload-entry {
   position: relative;
   gap: 20rpx;
-  margin-top: 20rpx;
   min-height: 86rpx;
+  margin-top: 20rpx;
   padding: 0 62rpx 0 54rpx;
   border: 2rpx solid #13b96a;
   border-radius: 14rpx;
@@ -507,8 +507,8 @@ function submitAgain() {
 
 .textarea-box {
   position: relative;
-  margin-top: 22rpx;
   min-height: 110rpx;
+  margin-top: 22rpx;
   border: 2rpx solid #e1e6ed;
   border-radius: 14rpx;
   background: #fbfcfe;
@@ -518,10 +518,10 @@ function submitAgain() {
   width: 100%;
   height: 110rpx;
   padding: 22rpx 24rpx 34rpx;
+  box-sizing: border-box;
   color: #344054;
   font-size: 26rpx;
   line-height: 1.45;
-  box-sizing: border-box;
 }
 
 .textarea-count {

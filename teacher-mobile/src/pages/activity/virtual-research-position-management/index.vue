@@ -35,10 +35,12 @@ function showToast(title: string) {
           <text class="room-direction">课程资源共建方向</text>
           <view class="info-list">
             <view class="info-row">
+              <view class="info-icon info-icon--building" aria-hidden="true"></view>
               <text class="info-label">所属组织：</text>
               <text class="info-value">智能制造学院</text>
             </view>
             <view class="info-row">
+              <view class="info-icon info-icon--clock" aria-hidden="true"></view>
               <text class="info-label">加入时间：</text>
               <text class="info-value">2026-05-28 09:42</text>
             </view>
@@ -48,14 +50,17 @@ function showToast(title: string) {
         <view class="room-art" aria-hidden="true">
           <view class="art-board"></view>
           <view class="art-person art-person--left"></view>
+          <view class="art-person art-person--center"></view>
           <view class="art-person art-person--right"></view>
+          <view class="spark spark--one"></view>
+          <view class="spark spark--two"></view>
         </view>
       </MobileCard>
 
       <view class="section-block">
         <text class="section-title">接下来可处理</text>
         <MobileCard class="next-card" @tap="showToast('待确认贡献')">
-          <view class="task-icon"></view>
+          <view class="task-icon" aria-hidden="true"></view>
           <view class="task-copy">
             <view class="task-title-row">
               <text class="task-title">设备调试案例整理</text>
@@ -69,7 +74,7 @@ function showToast(title: string) {
               <text class="source-tag">任务分工</text>
             </view>
           </view>
-          <view class="row-arrow"></view>
+          <view class="row-arrow row-arrow--green" aria-hidden="true"></view>
         </MobileCard>
       </view>
 
@@ -82,18 +87,18 @@ function showToast(title: string) {
             class="view-row"
             @tap="showToast(entry.title)"
           >
-            <view class="view-icon" :class="`view-icon--${entry.icon}`"></view>
+            <view class="view-icon" :class="`view-icon--${entry.icon}`" aria-hidden="true"></view>
             <view class="view-copy">
               <text class="view-title">{{ entry.title }}</text>
               <text class="view-desc">{{ entry.desc }}</text>
             </view>
-            <view class="row-arrow"></view>
+            <view class="row-arrow" aria-hidden="true"></view>
           </button>
         </MobileCard>
       </view>
 
       <view class="reminder-card">
-        <view class="reminder-icon"></view>
+        <view class="reminder-icon" aria-hidden="true"></view>
         <view class="reminder-copy">
           <text class="reminder-title">当前提醒</text>
           <text class="reminder-text">
@@ -121,7 +126,7 @@ function showToast(title: string) {
 
 .joined-room-page {
   min-height: 100vh;
-  padding-bottom: calc(260rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(282rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 4%, rgba(225, 252, 238, 0.9), transparent 30%),
@@ -150,6 +155,7 @@ function showToast(title: string) {
 .next-card,
 .view-card {
   border-radius: 26rpx;
+  box-shadow: 0 18rpx 48rpx rgba(22, 42, 72, 0.06);
 }
 
 .room-card {
@@ -239,178 +245,228 @@ function showToast(title: string) {
 
 .room-direction {
   margin-top: 12rpx;
-  color: #08a85c;
+  color: #304c7a;
   font-size: 24rpx;
-  font-weight: 900;
-  line-height: 1.2;
+  font-weight: 700;
 }
 
 .info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  margin-top: 18rpx;
+  margin-top: 24rpx;
 }
 
-.info-row {
-  color: #34425c;
-  font-size: 23rpx;
-  line-height: 1.25;
+.info-row + .info-row {
+  margin-top: 16rpx;
 }
 
-.info-label {
-  color: #74809a;
+.info-icon {
+  position: relative;
+  width: 30rpx;
+  height: 30rpx;
+  flex: 0 0 auto;
+  margin-right: 16rpx;
+  color: #43567a;
 }
 
+.info-icon::before,
+.info-icon::after,
+.task-icon::before,
+.task-icon::after,
+.row-arrow::before,
+.view-icon::before,
+.view-icon::after,
+.reminder-icon::before,
+.reminder-icon::after,
+.art-board::before,
+.art-board::after,
+.spark::before {
+  position: absolute;
+  content: '';
+}
+
+.info-icon--building::before {
+  inset: 3rpx 6rpx 2rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 3rpx;
+}
+
+.info-icon--building::after {
+  top: 13rpx;
+  left: 13rpx;
+  width: 4rpx;
+  height: 14rpx;
+  background: currentColor;
+  box-shadow: -6rpx 0 0 currentColor, 6rpx 0 0 currentColor;
+}
+
+.info-icon--clock::before {
+  inset: 3rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+
+.info-icon--clock::after {
+  top: 9rpx;
+  left: 14rpx;
+  width: 11rpx;
+  height: 11rpx;
+  border-bottom: 4rpx solid currentColor;
+  border-left: 4rpx solid currentColor;
+}
+
+.info-label,
 .info-value {
-  color: #24324d;
-  font-weight: 800;
+  color: #314a77;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .room-desc {
-  max-width: 445rpx;
-  margin-top: 18rpx;
-  color: #52607a;
-  font-size: 23rpx;
-  line-height: 1.45;
+  margin-top: 26rpx;
+  color: #304c7a;
+  font-size: 24rpx;
+  line-height: 1.5;
 }
 
 .room-art {
   position: relative;
   z-index: 1;
-  width: 160rpx;
-  height: 166rpx;
-  flex: 0 0 auto;
-  align-self: center;
-  border-radius: 28rpx;
-  background: linear-gradient(145deg, #e7fff1, #f7fffb);
-}
-
-.art-board,
-.art-person,
-.task-icon,
-.view-icon,
-.row-arrow,
-.reminder-icon {
-  position: relative;
+  width: 210rpx;
   flex: 0 0 auto;
 }
 
 .art-board {
   position: absolute;
-  top: 28rpx;
-  left: 36rpx;
-  width: 86rpx;
-  height: 56rpx;
-  border-radius: 14rpx;
-  background: #12c46b;
-  box-shadow: inset 0 -10rpx 0 rgba(0, 0, 0, 0.06);
-}
-
-.art-board::before,
-.art-board::after,
-.art-person::before,
-.task-icon::before,
-.task-icon::after,
-.view-icon::before,
-.view-icon::after,
-.row-arrow::before,
-.reminder-icon::before,
-.reminder-icon::after {
-  position: absolute;
-  content: '';
+  top: 44rpx;
+  right: 10rpx;
+  width: 132rpx;
+  height: 126rpx;
+  border: 12rpx solid #d7f7e7;
+  border-radius: 18rpx;
 }
 
 .art-board::before {
-  top: 18rpx;
-  left: 18rpx;
-  width: 50rpx;
-  height: 7rpx;
-  border-radius: 4rpx;
-  background: #eafff4;
-  box-shadow: 0 15rpx 0 #eafff4;
-}
-
-.art-board::after {
-  right: -18rpx;
-  bottom: -26rpx;
-  width: 7rpx;
-  height: 34rpx;
-  border-radius: 5rpx;
-  background: #12c46b;
-  transform: rotate(24deg);
+  top: 32rpx;
+  right: 20rpx;
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  background: #7edda9;
 }
 
 .art-person {
   position: absolute;
-  bottom: 26rpx;
-  width: 34rpx;
-  height: 34rpx;
-  border-radius: 50%;
-  background: #8be0b2;
+  bottom: 38rpx;
+  width: 56rpx;
+  height: 54rpx;
+  border-radius: 32rpx 32rpx 8rpx 8rpx;
+  background: linear-gradient(180deg, #59dc91, #0fbe64);
 }
 
 .art-person::before {
-  top: 38rpx;
-  left: -16rpx;
-  width: 66rpx;
-  height: 28rpx;
-  border-radius: 30rpx 30rpx 0 0;
-  background: inherit;
+  position: absolute;
+  top: -38rpx;
+  left: 10rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #58dc91;
+  content: '';
 }
 
 .art-person--left {
-  left: 34rpx;
+  right: 128rpx;
+  transform: scale(0.78);
+}
+
+.art-person--center {
+  right: 70rpx;
+  width: 72rpx;
+  height: 68rpx;
+  z-index: 2;
+}
+
+.art-person--center::before {
+  left: 15rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .art-person--right {
-  right: 34rpx;
-  background: #c6f2d7;
+  right: 20rpx;
+  transform: scale(0.78);
+}
+
+.spark {
+  position: absolute;
+  width: 26rpx;
+  height: 26rpx;
+  color: #9aeec2;
+}
+
+.spark--one {
+  top: 76rpx;
+  left: 12rpx;
+}
+
+.spark--two {
+  top: 94rpx;
+  right: -8rpx;
+  transform: scale(0.7);
+}
+
+.spark::before {
+  inset: 0;
+  background: currentColor;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
 }
 
 .section-block {
   display: flex;
   flex-direction: column;
-  gap: 14rpx;
+  gap: 16rpx;
 }
 
 .section-title {
-  color: #111827;
-  font-size: 32rpx;
+  color: #10172d;
+  font-size: 31rpx;
   font-weight: 900;
   line-height: 1.2;
 }
 
 .next-card {
-  gap: 20rpx;
-  padding: 24rpx;
+  gap: 26rpx;
+  padding: 24rpx 26rpx;
 }
 
 .task-icon {
-  width: 76rpx;
-  height: 76rpx;
+  position: relative;
+  width: 98rpx;
+  height: 98rpx;
+  flex: 0 0 auto;
   border-radius: 18rpx;
-  background: #eafbf2;
-  color: #11b968;
+  background: linear-gradient(145deg, #e9fbf2, #f7fffb);
 }
 
 .task-icon::before {
-  top: 15rpx;
-  left: 22rpx;
-  width: 34rpx;
-  height: 46rpx;
-  border-radius: 7rpx;
-  background: currentColor;
+  top: 25rpx;
+  left: 30rpx;
+  width: 42rpx;
+  height: 50rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(180deg, #20cf7a, #08b75a);
+  clip-path: polygon(0 0, 74% 0, 100% 26%, 100% 100%, 0 100%);
 }
 
 .task-icon::after {
-  top: 27rpx;
-  left: 30rpx;
-  width: 18rpx;
-  height: 5rpx;
-  border-radius: 4rpx;
-  background: #eafbf2;
-  box-shadow: 0 12rpx 0 #eafbf2;
+  right: 16rpx;
+  bottom: 14rpx;
+  width: 30rpx;
+  height: 30rpx;
+  border: 5rpx solid #fff;
+  border-radius: 50%;
+  background: #17c76d;
+  box-shadow: 0 4rpx 10rpx rgba(11, 157, 82, 0.22);
 }
 
 .task-copy {
@@ -419,116 +475,148 @@ function showToast(title: string) {
 }
 
 .task-title-row {
-  justify-content: space-between;
-  gap: 12rpx;
+  gap: 16rpx;
 }
 
 .task-title {
-  color: #111827;
+  overflow: hidden;
+  color: #10172d;
   font-size: 29rpx;
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .warning-chip {
-  height: 36rpx;
-  padding: 0 14rpx;
-  background: #fff2e3;
-  color: #ff7a1a;
+  height: 38rpx;
+  padding: 0 15rpx;
+  background: #fff1e6;
+  color: #ff7b1a;
   font-size: 21rpx;
 }
 
 .task-desc {
   margin-top: 12rpx;
-  color: #536078;
-  font-size: 23rpx;
-  line-height: 1.42;
+  color: #304c7a;
+  font-size: 24rpx;
+  line-height: 1.45;
 }
 
 .tag-row {
-  flex-wrap: wrap;
-  gap: 12rpx;
+  gap: 18rpx;
   margin-top: 14rpx;
 }
 
 .source-tag {
-  height: 34rpx;
-  padding: 0 14rpx;
-  background: #eef8f2;
+  height: 36rpx;
+  padding: 0 16rpx;
+  background: #eaf9ef;
   color: #08a85c;
-  font-size: 20rpx;
+  font-size: 21rpx;
+}
+
+.row-arrow {
+  position: relative;
+  width: 22rpx;
+  height: 22rpx;
+  flex: 0 0 auto;
+  color: #8b96aa;
+}
+
+.row-arrow--green {
+  color: #08b75a;
+}
+
+.row-arrow::before {
+  inset: 0;
+  border-top: 5rpx solid currentColor;
+  border-right: 5rpx solid currentColor;
+  transform: rotate(45deg);
 }
 
 .view-card {
-  overflow: hidden;
-  padding: 0 24rpx;
+  padding: 0 28rpx;
 }
 
 .view-row {
-  gap: 20rpx;
-  width: 100%;
-  min-height: 112rpx;
+  gap: 28rpx;
+  min-height: 92rpx;
   margin: 0;
-  padding: 20rpx 0;
+  padding: 18rpx 0;
   border: 0;
-  border-bottom: 1rpx solid #e8edf5;
-  border-radius: 0;
   background: transparent;
+  color: inherit;
+  line-height: 1;
   text-align: left;
-}
-
-.view-row:last-child {
-  border-bottom: 0;
 }
 
 .view-row::after {
   display: none;
 }
 
+.view-row + .view-row {
+  border-top: 1rpx solid #eef2f6;
+}
+
 .view-icon {
-  width: 66rpx;
-  height: 66rpx;
-  border-radius: 16rpx;
+  position: relative;
+  width: 58rpx;
+  height: 58rpx;
+  flex: 0 0 auto;
+  border-radius: 12rpx;
 }
 
 .view-icon--calendar {
-  background: #eafbf2;
-  color: #11b968;
+  background: #eafbf1;
+  color: #11bd68;
 }
 
 .view-icon--note {
-  background: #eaf3ff;
-  color: #2f78f5;
+  background: #ecf5ff;
+  color: #2f7eef;
 }
 
 .view-icon--folder {
-  background: #f2eaff;
-  color: #8b5cf6;
+  background: #f3edff;
+  color: #8656ef;
 }
 
 .view-icon--star {
-  background: #fff3df;
-  color: #f39a18;
+  background: #fff2e3;
+  color: #ff9a12;
 }
 
 .view-icon::before {
-  inset: 17rpx 18rpx;
-  border-radius: 6rpx;
+  inset: 15rpx 14rpx;
   background: currentColor;
 }
 
+.view-icon--calendar::before {
+  border-radius: 5rpx;
+}
+
 .view-icon--calendar::after {
-  top: 16rpx;
-  left: 18rpx;
-  width: 30rpx;
-  height: 8rpx;
-  border-radius: 4rpx 4rpx 0 0;
-  background: rgba(255, 255, 255, 0.85);
+  top: 24rpx;
+  left: 20rpx;
+  width: 18rpx;
+  height: 4rpx;
+  background: #fff;
+  box-shadow: 0 10rpx 0 #fff;
+}
+
+.view-icon--note::before {
+  border-radius: 5rpx;
+  clip-path: polygon(0 0, 72% 0, 100% 28%, 100% 100%, 0 100%);
+}
+
+.view-icon--folder::before {
+  border-radius: 6rpx;
+  clip-path: polygon(0 20%, 36% 20%, 46% 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .view-icon--star::before {
-  inset: 15rpx;
-  clip-path: polygon(50% 0, 62% 35%, 100% 35%, 69% 57%, 80% 96%, 50% 72%, 20% 96%, 31% 57%, 0 35%, 38% 35%);
+  clip-path: polygon(50% 0, 62% 35%, 100% 35%, 69% 56%, 82% 92%, 50% 70%, 18% 92%, 31% 56%, 0 35%, 38% 35%);
 }
 
 .view-copy {
@@ -537,63 +625,53 @@ function showToast(title: string) {
 }
 
 .view-title {
-  color: #111827;
-  font-size: 28rpx;
+  color: #10172d;
+  font-size: 26rpx;
   font-weight: 900;
   line-height: 1.2;
 }
 
 .view-desc {
-  margin-top: 8rpx;
-  color: #64718a;
-  font-size: 23rpx;
-  line-height: 1.3;
-}
-
-.row-arrow {
-  width: 18rpx;
-  height: 18rpx;
-  color: #8a94a7;
-}
-
-.row-arrow::before {
-  inset: 0;
-  border-top: 4rpx solid currentColor;
-  border-right: 4rpx solid currentColor;
-  transform: rotate(45deg);
+  margin-top: 10rpx;
+  color: #304c7a;
+  font-size: 22rpx;
+  line-height: 1.25;
 }
 
 .reminder-card {
-  gap: 18rpx;
-  padding: 22rpx 24rpx;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #e8fbf0, #f2fff8);
-  box-shadow: 0 16rpx 34rpx rgba(3, 177, 84, 0.08);
+  gap: 24rpx;
+  padding: 20rpx 24rpx;
+  border: 1rpx solid rgba(14, 193, 104, 0.16);
+  border-radius: 18rpx;
+  background: linear-gradient(90deg, #edfcf4, #f6fff9);
 }
 
 .reminder-icon {
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 50%;
-  background: #12c46b;
+  position: relative;
+  width: 60rpx;
+  height: 60rpx;
+  flex: 0 0 auto;
+  border-radius: 12rpx;
+  background: #dcfae9;
+  color: #10bd67;
 }
 
 .reminder-icon::before {
-  top: 12rpx;
-  left: 22rpx;
-  width: 5rpx;
-  height: 18rpx;
-  border-radius: 4rpx;
-  background: #fff;
+  top: 13rpx;
+  left: 18rpx;
+  width: 24rpx;
+  height: 27rpx;
+  border: 5rpx solid currentColor;
+  border-radius: 16rpx 16rpx 10rpx 10rpx;
 }
 
 .reminder-icon::after {
-  top: 34rpx;
-  left: 22rpx;
-  width: 5rpx;
-  height: 5rpx;
+  bottom: 11rpx;
+  left: 27rpx;
+  width: 7rpx;
+  height: 7rpx;
   border-radius: 50%;
-  background: #fff;
+  background: currentColor;
 }
 
 .reminder-copy {
@@ -602,215 +680,137 @@ function showToast(title: string) {
 }
 
 .reminder-title {
-  color: #08a85c;
-  font-size: 25rpx;
+  color: #10172d;
+  font-size: 26rpx;
   font-weight: 900;
   line-height: 1.2;
 }
 
 .reminder-text {
   margin-top: 8rpx;
-  color: #2f5a42;
+  color: #304c7a;
   font-size: 23rpx;
-  line-height: 1.42;
+  line-height: 1.4;
 }
 
 .fixed-actions {
   position: fixed;
   right: 0;
-  bottom: calc(138rpx + env(safe-area-inset-bottom));
+  bottom: calc(146rpx + env(safe-area-inset-bottom));
   left: 0;
-  z-index: 45;
-  gap: 18rpx;
-  padding: 18rpx 30rpx 20rpx;
-  border-top: 1rpx solid rgba(232, 238, 246, 0.96);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 -12rpx 36rpx rgba(21, 40, 74, 0.06);
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 34rpx;
+  padding: 22rpx 40rpx 20rpx;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14rpx);
 }
 
 .outline-action,
 .primary-action {
-  height: 78rpx;
-  flex: 1;
-  border-radius: 18rpx;
-  font-size: 28rpx;
+  height: 72rpx;
+  border-radius: 12rpx;
+  font-size: 29rpx;
 }
 
-@media (max-width: 430px) {
-  .joined-room-page {
-    padding-bottom: calc(258rpx + env(safe-area-inset-bottom));
-  }
+.outline-action {
+  border-color: #06b95e;
+  color: #08a85c;
+}
 
-  .page-subtitle {
-    margin-bottom: 14rpx;
-    font-size: 21rpx;
-  }
+.primary-action {
+  background: linear-gradient(135deg, #10c66d, #00ae55);
+}
 
+@media (max-width: 390px) {
   .content {
-    gap: 14rpx;
-    padding: 0 20rpx;
+    padding-right: 24rpx;
+    padding-left: 24rpx;
   }
 
   .room-card {
-    min-height: 222rpx;
-    padding: 20rpx;
+    padding: 24rpx;
   }
 
-  .room-heading {
-    gap: 8rpx;
-  }
-
-  .joined-chip {
-    height: 30rpx;
-    padding: 0 12rpx;
-    font-size: 17rpx;
-  }
-
-  .room-title,
-  .section-title {
-    font-size: 24rpx;
-  }
-
-  .room-direction {
-    margin-top: 8rpx;
-    font-size: 19rpx;
-  }
-
-  .info-list {
-    gap: 5rpx;
-    margin-top: 10rpx;
-  }
-
-  .info-row,
-  .room-desc,
-  .task-desc,
-  .view-desc,
-  .reminder-text {
-    font-size: 18rpx;
-  }
-
-  .room-desc {
-    max-width: 400rpx;
-    margin-top: 10rpx;
+  .room-title {
+    font-size: 29rpx;
   }
 
   .room-art {
-    width: 112rpx;
-    height: 118rpx;
-    border-radius: 20rpx;
+    width: 170rpx;
   }
 
   .art-board {
-    top: 22rpx;
-    left: 25rpx;
-    width: 62rpx;
-    height: 40rpx;
-    border-radius: 10rpx;
+    right: 0;
+    width: 110rpx;
+    height: 112rpx;
   }
 
-  .art-person {
-    bottom: 18rpx;
-    width: 24rpx;
-    height: 24rpx;
+  .art-person--left {
+    right: 102rpx;
   }
 
-  .section-block {
-    gap: 10rpx;
+  .art-person--center {
+    right: 52rpx;
   }
 
   .next-card {
-    gap: 14rpx;
-    padding: 18rpx;
+    gap: 20rpx;
+    padding: 22rpx;
   }
 
   .task-icon {
-    width: 56rpx;
-    height: 56rpx;
-    border-radius: 14rpx;
+    width: 82rpx;
+    height: 82rpx;
   }
 
   .task-title {
-    font-size: 22rpx;
-  }
-
-  .warning-chip,
-  .source-tag {
-    height: 28rpx;
-    padding: 0 10rpx;
-    font-size: 16rpx;
+    font-size: 26rpx;
   }
 
   .task-desc,
-  .tag-row {
-    margin-top: 8rpx;
-  }
-
-  .view-card {
-    padding: 0 18rpx;
-  }
-
-  .view-row {
-    gap: 14rpx;
-    min-height: 86rpx;
-    padding: 14rpx 0;
-  }
-
-  .view-icon {
-    width: 50rpx;
-    height: 50rpx;
-    border-radius: 12rpx;
-  }
-
-  .view-title {
+  .room-desc,
+  .info-label,
+  .info-value {
     font-size: 22rpx;
   }
 
-  .view-desc {
-    margin-top: 5rpx;
-  }
-
-  .reminder-card {
-    gap: 12rpx;
-    padding: 16rpx 18rpx;
-  }
-
-  .reminder-icon {
-    width: 38rpx;
-    height: 38rpx;
-  }
-
-  .reminder-title {
-    font-size: 20rpx;
+  .view-card {
+    padding-right: 22rpx;
+    padding-left: 22rpx;
   }
 
   .fixed-actions {
-    bottom: calc(138rpx + env(safe-area-inset-bottom));
-    gap: 12rpx;
-    padding: 14rpx 20rpx 16rpx;
+    gap: 18rpx;
+    padding-right: 24rpx;
+    padding-left: 24rpx;
   }
 
   .outline-action,
   .primary-action {
-    height: 60rpx;
-    border-radius: 14rpx;
-    font-size: 22rpx;
+    height: 66rpx;
+    font-size: 25rpx;
   }
 }
 
 @media (max-width: 374px) {
-  .content {
-    padding-right: 16rpx;
-    padding-left: 16rpx;
-  }
-
   .room-art {
     display: none;
+  }
+
+  .room-card {
+    min-height: auto;
+  }
+
+  .next-card {
+    align-items: flex-start;
   }
 
   .task-title-row {
     align-items: flex-start;
     flex-direction: column;
-    gap: 7rpx;
+    gap: 10rpx;
   }
 }
 </style>

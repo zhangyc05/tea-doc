@@ -453,6 +453,12 @@
       }
     },
     {
+      "path": "pages/todo/dynamics-filter/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/todo/certificate-detail/index",
       "style": {
         "navigationStyle": "custom"
@@ -484,6 +490,12 @@
     },
     {
       "path": "pages/archive/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/record-query/index",
       "style": {
         "navigationStyle": "custom"
       }

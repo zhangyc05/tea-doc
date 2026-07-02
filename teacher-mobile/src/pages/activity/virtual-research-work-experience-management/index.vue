@@ -30,102 +30,102 @@ function showToast(title: string) {
   <view class="work-contribution-page">
     <MobileNavbar title="贡献详情" size="compact" @back="goBack" />
 
-    <view class="content">
-      <MobileCard class="hero-card">
-        <view class="hero-icon">
-          <view class="doc-art"></view>
-          <view class="check-badge"></view>
-        </view>
-        <view class="hero-copy">
-          <view class="hero-title-row">
-            <text class="hero-title">设备调试案例整理</text>
-            <text class="success-chip">已确认</text>
+    <scroll-view class="page-scroll" scroll-y>
+      <view class="content">
+        <MobileCard class="hero-card">
+          <view class="hero-icon">
+            <view class="doc-art"></view>
+            <view class="check-badge"></view>
           </view>
-          <text class="hero-desc">本次教研中的个人贡献已确认，可作为教研过程记录查看。</text>
-        </view>
-      </MobileCard>
-
-      <MobileCard class="activity-card">
-        <text class="section-title">所属教研活动</text>
-        <view class="activity-body">
-          <view class="activity-icon"></view>
-          <view class="activity-copy">
-            <text class="activity-title">智能制造课程资源共建研讨</text>
-            <view class="meta-row">
-              <view class="meta-icon meta-icon--time"></view>
-              <text>时间： 2026-05-22 14:00-16:30</text>
+          <view class="hero-copy">
+            <view class="hero-title-row">
+              <text class="hero-title">设备调试案例整理</text>
+              <text class="success-chip">已确认</text>
             </view>
-            <view class="meta-row">
-              <view class="meta-icon meta-icon--org"></view>
-              <text>组织： 智能制造课程虚拟教研室</text>
-            </view>
-            <view class="meta-row">
-              <view class="meta-icon meta-icon--way"></view>
-              <text>方式： 腾讯会议</text>
-            </view>
+            <text class="hero-desc">本次教研中的个人贡献已确认，可作为教研过程记录查看。</text>
           </view>
-        </view>
-      </MobileCard>
-
-      <MobileCard class="desc-card">
-        <text class="section-title">贡献说明</text>
-        <text class="paragraph">你在本次教研中负责整理企业设备调试案例，并同步给课程资源组，用于后续课程案例资源建设与共享。</text>
-        <view class="tag-row">
-          <text class="tag">案例整理</text>
-          <text class="tag">资源共建</text>
-        </view>
-      </MobileCard>
-
-      <MobileCard class="evidence-card">
-        <text class="section-title">系统确认依据</text>
-        <view class="evidence-list">
-          <view v-for="item in evidenceItems" :key="item.title" class="evidence-row">
-            <view class="evidence-icon" :class="`evidence-icon--${item.icon}`"></view>
-            <text class="evidence-title">{{ item.title }}</text>
-            <text class="evidence-status">{{ item.status }}</text>
-          </view>
-        </view>
-      </MobileCard>
-
-      <MobileCard class="file-card">
-        <text class="section-title">关联材料</text>
-        <view class="file-list">
-          <button v-for="file in files" :key="file.name" class="file-row" @tap="showToast(file.name)">
-            <view class="file-icon" :class="`file-icon--${file.type}`">{{ file.type === 'word' ? 'W' : '' }}</view>
-            <text class="file-name">{{ file.name }}</text>
-            <text class="view-link">查看</text>
-            <view class="row-arrow"></view>
-          </button>
-        </view>
-      </MobileCard>
-
-      <view class="summary-grid">
-        <MobileCard class="summary-card">
-          <view class="summary-head">
-            <text class="section-title">确认记录</text>
-            <view class="summary-icon summary-icon--user"></view>
-          </view>
-          <text class="summary-line">确认人： 林老师</text>
-          <text class="summary-line">确认时间： 2026-05-22 18:40</text>
-          <text class="summary-line">归档状态： <text class="green-text">已确认</text></text>
         </MobileCard>
 
-        <MobileCard class="summary-card">
-          <view class="summary-head">
-            <text class="section-title">记录去向</text>
-            <view class="summary-icon summary-icon--pin"></view>
+        <MobileCard class="section-card">
+          <text class="section-title">所属教研活动</text>
+          <view class="activity-body">
+            <view class="activity-icon"></view>
+            <view class="activity-copy">
+              <text class="activity-title">智能制造课程资源共建研讨</text>
+              <view class="meta-row">
+                <view class="meta-icon meta-icon--time"></view>
+                <text>时间：2026-05-22 14:00-16:30</text>
+              </view>
+              <view class="meta-row">
+                <view class="meta-icon meta-icon--org"></view>
+                <text>组织：智能制造课程虚拟教研室</text>
+              </view>
+              <view class="meta-row">
+                <view class="meta-icon meta-icon--way"></view>
+                <text>方式：腾讯会议</text>
+              </view>
+            </view>
           </view>
-          <text class="summary-line">已形成个人教研贡献记录，可在“我的教研室”和“成长档案 · 教研科研”中查看。</text>
-          <text class="summary-tip">可随时查看，助力成长沉淀与复盘</text>
         </MobileCard>
+
+        <MobileCard class="section-card">
+          <text class="section-title">贡献说明</text>
+          <text class="paragraph">你在本次教研中负责整理企业设备调试案例，并同步给课程资源组，用于后续课程案例资源建设与共享。</text>
+          <view class="tag-row">
+            <text class="tag">案例整理</text>
+            <text class="tag">资源共建</text>
+          </view>
+        </MobileCard>
+
+        <MobileCard class="section-card">
+          <text class="section-title">系统确认依据</text>
+          <view class="table-list evidence-list">
+            <view v-for="item in evidenceItems" :key="item.title" class="table-row evidence-row">
+              <view class="evidence-icon" :class="`evidence-icon--${item.icon}`"></view>
+              <text class="row-title">{{ item.title }}</text>
+              <text class="status-chip">{{ item.status }}</text>
+            </view>
+          </view>
+        </MobileCard>
+
+        <MobileCard class="section-card">
+          <text class="section-title">关联材料</text>
+          <view class="table-list">
+            <button v-for="file in files" :key="file.name" class="table-row file-row" @tap="showToast(file.name)">
+              <view class="file-icon" :class="`file-icon--${file.type}`">{{ file.type === 'word' ? 'W' : '' }}</view>
+              <text class="row-title">{{ file.name }}</text>
+              <text class="view-link">查看</text>
+              <view class="row-arrow"></view>
+            </button>
+          </view>
+        </MobileCard>
+
+        <view class="summary-grid">
+          <MobileCard class="summary-card">
+            <view class="summary-head">
+              <text class="section-title">确认记录</text>
+              <view class="summary-icon summary-icon--user"></view>
+            </view>
+            <text class="summary-line">确认人：林老师</text>
+            <text class="summary-line">确认时间：2026-05-22 18:40</text>
+            <text class="summary-line">归档状态：<text class="green-text">已确认</text></text>
+          </MobileCard>
+
+          <MobileCard class="summary-card">
+            <view class="summary-head">
+              <text class="section-title">记录去向</text>
+              <view class="summary-icon summary-icon--pin"></view>
+            </view>
+            <text class="summary-line">已形成个人教研贡献记录，可在“我的教研室”和“成长档案 · 教研科研”中查看。</text>
+            <text class="summary-tip">可随时查看，助力成长沉淀与复盘</text>
+          </MobileCard>
+        </view>
+
+        <MobileActionButton class="return-button" variant="outline" @tap="showToast('返回教研记录')">
+          返回教研记录
+        </MobileActionButton>
       </view>
-    </view>
-
-    <view class="fixed-actions">
-      <MobileActionButton class="return-button" variant="outline" @tap="showToast('返回教研记录')">
-        返回教研记录
-      </MobileActionButton>
-    </view>
+    </scroll-view>
 
     <MobileTabBar active="activity" />
   </view>
@@ -136,28 +136,29 @@ function showToast(title: string) {
 
 .work-contribution-page {
   min-height: 100vh;
-  padding-bottom: calc(242rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 82% 2%, rgba(230, 252, 241, 0.86), transparent 30%),
-    linear-gradient(180deg, #fcfffd 0%, #f7fbf9 100%);
+    radial-gradient(circle at 82% 2%, rgba(224, 250, 236, 0.85), transparent 30%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbf9 100%);
   color: #10172d;
+}
+
+.page-scroll {
+  height: calc(100vh - 92rpx);
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 22rpx;
-  padding: 0 30rpx;
+  padding: 0 30rpx calc(174rpx + env(safe-area-inset-bottom));
 }
 
 .hero-card,
-.activity-card,
-.desc-card,
-.evidence-card,
-.file-card,
+.section-card,
 .summary-card {
   border-radius: 26rpx;
+  box-shadow: 0 16rpx 42rpx rgba(19, 40, 74, 0.05);
 }
 
 .hero-card {
@@ -167,25 +168,17 @@ function showToast(title: string) {
   padding: 34rpx;
 }
 
-.hero-icon {
+.hero-icon,
+.activity-icon {
   position: relative;
-  width: 120rpx;
-  height: 120rpx;
   flex: 0 0 auto;
   border-radius: 18rpx;
-  background: #eefbf4;
+  background: #ecfbf3;
 }
 
-.doc-art,
-.check-badge,
-.activity-icon,
-.meta-icon,
-.evidence-icon,
-.file-icon,
-.row-arrow,
-.summary-icon {
-  position: relative;
-  flex: 0 0 auto;
+.hero-icon {
+  width: 120rpx;
+  height: 120rpx;
 }
 
 .doc-art {
@@ -194,8 +187,8 @@ function showToast(title: string) {
   left: 34rpx;
   width: 60rpx;
   height: 70rpx;
-  border-radius: 10rpx;
-  background: linear-gradient(180deg, #20ce76, #09ae58);
+  border-radius: 11rpx;
+  background: linear-gradient(180deg, #2fd786, #12bd68);
 }
 
 .doc-art::before,
@@ -217,38 +210,31 @@ function showToast(title: string) {
 }
 
 .doc-art::before {
-  right: 0;
-  top: 0;
-  border-top: 18rpx solid #baf2d0;
-  border-left: 18rpx solid transparent;
-}
-
-.doc-art::after {
-  top: 24rpx;
-  left: 15rpx;
-  width: 30rpx;
+  left: 16rpx;
+  top: 20rpx;
+  width: 28rpx;
   height: 5rpx;
   border-radius: 5rpx;
-  background: #fff;
-  box-shadow: 0 22rpx 0 #fff;
+  background: #ffffff;
+  box-shadow: 0 21rpx 0 #ffffff;
 }
 
 .check-badge {
   position: absolute;
-  right: 16rpx;
-  bottom: 20rpx;
-  width: 42rpx;
-  height: 42rpx;
+  right: 14rpx;
+  bottom: 18rpx;
+  width: 46rpx;
+  height: 46rpx;
   border: 6rpx solid #fff;
-  border-radius: 50%;
-  background: #19c76d;
+  border-radius: 999rpx;
+  background: #29c872;
 }
 
 .check-badge::before {
-  left: 11rpx;
-  top: 11rpx;
-  width: 16rpx;
-  height: 9rpx;
+  left: 12rpx;
+  top: 12rpx;
+  width: 17rpx;
+  height: 10rpx;
   border-bottom: 5rpx solid #fff;
   border-left: 5rpx solid #fff;
   transform: rotate(-45deg);
@@ -263,10 +249,8 @@ function showToast(title: string) {
 .activity-body,
 .meta-row,
 .tag-row,
-.evidence-row,
-.file-row,
-.summary-head,
-.fixed-actions {
+.table-row,
+.summary-head {
   display: flex;
   align-items: center;
 }
@@ -281,8 +265,7 @@ function showToast(title: string) {
 .section-title,
 .activity-title,
 .paragraph,
-.evidence-title,
-.file-name,
+.row-title,
 .summary-line,
 .summary-tip {
   display: block;
@@ -290,17 +273,17 @@ function showToast(title: string) {
 
 .hero-title {
   color: #090f1f;
-  font-size: 36rpx;
+  font-size: 35rpx;
   font-weight: 900;
   line-height: 1.2;
 }
 
 .success-chip,
-.evidence-status,
+.status-chip,
 .tag,
 .summary-tip {
   border-radius: 10rpx;
-  background: #e8fbf0;
+  background: #e7f9ee;
   color: #08a85c;
   font-weight: 900;
 }
@@ -310,17 +293,20 @@ function showToast(title: string) {
   font-size: 24rpx;
 }
 
+.hero-desc,
+.paragraph,
+.meta-row,
+.summary-line {
+  color: #30466e;
+}
+
 .hero-desc {
   margin-top: 16rpx;
-  color: #30466e;
   font-size: 26rpx;
   line-height: 1.42;
 }
 
-.activity-card,
-.desc-card,
-.evidence-card,
-.file-card {
+.section-card {
   padding: 28rpx 30rpx;
 }
 
@@ -339,9 +325,7 @@ function showToast(title: string) {
 .activity-icon {
   width: 120rpx;
   height: 120rpx;
-  border-radius: 18rpx;
-  background: #eafbf2;
-  color: #20ce76;
+  color: #28c874;
 }
 
 .activity-icon::before {
@@ -351,7 +335,7 @@ function showToast(title: string) {
   height: 44rpx;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: -32rpx -10rpx 0 -8rpx #8de3b4, 32rpx -10rpx 0 -8rpx #8de3b4;
+  box-shadow: -33rpx -10rpx 0 -8rpx #8be2b2, 33rpx -10rpx 0 -8rpx #8be2b2;
 }
 
 .activity-icon::after {
@@ -361,7 +345,7 @@ function showToast(title: string) {
   height: 30rpx;
   border-radius: 34rpx 34rpx 0 0;
   background: currentColor;
-  box-shadow: -35rpx 2rpx 0 -9rpx #8de3b4, 35rpx 2rpx 0 -9rpx #8de3b4;
+  box-shadow: -35rpx 2rpx 0 -9rpx #8be2b2, 35rpx 2rpx 0 -9rpx #8be2b2;
 }
 
 .activity-copy {
@@ -379,14 +363,15 @@ function showToast(title: string) {
 .meta-row {
   gap: 16rpx;
   margin-top: 15rpx;
-  color: #30466e;
   font-size: 24rpx;
   line-height: 1.25;
 }
 
 .meta-icon {
+  position: relative;
   width: 28rpx;
   height: 28rpx;
+  flex: 0 0 auto;
   color: #59709b;
 }
 
@@ -442,7 +427,6 @@ function showToast(title: string) {
 
 .paragraph {
   margin-top: 18rpx;
-  color: #30466e;
   font-size: 26rpx;
   line-height: 1.6;
 }
@@ -457,17 +441,15 @@ function showToast(title: string) {
   font-size: 22rpx;
 }
 
-.evidence-list,
-.file-list {
+.table-list {
   margin-top: 18rpx;
   overflow: hidden;
   border: 1rpx solid #dfe7f2;
   border-radius: 14rpx;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.84);
 }
 
-.evidence-row,
-.file-row {
+.table-row {
   min-height: 62rpx;
   gap: 20rpx;
   margin: 0;
@@ -479,19 +461,20 @@ function showToast(title: string) {
   text-align: left;
 }
 
-.file-row::after {
+.table-row::after {
   display: none;
 }
 
-.evidence-row:last-child,
-.file-row:last-child {
+.table-row:last-child {
   border-bottom: 0;
 }
 
 .evidence-icon {
+  position: relative;
   width: 30rpx;
   height: 30rpx;
-  color: #17bf6b;
+  flex: 0 0 auto;
+  color: #19bf6c;
 }
 
 .evidence-icon--note::before {
@@ -563,8 +546,7 @@ function showToast(title: string) {
   box-shadow: 8rpx 0 0 currentColor, 16rpx 0 0 currentColor;
 }
 
-.evidence-title,
-.file-name {
+.row-title {
   min-width: 0;
   flex: 1;
   color: #111827;
@@ -572,24 +554,25 @@ function showToast(title: string) {
   line-height: 1.25;
 }
 
-.evidence-status {
+.status-chip {
   padding: 8rpx 14rpx;
   font-size: 21rpx;
   white-space: nowrap;
 }
 
 .file-icon {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32rpx;
   height: 38rpx;
+  flex: 0 0 auto;
   border-radius: 5rpx;
   background: #2f7df6;
   color: #fff;
   font-size: 18rpx;
   font-weight: 900;
-  line-height: 1;
 }
 
 .file-icon::before {
@@ -634,8 +617,10 @@ function showToast(title: string) {
 }
 
 .row-arrow {
+  position: relative;
   width: 16rpx;
   height: 16rpx;
+  flex: 0 0 auto;
   color: #08a85c;
 }
 
@@ -662,10 +647,12 @@ function showToast(title: string) {
 }
 
 .summary-icon {
+  position: relative;
   width: 50rpx;
   height: 50rpx;
+  flex: 0 0 auto;
   border-radius: 14rpx;
-  background: #e8fbf0;
+  background: #e7f9ee;
   color: #14bd67;
 }
 
@@ -703,12 +690,11 @@ function showToast(title: string) {
   width: 7rpx;
   height: 7rpx;
   border-radius: 50%;
-  background: #e8fbf0;
+  background: #e7f9ee;
 }
 
 .summary-line {
   margin-top: 18rpx;
-  color: #30466e;
   font-size: 25rpx;
   line-height: 1.45;
 }
@@ -725,33 +711,22 @@ function showToast(title: string) {
   font-size: 22rpx;
 }
 
-.fixed-actions {
-  position: fixed;
-  right: 0;
-  bottom: calc(138rpx + env(safe-area-inset-bottom));
-  left: 0;
-  z-index: 45;
-  padding: 18rpx 30rpx 20rpx;
-  border-top: 1rpx solid rgba(232, 238, 246, 0.96);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 -12rpx 36rpx rgba(21, 40, 74, 0.06);
-}
-
 .return-button {
   width: 100%;
-  height: 74rpx;
+  height: 76rpx;
   border-radius: 14rpx;
   font-size: 31rpx;
 }
 
 @media (max-width: 430px) {
-  .work-contribution-page {
-    padding-bottom: calc(232rpx + env(safe-area-inset-bottom));
+  .page-scroll {
+    height: calc(100vh - 82rpx);
   }
 
   .content {
     gap: 14rpx;
     padding-right: 20rpx;
+    padding-bottom: calc(156rpx + env(safe-area-inset-bottom));
     padding-left: 20rpx;
   }
 
@@ -772,12 +747,29 @@ function showToast(title: string) {
     height: 52rpx;
   }
 
+  .doc-art::before {
+    left: 11rpx;
+    top: 15rpx;
+    width: 22rpx;
+    height: 4rpx;
+    box-shadow: 0 15rpx 0 #ffffff;
+  }
+
   .check-badge {
     right: 9rpx;
     bottom: 11rpx;
     width: 32rpx;
     height: 32rpx;
     border-width: 4rpx;
+  }
+
+  .check-badge::before {
+    left: 8rpx;
+    top: 8rpx;
+    width: 12rpx;
+    height: 7rpx;
+    border-bottom-width: 4rpx;
+    border-left-width: 4rpx;
   }
 
   .hero-title {
@@ -798,10 +790,7 @@ function showToast(title: string) {
     margin-top: 8rpx;
   }
 
-  .activity-card,
-  .desc-card,
-  .evidence-card,
-  .file-card {
+  .section-card {
     padding: 20rpx;
   }
 
@@ -844,13 +833,11 @@ function showToast(title: string) {
     font-size: 18rpx;
   }
 
-  .evidence-list,
-  .file-list {
+  .table-list {
     margin-top: 12rpx;
   }
 
-  .evidence-row,
-  .file-row {
+  .table-row {
     min-height: 46rpx;
     gap: 12rpx;
     padding: 0 14rpx;
@@ -861,13 +848,12 @@ function showToast(title: string) {
     height: 24rpx;
   }
 
-  .evidence-title,
-  .file-name,
+  .row-title,
   .view-link {
     font-size: 19rpx;
   }
 
-  .evidence-status {
+  .status-chip {
     padding: 5rpx 9rpx;
     font-size: 16rpx;
   }
@@ -900,10 +886,6 @@ function showToast(title: string) {
     margin-top: 10rpx;
     padding: 5rpx 8rpx;
     font-size: 17rpx;
-  }
-
-  .fixed-actions {
-    padding: 14rpx 20rpx 16rpx;
   }
 
   .return-button {

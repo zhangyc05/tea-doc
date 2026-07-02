@@ -125,7 +125,7 @@ function submitAgain() {
             <view class="upload-plus">+</view>
             <text>上传材料</text>
           </view>
-          <text class="upload-desc">支持 PDF、JPG、PNG 格式，单个文件不超过 20MB 可上传多份材料</text>
+          <text class="upload-desc">支持 PDF、JPG、PNG 格式，单个文件不超过 20MB，可上传多份材料</text>
         </view>
       </MobileCard>
     </view>
@@ -389,6 +389,10 @@ function submitAgain() {
   border-top: 4rpx solid #8a94a6;
   border-right: 4rpx solid #8a94a6;
   transform: rotate(45deg);
+}
+
+.chevron--orange {
+  border-color: #ff5b13;
 }
 
 .practice-list {

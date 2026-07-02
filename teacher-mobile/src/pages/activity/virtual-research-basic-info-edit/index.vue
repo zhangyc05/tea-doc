@@ -33,7 +33,7 @@ function showToast(title: string) {
 
     <view class="content">
       <MobileCard class="hero-card">
-        <view class="hero-art">
+        <view class="hero-art" aria-hidden="true">
           <view class="spark spark--one"></view>
           <view class="spark spark--two"></view>
           <view class="dot dot--left"></view>
@@ -53,7 +53,7 @@ function showToast(title: string) {
       <MobileCard class="activity-card">
         <text class="section-title">本次教研活动</text>
         <view class="activity-body">
-          <view class="activity-art">
+          <view class="activity-art" aria-hidden="true">
             <view class="board-icon"></view>
             <view class="people-dot people-dot--one"></view>
             <view class="people-dot people-dot--two"></view>
@@ -62,12 +62,12 @@ function showToast(title: string) {
           <view class="activity-copy">
             <text class="activity-title">智能制造课程资源共建研讨</text>
             <view class="meta-row">
-              <view class="tiny-icon tiny-icon--calendar"></view>
+              <view class="tiny-icon tiny-icon--calendar" aria-hidden="true"></view>
               <text>2026-05-22 14:00-16:30</text>
             </view>
             <view class="meta-row">
-              <view class="tiny-icon tiny-icon--briefcase"></view>
-              <text>腾讯会议 ｜ 智能制造课程虚拟教研室</text>
+              <view class="tiny-icon tiny-icon--briefcase" aria-hidden="true"></view>
+              <text>腾讯会议　|　智能制造课程虚拟教研室</text>
             </view>
           </view>
         </view>
@@ -81,19 +81,19 @@ function showToast(title: string) {
           class="contribution-row"
           @tap="showToast(item.title)"
         >
-          <view class="contribution-icon" :class="`contribution-icon--${item.icon}`"></view>
+          <view class="contribution-icon" :class="`contribution-icon--${item.icon}`" aria-hidden="true"></view>
           <view class="contribution-copy">
             <text class="contribution-title">{{ item.title }}</text>
             <text class="contribution-source">{{ item.source }}</text>
           </view>
-          <view class="row-arrow"></view>
+          <view class="row-arrow" aria-hidden="true"></view>
         </button>
       </MobileCard>
 
       <MobileCard class="status-card">
         <text class="section-title">当前状态</text>
         <view class="status-body">
-          <view class="hourglass-icon"></view>
+          <view class="hourglass-icon" aria-hidden="true"></view>
           <view class="status-copy">
             <text class="status-title">教研活动归档中</text>
             <text class="status-desc">归档完成后，可在教研记录中查看。</text>
@@ -120,20 +120,21 @@ function showToast(title: string) {
 
 .submitted-shell {
   min-height: 100vh;
-  padding-bottom: calc(260rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(252rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 85% 3%, rgba(231, 246, 255, 0.84), transparent 30%),
+    radial-gradient(circle at 84% 4%, rgba(224, 248, 255, 0.78), transparent 30%),
     linear-gradient(180deg, #ffffff 0%, #fbfdff 42%, #f8fbfa 100%);
   color: #10172d;
 }
 
 .page-subtitle {
   display: block;
-  margin: 0 48rpx 34rpx 142rpx;
+  margin: -2rpx 48rpx 34rpx 142rpx;
   color: #294575;
   font-size: 31rpx;
-  line-height: 1.28;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .content {
@@ -148,13 +149,14 @@ function showToast(title: string) {
 .contribution-card,
 .status-card {
   border-radius: 24rpx;
+  box-shadow: 0 18rpx 46rpx rgba(23, 41, 72, 0.06);
 }
 
 .hero-card {
   display: flex;
   min-height: 246rpx;
   align-items: center;
-  gap: 44rpx;
+  gap: 42rpx;
   padding: 34rpx 42rpx;
 }
 
@@ -181,13 +183,13 @@ function showToast(title: string) {
 
 .clipboard-icon {
   position: absolute;
-  left: 48rpx;
   top: 34rpx;
+  left: 48rpx;
   z-index: 2;
   width: 120rpx;
   height: 126rpx;
   border-radius: 20rpx;
-  background: linear-gradient(145deg, #37e59a, #02b95f);
+  background: linear-gradient(145deg, #36e59a, #02b95f);
   box-shadow: 0 20rpx 34rpx rgba(10, 182, 95, 0.2);
 }
 
@@ -208,8 +210,8 @@ function showToast(title: string) {
 }
 
 .clipboard-icon::before {
-  left: 32rpx;
   top: -20rpx;
+  left: 32rpx;
   width: 58rpx;
   height: 34rpx;
   border: 7rpx solid #fff;
@@ -219,84 +221,65 @@ function showToast(title: string) {
 }
 
 .clipboard-icon::after {
-  left: 35rpx;
-  top: 54rpx;
-  width: 48rpx;
+  top: 48rpx;
+  left: 34rpx;
+  width: 52rpx;
   height: 28rpx;
-  border-bottom: 12rpx solid #fff;
-  border-left: 12rpx solid #fff;
+  border-bottom: 14rpx solid #fff;
+  border-left: 14rpx solid #fff;
   transform: rotate(-45deg);
 }
 
 .shadow-oval {
   position: absolute;
-  left: 20rpx;
-  bottom: 12rpx;
-  width: 164rpx;
-  height: 46rpx;
+  bottom: 8rpx;
+  left: 14rpx;
+  width: 174rpx;
+  height: 44rpx;
   border-radius: 50%;
-  background: rgba(44, 202, 123, 0.18);
+  background: rgba(17, 189, 104, 0.13);
 }
 
 .spark {
   position: absolute;
-  width: 28rpx;
-  height: 28rpx;
-  color: #61dca1;
-}
-
-.spark::before,
-.spark::after {
-  background: currentColor;
-}
-
-.spark::before {
-  left: 12rpx;
-  top: 0;
-  width: 5rpx;
-  height: 28rpx;
-  border-radius: 5rpx;
-}
-
-.spark::after {
-  left: 0;
-  top: 12rpx;
-  width: 28rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
+  width: 30rpx;
+  height: 30rpx;
+  color: #78dfaa;
 }
 
 .spark--one {
-  left: 18rpx;
-  top: 8rpx;
-  transform: rotate(45deg);
+  top: 24rpx;
+  left: 6rpx;
 }
 
 .spark--two {
-  right: 0;
-  top: 22rpx;
-  width: 16rpx;
-  height: 16rpx;
-  color: #b9edd0;
-  transform: rotate(45deg);
+  top: 38rpx;
+  right: 8rpx;
+  transform: scale(0.72);
+}
+
+.spark::before {
+  inset: 0;
+  background: currentColor;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
 }
 
 .dot {
   position: absolute;
-  width: 15rpx;
-  height: 15rpx;
+  width: 14rpx;
+  height: 14rpx;
   border-radius: 50%;
-  background: #b7ebd0;
+  background: #a6efc9;
 }
 
 .dot--left {
-  left: 26rpx;
-  top: 93rpx;
+  top: 82rpx;
+  left: 28rpx;
 }
 
 .dot--right {
-  right: 0;
-  top: 110rpx;
+  right: 2rpx;
+  bottom: 76rpx;
 }
 
 .hero-copy {
@@ -310,38 +293,27 @@ function showToast(title: string) {
   gap: 22rpx;
 }
 
-.hero-title,
-.hero-desc,
-.section-title,
-.activity-title,
-.meta-row,
-.contribution-title,
-.contribution-source,
-.status-title,
-.status-desc {
-  display: block;
-}
-
 .hero-title {
-  color: #070d1d;
-  font-size: 41rpx;
+  color: #10172d;
+  font-size: 39rpx;
   font-weight: 900;
-  line-height: 1.22;
+  line-height: 1.25;
 }
 
 .state-chip {
-  flex: 0 0 auto;
-  padding: 10rpx 24rpx;
+  padding: 9rpx 20rpx;
   border-radius: 999rpx;
-  background: #fff1e6;
-  color: #ff7117;
-  font-size: 29rpx;
+  background: #fff1e8;
+  color: #ff7417;
+  font-size: 25rpx;
   font-weight: 900;
+  white-space: nowrap;
 }
 
 .hero-desc {
-  margin-top: 30rpx;
-  color: #2d4774;
+  display: block;
+  margin-top: 28rpx;
+  color: #2f4b7b;
   font-size: 31rpx;
   line-height: 1.55;
 }
@@ -349,93 +321,97 @@ function showToast(title: string) {
 .activity-card,
 .contribution-card,
 .status-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .section-title {
-  color: #070d1d;
-  font-size: 38rpx;
+  display: block;
+  color: #10172d;
+  font-size: 34rpx;
   font-weight: 900;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .activity-body {
   display: flex;
   align-items: center;
-  gap: 34rpx;
-  margin-top: 24rpx;
+  gap: 38rpx;
+  margin-top: 28rpx;
 }
 
 .activity-art {
-  width: 150rpx;
-  height: 150rpx;
+  width: 152rpx;
+  height: 152rpx;
   overflow: hidden;
   border-radius: 18rpx;
-  background: linear-gradient(145deg, #eefcf5, #f8fffb);
+  background: linear-gradient(145deg, #e9fbf2, #f7fffb);
 }
 
 .board-icon {
   position: absolute;
-  left: 44rpx;
-  top: 40rpx;
-  width: 68rpx;
-  height: 54rpx;
+  top: 38rpx;
+  left: 42rpx;
+  width: 70rpx;
+  height: 56rpx;
   border-radius: 8rpx;
-  background: linear-gradient(135deg, #37df92, #0fbe66);
+  background: linear-gradient(145deg, #33df92, #14bd68);
 }
 
 .board-icon::before {
-  left: 10rpx;
-  top: 17rpx;
-  width: 10rpx;
-  height: 10rpx;
+  top: 16rpx;
+  left: 20rpx;
+  width: 8rpx;
+  height: 8rpx;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 22rpx -2rpx 0 0 #fff, 40rpx -2rpx 0 0 #fff, 22rpx 17rpx 0 0 #fff, 40rpx 17rpx 0 0 #fff;
+  box-shadow: 20rpx 0 0 #fff;
 }
 
 .board-icon::after {
-  left: 26rpx;
-  bottom: -22rpx;
-  width: 12rpx;
-  height: 22rpx;
-  background: #19c46e;
+  right: 12rpx;
+  bottom: 12rpx;
+  width: 28rpx;
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: #dffff0;
 }
 
 .people-dot {
   position: absolute;
-  width: 30rpx;
-  height: 30rpx;
   border-radius: 50%;
-  background: #35d58a;
+  background: #52d88c;
 }
 
-.people-dot::before {
+.people-dot::after {
   position: absolute;
-  left: -13rpx;
-  top: 30rpx;
-  width: 58rpx;
-  height: 26rpx;
-  border-radius: 30rpx 30rpx 6rpx 6rpx;
-  background: inherit;
+  top: 22rpx;
+  left: -8rpx;
+  width: 42rpx;
+  height: 24rpx;
+  border-radius: 28rpx 28rpx 4rpx 4rpx;
+  background: #52d88c;
   content: '';
 }
 
 .people-dot--one {
-  left: 22rpx;
-  bottom: 34rpx;
+  bottom: 24rpx;
+  left: 34rpx;
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .people-dot--two {
-  left: 52rpx;
-  bottom: 48rpx;
-  background: #63dda2;
+  bottom: 46rpx;
+  left: 64rpx;
+  width: 22rpx;
+  height: 22rpx;
 }
 
 .people-dot--three {
-  right: 26rpx;
-  bottom: 40rpx;
-  background: #46ca84;
+  right: 30rpx;
+  bottom: 42rpx;
+  width: 26rpx;
+  height: 26rpx;
 }
 
 .activity-copy {
@@ -444,8 +420,9 @@ function showToast(title: string) {
 }
 
 .activity-title {
-  color: #080d1d;
-  font-size: 34rpx;
+  display: block;
+  color: #10172d;
+  font-size: 32rpx;
   font-weight: 900;
   line-height: 1.3;
 }
@@ -453,59 +430,65 @@ function showToast(title: string) {
 .meta-row {
   display: flex;
   align-items: center;
-  gap: 18rpx;
-  margin-top: 20rpx;
-  color: #344e7b;
-  font-size: 29rpx;
-  line-height: 1.28;
+  gap: 16rpx;
+  margin-top: 22rpx;
+  color: #304c7d;
+  font-size: 27rpx;
+  font-weight: 500;
+  line-height: 1.25;
 }
 
 .tiny-icon {
-  width: 30rpx;
-  height: 30rpx;
-  color: #42547a;
+  width: 24rpx;
+  height: 24rpx;
+  color: #536a96;
 }
 
-.tiny-icon::before {
-  inset: 5rpx;
+.tiny-icon--calendar::before {
+  inset: 2rpx;
   border: 3rpx solid currentColor;
-  border-radius: 5rpx;
+  border-radius: 4rpx;
 }
 
 .tiny-icon--calendar::after {
-  left: 9rpx;
-  right: 9rpx;
-  top: 1rpx;
-  height: 9rpx;
-  border-right: 3rpx solid currentColor;
-  border-left: 3rpx solid currentColor;
+  top: 8rpx;
+  left: 5rpx;
+  width: 14rpx;
+  height: 3rpx;
+  background: currentColor;
+}
+
+.tiny-icon--briefcase::before {
+  inset: 6rpx 2rpx 3rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 4rpx;
 }
 
 .tiny-icon--briefcase::after {
-  left: 10rpx;
-  top: 3rpx;
-  width: 10rpx;
-  height: 6rpx;
+  top: 2rpx;
+  left: 8rpx;
+  width: 8rpx;
+  height: 7rpx;
   border: 3rpx solid currentColor;
   border-bottom: 0;
   border-radius: 4rpx 4rpx 0 0;
 }
 
 .contribution-card {
-  padding-bottom: 0;
+  padding-bottom: 8rpx;
 }
 
 .contribution-row {
   display: flex;
-  min-height: 144rpx;
+  min-height: 126rpx;
   align-items: center;
-  gap: 28rpx;
+  gap: 30rpx;
   margin: 0;
-  padding: 28rpx 0;
+  padding: 26rpx 0;
   border: 0;
-  border-bottom: 1rpx solid #e6ebf2;
-  border-radius: 0;
   background: transparent;
+  color: inherit;
+  line-height: 1;
   text-align: left;
 }
 
@@ -513,49 +496,56 @@ function showToast(title: string) {
   display: none;
 }
 
-.contribution-row:last-child {
-  border-bottom: 0;
+.contribution-row + .contribution-row {
+  border-top: 1rpx solid #edf1f5;
 }
 
 .contribution-icon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 22rpx;
-  background: #e9fbf2;
-  color: #0fbf68;
+  width: 78rpx;
+  height: 78rpx;
+  border-radius: 18rpx;
+}
+
+.contribution-icon--folder {
+  background: #eafbf1;
 }
 
 .contribution-icon--chat {
-  background: #e9fbf2;
+  background: #eafbf1;
 }
 
-.contribution-icon::before {
-  left: 23rpx;
-  top: 24rpx;
-  width: 42rpx;
-  height: 34rpx;
-  border-radius: 7rpx;
-  background: currentColor;
+.contribution-icon--folder::before {
+  inset: 22rpx 18rpx;
+  border-radius: 8rpx;
+  background: #12bd68;
+  clip-path: polygon(0 0, 72% 0, 100% 28%, 100% 100%, 0 100%);
 }
 
 .contribution-icon--folder::after {
-  left: 35rpx;
-  top: 35rpx;
-  width: 19rpx;
-  height: 10rpx;
-  border-bottom: 5rpx solid #fff;
-  border-left: 5rpx solid #fff;
+  top: 42rpx;
+  left: 32rpx;
+  width: 28rpx;
+  height: 15rpx;
+  border-bottom: 7rpx solid #fff;
+  border-left: 7rpx solid #fff;
   transform: rotate(-45deg);
 }
 
+.contribution-icon--chat::before {
+  inset: 20rpx 17rpx;
+  border-radius: 10rpx;
+  background: #11bd68;
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 58% 72%, 38% 100%, 38% 72%, 0 72%);
+}
+
 .contribution-icon--chat::after {
-  left: 35rpx;
-  top: 39rpx;
+  top: 34rpx;
+  left: 26rpx;
   width: 7rpx;
   height: 7rpx;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 17rpx 0 0 #fff, -17rpx 0 0 #fff;
+  box-shadow: 14rpx 0 0 #fff, 28rpx 0 0 #fff;
 }
 
 .contribution-copy {
@@ -564,16 +554,18 @@ function showToast(title: string) {
 }
 
 .contribution-title {
-  color: #111827;
-  font-size: 32rpx;
+  display: block;
+  color: #10172d;
+  font-size: 30rpx;
   font-weight: 900;
   line-height: 1.25;
 }
 
 .contribution-source {
+  display: block;
   margin-top: 18rpx;
-  color: #304b79;
-  font-size: 29rpx;
+  color: #304c7d;
+  font-size: 27rpx;
   line-height: 1.3;
 }
 
@@ -608,8 +600,8 @@ function showToast(title: string) {
 }
 
 .hourglass-icon::before {
-  left: 23rpx;
   top: 18rpx;
+  left: 23rpx;
   width: 23rpx;
   height: 34rpx;
   border: 7rpx solid currentColor;
@@ -619,6 +611,7 @@ function showToast(title: string) {
 }
 
 .status-title {
+  display: block;
   color: #111827;
   font-size: 34rpx;
   font-weight: 900;
@@ -626,6 +619,7 @@ function showToast(title: string) {
 }
 
 .status-desc {
+  display: block;
   margin-top: 18rpx;
   color: #304b79;
   font-size: 30rpx;
@@ -639,7 +633,7 @@ function showToast(title: string) {
   left: 0;
   z-index: 18;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 34rpx;
   padding: 22rpx 48rpx 20rpx;
   background: rgba(255, 255, 255, 0.92);
@@ -663,7 +657,7 @@ function showToast(title: string) {
 
 @media (max-width: 430px) {
   .submitted-shell {
-    padding-bottom: calc(236rpx + env(safe-area-inset-bottom));
+    padding-bottom: calc(238rpx + env(safe-area-inset-bottom));
   }
 
   .page-subtitle {
@@ -690,8 +684,8 @@ function showToast(title: string) {
   }
 
   .clipboard-icon {
-    left: 40rpx;
     top: 28rpx;
+    left: 40rpx;
     width: 96rpx;
     height: 100rpx;
   }
@@ -740,8 +734,8 @@ function showToast(title: string) {
   }
 
   .board-icon {
-    left: 32rpx;
     top: 30rpx;
+    left: 32rpx;
     width: 52rpx;
     height: 42rpx;
   }

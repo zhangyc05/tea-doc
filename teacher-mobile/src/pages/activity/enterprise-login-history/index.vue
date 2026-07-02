@@ -6,7 +6,7 @@ import MobileNavbar from '../../../components/MobileNavbar.vue'
 const summaryItems = [
   {
     title: '实践内容',
-    text: '参与 MES 模块需求分析、开发流程观察和项目文档编写，了解企业软件内部从需求确认到开发排期的基本流程。',
+    text: '参与 MES 模块需求分析、开发流程观察和项目文档编写，了解企业软件内目从需求确认到开发排期的基本流程。',
   },
   {
     title: '实践收获',

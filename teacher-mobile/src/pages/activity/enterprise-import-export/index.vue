@@ -7,7 +7,7 @@ import MobileTabBar from '../../../components/MobileTabBar.vue'
 const planRows = [
   { label: '实践单位：', value: '山东智联装备有限公司' },
   { label: '实践岗位：', value: '现场工程师助理' },
-  { label: '计划时间：', value: '2026-06-03 至 2026-06-14' },
+  { label: '计划时间：', value: '2026-06-03  至  2026-06-14' },
   { label: '预计实践天数：', value: '10 天' },
   { label: '提交时间：', value: '2026-05-28 09:41' },
 ]

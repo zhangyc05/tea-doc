@@ -74,7 +74,7 @@ function showToast(title: string) {
     <view class="content">
       <MobileCard class="stats-card">
         <view v-for="item in stats" :key="item.label" class="stat-item">
-          <view class="stat-icon" :class="`stat-icon--${item.type}`"></view>
+          <view class="stat-icon" :class="`stat-icon--${item.type}`" aria-hidden="true"></view>
           <view class="stat-copy">
             <text class="stat-label">{{ item.label }}</text>
             <view class="stat-value-row">
@@ -88,7 +88,7 @@ function showToast(title: string) {
       <view class="section">
         <text class="section-title">当前需要处理</text>
         <MobileCard v-for="item in todos" :key="item.title" class="todo-card">
-          <view class="todo-icon" :class="`todo-icon--${item.type}`"></view>
+          <view class="todo-icon" :class="`todo-icon--${item.type}`" aria-hidden="true"></view>
           <view class="todo-copy">
             <view class="todo-title-row">
               <text class="todo-title">{{ item.title }}</text>
@@ -105,7 +105,7 @@ function showToast(title: string) {
       <view class="section">
         <text class="section-title">我的教研室</text>
         <MobileCard class="room-card">
-          <view class="room-icon room-icon--joined"></view>
+          <view class="room-icon room-icon--joined" aria-hidden="true"></view>
           <view class="room-copy">
             <view class="room-title-row">
               <text class="room-title">智能制造教研室</text>
@@ -125,7 +125,7 @@ function showToast(title: string) {
         </MobileCard>
 
         <MobileCard class="room-card room-card--invited">
-          <view class="room-icon room-icon--book"></view>
+          <view class="room-icon room-icon--book" aria-hidden="true"></view>
           <view class="room-copy">
             <view class="room-title-row">
               <text class="room-title">课程思政教研室</text>
@@ -144,18 +144,18 @@ function showToast(title: string) {
           <text class="section-title">最近教研活动</text>
           <button class="all-link" @tap="showToast('全部')">
             <text>全部</text>
-            <view class="link-arrow"></view>
+            <view class="link-arrow" aria-hidden="true"></view>
           </button>
         </view>
         <MobileCard class="activity-card">
           <view v-for="item in activities" :key="item.title" class="activity-row">
-            <view class="activity-icon" :class="`activity-icon--${item.type}`"></view>
+            <view class="activity-icon" :class="`activity-icon--${item.type}`" aria-hidden="true"></view>
             <view class="activity-copy">
               <text class="activity-title">{{ item.title }}</text>
               <text class="activity-desc">{{ item.desc }}</text>
             </view>
             <text class="activity-status" :class="`activity-status--${item.tone}`">{{ item.status }}</text>
-            <view class="row-arrow"></view>
+            <view class="row-arrow" aria-hidden="true"></view>
           </view>
         </MobileCard>
       </view>
@@ -220,40 +220,37 @@ function showToast(title: string) {
 .stats-card {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: 24rpx 18rpx;
+  padding: 24rpx 28rpx;
   border-radius: 20rpx;
-  background: linear-gradient(105deg, #f7fffb, #ffffff);
+  background: linear-gradient(90deg, rgba(244, 255, 249, 0.94), #fff);
 }
 
 .stat-item {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 16rpx;
-  padding: 0 18rpx;
-  border-right: 1rpx solid #e3ebe8;
+  gap: 18rpx;
 }
 
-.stat-item:last-child {
-  border-right: 0;
+.stat-item + .stat-item {
+  padding-left: 22rpx;
+  border-left: 1rpx solid #e4edf0;
 }
 
 .stat-icon,
 .todo-icon,
 .room-icon,
-.activity-icon,
-.link-arrow,
-.row-arrow {
+.activity-icon {
   position: relative;
   flex: 0 0 auto;
+  border-radius: 16rpx;
 }
 
 .stat-icon {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 18rpx;
-  background: #e9fbf2;
-  color: #14bb69;
+  width: 72rpx;
+  height: 72rpx;
+  background: #eefbf4;
+  color: #10bd67;
 }
 
 .stat-icon::before,
@@ -264,47 +261,31 @@ function showToast(title: string) {
 .room-icon::after,
 .activity-icon::before,
 .activity-icon::after,
-.link-arrow::before,
-.row-arrow::before {
+.row-arrow::before,
+.link-arrow::before {
   position: absolute;
   content: '';
 }
 
-.stat-icon--members::before,
-.room-icon--joined::before {
-  left: 21rpx;
-  top: 13rpx;
-  width: 23rpx;
-  height: 23rpx;
+.stat-icon--members::before {
+  top: 20rpx;
+  left: 19rpx;
+  width: 34rpx;
+  height: 34rpx;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: -17rpx 8rpx 0 -4rpx currentColor, 17rpx 8rpx 0 -4rpx currentColor;
+  box-shadow: -13rpx 17rpx 0 -5rpx currentColor, 13rpx 17rpx 0 -5rpx currentColor;
 }
 
-.stat-icon--members::after,
-.room-icon--joined::after {
-  left: 13rpx;
-  bottom: 11rpx;
-  width: 38rpx;
-  height: 20rpx;
-  border-radius: 22rpx 22rpx 6rpx 6rpx;
-  background: currentColor;
-}
-
-.stat-icon--confirm::before,
-.todo-icon--doc::before {
-  left: 19rpx;
-  top: 10rpx;
-  width: 28rpx;
-  height: 40rpx;
+.stat-icon--confirm::before {
+  inset: 18rpx 20rpx;
   border-radius: 7rpx;
   background: currentColor;
 }
 
-.stat-icon--confirm::after,
-.todo-icon--doc::after {
-  left: 26rpx;
-  top: 24rpx;
+.stat-icon--confirm::after {
+  top: 35rpx;
+  left: 29rpx;
   width: 18rpx;
   height: 10rpx;
   border-bottom: 5rpx solid #fff;
@@ -313,22 +294,19 @@ function showToast(title: string) {
 }
 
 .stat-icon--invite::before {
-  left: 13rpx;
-  top: 21rpx;
-  width: 40rpx;
-  height: 28rpx;
-  border-radius: 6rpx;
+  inset: 21rpx 14rpx;
+  border-radius: 7rpx;
   background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .stat-icon--invite::after {
-  right: 8rpx;
-  top: 10rpx;
+  top: 12rpx;
+  right: 13rpx;
   width: 12rpx;
   height: 12rpx;
-  border: 4rpx solid #fff;
   border-radius: 50%;
-  background: #ff315d;
+  background: #ff2e3f;
 }
 
 .stat-copy {
@@ -336,9 +314,10 @@ function showToast(title: string) {
 }
 
 .stat-label {
-  color: #14203b;
-  font-size: 26rpx;
-  font-weight: 800;
+  color: #10172d;
+  font-size: 24rpx;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
 .stat-value-row {
@@ -349,15 +328,15 @@ function showToast(title: string) {
 }
 
 .stat-value {
-  color: #0d1326;
-  font-size: 38rpx;
+  color: #10172d;
+  font-size: 36rpx;
   font-weight: 900;
   line-height: 1;
 }
 
 .stat-unit {
-  color: #263f6b;
-  font-size: 25rpx;
+  color: #283f67;
+  font-size: 23rpx;
   font-weight: 700;
 }
 
@@ -367,83 +346,207 @@ function showToast(title: string) {
   gap: 18rpx;
 }
 
-.section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .section-title {
   color: #10172d;
   font-size: 34rpx;
   font-weight: 900;
-  line-height: 1.25;
+  line-height: 1.15;
 }
 
 .todo-card,
-.room-card {
-  display: flex;
-  align-items: center;
-  gap: 22rpx;
+.room-card,
+.activity-card {
   border-radius: 18rpx;
-  padding: 26rpx 24rpx;
+  box-shadow: 0 14rpx 38rpx rgba(20, 40, 70, 0.055);
 }
 
-.todo-icon,
-.room-icon {
-  width: 92rpx;
-  height: 92rpx;
-  border-radius: 18rpx;
-  background: #e9fbf2;
-  color: #15ba69;
+.todo-card {
+  display: grid;
+  grid-template-columns: 108rpx minmax(0, 1fr) 144rpx;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+}
+
+.todo-icon {
+  width: 94rpx;
+  height: 94rpx;
+  background: #eafbf1;
+  color: #13bd68;
+}
+
+.todo-icon--doc {
+  background: #ecf5ff;
+  color: #397ef2;
 }
 
 .todo-icon--invite::before {
+  top: 25rpx;
   left: 22rpx;
-  top: 22rpx;
-  width: 28rpx;
-  height: 28rpx;
+  width: 30rpx;
+  height: 30rpx;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: -17rpx 10rpx 0 -5rpx currentColor;
+  box-shadow: 24rpx 0 0 -3rpx currentColor;
 }
 
 .todo-icon--invite::after {
   right: 14rpx;
-  bottom: 18rpx;
-  width: 38rpx;
-  height: 28rpx;
-  border-radius: 5rpx;
+  bottom: 20rpx;
+  width: 34rpx;
+  height: 24rpx;
+  border-radius: 6rpx;
   background: currentColor;
-  box-shadow: inset 0 0 0 7rpx #e9fbf2;
+  box-shadow: inset 0 -11rpx 0 rgba(255, 255, 255, 0.22);
 }
 
-.todo-icon--doc {
-  background: #edf4ff;
-  color: #4b80f5;
+.todo-icon--doc::before {
+  inset: 24rpx 26rpx;
+  border-radius: 8rpx;
+  background: currentColor;
+  clip-path: polygon(0 0, 72% 0, 100% 28%, 100% 100%, 0 100%);
 }
 
-.todo-copy,
-.room-copy,
-.activity-copy {
+.todo-icon--doc::after {
+  right: 18rpx;
+  bottom: 19rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border: 5rpx solid #fff;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.todo-copy {
   min-width: 0;
-  flex: 1;
 }
 
 .todo-title-row,
 .room-title-row,
-.chip-row,
+.section-head,
+.all-link,
 .activity-row {
   display: flex;
   align-items: center;
 }
 
-.todo-title-row,
-.room-title-row {
-  gap: 16rpx;
+.todo-title-row {
+  gap: 12rpx;
 }
 
-.todo-title,
+.todo-title {
+  min-width: 0;
+  flex: 1;
+  color: #10172d;
+  font-size: 28rpx;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.todo-tag,
+.room-status,
+.activity-status,
+.room-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.todo-tag {
+  padding: 7rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 21rpx;
+  font-weight: 900;
+}
+
+.todo-tag--orange {
+  background: #fff1e8;
+  color: #ff7a1a;
+}
+
+.todo-tag--purple {
+  background: #f0e9ff;
+  color: #8058ee;
+}
+
+.todo-desc {
+  margin-top: 14rpx;
+  color: #304b78;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.todo-button {
+  height: 56rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+}
+
+.room-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 24rpx;
+  padding: 24rpx;
+}
+
+.room-card--invited {
+  align-items: center;
+}
+
+.room-icon {
+  width: 96rpx;
+  height: 96rpx;
+  background: #eafbf1;
+  color: #13bd68;
+}
+
+.room-icon--book {
+  background: #edf5ff;
+  color: #5988f3;
+}
+
+.room-icon--joined::before {
+  top: 28rpx;
+  left: 18rpx;
+  width: 60rpx;
+  height: 36rpx;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 35%, 50% 70%, 0 35%);
+}
+
+.room-icon--joined::after {
+  top: 54rpx;
+  left: 32rpx;
+  width: 32rpx;
+  height: 22rpx;
+  border-radius: 0 0 18rpx 18rpx;
+  background: currentColor;
+}
+
+.room-icon--book::before {
+  inset: 27rpx 20rpx 22rpx;
+  border-radius: 8rpx;
+  background: currentColor;
+}
+
+.room-icon--book::after {
+  top: 31rpx;
+  left: 48rpx;
+  width: 5rpx;
+  height: 38rpx;
+  background: #fff;
+}
+
+.room-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.room-title-row {
+  gap: 14rpx;
+}
+
 .room-title {
   color: #10172d;
   font-size: 30rpx;
@@ -451,138 +554,84 @@ function showToast(title: string) {
   line-height: 1.25;
 }
 
-.todo-tag,
-.room-status,
-.activity-status {
-  flex: 0 0 auto;
+.room-status {
   padding: 7rpx 15rpx;
-  border-radius: 999rpx;
-  font-size: 23rpx;
+  border-radius: 10rpx;
+  background: #e8faef;
+  color: #10ad60;
+  font-size: 21rpx;
   font-weight: 900;
 }
 
-.todo-tag--orange,
-.room-chip--warn,
-.activity-status--orange {
-  background: #fff1e5;
-  color: #ff6b1a;
-}
-
-.todo-tag--purple {
-  background: #f1eaff;
-  color: #7b4dff;
-}
-
-.todo-desc,
-.room-desc {
-  margin-top: 14rpx;
-  color: #38527f;
-  font-size: 27rpx;
-  line-height: 1.55;
-}
-
-.todo-button {
-  width: 164rpx;
-  height: 60rpx;
-  flex: 0 0 auto;
-  font-size: 26rpx;
-}
-
-.todo-button :deep(text) {
-  white-space: nowrap;
-}
-
-.room-card {
-  align-items: flex-start;
-  padding: 30rpx 24rpx;
-}
-
-.room-icon {
-  width: 94rpx;
-  height: 94rpx;
-}
-
-.room-status {
-  background: #e8fbf1;
-  color: #14a963;
-}
-
 .room-status--blue {
-  background: #e9f2ff;
-  color: #2f78f5;
+  background: #edf4ff;
+  color: #2177f2;
 }
 
 .room-meta {
-  margin-top: 12rpx;
-  color: #2f4d7d;
-  font-size: 26rpx;
+  margin-top: 13rpx;
+  color: #304b78;
+  font-size: 23rpx;
   line-height: 1.35;
 }
 
+.room-desc {
+  margin-top: 14rpx;
+  color: #304b78;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
 .chip-row {
+  display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
-  margin-top: 20rpx;
+  margin-top: 16rpx;
 }
 
 .room-chip {
-  padding: 9rpx 16rpx;
-  border-radius: 9rpx;
-  background: #eaf8f0;
-  color: #149b5d;
-  font-size: 23rpx;
-  font-weight: 800;
+  padding: 8rpx 14rpx;
+  border-radius: 8rpx;
+  background: #ecfbf1;
+  color: #08a957;
+  font-size: 20rpx;
+  font-weight: 900;
+}
+
+.room-chip--warn {
+  background: #fff0e5;
+  color: #ff6c17;
 }
 
 .room-button {
-  width: 180rpx;
-  margin: 20rpx 0 0 auto;
-}
-
-.room-card--invited {
-  align-items: center;
-}
-
-.room-icon--book {
-  background: #edf4ff;
-  color: #6090f6;
-}
-
-.room-icon--book::before {
-  left: 22rpx;
-  top: 22rpx;
-  width: 24rpx;
-  height: 42rpx;
-  border: 6rpx solid currentColor;
-  border-right: 0;
-  border-radius: 6rpx 0 0 6rpx;
-}
-
-.room-icon--book::after {
-  right: 20rpx;
-  top: 22rpx;
-  width: 24rpx;
-  height: 42rpx;
-  border: 6rpx solid currentColor;
-  border-left: 0;
-  border-radius: 0 6rpx 6rpx 0;
+  width: 146rpx;
+  height: 58rpx;
+  justify-self: flex-end;
+  margin-top: 18rpx;
+  margin-left: auto;
+  border-radius: 10rpx;
+  font-size: 24rpx;
 }
 
 .invite-button {
-  width: 138rpx;
-  flex: 0 0 auto;
+  width: 140rpx;
+  height: 56rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+}
+
+.section-head {
+  justify-content: space-between;
 }
 
 .all-link {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
+  gap: 8rpx;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #0eb65d;
-  font-size: 27rpx;
+  color: #08a85c;
+  font-size: 25rpx;
   font-weight: 900;
 }
 
@@ -592,132 +641,208 @@ function showToast(title: string) {
 
 .link-arrow,
 .row-arrow {
+  position: relative;
   width: 18rpx;
-  height: 22rpx;
+  height: 18rpx;
+  flex: 0 0 auto;
+  color: currentColor;
 }
 
 .link-arrow::before,
 .row-arrow::before {
-  inset: 3rpx 4rpx;
+  inset: 0;
   border-top: 4rpx solid currentColor;
   border-right: 4rpx solid currentColor;
   transform: rotate(45deg);
 }
 
 .activity-card {
-  overflow: hidden;
-  padding: 0;
-  border-radius: 16rpx;
+  padding: 0 22rpx;
 }
 
 .activity-row {
-  gap: 18rpx;
-  padding: 22rpx 24rpx;
-  border-bottom: 1rpx solid #eef2f7;
+  min-height: 84rpx;
+  gap: 16rpx;
+  padding: 16rpx 0;
 }
 
-.activity-row:last-child {
-  border-bottom: 0;
+.activity-row + .activity-row {
+  border-top: 1rpx solid #eef2f6;
 }
 
 .activity-icon {
   width: 54rpx;
   height: 54rpx;
   border-radius: 12rpx;
-  background: #eaf8f0;
-  color: #15b969;
 }
 
-.activity-icon::before {
-  left: 14rpx;
-  top: 14rpx;
-  width: 26rpx;
-  height: 26rpx;
-  border-radius: 50%;
-  background: currentColor;
+.activity-icon--meeting {
+  background: #eafbf1;
+  color: #13bd68;
 }
 
 .activity-icon--doc {
-  background: #edf4ff;
-  color: #4d83f6;
+  background: #ecf5ff;
+  color: #397ef2;
 }
 
 .activity-icon--calendar {
-  background: #f1eaff;
-  color: #8b61f5;
+  background: #f2edff;
+  color: #8758ee;
+}
+
+.activity-icon::before {
+  inset: 15rpx 13rpx;
+  border-radius: 6rpx;
+  background: currentColor;
+}
+
+.activity-icon--meeting::before {
+  clip-path: polygon(50% 0, 100% 28%, 100% 100%, 0 100%, 0 28%);
+}
+
+.activity-icon--doc::before {
+  clip-path: polygon(0 0, 72% 0, 100% 28%, 100% 100%, 0 100%);
+}
+
+.activity-icon--calendar::before {
+  clip-path: polygon(0 16%, 100% 16%, 100% 100%, 0 100%);
+}
+
+.activity-copy {
+  min-width: 0;
+  flex: 1;
 }
 
 .activity-title {
   color: #10172d;
-  font-size: 28rpx;
+  font-size: 25rpx;
   font-weight: 900;
   line-height: 1.25;
 }
 
 .activity-desc {
   margin-top: 8rpx;
-  color: #4a6087;
-  font-size: 24rpx;
-  line-height: 1.3;
+  color: #304b78;
+  font-size: 22rpx;
+  line-height: 1.25;
 }
 
 .activity-status {
-  border-radius: 9rpx;
+  min-width: 82rpx;
+  padding: 8rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 900;
+}
+
+.activity-status--orange {
+  background: #fff1e8;
+  color: #ff7a1a;
 }
 
 .activity-status--green {
-  background: #e8fbf1;
-  color: #12a761;
+  background: #ebfbf2;
+  color: #08a85c;
 }
 
 .activity-status--blue {
-  background: #eef4ff;
-  color: #2f78f5;
+  background: #edf5ff;
+  color: #2177f2;
 }
 
 .row-arrow {
-  color: #8a99b2;
+  color: #8b96aa;
 }
 
-@media (max-width: 370px) {
+@media (max-width: 390px) {
   .content {
+    gap: 28rpx;
     padding-right: 24rpx;
     padding-left: 24rpx;
   }
 
-  .hero {
-    padding-left: 112rpx;
+  .stats-card {
+    padding: 22rpx 20rpx;
   }
 
   .stat-item {
-    gap: 10rpx;
-    padding: 0 8rpx;
+    gap: 12rpx;
   }
 
   .stat-icon {
-    width: 56rpx;
-    height: 56rpx;
-    transform: scale(0.9);
+    width: 60rpx;
+    height: 60rpx;
   }
 
-  .todo-card,
-  .room-card {
-    gap: 16rpx;
-    padding-right: 20rpx;
-    padding-left: 20rpx;
+  .stat-label,
+  .stat-unit {
+    font-size: 21rpx;
+  }
+
+  .stat-value {
+    font-size: 31rpx;
+  }
+
+  .todo-card {
+    grid-template-columns: 82rpx minmax(0, 1fr) 124rpx;
+    gap: 14rpx;
+    padding: 22rpx;
   }
 
   .todo-icon,
   .room-icon {
-    width: 78rpx;
-    height: 78rpx;
-    transform: scale(0.92);
+    width: 76rpx;
+    height: 76rpx;
+  }
+
+  .todo-title,
+  .room-title {
+    font-size: 25rpx;
+  }
+
+  .todo-desc,
+  .room-desc,
+  .room-meta {
+    font-size: 21rpx;
   }
 
   .todo-button,
-  .invite-button {
-    width: 150rpx;
-    font-size: 24rpx;
+  .invite-button,
+  .room-button {
+    width: 118rpx;
+    font-size: 22rpx;
+  }
+}
+
+@media (max-width: 374px) {
+  .hero {
+    padding-left: 108rpx;
+  }
+
+  .stats-card {
+    grid-template-columns: 1fr;
+    gap: 18rpx;
+  }
+
+  .stat-item + .stat-item {
+    padding-top: 18rpx;
+    padding-left: 0;
+    border-top: 1rpx solid #e4edf0;
+    border-left: 0;
+  }
+
+  .todo-card {
+    grid-template-columns: 72rpx minmax(0, 1fr);
+  }
+
+  .todo-button {
+    grid-column: 2;
+    margin-left: 0;
+  }
+
+  .room-card {
+    gap: 16rpx;
   }
 }
 </style>

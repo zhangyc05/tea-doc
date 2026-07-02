@@ -160,7 +160,7 @@ function showToast(title: string) {
 
 .report-page {
   min-height: 100vh;
-  padding-bottom: calc(124rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
   color: #10172d;
@@ -700,6 +700,10 @@ function showToast(title: string) {
 }
 
 @media (max-width: 370px) {
+  .report-page {
+    padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
+  }
+
   .meta-row {
     flex-wrap: wrap;
   }

@@ -3,7 +3,14 @@ import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 
-const categories = [
+type CategoryIcon = 'id' | 'book' | 'lab' | 'briefcase' | 'heart' | 'cup' | 'growth' | 'check'
+
+const categories: Array<{
+  name: string
+  count: string
+  updated: string
+  icon: CategoryIcon
+}> = [
   { name: '基本信息', count: '5 条已入档', updated: '最近更新 06.14', icon: 'id' },
   { name: '教学工作', count: '18 条已入档', updated: '最近更新 06.14', icon: 'book' },
   { name: '教研科研', count: '9 条已入档', updated: '最近更新 06.12', icon: 'lab' },
@@ -19,6 +26,10 @@ const recentRecords = [
   { title: '智能制造专业群虚拟教研活动记录', meta: '教研科研 ｜ 06.12' },
   { title: '企业实践阶段总结', meta: '企业实践 ｜ 06.10' },
 ]
+
+function showToast(title: string) {
+  uni.showToast({ title, icon: 'none' })
+}
 </script>
 
 <template>
@@ -37,7 +48,7 @@ const recentRecords = [
         <text class="page-head__title">档案</text>
         <text class="page-head__subtitle">系统已帮你整理个人成长记录</text>
       </view>
-      <button class="notice-button" aria-label="消息通知">
+      <button class="notice-button" aria-label="消息通知" @tap="showToast('消息通知')">
         <view class="notice-button__bell">
           <view class="notice-button__badge">5</view>
         </view>
@@ -45,7 +56,7 @@ const recentRecords = [
       <view class="leaf-ghost" aria-hidden="true"></view>
     </view>
 
-    <view class="search-card">
+    <view class="search-card" @tap="showToast('搜索档案')">
       <view class="search-icon"></view>
       <text class="search-placeholder">输入关键词，或点右侧麦克风语音搜索</text>
       <view class="mic-icon"></view>
@@ -54,23 +65,23 @@ const recentRecords = [
     <MobileCard class="section-card overview-card">
       <text class="section-title">档案概览</text>
       <view class="overview-metrics">
-        <view class="overview-item overview-item--wide">
+        <view class="overview-item">
           <view class="metric-icon metric-icon--folder"></view>
-          <view>
+          <view class="metric-copy">
             <text class="metric-number">42</text>
             <text class="metric-label">条已入档</text>
           </view>
         </view>
         <view class="overview-item">
           <view class="metric-icon metric-icon--grid"></view>
-          <view>
+          <view class="metric-copy">
             <text class="metric-number">8</text>
             <text class="metric-label">类档案</text>
           </view>
         </view>
         <view class="overview-item overview-item--date">
           <view class="metric-icon metric-icon--clock"></view>
-          <view>
+          <view class="metric-copy">
             <text class="metric-label">最近更新</text>
             <text class="metric-number metric-number--date">06.14</text>
           </view>
@@ -82,16 +93,19 @@ const recentRecords = [
     <MobileCard class="section-card category-card">
       <text class="section-title">档案分类</text>
       <view class="category-grid">
-        <view v-for="item in categories" :key="item.name" class="category-item">
+        <view
+          v-for="item in categories"
+          :key="item.name"
+          class="category-item"
+          @tap="showToast(item.name)"
+        >
           <view class="category-icon" :class="`category-icon--${item.icon}`"></view>
-          <view class="category-main">
-            <view class="category-title-line">
-              <text class="category-name">{{ item.name }}</text>
-              <view class="chevron"></view>
-            </view>
-            <text class="category-count">{{ item.count }}</text>
-            <text class="category-updated">{{ item.updated }}</text>
+          <view class="category-title-line">
+            <text class="category-name">{{ item.name }}</text>
+            <view class="chevron"></view>
           </view>
+          <text class="category-count">{{ item.count }}</text>
+          <text class="category-updated">{{ item.updated }}</text>
         </view>
       </view>
     </MobileCard>
@@ -99,9 +113,16 @@ const recentRecords = [
     <MobileCard class="section-card recent-card">
       <view class="section-head">
         <text class="section-title">最近入档</text>
-        <MobileActionButton class="all-link" variant="link" arrow>查看全部</MobileActionButton>
+        <MobileActionButton class="all-link" variant="link" arrow @tap="showToast('查看全部')">
+          查看全部
+        </MobileActionButton>
       </view>
-      <view v-for="record in recentRecords" :key="record.title" class="record-row">
+      <view
+        v-for="record in recentRecords"
+        :key="record.title"
+        class="record-row"
+        @tap="showToast(record.title)"
+      >
         <view class="record-icon"></view>
         <view class="record-body">
           <text class="record-title">{{ record.title }}</text>
@@ -120,8 +141,8 @@ const recentRecords = [
   min-height: 100vh;
   padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(150rpx + env(safe-area-inset-bottom));
   background:
-    radial-gradient(circle at 14% 3%, rgba(221, 252, 238, 0.76), transparent 31%),
-    linear-gradient(180deg, #fbfffd 0%, #f7fbff 50%, #f5f9ff 100%);
+    radial-gradient(circle at 14% 4%, rgba(223, 252, 239, 0.86), transparent 32%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbff 52%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
 
@@ -133,7 +154,6 @@ const recentRecords = [
 .overview-item,
 .category-title-line,
 .section-head,
-.all-link,
 .record-row {
   display: flex;
   align-items: center;
@@ -217,7 +237,7 @@ const recentRecords = [
   position: relative;
   justify-content: space-between;
   gap: 28rpx;
-  padding: 34rpx 10rpx 28rpx;
+  padding: 42rpx 10rpx 34rpx;
 }
 
 .page-head__copy {
@@ -246,10 +266,10 @@ const recentRecords = [
 
 .leaf-ghost {
   position: absolute;
-  right: 58rpx;
-  bottom: -2rpx;
-  width: 190rpx;
-  height: 116rpx;
+  right: 70rpx;
+  bottom: 6rpx;
+  width: 210rpx;
+  height: 126rpx;
   opacity: 0.12;
 }
 
@@ -257,20 +277,20 @@ const recentRecords = [
 .leaf-ghost::after {
   position: absolute;
   bottom: 0;
-  width: 72rpx;
-  height: 116rpx;
+  width: 78rpx;
+  height: 126rpx;
   border-radius: 60rpx 60rpx 8rpx 60rpx;
   background: #55c78a;
   content: '';
 }
 
 .leaf-ghost::before {
-  left: 30rpx;
+  left: 34rpx;
   transform: rotate(-28deg);
 }
 
 .leaf-ghost::after {
-  right: 20rpx;
+  right: 22rpx;
   transform: rotate(24deg);
 }
 
@@ -290,6 +310,7 @@ const recentRecords = [
 
 .notice-button {
   position: relative;
+  z-index: 1;
   width: 88rpx;
   height: 88rpx;
   flex: 0 0 88rpx;
@@ -331,17 +352,17 @@ const recentRecords = [
 
 .notice-button__badge {
   position: absolute;
-  top: -28rpx;
-  right: -23rpx;
+  top: -30rpx;
+  right: -25rpx;
   display: flex;
-  width: 50rpx;
-  height: 50rpx;
+  width: 48rpx;
+  height: 48rpx;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   background: #ff1f39;
   color: #fff;
-  font-size: 28rpx;
+  font-size: 27rpx;
   font-weight: 900;
 }
 
@@ -446,8 +467,9 @@ const recentRecords = [
 
 .overview-item {
   position: relative;
+  flex: 1 1 0;
   gap: 20rpx;
-  flex: 1;
+  min-width: 0;
 }
 
 .overview-item + .overview-item {
@@ -462,10 +484,6 @@ const recentRecords = [
   width: 1rpx;
   background: $teacher-mobile-card-border;
   content: '';
-}
-
-.overview-item--date {
-  justify-content: flex-end;
 }
 
 .metric-icon {
@@ -518,6 +536,10 @@ const recentRecords = [
   content: '';
 }
 
+.metric-copy {
+  min-width: 0;
+}
+
 .metric-number,
 .metric-label {
   display: block;
@@ -544,23 +566,20 @@ const recentRecords = [
 
 .overview-desc {
   display: block;
-  overflow: hidden;
   margin-top: 18rpx;
   color: #526079;
-  font-size: 21rpx;
+  font-size: 24rpx;
   line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .category-card {
-  padding: 24rpx 24rpx;
+  padding: 24rpx;
 }
 
 .category-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12rpx;
+  gap: 14rpx;
   margin-top: 22rpx;
 }
 
@@ -568,7 +587,7 @@ const recentRecords = [
   position: relative;
   min-width: 0;
   min-height: 158rpx;
-  padding: 14rpx 10rpx 12rpx;
+  padding: 18rpx 10rpx 13rpx;
   border: 1rpx solid rgba(231, 236, 246, 0.95);
   border-radius: 18rpx;
   background: rgba(255, 255, 255, 0.82);
@@ -577,9 +596,9 @@ const recentRecords = [
 
 .category-icon {
   position: relative;
-  width: 52rpx;
-  height: 52rpx;
-  margin: 0 auto 13rpx;
+  width: 58rpx;
+  height: 58rpx;
+  margin: 0 auto 17rpx;
   border-radius: 50%;
   background: #dff8eb;
   color: $teacher-mobile-primary;
@@ -587,10 +606,10 @@ const recentRecords = [
 
 .category-icon::before {
   position: absolute;
-  top: 15rpx;
-  left: 15rpx;
-  width: 23rpx;
-  height: 21rpx;
+  top: 17rpx;
+  left: 17rpx;
+  width: 25rpx;
+  height: 23rpx;
   border-radius: 6rpx;
   background: currentColor;
   content: '';
@@ -604,13 +623,13 @@ const recentRecords = [
 }
 
 .category-icon--lab::before {
-  top: 12rpx;
-  height: 31rpx;
+  top: 13rpx;
+  height: 34rpx;
   clip-path: polygon(35% 0, 65% 0, 65% 40%, 100% 100%, 0 100%, 35% 40%);
 }
 
 .category-icon--heart::before {
-  top: 22rpx;
+  top: 24rpx;
   clip-path: polygon(50% 100%, 8% 54%, 8% 22%, 28% 4%, 50% 20%, 72% 4%, 92% 22%, 92% 54%);
 }
 
@@ -634,7 +653,7 @@ const recentRecords = [
 .category-name {
   overflow: hidden;
   color: #12182a;
-  font-size: 21rpx;
+  font-size: 23rpx;
   font-weight: 900;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -659,16 +678,16 @@ const recentRecords = [
 .category-updated {
   display: block;
   color: #526079;
-  font-size: 18rpx;
+  font-size: 20rpx;
   line-height: 1.2;
 }
 
 .category-count {
-  margin-top: 9rpx;
+  margin-top: 10rpx;
 }
 
 .category-updated {
-  margin-top: 6rpx;
+  margin-top: 7rpx;
   color: #778197;
 }
 
@@ -764,23 +783,45 @@ const recentRecords = [
     padding-left: 22rpx;
   }
 
+  .overview-item {
+    gap: 14rpx;
+  }
+
+  .overview-item + .overview-item {
+    padding-left: 18rpx;
+  }
+
+  .metric-icon {
+    width: 56rpx;
+    height: 56rpx;
+    flex-basis: 56rpx;
+  }
+
+  .metric-number {
+    font-size: 34rpx;
+  }
+
+  .metric-label {
+    font-size: 21rpx;
+  }
+
   .category-grid {
     gap: 12rpx;
   }
 
   .category-item {
-    min-height: 204rpx;
-    padding-right: 12rpx;
-    padding-left: 12rpx;
+    min-height: 180rpx;
+    padding-right: 8rpx;
+    padding-left: 8rpx;
   }
 
   .category-name {
-    font-size: 22rpx;
+    font-size: 21rpx;
   }
 
   .category-count,
   .category-updated {
-    font-size: 19rpx;
+    font-size: 18rpx;
   }
 }
 </style>
