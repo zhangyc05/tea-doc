@@ -14,14 +14,14 @@ describe('ability list store structure', () => {
     first.baseTemplateIndicators[0].name = '测试指标'
     first.requirementMappings[0].confirmStatus = 'pending'
 
-    expect(second.baseTemplateIndicators[0].name).toBe('师德师风表现')
+    expect(second.baseTemplateIndicators[0].name).toBe('年度师德考核结果合格及以上')
     expect(second.requirementMappings[0].confirmStatus).toBe('confirmed')
   })
 
   it('runs indicator and version actions against injected state', () => {
     const state = createInitialAbilityListState()
 
-    const indicator = updateIndicatorInState(state.baseTemplateIndicators, 'base-teaching-workload', {
+    const indicator = updateIndicatorInState(state.baseTemplateIndicators, 'ability-standard-11', {
       novice: '>= 72',
     })
     const version = deriveNextExecutionVersionInState(state)

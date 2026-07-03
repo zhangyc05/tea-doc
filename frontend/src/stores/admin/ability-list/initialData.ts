@@ -1,10 +1,21 @@
 import type {
   AbilityIndicator,
   AbilityListState,
+  BaseTemplateVersion,
   ExecutionVersion,
   OptimizationSuggestion,
   RequirementMapping,
 } from '@/domain/admin/ability-list'
+
+export const initialBaseTemplateVersion: BaseTemplateVersion = {
+  versionNo: 'V1.0',
+  title: '教师能力清单基准模板 V1.0',
+  status: 'current',
+  updatedAt: '2026-06-08 20:30',
+  operator: '教务处管理员',
+  changeSummary: '按分级教师能力清单带标准版初始化 69 项指标',
+  changeCount: 69,
+}
 
 export const initialExecutionVersion: ExecutionVersion = {
   versionNo: 'V2026',
@@ -23,7 +34,7 @@ export const initialExecutionVersion: ExecutionVersion = {
 const excelAbilityStandardIndicators: AbilityIndicator[] = [
   { key: 'ability-standard-01', abilityKey: 'basic-ethics', name: '年度师德考核结果合格及以上', novice: '合格', competent: '合格', backbone: '优秀', expert: '标兵', basisLabel: '师德师风', status: 'enabled' },
   { key: 'ability-standard-02', abilityKey: 'basic-ethics', name: '年度有无违反《新时代高校教师职业行为十项准则》事项', novice: '无', competent: '无', backbone: '无', expert: '无', basisLabel: '师德师风', status: 'enabled' },
-  { key: 'ability-standard-03', abilityKey: 'basic-ethics', name: '获得院级及以上优秀共产党员、四讲四有模范党员、优秀党务工作者等称号', novice: '——', competent: '院级及以上', backbone: '市级及以上', expert: '省部级及以上', basisLabel: '师德师风', status: 'enabled' },
+  { key: 'ability-standard-03', abilityKey: 'basic-ethics', name: '（1）获得院级及以上"优秀共产党员"、"四讲四有"模范党员、优秀党务工作者称号；\n（2）获得市级及以上"劳动模范"、"先进工作者"、"五一"劳动奖章称号\n（3）获得省部级及以上"最美教师"、"优秀教师"、"优秀教育工作者"称号', novice: '——', competent: '（1）', backbone: '（2）', expert: '（3）', basisLabel: '师德师风', status: 'enabled' },
   { key: 'ability-standard-04', abilityKey: 'basic-qualification', name: '是否具有高等教育教师资格证', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },
   { key: 'ability-standard-05', abilityKey: 'basic-qualification', name: '普通话等级二级甲等以上', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },
   { key: 'ability-standard-06', abilityKey: 'basic-qualification', name: '硕士研究生学位或三年企业工作经历', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },
@@ -126,12 +137,12 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
     source: 'feedback',
     sourceLabel: '运行反馈',
     issueType: '标准过宽',
-    keyLocation: '教学能力 / 教学资源建设',
+    keyLocation: '教学能力 / 数字素养',
     content: '调整“覆盖多领域教学资源建设标准”，并补充说明适用范围',
     basis: '课堂教学创新试点组织、院系反馈材料普遍表述资源',
     status: 'pending',
     statusLabel: '待确认',
-    targetIndicator: { key: 'base-teaching-resource-construction', abilityKey: 'teaching-resource', name: '教学资源建设（门/年）', novice: '≥1 且资源可复用', competent: '≥2 且覆盖核心课程', backbone: '≥3 且覆盖专业核心课程', expert: '≥5 且可跨专业推广', basisLabel: '课程资源记录及复用证明', status: 'draft' },
+    targetIndicator: { key: 'base-teaching-resource-construction', abilityKey: 'teaching-digital-literacy', name: '专业教学资源库建设', novice: '参与校级且资源可复用', competent: '主持校级且覆盖核心课程', backbone: '参与省级且覆盖专业核心课程', expert: '主持省级及以上且可跨专业推广', basisLabel: '数字素养', status: 'draft' },
   },
   {
     id: 'suggestion-service-mapping',
@@ -148,15 +159,18 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
 ]
 
 export const initialRequirementMappings: RequirementMapping[] = [
-  { id: '1', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '教学工作量', level: '骨干', levelCriteria: '近三年专业课程授课门数 ≥ 2', documentCondition: '近三年专业课程授课门数 ≥ 2', confirmStatus: 'confirmed' },
-  { id: '2', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教改项目', level: '胜任', levelCriteria: '校级及以上教改项目 ≥ 1', documentCondition: '校级及以上教改项目 ≥ 1', confirmStatus: 'pending' },
-  { id: '3', requirementText: '近三年教学质量评价达到良好及以上', indicatorDimension: '教学能力', indicatorName: '课堂教学评价', level: '胜任', levelCriteria: '近三年综合评价等级 ≥ 良好', documentCondition: '近三年综合评价等级 ≥ 良好', confirmStatus: 'confirmed' },
-  { id: '4', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业实践经历', level: '胜任', levelCriteria: '累计企业实践天数 ≥ 30', documentCondition: '累计企业实践天数 ≥ 30', confirmStatus: 'unconfigured' },
+  { id: '1', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '岗位基本教学工作量（课时/学年）', level: '骨干', levelCriteria: '岗位基本教学工作量达到骨干标准', documentCondition: '岗位基本教学工作量达到骨干标准', confirmStatus: 'confirmed' },
+  { id: '2', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教学改革研究项目立项', level: '胜任', levelCriteria: '主持厅局级或以上教学改革研究项目', documentCondition: '主持厅局级或以上教学改革研究项目', confirmStatus: 'pending' },
+  { id: '3', requirementText: '近三年教学指导或技能竞赛达到岗位要求', indicatorDimension: '教学能力', indicatorName: '指导学生参加省级及以上一类/二类技能竞赛获奖', level: '胜任', levelCriteria: '第一位指导二类竞赛获奖', documentCondition: '第一位指导二类竞赛获奖', confirmStatus: 'confirmed' },
+  { id: '4', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业锻炼时长（天/年）', level: '胜任', levelCriteria: '企业锻炼时长 30 天/年', documentCondition: '企业锻炼时长 30 天/年', confirmStatus: 'unconfigured' },
 ]
 
 export function createInitialAbilityListState(): AbilityListState {
   return {
     baseTemplateIndicators: cloneIndicators(initialBaseTemplateIndicators),
+    baseTemplateVersion: { ...initialBaseTemplateVersion },
+    baseTemplateVersionHistory: [],
+    pendingBaseTemplateChanges: [],
     executionVersion: { ...initialExecutionVersion },
     versionHistory: [],
     executionIndicators: cloneIndicators(initialExecutionIndicators),

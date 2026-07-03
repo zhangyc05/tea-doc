@@ -6,6 +6,7 @@ import type {
 export type { AbilityIndicator, AbilityIndicatorStatus }
 
 export type ExecutionVersionStatus = 'pending' | 'published' | 'historical'
+export type BaseTemplateVersionStatus = 'current' | 'historical'
 export type OptimizationSuggestionStatus = 'pending' | 'adopted' | 'deferred' | 'rejected' | 'applied'
 export type RequirementMappingStatus = 'confirmed' | 'pending' | 'unconfigured'
 
@@ -113,6 +114,17 @@ export type TemplateApplication = {
   targetIndicator: AbilityIndicator
 }
 
+export type PendingBaseTemplateChange = {
+  id: string
+  indicatorKey: string
+  indicatorName: string
+  abilityKey?: string
+  before: AbilityIndicator
+  after: AbilityIndicator
+  changedAt: string
+  operator: string
+}
+
 export type RequirementMapping = {
   id: string
   requirementText: string
@@ -136,6 +148,16 @@ export type ExecutionVersion = {
   publishedAt: string
   source: string
   operator: string
+}
+
+export type BaseTemplateVersion = {
+  versionNo: string
+  title: string
+  status: BaseTemplateVersionStatus
+  updatedAt: string
+  operator: string
+  changeSummary: string
+  changeCount: number
 }
 
 export type AbilityListIconMap = {
@@ -201,6 +223,9 @@ export type AbilityListRequirementMappingMock = {
 
 export type AbilityListState = {
   baseTemplateIndicators: AbilityIndicator[]
+  baseTemplateVersion: BaseTemplateVersion
+  baseTemplateVersionHistory: BaseTemplateVersion[]
+  pendingBaseTemplateChanges: PendingBaseTemplateChange[]
   executionVersion: ExecutionVersion
   versionHistory: ExecutionVersion[]
   executionIndicators: AbilityIndicator[]

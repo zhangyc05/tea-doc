@@ -35,6 +35,7 @@ const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const showVersionDrawer = ref(false)
 const reviewPanelOpen = ref(route.query.review === '1')
+const selectedAbility = ref('teaching-implementation')
 
 // 打开编辑抽屉
 function openEditDrawer(indicator: AbilityIndicator) {
@@ -62,6 +63,9 @@ function saveEdit() {
 }
 
 const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.executionIndicators)
+const filteredIndicators = computed<AbilityIndicator[]>(() => (
+  normalizedIndicators.value.filter(indicator => indicator.abilityKey === selectedAbility.value)
+))
 const versionRows = computed(() => [
   abilityListState.executionVersion,
   ...abilityListState.versionHistory,
@@ -70,6 +74,46 @@ const statusText = computed(() => getExecutionVersionStatusLabel(abilityListStat
 const subtitle = computed(() => abilityListState.executionVersion.status === 'published'
   ? '当前周期正在使用的教师能力清单'
   : '下一周期执行版待确认发布')
+
+function selectAbility(key: string) {
+  selectedAbility.value = key
+}
+
+function findSelectedAbility() {
+  for (const item of normalizedAbilityTree) {
+    const child = item.children?.find(childItem => childItem.key === selectedAbility.value)
+    if (child) {
+      return { dimension: item.label, element: child.label, icon: item.icon }
+    }
+  }
+
+  return { dimension: '', element: '', icon: iconAbilityTeaching }
+}
+
+function getSelectedAbilityLabel() {
+  const selected = findSelectedAbility()
+  return selected.dimension && selected.element
+    ? `${selected.dimension} / ${selected.element}`
+    : ''
+}
+
+function getSelectedAbilityIcon() {
+  return findSelectedAbility().icon
+}
+
+function getEditingAbilityLabel() {
+  const target = editingIndicator.value
+  if (!target) return { dimension: '', element: '' }
+
+  for (const item of normalizedAbilityTree) {
+    const child = item.children?.find(childItem => childItem.key === target.abilityKey)
+    if (child) {
+      return { dimension: item.label, element: child.label }
+    }
+  }
+
+  return { dimension: '', element: target.basisLabel }
+}
 
 function deriveNextVersion() {
   deriveNextExecutionVersion()
@@ -150,11 +194,13 @@ function toggleReviewPanel() {
 
       <AbilityListWorkspace
         :nodes="normalizedAbilityTree"
-        selected-key="teaching-design"
-        selected-title="教学能力 / 教学设计与实施"
-        :indicators="normalizedIndicators"
+        :selected-key="selectedAbility"
+        :selected-title="getSelectedAbilityLabel()"
+        :selected-icon="getSelectedAbilityIcon()"
+        :indicators="filteredIndicators"
         basis-column-title="计算规则"
         :default-expanded-keys="['teaching']"
+        @select-ability="selectAbility"
         @edit-indicator="openEditDrawer"
       />
 
@@ -174,11 +220,11 @@ function toggleReviewPanel() {
         <div v-if="editingIndicator" class="drawer-form">
           <div class="form-group">
             <label class="form-label">所属维度</label>
-            <input class="form-input" type="text" value="教学能力" readonly />
+            <input class="form-input" type="text" :value="getEditingAbilityLabel().dimension" readonly />
           </div>
           <div class="form-group">
             <label class="form-label">所属要素</label>
-            <input class="form-input" type="text" value="教学设计与实施" readonly />
+            <input class="form-input" type="text" :value="getEditingAbilityLabel().element" readonly />
           </div>
           <div class="form-group">
             <label class="form-label">指标名称</label>

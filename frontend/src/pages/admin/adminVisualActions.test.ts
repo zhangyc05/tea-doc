@@ -277,9 +277,11 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for ability list base hero actions', () => {
     expect(abilityListBasePage).toContain('<Button class="primary-action" @click="goToOptimization">')
-    expect(abilityListBasePage).toContain('<Button class="secondary-action" variant="outline" @click="goToVersionHistory">')
     expect(abilityListBasePage).toContain('<Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">')
+    expect(abilityListBasePage).toContain('<button class="title-link" type="button" @click="goToVersionHistory">')
+    expect(abilityListBasePage).toContain('查看版本记录')
     expect(abilityListBasePage).not.toContain('<button class="primary-action btn-primary" @click="goToOptimization">')
+    expect(abilityListBasePage).not.toContain('<Button class="secondary-action" variant="outline" @click="goToVersionHistory">')
     expect(abilityListBasePage).not.toContain('<button class="secondary-action btn-secondary" @click="goToVersionHistory">')
     expect(abilityListBasePage).not.toContain('<button class="derive-action" @click="deriveExecutionVersion">')
   })
@@ -411,13 +413,14 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses DetailSheet for the ability list base version history drawer shell', () => {
-    expect(abilityListBasePage).toContain('title="能力清单版本记录"')
+    expect(abilityListBasePage).toContain('title="基准模板版本记录"')
     expect(abilityListBasePage).toContain('width="history"')
-    expect(abilityListBasePage).toContain(':show-footer="false"')
+    expect(abilityListBasePage).toContain(':show-footer="pendingChangeRows.length > 0"')
+    expect(abilityListBasePage).toContain('pendingChangeRows')
+    expect(abilityListBasePage).toContain('确认生成新版本')
     expect(abilityListBasePage).toContain('version.versionNo')
-    expect(abilityListBasePage).toContain('getExecutionVersionStatusLabel(version.status)')
-    expect(abilityListBasePage).toContain('version.publishedAt')
-    expect(abilityListBasePage).toContain('version.source')
+    expect(abilityListBasePage).toContain('version.updatedAt')
+    expect(abilityListBasePage).toContain('version.changeSummary')
     expect(abilityListBasePage).toContain('version.operator')
     expect(abilityListBasePage).not.toContain('<div v-if="showVersionDrawer" class="edit-drawer-overlay"')
   })
@@ -587,6 +590,13 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).toContain('required-mark')
     expect(abilityListBasePage).toContain('请输入指标名称')
     expect(abilityListBasePage).toContain('请输入建议依据')
+  })
+
+  it('guards ability list execution indicator filtering', () => {
+    expect(abilityListExecutionPage).toContain('filteredIndicators')
+    expect(abilityListExecutionPage).toContain('indicator.abilityKey === selectedAbility.value')
+    expect(abilityListExecutionPage).toContain('@select-ability="selectAbility"')
+    expect(abilityListExecutionPage).toContain(':indicators="filteredIndicators"')
   })
 
   it('uses DetailSheet for archive source records while preserving source filters', () => {

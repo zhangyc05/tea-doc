@@ -7,12 +7,14 @@ import type {
 } from '@/domain/admin/ability-list'
 import {
   applyAdoptedSuggestionsToBaseTemplateInState,
+  confirmBaseTemplateChangesInState,
   confirmRequirementMappingInState,
   deleteRequirementMappingInState,
   deriveNextExecutionVersionInState,
   importPolicySuggestionInState,
   publishExecutionVersionInState,
   rerunFeedbackAnalysisInState,
+  saveBaseTemplateChangeInState,
   saveRequirementMappingInState,
   updateIndicatorInState,
   updateOptimizationSuggestionStatusInState,
@@ -21,10 +23,13 @@ import { createInitialAbilityListState } from './ability-list/initialData'
 
 export type {
   AbilityListState,
+  BaseTemplateVersion,
+  BaseTemplateVersionStatus,
   ExecutionVersion,
   ExecutionVersionStatus,
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
+  PendingBaseTemplateChange,
   RequirementMapping,
   RequirementMappingStatus,
   TemplateApplication,
@@ -53,9 +58,13 @@ export function updateBaseTemplateIndicator(
   key: string,
   patch: Partial<Omit<AbilityIndicator, 'key'>>,
 ) {
-  const target = updateIndicatorInState(state.baseTemplateIndicators, key, patch)
+  const target = saveBaseTemplateChangeInState(state, key, patch)
   if (!target) return
-  state.operationMessage = `已保存基准模板指标调整：${target.name}。`
+  state.operationMessage = `已保存待确认变更：${target.indicatorName}。`
+}
+
+export function confirmBaseTemplateChanges() {
+  return confirmBaseTemplateChangesInState(state)
 }
 
 export function deriveNextExecutionVersion() {

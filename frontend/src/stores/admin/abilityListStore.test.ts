@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import {
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
+  confirmBaseTemplateChanges,
   confirmRequirementMapping,
   deleteRequirementMapping,
   deriveNextExecutionVersion,
@@ -21,14 +22,14 @@ describe('ability list business state', () => {
   })
 
   it('updates an execution indicator and marks it as a draft adjustment', () => {
-    updateExecutionIndicator('execution-indicator-0', {
+    updateExecutionIndicator('ability-standard-11', {
       novice: '>= 72',
       competent: '>= 108',
       basisLabel: '调整后的课时规则',
     })
 
     const target = getAbilityListState().executionIndicators.find(
-      indicator => indicator.key === 'execution-indicator-0',
+      indicator => indicator.key === 'ability-standard-11',
     )
 
     expect(target?.novice).toBe('>= 72')
@@ -37,16 +38,14 @@ describe('ability list business state', () => {
     expect(target?.status).toBe('draft')
   })
 
-  it('updates a base template indicator and marks it as a draft adjustment', () => {
-    updateBaseTemplateIndicator('base-teaching-workload', {
+  it('saves a base template indicator edit as a pending change', () => {
+    updateBaseTemplateIndicator('ability-standard-11', {
       novice: '≥72',
       competent: '≥108',
       basisLabel: '调整后的教学工作记录',
     })
 
-    const target = getAbilityListState().baseTemplateIndicators.find(
-      indicator => indicator.key === 'base-teaching-workload',
-    )
+    const target = getAbilityListState().pendingBaseTemplateChanges[0]?.after
 
     expect(target?.novice).toBe('≥72')
     expect(target?.competent).toBe('≥108')
@@ -54,15 +53,52 @@ describe('ability list business state', () => {
     expect(target?.status).toBe('draft')
   })
 
+  it('keeps base template edits pending until confirmed as a new version', () => {
+    const before = getAbilityListState().baseTemplateIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+
+    updateBaseTemplateIndicator('ability-standard-11', {
+      novice: '≥72',
+      competent: '≥108',
+      basisLabel: '调整后的教学工作记录',
+    })
+
+    const draftState = getAbilityListState()
+    const unchanged = draftState.baseTemplateIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+
+    expect(unchanged?.novice).toBe(before?.novice)
+    expect(draftState.pendingBaseTemplateChanges).toHaveLength(1)
+    expect(draftState.pendingBaseTemplateChanges[0]?.after).toMatchObject({
+      novice: '≥72',
+      competent: '≥108',
+      basisLabel: '调整后的教学工作记录',
+      status: 'draft',
+    })
+
+    const newVersion = confirmBaseTemplateChanges()
+    const confirmed = getAbilityListState().baseTemplateIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+
+    expect(newVersion?.versionNo).toBe('V1.1')
+    expect(confirmed?.novice).toBe('≥72')
+    expect(getAbilityListState().pendingBaseTemplateChanges).toHaveLength(0)
+    expect(getAbilityListState().baseTemplateVersion.versionNo).toBe('V1.1')
+    expect(getAbilityListState().baseTemplateVersionHistory[0]?.versionNo).toBe('V1.0')
+  })
+
   it('keeps base template indicators mapped to ability tree nodes', () => {
     const indicators = getAbilityListState().baseTemplateIndicators
 
-    expect(indicators.some(indicator => indicator.abilityKey === 'basic')).toBe(true)
-    expect(indicators.some(indicator => indicator.abilityKey === 'teaching-design')).toBe(true)
-    expect(indicators.some(indicator => indicator.abilityKey === 'teaching-resource')).toBe(true)
-    expect(indicators.some(indicator => indicator.abilityKey === 'research')).toBe(true)
-    expect(indicators.some(indicator => indicator.abilityKey === 'practice')).toBe(true)
-    expect(indicators.some(indicator => indicator.abilityKey === 'service')).toBe(true)
+    expect(indicators).toHaveLength(69)
+    expect(indicators.some(indicator => indicator.abilityKey === 'basic-ethics')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'teaching-implementation')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'research-scientific-research')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'practice-project-practice')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'service-international-service')).toBe(true)
   })
 
   it('derives the next execution version as a pending version', () => {
@@ -154,7 +190,7 @@ describe('ability list business state', () => {
       id: 'new-mapping',
       requirementText: '近三年完成校级公开课不少于 1 次',
       indicatorDimension: '教学能力',
-      indicatorName: '课堂教学评价',
+      indicatorName: '开展公开课、示范课、说专业、说课程等工作（次/学年）',
       level: '胜任',
       levelCriteria: '校级公开课次数 ≥ 1',
       documentCondition: '校级公开课次数 ≥ 1',
@@ -171,14 +207,14 @@ describe('ability list business state', () => {
     saveRequirementMapping({
       ...getAbilityListState().requirementMappings[1],
       level: '骨干',
-      documentCondition: '校级及以上教改项目 ≥ 2',
+      documentCondition: '主持省级教学改革研究项目',
     })
     confirmRequirementMapping('2')
 
     const target = getAbilityListState().requirementMappings.find(mapping => mapping.id === '2')
 
     expect(target?.level).toBe('骨干')
-    expect(target?.documentCondition).toBe('校级及以上教改项目 ≥ 2')
+    expect(target?.documentCondition).toBe('主持省级教学改革研究项目')
     expect(target?.confirmStatus).toBe('confirmed')
   })
 

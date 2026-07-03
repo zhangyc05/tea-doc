@@ -24,7 +24,7 @@
 		id: '',
 		requirementText: '暂无要求项',
 		indicatorDimension: '教学能力',
-		indicatorName: '教学工作量',
+		indicatorName: '岗位基本教学工作量（课时/学年）',
 		level: '胜任',
 		levelCriteria: '待补充等级标准',
 		documentCondition: '待补充制度条件',
@@ -84,7 +84,7 @@
 			id: `new-${Date.now()}`,
 			requirementText: '新增要求项待完善',
 			indicatorDimension: '教学能力',
-			indicatorName: '教学工作量',
+			indicatorName: '岗位基本教学工作量（课时/学年）',
 			level: '胜任',
 			levelCriteria: '待补充等级标准',
 			documentCondition: '待补充制度条件',
@@ -421,18 +421,21 @@
 					<div class="form-row">
 						<label class="form-label">对应能力要素</label>
 						<select class="form-select">
-							<option>教学设计与实施</option>
-							<option>教学资源开发</option>
-							<option>教学评价与反馈</option>
+							<option>教学实施</option>
+							<option>课程思政</option>
+							<option>数字素养</option>
+							<option>教学指导</option>
+							<option>技能竞赛</option>
+							<option>团队建设</option>
 						</select>
 					</div>
 					<div class="form-row">
 						<label class="form-label">对应能力指标</label>
 						<select v-model="editingMapping.indicatorName" class="form-select">
-							<option>教学工作量</option>
-							<option>课堂教学评价</option>
-							<option>教改项目</option>
-							<option>企业实践经历</option>
+							<option>岗位基本教学工作量（课时/学年）</option>
+							<option>岗位年听课课时数（课时/学年）</option>
+							<option>教学改革研究项目立项</option>
+							<option>企业锻炼时长（天/年）</option>
 						</select>
 					</div>
 					<div class="form-row">

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DetailSheet, PageReviewPanel, StatusBadge } from '@/components/common'
+import { DetailSheet, PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
-import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListBaseMock } from '@/services/mock/ability-list'
 import { abilityListBasePageReview } from './AbilityListBasePage.review'
 import {
+  confirmBaseTemplateChanges,
   deriveNextExecutionVersion,
   getAbilityListState,
   updateBaseTemplateIndicator,
@@ -49,9 +49,10 @@ const filteredIndicators = computed<AbilityIndicator[]>(() => (
   normalizedIndicators.value.filter(indicator => indicator.abilityKey === selectedAbility.value)
 ))
 const versionRows = computed(() => [
-  abilityListState.executionVersion,
-  ...abilityListState.versionHistory,
+  abilityListState.baseTemplateVersion,
+  ...abilityListState.baseTemplateVersionHistory,
 ])
+const pendingChangeRows = computed(() => abilityListState.pendingBaseTemplateChanges)
 
 watch(
   () => route.query.versionHistory,
@@ -173,6 +174,10 @@ function closeVersionDrawer() {
   showVersionDrawer.value = false
 }
 
+function confirmTemplateChanges() {
+  confirmBaseTemplateChanges()
+}
+
 function toggleReviewPanel() {
   reviewPanelOpen.value = !reviewPanelOpen.value
 }
@@ -202,36 +207,39 @@ function deriveExecutionVersion() {
           <div class="hero-main">
             <div class="hero-title-group">
               <div class="hero-title-row">
-                <h1>教师能力清单基准模板 V1.0</h1>
+                <h1>{{ abilityListState.baseTemplateVersion.title }}</h1>
+                <button class="title-link" type="button" @click="goToVersionHistory">
+                  查看版本记录
+                </button>
               </div>
               <p class="hero-subtitle">
-                维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
+                维护学校长期使用的教师能力标准，用于派生执行版能力清单。
               </p>
             </div>
 
             <div class="hero-summary-strip admin-summary-strip">
+              
+              <div class="summary-item admin-summary-item summary-structure">
+                <span class="admin-summary-label">能力维度</span>
+                <strong class="admin-summary-value">5</strong>
+              </div>
+              <div class="summary-item admin-summary-item">
+                <span class="admin-summary-label">能力要素</span>
+                <strong class="admin-summary-value">19</strong>
+              </div>
+              <div class="summary-item admin-summary-item">
+                <span class="admin-summary-label">能力指标</span>
+                <strong class="admin-summary-value">69</strong>
+              </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">最近更新</span>
-                <strong class="admin-summary-value">2026-06-08 20:30</strong>
-              </div>
-              <div class="summary-item admin-summary-item summary-structure">
-                <span class="admin-summary-label">能力结构</span>
-                <strong class="admin-summary-value">
-                  基本能力 + 教学能力 + 教研能力 + 实践能力 + 服务能力
-                </strong>
-              </div>
-              <div class="summary-item admin-summary-item">
-                <span class="admin-summary-label">当前指标</span>
-                <strong class="admin-summary-value">69 项</strong>
+                <strong class="admin-summary-value">{{ abilityListState.baseTemplateVersion.updatedAt }}</strong>
               </div>
             </div>
 
             <div class="hero-actions">
               <Button class="primary-action" @click="goToOptimization">
                 优化基准板
-              </Button>
-              <Button class="secondary-action" variant="outline" @click="goToVersionHistory">
-                查看优化记录
               </Button>
               <Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">
                 派生执行版
@@ -248,7 +256,7 @@ function deriveExecutionVersion() {
         :selected-title="getSelectedAbilityLabel()"
         :selected-icon="getSelectedAbilityIcon()"
         :indicators="filteredIndicators"
-        basis-column-title="建议依据"
+        basis-column-title="计算依据"
         :default-expanded-keys="['teaching']"
         @select-ability="selectAbility"
         @row-click="selectIndicator"
@@ -310,28 +318,54 @@ function deriveExecutionVersion() {
 
       <DetailSheet
         :open="showVersionDrawer"
-        title="能力清单版本记录"
-        description="展示当前执行版和已归档历史版，后续用于版本追溯和派生依据确认。"
+        title="基准模板版本记录"
+        description="展示基准能力清单的正式版本历史；编辑指标会先进入待确认变更，确认后生成新版本。"
         width="history"
-        :show-footer="false"
+        :show-footer="pendingChangeRows.length > 0"
         @update:open="value => { if (!value) closeVersionDrawer() }"
         @cancel="closeVersionDrawer"
       >
+        <div v-if="pendingChangeRows.length" class="pending-change-panel">
+          <div class="pending-change-head">
+            <strong>待确认变更</strong>
+            <span>{{ pendingChangeRows.length }} 项</span>
+          </div>
+          <article v-for="change in pendingChangeRows" :key="change.id" class="pending-change-card">
+            <h4>{{ change.indicatorName }}</h4>
+            <dl>
+              <div>
+                <dt>修改时间</dt>
+                <dd>{{ change.changedAt }}</dd>
+              </div>
+              <div>
+                <dt>修改人</dt>
+                <dd>{{ change.operator }}</dd>
+              </div>
+              <div>
+                <dt>变更摘要</dt>
+                <dd>{{ change.before.novice }} / {{ change.before.competent }} → {{ change.after.novice }} / {{ change.after.competent }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+
         <div class="version-list version-list-in-sheet">
           <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
             <div class="version-card-head">
               <strong>{{ version.versionNo }}</strong>
-              <StatusBadge :status="version.status" :label="getExecutionVersionStatusLabel(version.status)" />
+              <span class="version-status" :class="{ current: version.status === 'current' }">
+                {{ version.status === 'current' ? '当前版本' : '历史版本' }}
+              </span>
             </div>
             <h4>{{ version.title }}</h4>
             <dl>
               <div>
-                <dt>发布时间</dt>
-                <dd>{{ version.publishedAt }}</dd>
+                <dt>更新时间</dt>
+                <dd>{{ version.updatedAt }}</dd>
               </div>
               <div>
-                <dt>来源</dt>
-                <dd>{{ version.source }}</dd>
+                <dt>变更摘要</dt>
+                <dd>{{ version.changeSummary }}</dd>
               </div>
               <div>
                 <dt>操作人</dt>
@@ -340,6 +374,11 @@ function deriveExecutionVersion() {
             </dl>
           </article>
         </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeVersionDrawer">关闭</Button>
+          <Button @click="confirmTemplateChanges">确认生成新版本</Button>
+        </template>
       </DetailSheet>
 
       <PageReviewPanel
@@ -469,6 +508,23 @@ function deriveExecutionVersion() {
   letter-spacing: -0.55px;
   line-height: 1.16;
   white-space: nowrap;
+}
+
+.title-link {
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  padding: 2px 0;
+}
+
+.title-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
 }
 
 .hero-subtitle {
@@ -628,6 +684,68 @@ function deriveExecutionVersion() {
   line-height: 1.4;
 }
 
+.pending-change-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-admin-md);
+  margin-bottom: var(--space-admin-xl);
+  padding: var(--space-admin-lg);
+  border: 1px solid #d7e7ff;
+  border-radius: var(--radius-admin-panel);
+  background: #f6faff;
+}
+
+.pending-change-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pending-change-head span {
+  color: var(--color-primary);
+}
+
+.pending-change-card {
+  padding: var(--space-admin-md);
+  border: 1px solid #e3ebf6;
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
+}
+
+.pending-change-card h4 {
+  margin: 0 0 var(--space-admin-sm);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pending-change-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-admin-md);
+  margin: 0;
+}
+
+.pending-change-card dt,
+.pending-change-card dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.pending-change-card dt {
+  color: var(--color-text-secondary);
+  font-weight: 800;
+}
+
+.pending-change-card dd {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
 .version-list {
   display: flex;
   flex-direction: column;
@@ -658,6 +776,22 @@ function deriveExecutionVersion() {
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 950;
+}
+
+.version-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 4px 8px;
+  background: #eef2f7;
+  color: #637083;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.version-status.current {
+  background: #e7f8ef;
+  color: #23a45c;
 }
 
 .version-card h4 {

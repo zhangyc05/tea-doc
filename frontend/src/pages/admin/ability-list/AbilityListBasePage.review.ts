@@ -13,13 +13,13 @@ export const abilityListBasePageReview = {
   dataRules: [
     '左侧能力节点切换后，右侧表格必须展示对应能力维度指标。',
     '没有指标时必须显示空态，不能保留上一组数据。',
-    '基准模板指标来自 abilityListStore.baseTemplateIndicators。',
+    '基准模板正式指标来自 abilityListStore.baseTemplateIndicators；待确认修改来自 pendingBaseTemplateChanges。',
   ],
   interactions: [
     '点击能力节点切换右侧指标列表。',
     '点击编辑打开指标编辑抽屉。',
-    '保存后更新当前指标行，并将状态标记为草稿调整。',
-    '查看版本记录打开版本记录抽屉。',
+    '保存后进入待确认变更，不直接覆盖正式基准模板。',
+    '查看版本记录打开基准模板版本记录抽屉，可查看待确认变更并确认生成新版本。',
     '派生执行版进入发布确认页。',
   ],
   formRules: [
@@ -35,7 +35,7 @@ export const abilityListBasePageReview = {
     '左侧所有节点都有正确数据或空态',
     '所有按钮都有真实动作或明确反馈',
     '编辑抽屉有必填校验',
-    '保存后页面状态可见变化',
+    '保存后待确认变更可见，确认后生成新的基准模板版本',
     '台账结论与实现一致',
   ],
 }

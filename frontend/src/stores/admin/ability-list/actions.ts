@@ -8,6 +8,9 @@ import type {
 import { getOptimizationSuggestionStatusLabel } from '@/domain/admin/ability-list'
 import { initialExecutionVersion } from './initialData'
 
+const systemOperator = '教务处管理员'
+const baseTemplateChangeTime = '2026-07-03 23:20'
+
 export function updateIndicatorInState(
   indicators: AbilityIndicator[],
   key: string,
@@ -19,12 +22,94 @@ export function updateIndicatorInState(
   return target
 }
 
+export function saveBaseTemplateChangeInState(
+  state: AbilityListState,
+  key: string,
+  patch: Partial<Omit<AbilityIndicator, 'key'>>,
+) {
+  const source = state.baseTemplateIndicators.find(indicator => indicator.key === key)
+  if (!source) return null
+
+  const existing = state.pendingBaseTemplateChanges.find(change => change.indicatorKey === key)
+  const before = existing?.before ?? { ...source }
+  const after: AbilityIndicator = {
+    ...(existing?.after ?? source),
+    ...patch,
+    status: 'draft' satisfies AbilityIndicator['status'],
+  }
+  const change = {
+    id: existing?.id ?? `base-template-change-${state.pendingBaseTemplateChanges.length + 1}`,
+    indicatorKey: key,
+    indicatorName: after.name,
+    abilityKey: after.abilityKey,
+    before,
+    after,
+    changedAt: baseTemplateChangeTime,
+    operator: systemOperator,
+  }
+  const index = state.pendingBaseTemplateChanges.findIndex(item => item.indicatorKey === key)
+
+  if (index >= 0) {
+    state.pendingBaseTemplateChanges[index] = change
+  } else {
+    state.pendingBaseTemplateChanges.push(change)
+  }
+
+  state.operationMessage = `已保存待确认变更：${after.name}。`
+  return change
+}
+
+export function confirmBaseTemplateChangesInState(state: AbilityListState) {
+  const changes = [...state.pendingBaseTemplateChanges]
+  if (changes.length === 0) {
+    state.operationMessage = '暂无待确认的基准模板变更。'
+    return null
+  }
+
+  changes.forEach((change) => {
+    const index = state.baseTemplateIndicators.findIndex(indicator => indicator.key === change.indicatorKey)
+    const confirmedIndicator: AbilityIndicator = {
+      ...change.after,
+      status: 'enabled' satisfies AbilityIndicator['status'],
+    }
+
+    if (index >= 0) {
+      state.baseTemplateIndicators[index] = confirmedIndicator
+    } else {
+      state.baseTemplateIndicators.push(confirmedIndicator)
+    }
+  })
+
+  state.baseTemplateVersionHistory.unshift({
+    ...state.baseTemplateVersion,
+    status: 'historical',
+  })
+
+  const [majorText, minorText = '0'] = state.baseTemplateVersion.versionNo.replace('V', '').split('.')
+  const nextMinor = Number(minorText) + 1
+  const nextVersionNo = `V${majorText}.${nextMinor}`
+
+  state.baseTemplateVersion = {
+    versionNo: nextVersionNo,
+    title: `教师能力清单基准模板 ${nextVersionNo}`,
+    status: 'current',
+    updatedAt: baseTemplateChangeTime,
+    operator: systemOperator,
+    changeSummary: `确认 ${changes.length} 项指标变更`,
+    changeCount: changes.length,
+  }
+  state.pendingBaseTemplateChanges = []
+  state.operationMessage = `${state.baseTemplateVersion.title}已生成。`
+
+  return state.baseTemplateVersion
+}
+
 export function deriveNextExecutionVersionInState(state: AbilityListState) {
   state.executionVersion = {
     versionNo: 'V2027',
     title: '2027 年度教师能力清单执行版',
     sourceTitle: '2026 年度教师能力清单执行版',
-    templateTitle: '教师能力清单基准模板 V1.0',
+    templateTitle: state.baseTemplateVersion.title,
     scope: '全校教师',
     indicatorCount: state.executionIndicators.length,
     lastUpdated: '待发布',
@@ -105,20 +190,20 @@ export function importPolicySuggestionInState(state: AbilityListState): Optimiza
     source: 'policy',
     sourceLabel: '制度文件',
     issueType: '标准补充',
-    keyLocation: '教学能力 / 教学资源建设',
-    content: '根据新上传制度文件补充教学资源建设指标的适用说明',
+    keyLocation: '教学能力 / 数字素养',
+    content: '根据新上传制度文件补充专业教学资源库建设指标的适用说明',
     basis: '新上传制度文件解析结果',
     status: 'pending',
     statusLabel: getOptimizationSuggestionStatusLabel('pending'),
     targetIndicator: {
       key: 'base-policy-teaching-resource-scope',
-      abilityKey: 'teaching-resource',
-      name: '教学资源建设适用范围',
+      abilityKey: 'teaching-digital-literacy',
+      name: '专业教学资源库建设适用范围',
       novice: '参与课程资源建设',
       competent: '独立建设课程资源',
       backbone: '建设专业核心课程资源',
       expert: '形成可推广资源体系',
-      basisLabel: '制度文件与课程资源记录',
+      basisLabel: '数字素养',
       status: 'draft',
     },
   }

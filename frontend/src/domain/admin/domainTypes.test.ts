@@ -86,7 +86,6 @@ describe('admin domain types', () => {
 
   it('renders ability execution version statuses through the shared status badge', () => {
     for (const pageSource of [
-      abilityBasePageSource,
       abilityExecutionPageSource,
       abilityPublishConfirmPageSource,
     ]) {
@@ -96,6 +95,8 @@ describe('admin domain types', () => {
       expect(pageSource).not.toContain('.badge-status.version-published')
       expect(pageSource).not.toContain('.badge-status.pending')
     }
+
+    expect(abilityBasePageSource).not.toContain('getExecutionVersionStatusLabel(version.status)')
   })
 
   it('renders ability requirement mapping statuses through the shared status badge', () => {
