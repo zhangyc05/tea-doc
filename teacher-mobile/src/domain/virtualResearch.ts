@@ -6,6 +6,7 @@ export type VirtualResearchFilter = '全部' | VirtualResearchActivityStatus
 export type VirtualResearchInvitationStatus = '待确认' | '已加入' | '暂不加入'
 export type VirtualResearchContributionStatus = '待确认' | '已确认' | '不是我的' | '需补充' | '已提交'
 export type VirtualResearchMaterialStatus = '草稿' | '已提交' | '需补充'
+export type VirtualResearchStageMaterialSource = '上传' | '拍照'
 export type VirtualResearchMemberProfileScope = '虚拟教研成员资料' | '我的资料'
 export type VirtualResearchContributionPageState = '待确认动作页' | '待确认详情页' | '完整贡献确认页'
 
@@ -25,6 +26,15 @@ export type VirtualResearchContribution = {
   adminStoreRefs: string[]
 }
 
+export type VirtualResearchStageMaterial = {
+  id: string
+  name: string
+  meta: string
+  source: VirtualResearchStageMaterialSource
+  status: VirtualResearchMaterialStatus
+  adminStoreRefs: string[]
+}
+
 export type MobileVirtualResearchState = {
   selectedFilter: VirtualResearchFilter
   invitationStatus: VirtualResearchInvitationStatus
@@ -33,6 +43,8 @@ export type MobileVirtualResearchState = {
   memberProfileScope: VirtualResearchMemberProfileScope
   memberProfileScopeNote: string
   materialStatus: VirtualResearchMaterialStatus
+  stageMaterials: VirtualResearchStageMaterial[]
+  supplementMaterials: VirtualResearchStageMaterial[]
   activities: VirtualResearchActivity[]
   contributions: VirtualResearchContribution[]
   operationMessage: string
@@ -41,6 +53,13 @@ export type MobileVirtualResearchState = {
 export type VirtualResearchMaterialPreview = {
   title: string
   message: string
+}
+
+export type VirtualResearchMeetingAccess = {
+  provider: string
+  meetingNo: string
+  message: string
+  adminStoreRefs: string[]
 }
 
 export const contributionPageStateMap: Record<string, VirtualResearchContributionPageState> = {
@@ -60,6 +79,17 @@ const state = reactive<MobileVirtualResearchState>({
   memberProfileScope: '虚拟教研成员资料',
   memberProfileScopeNote: '虚拟教研成员资料只服务教研室成员展示、邀请和贡献确认，不直接写入成长档案正式事实；个人发展报告归属我的资料。',
   materialStatus: '草稿',
+  stageMaterials: [
+    {
+      id: 'stage-material-equipment-case',
+      name: '设备调试案例素材.pdf',
+      meta: 'PDF · 3.2MB',
+      source: '上传',
+      status: '草稿',
+      adminStoreRefs: ['virtualLabStore.activities'],
+    },
+  ],
+  supplementMaterials: [],
   activities: [
     {
       id: defaultActivityId,
@@ -130,6 +160,9 @@ export function declineResearchInvitation(): void {
 export function saveStageMaterialDraft(activityId = defaultActivityId): VirtualResearchActivity {
   const activity = ensureActivity(activityId)
   state.materialStatus = '草稿'
+  state.stageMaterials.forEach((material) => {
+    material.status = '草稿'
+  })
   state.operationMessage = '阶段材料草稿已保存'
   return activity
 }
@@ -137,10 +170,43 @@ export function saveStageMaterialDraft(activityId = defaultActivityId): VirtualR
 export function submitStageMaterial(activityId = defaultActivityId): VirtualResearchActivity {
   const activity = ensureActivity(activityId)
   state.materialStatus = '已提交'
+  state.stageMaterials.forEach((material) => {
+    material.status = '已提交'
+  })
   activity.status = '待确认'
   activity.adminStoreRefs = ['virtualLabStore.activities', 'virtualLabStore.records']
   state.operationMessage = '阶段材料已提交，等待贡献识别'
   return activity
+}
+
+export function addStageMaterial(source: VirtualResearchStageMaterialSource): VirtualResearchStageMaterial {
+  const material: VirtualResearchStageMaterial = {
+    id: `stage-material-${source === '拍照' ? 'photo' : 'upload'}-${state.stageMaterials.length + 1}`,
+    name: source === '拍照' ? '现场材料照片.jpg' : '补充阶段材料.pdf',
+    meta: source === '拍照' ? 'JPG · 待上传' : 'PDF · 待上传',
+    source,
+    status: '草稿',
+    adminStoreRefs: ['virtualLabStore.activities'],
+  }
+  state.materialStatus = '草稿'
+  state.stageMaterials.push(material)
+  state.operationMessage = `${source}材料已加入阶段材料集合`
+  return material
+}
+
+export function addSupplementMaterial(source: VirtualResearchStageMaterialSource): VirtualResearchStageMaterial {
+  const material: VirtualResearchStageMaterial = {
+    id: `supplement-material-${source === '拍照' ? 'photo' : 'upload'}-${state.supplementMaterials.length + 1}`,
+    name: source === '拍照' ? '补充材料照片.jpg' : '补充贡献材料.pdf',
+    meta: source === '拍照' ? 'JPG · 待上传' : 'PDF · 待上传',
+    source,
+    status: '草稿',
+    adminStoreRefs: ['virtualLabStore.activities', 'virtualLabStore.records'],
+  }
+  state.materialStatus = '草稿'
+  state.supplementMaterials.push(material)
+  state.operationMessage = `${source}补充材料已加入补充材料集合`
+  return material
 }
 
 export function confirmContribution(contributionId = defaultContributionId): VirtualResearchContribution {
@@ -162,6 +228,9 @@ export function rejectContribution(contributionId = defaultContributionId): Virt
 export function saveSupplementDraft(activityId = 'virtual-research-industry-case'): VirtualResearchActivity {
   const activity = ensureActivity(activityId)
   state.materialStatus = '草稿'
+  state.supplementMaterials.forEach((material) => {
+    material.status = '草稿'
+  })
   activity.status = '需补充'
   state.operationMessage = '补充材料草稿已保存'
   return activity
@@ -170,6 +239,9 @@ export function saveSupplementDraft(activityId = 'virtual-research-industry-case
 export function submitSupplementMaterial(activityId = 'virtual-research-industry-case'): VirtualResearchActivity {
   const activity = ensureActivity(activityId)
   state.materialStatus = '已提交'
+  state.supplementMaterials.forEach((material) => {
+    material.status = '已提交'
+  })
   activity.status = '待确认'
   activity.adminStoreRefs = ['virtualLabStore.activities', 'virtualLabStore.records', 'archiveStore.processingRecords']
   state.operationMessage = '补充材料已重新提交'
@@ -191,6 +263,18 @@ export function previewVirtualResearchMaterial(materialName: string): VirtualRes
   return {
     title: '材料预览',
     message: `${materialName} 已关联到当前虚拟教研记录。当前为前端材料预览降级入口，真实附件服务后续接入。`,
+  }
+}
+
+export function openVirtualResearchMeeting(activityId = 'virtual-research-course-reform'): VirtualResearchMeetingAccess {
+  const activity = ensureActivity(activityId)
+  activity.adminStoreRefs = Array.from(new Set([...activity.adminStoreRefs, 'virtualLabStore.activities']))
+  state.operationMessage = '会议入口已定位，真实会议 SDK 后续接入'
+  return {
+    provider: '腾讯会议',
+    meetingNo: '123 456 789',
+    message: '腾讯会议 123 456 789 已定位。当前为会议入口降级说明，真实会议 SDK 后续接入。',
+    adminStoreRefs: ['virtualLabStore.activities'],
   }
 }
 

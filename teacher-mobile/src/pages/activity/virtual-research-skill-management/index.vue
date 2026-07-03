@@ -2,6 +2,12 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import {
+  addSupplementMaterial,
+  getMobileVirtualResearchState,
+  saveSupplementDraft,
+  submitSupplementMaterial,
+} from '../../../domain/virtualResearch'
 
 const recognizedItems = ['提供企业设备调试案例素材', '补充设备故障诊断教学建议']
 
@@ -18,12 +24,33 @@ const materialActions = [
   { icon: 'mic', title: '语音说明' },
 ]
 
+const virtualResearchState = getMobileVirtualResearchState()
+
 function goBack() {
   uni.navigateBack()
 }
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function handleSupplementMaterialAction(title: string) {
+  if (title === '上传资料' || title === '拍照') {
+    const material = addSupplementMaterial(title === '拍照' ? '拍照' : '上传')
+    uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
+    return
+  }
+  showToast('语音说明入口待接入')
+}
+
+function saveContributionDraft() {
+  saveSupplementDraft()
+  uni.showToast({ title: '补充贡献草稿已保存', icon: 'none' })
+}
+
+function submitContributionSupplement() {
+  submitSupplementMaterial()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-detail-supplement-submitted/index' })
 }
 </script>
 
@@ -130,11 +157,15 @@ function showToast(title: string) {
             v-for="item in materialActions"
             :key="item.title"
             class="material-action"
-            @tap="showToast(item.title)"
+            @tap="handleSupplementMaterialAction(item.title)"
           >
             <view class="material-icon" :class="`material-icon--${item.icon}`"></view>
             <text>{{ item.title }}</text>
           </button>
+        </view>
+        <view v-for="file in virtualResearchState.supplementMaterials" :key="file.id" class="recognized-row">
+          <view class="square-dot"></view>
+          <text>{{ file.name }} ｜ {{ file.source }} ｜ {{ file.status }}</text>
         </view>
       </MobileCard>
 
@@ -148,10 +179,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="draft-button" variant="outline" @tap="showToast('保存草稿')">
+      <MobileActionButton class="draft-button" variant="outline" @tap="saveContributionDraft">
         保存草稿
       </MobileActionButton>
-      <MobileActionButton class="submit-button" variant="primary" @tap="showToast('提交补充')">
+      <MobileActionButton class="submit-button" variant="primary" @tap="submitContributionSupplement">
         提交补充
       </MobileActionButton>
     </view>

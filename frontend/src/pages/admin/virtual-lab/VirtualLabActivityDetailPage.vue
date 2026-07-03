@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
@@ -41,7 +41,11 @@ const statusCard = computed(() => ({
 
 const { participants, timeline } = getVirtualLabActivityDetailMock()
 
+const showAllParticipants = ref(false)
+const displayedParticipants = computed(() => showAllParticipants.value ? participants : participants.slice(0, 3))
 const materials = computed(() => getVirtualLabMaterialsByActivity(activityId.value))
+const selectedMaterialId = ref(materials.value[0]?.id ?? '')
+const selectedMaterial = computed(() => materials.value.find(item => item.id === selectedMaterialId.value) ?? null)
 const formedRecord = computed(() => virtualLabState.records.find(record => record.sourceActivityId === activityId.value) ?? null)
 
 function editActivity() {
@@ -52,8 +56,28 @@ function viewMeetingRecord() {
   operationMessage.set(`已定位会议记录：${activityInfo.value.meetingMethod} ${activityInfo.value.meetingNo}。`)
 }
 
+function showAllActivityParticipants() {
+  showAllParticipants.value = true
+  operationMessage.set(`已展开全部 ${participants.length} 位参与教师。`)
+}
+
+async function copyMeetingNo() {
+  if (!navigator.clipboard) {
+    operationMessage.set(`当前浏览器不支持自动复制，会议号：${activityInfo.value.meetingNo}。`)
+    return
+  }
+
+  try {
+    await navigator.clipboard.writeText(activityInfo.value.meetingNo)
+    operationMessage.set(`会议号 ${activityInfo.value.meetingNo} 已复制。`)
+  } catch {
+    operationMessage.set(`会议号复制失败，请手动复制：${activityInfo.value.meetingNo}。`)
+  }
+}
+
 function viewMaterial(id: string) {
   const material = materials.value.find((item) => item.id === id)
+  selectedMaterialId.value = id
   operationMessage.set(material ? `当前查看资料：${material.name}。` : '当前查看资料。')
 }
 
@@ -162,12 +186,12 @@ function goBack() {
           <div class="content-card participants-card">
             <div class="card-header">
               <h2>会议与参与情况</h2>
-              <Button variant="ghost" @click="operationMessage.set('已展示全部 18 位参与教师。')">查看全部(18) ›</Button>
+              <Button v-if="!showAllParticipants" variant="ghost" @click="showAllActivityParticipants">查看全部({{ participants.length }}) ›</Button>
             </div>
             <div class="participants-content">
               <div class="meeting-info">
                 <div><span>会议平台：</span><strong>{{ activityInfo.meetingMethod }}</strong></div>
-                <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="operationMessage.set('会议号已复制。')">⧉</button></div>
+                <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="copyMeetingNo">⧉</button></div>
                 <div><span>会议时间：</span><strong>{{ activityInfo.time }}</strong></div>
                 <div><span>会议主题：</span><strong>{{ activityInfo.name }}</strong></div>
                 <div><span>同步状态：</span><strong class="green">● 已同步</strong></div>
@@ -184,7 +208,7 @@ function goBack() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="participant in participants" :key="participant.id">
+                    <tr v-for="participant in displayedParticipants" :key="participant.id">
                       <td>
                         <span class="avatar">{{ participant.avatar }}</span>
                         {{ participant.name }}
@@ -216,7 +240,11 @@ function goBack() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="material in materials" :key="material.id">
+                  <tr
+                    v-for="material in materials"
+                    :key="material.id"
+                    :class="{ active: selectedMaterialId === material.id }"
+                  >
                     <td>
                       <span class="file-icon" :class="material.tone">▤</span>
                       {{ material.name }}
@@ -228,6 +256,16 @@ function goBack() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div v-if="selectedMaterial" class="material-detail-panel">
+              <h3>资料详情：{{ selectedMaterial.name }}</h3>
+              <div class="material-detail-grid">
+                <span>来源：{{ selectedMaterial.source }}</span>
+                <span>类型：{{ selectedMaterial.type }}</span>
+                <span>形成时间：{{ selectedMaterial.time }}</span>
+                <span>同步状态：{{ selectedMaterial.syncStatus }}</span>
+              </div>
+              <p>{{ selectedMaterial.description }}</p>
             </div>
           </div>
         </div>
@@ -627,6 +665,40 @@ function goBack() {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 700;
+}
+
+.data-table tr.active td {
+  background: #f3f7ff;
+}
+
+.material-detail-panel {
+  margin: 16px 20px 20px;
+  padding: 16px 18px;
+  border: 1px solid #d7e2f2;
+  border-radius: var(--radius-sm);
+  background: #fbfdff;
+}
+
+.material-detail-panel h3 {
+  margin: 0 0 12px;
+  color: var(--color-admin-text-strong);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.material-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-admin-xs) var(--space-admin-xl);
+  color: #4d5d75;
+  font-size: 13px;
+}
+
+.material-detail-panel p {
+  margin: 12px 0 0;
+  color: var(--color-admin-text-strong);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .avatar {

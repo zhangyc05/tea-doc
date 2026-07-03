@@ -15,6 +15,14 @@ function goBack() {
   uni.navigateBack()
 }
 
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
+}
+
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
@@ -60,7 +68,7 @@ function showToast(title: string) {
 
       <view class="section-block">
         <text class="section-title">接下来可处理</text>
-        <MobileCard class="next-card" @tap="showToast('待确认贡献')">
+        <MobileCard class="next-card" @tap="goContributionConfirm">
           <view class="task-icon" aria-hidden="true"></view>
           <view class="task-copy">
             <view class="task-title-row">
@@ -110,10 +118,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="outline-action" variant="outline" @tap="showToast('返回我的教研室')">
+      <MobileActionButton class="outline-action" variant="outline" @tap="goResearchRoom">
         返回我的教研室
       </MobileActionButton>
-      <MobileActionButton class="primary-action" variant="primary" @tap="showToast('去确认贡献')">
+      <MobileActionButton class="primary-action" variant="primary" @tap="goContributionConfirm">
         去确认贡献
       </MobileActionButton>
     </view>

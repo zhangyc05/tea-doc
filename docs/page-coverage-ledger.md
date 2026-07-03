@@ -270,7 +270,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | --- | --- | --- | --- |
 | P1 | 档案详情导出仍是降级提示 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 保留为降级提示，不标记导出闭环；后续接真实文件导出 |
 | P1 已处理 | 能力画像院系 / 专业群体画像保留筛选态 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue` | 已决定不补独立页；院系 / 专业“查看画像”保留在群体画像重点关注对象筛选态内定位 |
-| P1 | 虚拟教研查看全部、复制会议号、定位资料仍是降级提示 | `frontend/src/pages/admin/virtual-lab/*` | 主业务链、教研室状态机和资料同步状态已接 store；辅助动作后续补真实成员全量列表、复制能力或资料定位 |
+| P1 已处理 | 虚拟教研查看全部、复制会议号、定位资料降级提示 | `frontend/src/pages/admin/virtual-lab/*` | 已补：查看全部接当前数据集展开状态，复制会议号接 Clipboard API，资料定位接页面内选中和详情面板 |
 
 ### 管理端风险表
 
@@ -284,7 +284,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 能力画像 | 院系 / 专业群体查看画像 | `AbilityProfileGroupPage.vue` | 教师对象真实跳转；院系 / 专业不补独立画像页，保留为群体画像重点关注对象筛选态 |
 | 培训管理 | 计划保存 / 发布、申请同意、证书上传 | `frontend/src/pages/admin/training/*` | 已接入 `trainingStore` 或同页状态，属于真实状态动作 |
 | 分析报告 | 筛选、重置、查看 / 导出 / 生成 / AI 分析 | `ReportCenterPage.vue` | 筛选为页面状态，导出任务和 AI 线程通过 `reportStore` 反馈 |
-| 虚拟教研 | 创建、筛选、校对、成员 / 资料定位、生成档案待确认 | `frontend/src/pages/admin/virtual-lab/*` | 主链接入 `virtualLabStore`；查看全部、复制会议号、定位资料为页面内降级提示 |
+| 虚拟教研 | 创建、筛选、校对、成员 / 资料定位、生成档案待确认 | `frontend/src/pages/admin/virtual-lab/*` | 主链接入 `virtualLabStore`；复制会议号已接 Clipboard API，资料定位已接页面内选中和详情面板，查看全部已接当前数据集展开状态 |
 | 管理端按钮 | 无动作视觉态按钮 | `AbilityListExecutionPage.vue`、`ArchiveProcessingPage.vue`、`ArchiveQueryPage.vue`、`AbilityProfileGroupPage.vue` | E16 已处理；只读值不再使用按钮，搜索接真实过滤，暂不补完整列表的入口改为明确降级提示并有测试约束 |
 | 管理端路由 | 未挂路由页面 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/router/admin.routes.ts` | D-03 已复扫，30 个页面文件与 30 个路由动态导入一一对应；组件目录不计页面 |
 | 管理端路由 | 占位路由 / 废弃页面 | `frontend/src/router/admin.routes.ts`、`frontend/src/pages/admin` | D-04 已复扫，未发现 `/admin/system`、`AdminPlaceholderPage`、`ResourceLibraryPage.vue` 残留 |
@@ -1013,6 +1013,13 @@ M-12 验证：
 | G12-06 | 对齐管理端虚拟教研 store | 已补：手机端虚拟教研闭环对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records`、带 `processingQueueTrace` 的 `archiveStore.processingRecords` |
 | G12-07 | 判定虚拟教研资料维护页归属 | 已补：虚拟教研成员资料归属已判定，成员资料页不直接写成长档案事实；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告 |
 | G12-08 | 明确多个贡献确认页状态机 | 已补：虚拟教研贡献确认页状态机已明确，`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页 |
+| G12-09 | 补已加入教研室真实入口 | 已补：已加入教研室返回和待确认贡献入口已接真实路由，底部返回进入我的教研室，待确认贡献卡片和主按钮进入贡献确认页 |
+| G12-10 | 补贡献详情和记录详情入口 | 已补：贡献详情和记录详情材料预览及返回教研记录已接真实入口，材料走虚拟教研预览降级，返回进入统一档案记录详情 |
+| G12-11 | 补活动进行中会议入口 | 已补：进入会议调用 `openVirtualResearchMeeting()` 定位活动会议入口并保留 `virtualLabStore.activities` 追溯，当前为真实会议 SDK 待接入的统一降级说明 |
+| G12-12 | 补阶段材料上传和拍照集合 | 已补：阶段材料页上传 / 拍照调用 `addStageMaterial()` 写入 `stageMaterials`，保存草稿和提交材料同步集合状态并对齐 `virtualLabStore.activities` |
+| G12-13 | 补补充材料上传和拍照集合 | 已补：补充材料页上传 / 拍照调用 `addSupplementMaterial()` 写入 `supplementMaterials`，保存草稿和重新提交同步集合状态并对齐 `virtualLabStore.activities` / `virtualLabStore.records` |
+| G12-14 | 补贡献确认视觉页统一状态机动作 | 已补：待确认详情页和完整贡献确认页的补充动作进入补充材料页，确认动作调用 `confirmContribution()` 并进入贡献提交结果页 |
+| G12-15 | 补补充遗漏贡献页状态动作 | 已补：补充遗漏贡献页上传 / 拍照写入 `supplementMaterials`，保存草稿调用 `saveSupplementDraft()`，提交补充调用 `submitSupplementMaterial()` 并进入补充已提交页；结果页继续补充和去确认贡献均接真实路由 |
 | G13-01 | 建立手机端到管理端对象映射表 | 已补：`docs/business-logic-map.md` 2.1 覆盖待办、档案、培训、反思、企业实践、虚拟教研到 `archiveStore.processingRecords`、`teacherArchiveFacts`、`trainingStore`、`practiceStore`、`virtualLabStore`、`reflectionStore.records` 的映射 |
 | G13-02 | 建立手机端提交材料统一口径 | 已补：手机端提交后先进入待处理、待核验、待确认、需补充或已归档，不因提交成功直接写正式档案事实 |
 | G13-03 | 建立审批结果统一口径 | 已补：待处理、待核验、待确认、需补充、已归档、已入档、已移出状态已在业务地图统一定义 |
@@ -1212,7 +1219,7 @@ G8-01, G8-02, G8-03, G8-04, G8-05, G8-06, G8-07, G8-08, G8-09, G8-10, G8-11, G8-
 G9-01, G9-02, G9-03, G9-04, G9-05, G9-06
 G10-01, G10-02, G10-03, G10-04, G10-05
 G11-01, G11-02, G11-03, G11-04, G11-05, G11-06
-G12-01, G12-02, G12-03, G12-04, G12-05, G12-06
+G12-01, G12-02, G12-03, G12-04, G12-05, G12-06, G12-07, G12-08, G12-09, G12-10, G12-11, G12-12, G12-13, G12-14, G12-15
 G13-01, G13-02, G13-03, G13-04
 D-01
 D-02

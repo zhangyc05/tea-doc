@@ -29,6 +29,10 @@ function previewMaterial(fileName: string) {
   const preview = previewVirtualResearchMaterial(fileName)
   uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
 }
+
+function goResearchRecord() {
+  uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting' })
+}
 </script>
 
 <template>
@@ -143,7 +147,7 @@ function previewMaterial(fileName: string) {
         </text>
       </MobileCard>
 
-      <MobileActionButton class="return-button" variant="primary" @tap="showToast('返回教研记录')">
+      <MobileActionButton class="return-button" variant="primary" @tap="goResearchRecord">
         返回教研记录
       </MobileActionButton>
     </view>

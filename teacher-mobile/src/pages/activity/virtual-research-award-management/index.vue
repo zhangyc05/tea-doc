@@ -2,7 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { saveStageMaterialDraft, submitStageMaterial } from '../../../domain/virtualResearch'
+import { addStageMaterial, getMobileVirtualResearchState, saveStageMaterialDraft, submitStageMaterial } from '../../../domain/virtualResearch'
 
 const uploadActions = [
   { icon: 'folder', title: '上传资料', desc: '支持 PDF/Word/PPT 等' },
@@ -10,12 +10,23 @@ const uploadActions = [
   { icon: 'mic', title: '语音说明', desc: '语音转文字并保存' },
 ]
 
+const virtualResearchState = getMobileVirtualResearchState()
+
 function goBack() {
   uni.navigateBack()
 }
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function handleUploadAction(title: string) {
+  if (title === '上传资料' || title === '拍照') {
+    const material = addStageMaterial(title === '拍照' ? '拍照' : '上传')
+    uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
+    return
+  }
+  showToast('语音说明入口待接入')
 }
 
 function saveDraft() {
@@ -87,17 +98,17 @@ function submitMaterial() {
           <text class="section-title">上传材料</text>
         </view>
         <view class="upload-actions">
-          <button v-for="item in uploadActions" :key="item.title" class="upload-action" @tap="showToast(item.title)">
+          <button v-for="item in uploadActions" :key="item.title" class="upload-action" @tap="handleUploadAction(item.title)">
             <view class="upload-action-icon" :class="`upload-action-icon--${item.icon}`"></view>
             <text class="upload-title">{{ item.title }}</text>
             <text class="upload-desc">{{ item.desc }}</text>
           </button>
         </view>
-        <view class="file-row">
+        <view v-for="file in virtualResearchState.stageMaterials" :key="file.id" class="file-row">
           <view class="pdf-icon">PDF</view>
           <view class="file-copy">
-            <text class="file-name">设备调试案例素材.pdf</text>
-            <text class="file-meta">PDF · 3.2MB</text>
+            <text class="file-name">{{ file.name }}</text>
+            <text class="file-meta">{{ file.meta }} · {{ file.source }} · {{ file.status }}</text>
           </view>
           <button class="remove-button" @tap="showToast('移除材料')">×</button>
         </view>

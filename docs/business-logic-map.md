@@ -406,13 +406,15 @@
 | 教研室详情 | 新建教研活动 | 调用 `createVirtualLabActivity()`，同步近期活动和教研室活动统计 | 已完成本地闭环 |
 | 教研室详情 | 查看活动/记录 | 跳转活动详情或记录详情 | 已闭环到页面 |
 | 活动详情 | 形成并查看记录 | 未形成记录时调用 `formVirtualLabRecordFromActivity()` 后进入记录详情 | 已完成活动到记录闭环 |
-| 活动详情 | 查看会议记录/资料 | 页面内定位或提示当前资料 | 页面内闭环 |
+| 活动详情 | 查看全部参与教师 | 写入 `showAllParticipants` 页面状态，展开当前活动参与教师数据集 | 已从提示动作改为真实展开 |
+| 活动详情 | 查看会议记录/复制会议号/查看资料 | 查看会议记录为页面内定位；复制会议号调用浏览器 Clipboard API；查看资料写入当前选中资料并展示资料详情面板 | 复制会议号已从提示动作改为真实复制入口，资料定位已从提示升级为页面内选中状态 |
 | 活动详情 | 资料同步失败 / 重新同步 | `markVirtualLabMaterialSyncFailed()`、`resyncVirtualLabMaterial()` 修改 `VirtualLabMaterial.syncStatus` | store 层已闭环，真实上传同步服务后续替换 |
 | 记录详情 | 查看来源活动 | 按 `record.sourceActivityId` 跳转来源活动 | 已闭环到来源活动 |
-| 记录详情 | 查看来源资料 | 滚动定位来源资料列表 | 页面内闭环 |
+| 记录详情 | 查看全部参与记录 | 写入 `showAllParticipants` 页面状态，展开当前教研记录参与数据集 | 已从提示动作改为真实展开 |
+| 记录详情 | 查看来源资料 | 滚动定位来源资料列表；单条资料查看写入当前选中来源资料并展示详情面板 | 页面内闭环，来源资料定位已接选中状态 |
 | 记录详情 | 生成档案待确认 | 调用 `sendVirtualLabRecordToArchive()`，写入 `archiveStore.processingRecords` 后跳转 `/admin/archive/processing?recordId=virtual-lab-...` | 已闭环到成长档案处理工作台 |
 
-设计系统审计：虚拟教研室列表查看详情入口、教研室详情页标题区主次动作、成员表查看/移出、活动表查看和记录列表查看、活动详情页编辑/查看会议记录/查看资料/形成并查看记录、记录详情页查看来源/查看资料/生成档案待确认已按 F4 迁入公共 `Button`；分页、返回箭头和复制会议号仍按局部控件保留，不改变业务状态流转。
+设计系统审计：虚拟教研室列表查看详情入口、教研室详情页标题区主次动作、成员表查看/移出、活动表查看和记录列表查看、活动详情页编辑/查看会议记录/查看资料/形成并查看记录、记录详情页查看来源/查看资料/生成档案待确认已按 F4 迁入公共 `Button`；分页和返回箭头仍按局部控件保留，不改变业务状态流转；复制会议号保留局部小控件，但已接浏览器 Clipboard API。
 
 ### 9.5 后续审计点
 
@@ -1033,7 +1035,7 @@
 | 教研室邀请 | 待确认、已加入、暂不加入、已失效 | 邀请页调用 `confirmResearchInvitation()` / `declineResearchInvitation()` | 手机端虚拟教研闭环已接入第一版：邀请状态写入 `virtualLabStore.rooms` 对齐口径 |
 | 教研室成员关系 | 已加入、待退出、已退出 | “我的教研室”读取 `getMobileVirtualResearchState()` | 已用本地成员状态承接，后续替换为真实成员接口 |
 | 教研活动 | 进行中、待确认贡献、需补充、等待归档、已归档 | 活动列表读取 `filteredResearchActivities()`，筛选调用 `setVirtualResearchFilter()` | 已接入活动筛选和状态入口，对齐 `virtualLabStore.activities` |
-| 阶段材料 | 草稿、待提交、已提交、需补充、已归档 | 阶段材料页调用 `saveStageMaterialDraft()` / `submitStageMaterial()` | 已写入活动材料状态，材料集合和上传进度仍为后续接口项 |
+| 阶段材料 | 草稿、待提交、已提交、需补充、已归档 | 阶段材料页调用 `addStageMaterial()`、`saveStageMaterialDraft()` / `submitStageMaterial()` | 上传 / 拍照已写入阶段材料集合，保存和提交会同步材料状态，真实上传进度仍为后续接口项 |
 | 个人贡献 | 待识别、待确认、已确认、已提交、被退回、已归档 | 贡献确认页调用 `confirmContribution()` / `rejectContribution()`，多个效果图页通过 `contributionPageStateMap` 映射到同一贡献确认状态机 | 虚拟教研贡献确认页状态机已明确，对齐 `virtualLabStore.records` |
 | 活动 / 贡献材料预览 | 可预览、附件服务待接入 | `previewVirtualResearchMaterial()` | 虚拟教研材料预览降级入口已接入活动详情和贡献详情；真实附件服务后续替换 |
 | 归档 | 等待归档、需补充、已归档、已生成档案待确认 | 归档结果页调用 `submitVirtualResearchArchive()` | 先形成 `virtualLabStore.records` 教研记录，再生成带 `processingQueueTrace` 的 `archiveStore.processingRecords` 待确认记录 |
@@ -1076,17 +1078,17 @@
 | --- | --- | --- | --- |
 | 我的教研室 | 查看邀请、确认贡献、进入教研室、全部教研活动 | 分别进入邀请、贡献确认、教研室状态和活动列表页 | 主入口已闭环 |
 | 教研室邀请 | 确认加入、暂不加入、查看近期活动 | 确认 / 暂不加入写入邀请状态并跳转 | 已形成成员关系状态 |
-| 已加入教研室 | 返回我的教研室、去确认贡献、待确认贡献卡片 | 均为 `uni.showToast` | 未闭环 |
+| 已加入教研室 | 返回我的教研室、去确认贡献、待确认贡献卡片 | 进入 `/pages/activity/virtual-research-room/index` 和 `/pages/activity/virtual-research-confirm-contribution/index` | 已加入教研室返回和待确认贡献入口已接真实路由 |
 | 教研活动列表 | 筛选、去确认、确认贡献、查看详情、补充材料、查看记录 | 筛选写入状态，动作进入贡献确认、进行中详情、补充材料或档案详情 | 主列表动作已闭环 |
-| 活动进行中详情 | 进入会议、返回教研室、提交阶段材料 | 会议入口明确降级提示；返回教研室和提交材料为真实路由 | 主操作已闭环 |
-| 阶段材料提交 | 上传、拍照、保存草稿、提交材料 | 保存草稿 / 提交材料写入阶段材料状态 | 已生成阶段材料状态 |
+| 活动进行中详情 | 进入会议、返回教研室、提交阶段材料 | 进入会议调用 `openVirtualResearchMeeting()` 定位活动会议入口并保留 `virtualLabStore.activities` 追溯，当前为真实会议 SDK 待接入的统一降级说明；返回教研室和提交材料为真实路由 | 主操作已闭环 |
+| 阶段材料提交 | 上传、拍照、保存草稿、提交材料 | 上传 / 拍照调用 `addStageMaterial()` 写入阶段材料集合；保存草稿 / 提交材料写入阶段材料状态 | 已生成阶段材料集合和状态 |
 | 阶段材料已提交 | 返回教研室、查看活动详情 | 进入我的教研室和活动详情 | 已闭环 |
-| 贡献确认页 | 补充遗漏、不是我的、确认贡献 | `virtual-research-confirm-contribution` 承接待确认动作页，`virtual-research-contribution-confirm` 承接待确认详情页，`virtual-research-activity-detail-confirm` 承接完整贡献确认页；动作写入同一贡献对象 | 虚拟教研贡献确认页状态机已明确，暂保留多页承接不同效果图 |
+| 贡献确认页 | 补充遗漏、不是我的、确认贡献 | `virtual-research-confirm-contribution` 承接待确认动作页，`virtual-research-contribution-confirm` 承接待确认详情页，`virtual-research-activity-detail-confirm` 承接完整贡献确认页；待确认详情页和完整贡献确认页已接同一贡献确认状态机，补充进入补充材料页，确认调用 `confirmContribution()`；补充遗漏贡献页已接补充材料集合、草稿和提交状态 | 虚拟教研贡献确认页状态机已明确，暂保留多页承接不同效果图 |
 | 贡献确认已提交 | 返回教研室、查看提交内容 | 进入我的教研室和贡献详情 | 已闭环 |
-| 补充材料页 | 上传资料、保存草稿、重新提交 | 保存草稿 / 重新提交写入补充材料状态 | 已生成补充提交状态 |
+| 补充材料页 | 上传资料、拍照、保存草稿、重新提交 | 补充材料上传 / 拍照调用 `addSupplementMaterial()` 写入补充材料集合；保存草稿 / 重新提交写入补充材料状态 | 已生成补充材料集合和补充提交状态 |
 | 归档结果页 | 返回教研室、查看教研记录、查看成长档案去向 | 调用 `submitVirtualResearchArchive()`，并进入教研室或统一档案详情页 | 已按“先教研记录、后档案待确认”闭环 |
 | 已归档确认页 | 返回教研室、查看教研记录 | 进入我的教研室和统一档案详情页 | 已闭环 |
-| 贡献详情 / 记录详情 | 查看材料、返回教研记录 | `uni.showToast` | 详情为静态展示，来源材料未真实预览 |
+| 贡献详情 / 记录详情 | 查看材料、返回教研记录 | 材料调用 `previewVirtualResearchMaterial()` 降级预览，返回进入 `/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting` | 贡献详情和记录详情材料预览及返回教研记录已接真实入口 |
 | 资料归属页 | 成员资料展示、贡献详情、补充遗漏、我的教研室、年度发展报告 | 页面显示“虚拟教研成员资料”或“我的资料 / 个人发展报告”归属标签 | 已判定归属；不把个人发展报告并入虚拟教研主流程，也不把虚拟教研成员资料直接写成档案事实 |
 
 ### 16.5 跨端对齐口径
@@ -1105,9 +1107,9 @@
 ### 16.6 后续审计点
 
 1. 手机端虚拟教研闭环已接入第一版；新增 `teacher-mobile/src/domain/virtualResearch.ts`，对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records` 和 `archiveStore.processingRecords`，不直接复用管理端 Vue store。
-2. “我的教研室”、邀请确认、活动列表筛选、阶段材料、贡献确认、补充材料、归档结果和已归档确认页已补主操作状态和真实跳转。
+2. “我的教研室”、邀请确认、活动列表筛选、活动会议入口、阶段材料、贡献确认、补充材料、归档结果和已归档确认页已补主操作状态和真实跳转 / 统一降级入口。
 3. 归档结果已统一为先形成教研记录，再生成带 `processingQueueTrace` 的成长档案待确认记录，管理端确认后才成为正式档案事实。
-4. 虚拟教研贡献确认页状态机已明确：`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页；三者暂不合并路由，均映射到同一贡献确认状态机和 `virtualLabStore.records`。
+4. 虚拟教研贡献确认页状态机已明确：`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页；三者暂不合并路由，均映射到同一贡献确认状态机和 `virtualLabStore.records`，其中待确认详情页和完整贡献确认页已接同一贡献确认状态机动作。
 5. 虚拟教研材料预览降级入口已接入活动进行中详情和贡献详情；阶段材料、会议纪要、任务分工、发言摘录和个人贡献之间尚未形成统一来源模型，真实附件服务后续替换。
 6. 虚拟教研成员资料归属已判定：`virtual-research-profile-intro-edit`、`virtual-research-position-management`、`virtual-research-work-experience-management`、`virtual-research-skill-management`、`virtual-research-role-assignment` 归属虚拟教研成员资料；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告。后续重命名路由时需同步 `pages.json`、入口、台账和守卫。
 

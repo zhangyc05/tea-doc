@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { confirmContribution } from '../../../domain/virtualResearch'
 
 const infoRows = [
   { label: '活动名称', value: '智能制造专业课程案例共创会', icon: 'file' },
@@ -43,6 +44,15 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function goSupplementContribution() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-supplement-material/index' })
+}
+
+function submitContribution() {
+  confirmContribution()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-submitted/index' })
 }
 </script>
 
@@ -108,7 +118,7 @@ function showToast(title: string) {
 
         <view class="supplement-tip">
           <text>如有遗漏，可补充一句说明或补传相关材料。</text>
-          <button class="supplement-row" @tap="showToast('补充遗漏或材料')">
+          <button class="supplement-row" @tap="goSupplementContribution">
             <view class="pen-icon"></view>
             <text>补充遗漏或材料</text>
             <view class="row-arrow"></view>
@@ -131,10 +141,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button outline-button" variant="outline" @tap="showToast('补充遗漏')">
+      <MobileActionButton class="action-button outline-button" variant="outline" @tap="goSupplementContribution">
         补充遗漏
       </MobileActionButton>
-      <MobileActionButton class="action-button primary-button" variant="primary" @tap="showToast('确认贡献')">
+      <MobileActionButton class="action-button primary-button" variant="primary" @tap="submitContribution">
         确认贡献
       </MobileActionButton>
     </view>

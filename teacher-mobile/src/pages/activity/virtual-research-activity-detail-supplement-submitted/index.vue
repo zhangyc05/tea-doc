@@ -23,6 +23,14 @@ function goBack() {
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
+
+function goSupplementContribution() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-skill-management/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-detail-confirm/index' })
+}
 </script>
 
 <template>
@@ -145,7 +153,7 @@ function showToast(title: string) {
           <view class="head-icon head-icon--bell"></view>
           <text class="section-title">当前状态</text>
         </view>
-        <button class="status-row" @tap="showToast('去确认贡献')">
+        <button class="status-row" @tap="goContributionConfirm">
           <view class="status-copy">
             <text class="status-title">已加入待确认贡献</text>
             <text class="status-desc">
@@ -158,10 +166,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="bottom-button" variant="outline" @tap="showToast('继续补充')">
+      <MobileActionButton class="bottom-button" variant="outline" @tap="goSupplementContribution">
         继续补充
       </MobileActionButton>
-      <MobileActionButton class="bottom-button" variant="primary" @tap="showToast('去确认贡献')">
+      <MobileActionButton class="bottom-button" variant="primary" @tap="goContributionConfirm">
         去确认贡献
       </MobileActionButton>
     </view>

@@ -2,7 +2,12 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { saveSupplementDraft, submitSupplementMaterial } from '../../../domain/virtualResearch'
+import {
+  addSupplementMaterial,
+  getMobileVirtualResearchState,
+  saveSupplementDraft,
+  submitSupplementMaterial,
+} from '../../../domain/virtualResearch'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 
 const supplementItems = [
@@ -24,12 +29,19 @@ const evidenceItems = [
   { title: '发言摘录', status: '已同步', icon: 'message' },
 ]
 
+const virtualResearchState = getMobileVirtualResearchState()
+
 function goBack() {
   uni.navigateBack()
 }
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function handleSupplementUpload(source: '上传' | '拍照') {
+  const material = addSupplementMaterial(source)
+  uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
 }
 
 function saveDraft() {
@@ -121,11 +133,11 @@ function submitAgain() {
       <MobileCard class="section-card material-card">
         <text class="section-title">补充材料</text>
         <view class="tool-grid">
-          <button class="tool-button" @tap="showToast('上传资料')">
+          <button class="tool-button" @tap="handleSupplementUpload('上传')">
             <view class="tool-icon tool-icon--upload"></view>
             <text>上传资料</text>
           </button>
-          <button class="tool-button" @tap="showToast('拍照')">
+          <button class="tool-button" @tap="handleSupplementUpload('拍照')">
             <view class="tool-icon tool-icon--camera"></view>
             <text>拍照</text>
           </button>
@@ -133,6 +145,13 @@ function submitAgain() {
             <view class="tool-icon tool-icon--mic"></view>
             <text>语音说明</text>
           </button>
+        </view>
+        <view v-for="file in virtualResearchState.supplementMaterials" :key="file.id" class="evidence-row">
+          <view class="evidence-left">
+            <view class="evidence-icon evidence-icon--note"></view>
+            <text>{{ file.name }}</text>
+          </view>
+          <text class="sync-chip">{{ file.source }} · {{ file.status }}</text>
         </view>
         <view class="textarea-box">
           <text class="textarea-label">补充说明</text>

@@ -2,7 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { previewVirtualResearchMaterial, submitStageMaterial } from '../../../domain/virtualResearch'
+import { openVirtualResearchMeeting, previewVirtualResearchMaterial, submitStageMaterial } from '../../../domain/virtualResearch'
 
 const materialRows = [
   { title: '会议纪要', desc: '会议结束后由系统自动生成', status: '待生成', tone: 'blue', icon: 'doc' },
@@ -31,6 +31,11 @@ function goResearchRoom() {
 function goStageMaterial() {
   submitStageMaterial()
   uni.navigateTo({ url: '/pages/activity/virtual-research-award-management/index' })
+}
+
+function joinMeeting() {
+  const meeting = openVirtualResearchMeeting()
+  uni.showToast({ title: meeting.message, icon: 'none' })
 }
 </script>
 
@@ -132,7 +137,7 @@ function goStageMaterial() {
               <text>主持人：林老师</text>
             </view>
           </view>
-          <MobileActionButton class="join-button" variant="primary" @tap="showToast('会议入口待接入')">
+          <MobileActionButton class="join-button" variant="primary" @tap="joinMeeting">
             进入会议
           </MobileActionButton>
         </view>

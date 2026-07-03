@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { confirmContribution } from '../../../domain/virtualResearch'
 
 const organizeItems = [
   { title: '会议纪要', status: '已生成', tone: 'blue', icon: 'doc' },
@@ -46,6 +47,15 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function goSupplementContribution() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-supplement-material/index' })
+}
+
+function submitContribution() {
+  confirmContribution()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-submitted/index' })
 }
 </script>
 
@@ -169,11 +179,11 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="bottom-button supplement-button" variant="outline" @tap="showToast('继续补充')">
+      <MobileActionButton class="bottom-button supplement-button" variant="outline" @tap="goSupplementContribution">
         <view class="button-plus"></view>
         <text>继续补充</text>
       </MobileActionButton>
-      <MobileActionButton class="bottom-button confirm-button" variant="primary" @tap="showToast('确认贡献')">
+      <MobileActionButton class="bottom-button confirm-button" variant="primary" @tap="submitContribution">
         <view class="button-check"></view>
         <text>确认贡献</text>
       </MobileActionButton>

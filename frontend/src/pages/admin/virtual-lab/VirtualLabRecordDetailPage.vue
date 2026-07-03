@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -22,7 +22,11 @@ const operationMessage = useOperationMessage()
 const recordInfo = computed(() => getVirtualLabRecord(recordId.value))
 const { recordContent, participationRecords } = getVirtualLabRecordDetailMock()
 
+const showAllParticipants = ref(false)
+const displayedParticipationRecords = computed(() => showAllParticipants.value ? participationRecords : participationRecords.slice(0, 4))
 const sourceMaterials = computed(() => getVirtualLabMaterialsByActivity(recordInfo.value.sourceActivityId))
+const selectedMaterialId = ref(sourceMaterials.value[0]?.id ?? '')
+const selectedMaterial = computed(() => sourceMaterials.value.find(item => item.id === selectedMaterialId.value) ?? null)
 
 function viewSourceActivity() {
   router.push(`/admin/virtual-lab/activities/${recordInfo.value.sourceActivityId}`)
@@ -35,7 +39,13 @@ function viewSourceMaterials() {
 
 function viewMaterial(id: string) {
   const material = sourceMaterials.value.find((item) => item.id === id)
+  selectedMaterialId.value = id
   operationMessage.set(material ? `当前查看来源资料：${material.name}。` : '当前查看来源资料。')
+}
+
+function showAllRecordParticipants() {
+  showAllParticipants.value = true
+  operationMessage.set(`已展开全部 ${participationRecords.length} 位参与教师记录。`)
 }
 
 function sendToArchive() {
@@ -123,7 +133,7 @@ function sendToArchive() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="record in participationRecords" :key="record.id">
+                  <tr v-for="record in displayedParticipationRecords" :key="record.id">
                     <td>
                       <span class="avatar">{{ record.avatar }}</span>
                       {{ record.teacher }}
@@ -136,8 +146,8 @@ function sendToArchive() {
               </table>
             </div>
             <div class="participation-footer">
-              <span>共 18 位教师参与记录</span>
-              <Button variant="ghost" @click="operationMessage.set('已展示全部参与教师入口。')">查看全部 ›</Button>
+              <span>共 {{ participationRecords.length }} 位教师参与记录</span>
+              <Button v-if="!showAllParticipants" variant="ghost" @click="showAllRecordParticipants">查看全部 ›</Button>
             </div>
           </div>
         </div>
@@ -159,7 +169,11 @@ function sendToArchive() {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="material in sourceMaterials" :key="material.id">
+                <tr
+                  v-for="material in sourceMaterials"
+                  :key="material.id"
+                  :class="{ active: selectedMaterialId === material.id }"
+                >
                   <td>
                     <span class="file-icon" :class="material.tone">▤</span>
                     {{ material.name }}
@@ -174,6 +188,16 @@ function sendToArchive() {
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-if="selectedMaterial" class="material-detail-panel">
+            <h3>来源资料详情：{{ selectedMaterial.name }}</h3>
+            <div class="material-detail-grid">
+              <span>来源：{{ selectedMaterial.source }}</span>
+              <span>类型：{{ selectedMaterial.type }}</span>
+              <span>形成时间：{{ selectedMaterial.time }}</span>
+              <span>同步状态：{{ selectedMaterial.syncStatus }}</span>
+            </div>
+            <p>{{ selectedMaterial.description }}</p>
           </div>
         </div>
       </section>
@@ -438,6 +462,40 @@ function sendToArchive() {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 800;
+}
+
+.data-table tr.active td {
+  background: #f3f7ff;
+}
+
+.material-detail-panel {
+  margin: 16px 20px 20px;
+  padding: 16px 18px;
+  border: 1px solid #d7e2f2;
+  border-radius: var(--radius-sm);
+  background: #fbfdff;
+}
+
+.material-detail-panel h3 {
+  margin: 0 0 12px;
+  color: var(--color-admin-text-strong);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.material-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-admin-xs) var(--space-admin-xl);
+  color: #4d5d75;
+  font-size: 13px;
+}
+
+.material-detail-panel p {
+  margin: 12px 0 0;
+  color: var(--color-admin-text-strong);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .avatar {

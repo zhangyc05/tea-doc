@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { previewVirtualResearchMaterial } from '../../../domain/virtualResearch'
 
 const evidenceItems = [
   { icon: 'note', title: '会议纪要', status: '已归档' },
@@ -23,6 +24,15 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function previewMaterial(fileName: string) {
+  const preview = previewVirtualResearchMaterial(fileName)
+  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
+}
+
+function goResearchRecord() {
+  uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting' })
 }
 </script>
 
@@ -92,7 +102,7 @@ function showToast(title: string) {
         <MobileCard class="section-card">
           <text class="section-title">关联材料</text>
           <view class="table-list">
-            <button v-for="file in files" :key="file.name" class="table-row file-row" @tap="showToast(file.name)">
+            <button v-for="file in files" :key="file.name" class="table-row file-row" @tap="previewMaterial(file.name)">
               <view class="file-icon" :class="`file-icon--${file.type}`">{{ file.type === 'word' ? 'W' : '' }}</view>
               <text class="row-title">{{ file.name }}</text>
               <text class="view-link">查看</text>
@@ -122,7 +132,7 @@ function showToast(title: string) {
           </MobileCard>
         </view>
 
-        <MobileActionButton class="return-button" variant="outline" @tap="showToast('返回教研记录')">
+        <MobileActionButton class="return-button" variant="outline" @tap="goResearchRecord">
           返回教研记录
         </MobileActionButton>
       </view>
