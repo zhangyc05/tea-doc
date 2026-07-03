@@ -60,6 +60,34 @@ function goBack() {
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
+
+function goResearchInvitation() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-invitation/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-profile-complete/index' })
+}
+
+function goResearchActivityList() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-list/index' })
+}
+
+function handleTodoAction(action: string) {
+  if (action === '查看邀请') {
+    goResearchInvitation()
+    return
+  }
+  if (action === '确认贡献') {
+    goContributionConfirm()
+    return
+  }
+  showToast(action)
+}
 </script>
 
 <template>
@@ -97,7 +125,7 @@ function showToast(title: string) {
             </view>
             <text class="todo-desc">{{ item.desc }}</text>
           </view>
-          <MobileActionButton class="todo-button" variant="outline" arrow @tap="showToast(item.action)">
+          <MobileActionButton class="todo-button" variant="outline" arrow @tap="handleTodoAction(item.action)">
             {{ item.action }}
           </MobileActionButton>
         </MobileCard>
@@ -119,7 +147,7 @@ function showToast(title: string) {
               <text class="room-chip">数字化教学资源建设</text>
               <text class="room-chip room-chip--warn">2 项贡献待确认</text>
             </view>
-            <MobileActionButton class="room-button" variant="primary" arrow @tap="showToast('进入教研室')">
+            <MobileActionButton class="room-button" variant="primary" arrow @tap="goResearchRoom">
               进入教研室
             </MobileActionButton>
           </view>
@@ -134,7 +162,7 @@ function showToast(title: string) {
             </view>
             <text class="room-desc">可先查看教研方向与近期安排，再决定是否加入。</text>
           </view>
-          <MobileActionButton class="invite-button" variant="outline" arrow @tap="showToast('查看邀请')">
+          <MobileActionButton class="invite-button" variant="outline" arrow @tap="goResearchInvitation">
             查看邀请
           </MobileActionButton>
         </MobileCard>
@@ -143,7 +171,7 @@ function showToast(title: string) {
       <view class="section recent-section">
         <view class="section-head">
           <text class="section-title">最近教研活动</text>
-          <button class="all-link" @tap="showToast('全部')">
+          <button class="all-link" @tap="goResearchActivityList">
             <text>全部</text>
             <view class="link-arrow" aria-hidden="true"></view>
           </button>

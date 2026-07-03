@@ -201,6 +201,17 @@ for (const [label, file] of [
   mustInclude(label, pageSource, '虚拟教研成员资料')
 }
 
+const roleAssignment = source(files.roleAssignment)
+mustInclude('role assignment page', roleAssignment, 'goResearchInvitation')
+mustInclude('role assignment page', roleAssignment, 'goContributionConfirm')
+mustInclude('role assignment page', roleAssignment, 'goResearchRoom')
+mustInclude('role assignment page', roleAssignment, 'goResearchActivityList')
+mustInclude('role assignment page', roleAssignment, 'handleTodoAction')
+mustInclude('role assignment page', roleAssignment, '/pages/activity/virtual-research-invitation/index')
+mustInclude('role assignment page', roleAssignment, '/pages/activity/virtual-research-confirm-contribution/index')
+mustInclude('role assignment page', roleAssignment, '/pages/activity/virtual-research-profile-complete/index')
+mustInclude('role assignment page', roleAssignment, '/pages/activity/virtual-research-activity-list/index')
+
 const positionManagement = source(files.positionManagement)
 mustInclude('position management page', positionManagement, 'goResearchRoom')
 mustInclude('position management page', positionManagement, 'goContributionConfirm')
@@ -248,6 +259,7 @@ mustInclude('business logic map', businessMap, '上传 / 拍照调用 `addStageM
 mustInclude('business logic map', businessMap, '补充材料上传 / 拍照调用 `addSupplementMaterial()` 写入补充材料集合')
 mustInclude('business logic map', businessMap, '待确认详情页和完整贡献确认页已接同一贡献确认状态机')
 mustInclude('business logic map', businessMap, '补充遗漏贡献页已接补充材料集合、草稿和提交状态')
+mustInclude('business logic map', businessMap, '我的教研室看板状态页入口已接真实路由')
 
 const coverageLedger = source(files.coverageLedger)
 mustInclude('page coverage ledger', coverageLedger, '手机端虚拟教研闭环')
@@ -261,6 +273,7 @@ mustInclude('page coverage ledger', coverageLedger, '补阶段材料上传和拍
 mustInclude('page coverage ledger', coverageLedger, '补补充材料上传和拍照集合')
 mustInclude('page coverage ledger', coverageLedger, '补贡献确认视觉页统一状态机动作')
 mustInclude('page coverage ledger', coverageLedger, '补补充遗漏贡献页状态动作')
+mustInclude('page coverage ledger', coverageLedger, '补我的教研室看板状态页入口')
 
 if (failures.length > 0) {
   console.error(`Virtual research business verification failed with ${failures.length} issue(s):`)

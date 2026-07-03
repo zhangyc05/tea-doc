@@ -1020,6 +1020,7 @@ M-12 验证：
 | G12-13 | 补补充材料上传和拍照集合 | 已补：补充材料页上传 / 拍照调用 `addSupplementMaterial()` 写入 `supplementMaterials`，保存草稿和重新提交同步集合状态并对齐 `virtualLabStore.activities` / `virtualLabStore.records` |
 | G12-14 | 补贡献确认视觉页统一状态机动作 | 已补：待确认详情页和完整贡献确认页的补充动作进入补充材料页，确认动作调用 `confirmContribution()` 并进入贡献提交结果页 |
 | G12-15 | 补补充遗漏贡献页状态动作 | 已补：补充遗漏贡献页上传 / 拍照写入 `supplementMaterials`，保存草稿调用 `saveSupplementDraft()`，提交补充调用 `submitSupplementMaterial()` 并进入补充已提交页；结果页继续补充和去确认贡献均接真实路由 |
+| G12-16 | 补我的教研室看板状态页入口 | 已补：`virtual-research-role-assignment` 的查看邀请、确认贡献、进入教研室和全部教研活动入口均接真实路由 |
 | G13-01 | 建立手机端到管理端对象映射表 | 已补：`docs/business-logic-map.md` 2.1 覆盖待办、档案、培训、反思、企业实践、虚拟教研到 `archiveStore.processingRecords`、`teacherArchiveFacts`、`trainingStore`、`practiceStore`、`virtualLabStore`、`reflectionStore.records` 的映射 |
 | G13-02 | 建立手机端提交材料统一口径 | 已补：手机端提交后先进入待处理、待核验、待确认、需补充或已归档，不因提交成功直接写正式档案事实 |
 | G13-03 | 建立审批结果统一口径 | 已补：待处理、待核验、待确认、需补充、已归档、已入档、已移出状态已在业务地图统一定义 |
@@ -1219,7 +1220,7 @@ G8-01, G8-02, G8-03, G8-04, G8-05, G8-06, G8-07, G8-08, G8-09, G8-10, G8-11, G8-
 G9-01, G9-02, G9-03, G9-04, G9-05, G9-06
 G10-01, G10-02, G10-03, G10-04, G10-05
 G11-01, G11-02, G11-03, G11-04, G11-05, G11-06
-G12-01, G12-02, G12-03, G12-04, G12-05, G12-06, G12-07, G12-08, G12-09, G12-10, G12-11, G12-12, G12-13, G12-14, G12-15
+G12-01, G12-02, G12-03, G12-04, G12-05, G12-06, G12-07, G12-08, G12-09, G12-10, G12-11, G12-12, G12-13, G12-14, G12-15, G12-16
 G13-01, G13-02, G13-03, G13-04
 D-01
 D-02
