@@ -130,7 +130,6 @@ function getDistributionTone(index: number) {
           </div>
           <div class="score-illustration" aria-hidden="true">
             <img class="score-hero-art" :src="groupHeroArt" alt="" />
-            <img class="score-emblem" :src="groupHeroEmblem" alt="" />
           </div>
         </article>
 

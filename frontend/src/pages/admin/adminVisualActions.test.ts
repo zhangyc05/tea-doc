@@ -41,6 +41,10 @@ const adminDesignGuide = readFileSync(
   fileURLToPath(new URL('../../../docs/admin-design-system-guide.md', import.meta.url)),
   'utf8',
 )
+const groupPortraitHeroArt = readFileSync(
+  fileURLToPath(new URL('../../assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-art.png', import.meta.url)),
+  'binary',
+)
 
 const adminVisualSources = [
   ['AbilityListBasePage.vue', abilityListBasePage],
@@ -121,6 +125,12 @@ describe('admin visual action guardrails', () => {
     expect(abilityProfileGroupPage).toContain('supportDirectionIcons')
     expect(abilityProfileGroupPage).toContain('focusTabIconMap')
     expect(abilityProfileGroupPage).not.toMatch(/▤|♙|▣|▰|▥/)
+  })
+
+  it('keeps the group portrait hero artwork transparent', () => {
+    const pngColorType = groupPortraitHeroArt.charCodeAt(25)
+
+    expect(pngColorType).toBe(6)
   })
 
   it('keeps button design guidance aligned with the completed btn-class migration', () => {
