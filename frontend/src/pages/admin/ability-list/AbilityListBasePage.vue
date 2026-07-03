@@ -212,19 +212,6 @@ function deriveExecutionVersion() {
             </div>
 
             <div class="hero-summary-strip admin-summary-strip">
-              
-              <div class="summary-item admin-summary-item summary-structure">
-                <span class="admin-summary-label">能力维度</span>
-                <strong class="admin-summary-value">5</strong>
-              </div>
-              <div class="summary-item admin-summary-item">
-                <span class="admin-summary-label">能力要素</span>
-                <strong class="admin-summary-value">19</strong>
-              </div>
-              <div class="summary-item admin-summary-item">
-                <span class="admin-summary-label">能力指标</span>
-                <strong class="admin-summary-value">69</strong>
-              </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">最近更新</span>
                 <strong class="admin-summary-value">{{ abilityListState.baseTemplateVersion.updatedAt }}</strong>
@@ -240,6 +227,21 @@ function deriveExecutionVersion() {
                 <span aria-hidden="true">›</span>
               </Button>
             </div>
+          </div>
+        </div>
+
+        <div class="hero-metrics" aria-label="能力清单统计">
+          <div class="hero-metric-card">
+            <strong>5</strong>
+            <span>能力维度</span>
+          </div>
+          <div class="hero-metric-card">
+            <strong>19</strong>
+            <span>能力要素</span>
+          </div>
+          <div class="hero-metric-card">
+            <strong>69</strong>
+            <span>能力指标</span>
           </div>
         </div>
       </section>
@@ -547,20 +549,6 @@ function deriveExecutionVersion() {
   border-left: 0;
 }
 
-.summary-structure {
-  max-width: none;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.summary-structure .admin-summary-value {
-  overflow: visible;
-  text-overflow: unset;
-  white-space: normal;
-  word-break: break-all;
-  line-height: 1.5;
-}
-
 .hero-actions {
   display: flex;
   align-items: center;
@@ -576,6 +564,47 @@ function deriveExecutionVersion() {
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 900;
+}
+
+.hero-metrics {
+  position: absolute;
+  top: 50%;
+  right: clamp(360px, 24vw, 520px);
+  z-index: 2;
+  display: grid;
+  width: clamp(300px, 22vw, 390px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  transform: translateY(-50%);
+}
+
+.hero-metric-card {
+  display: flex;
+  min-height: 94px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(89, 143, 230, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(244, 248, 255, 0.72));
+  box-shadow: 0 20px 42px rgba(54, 101, 178, 0.08);
+  padding: 16px 18px;
+}
+
+.hero-metric-card span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.hero-metric-card strong {
+  color: var(--color-text-primary);
+  font-size: 30px;
+  font-weight: 950;
+  line-height: 1;
 }
 
 .derive-action:hover {
@@ -808,6 +837,10 @@ function deriveExecutionVersion() {
   .hero-art {
     width: min(42%, 560px);
     opacity: 0.78;
+  }
+
+  .hero-metrics {
+    display: none;
   }
 }
 </style>
