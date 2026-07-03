@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
-	import { EmptyState, StatusBadge } from '@/components/common'
+	import { DetailSheet, EmptyState, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
@@ -360,139 +360,135 @@
 			</div>
 		</div>
 
-		<!-- 编辑抽屉 -->
-		<div v-if="editingMapping" class="edit-drawer-overlay" @click="closeEditDrawer">
-			<div class="edit-drawer" @click.stop>
-				<div class="drawer-header">
-					<h3 class="drawer-title">编辑要求项映射</h3>
-					<button class="drawer-close" @click="closeEditDrawer">
-						<svg viewBox="0 0 24 24" aria-hidden="true">
-							<path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</button>
-				</div>
-
-				<div class="drawer-form">
-					<div class="form-section">
-						<h4 class="form-section-title"><span>1</span>基本信息</h4>
-						<div class="form-row">
-							<label class="form-label">要求来源</label>
-							<select class="form-select">
-								<option>岗位竞聘要求</option>
-								<option>聘期履职要求</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">适用对象</label>
-							<select class="form-select">
-								<option>申报讲师</option>
-								<option selected>申报副教授</option>
-								<option>申报教授</option>
-								<option>讲师聘期要求</option>
-								<option>副教授聘期要求</option>
-								<option>教授聘期要求</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">要求原文</label>
-							<textarea
-								class="form-textarea"
-								rows="3"
-								v-model="editingMapping.requirementText"
-								placeholder="请输入要求原文"
-							></textarea>
-						</div>
+		<DetailSheet
+			:open="Boolean(editingMapping)"
+			title="编辑要求项映射"
+			width="complex"
+			@update:open="value => { if (!value) closeEditDrawer() }"
+			@cancel="closeEditDrawer"
+		>
+			<div v-if="editingMapping" class="drawer-form">
+				<div class="form-section">
+					<h4 class="form-section-title"><span>1</span>基本信息</h4>
+					<div class="form-row">
+						<label class="form-label">要求来源</label>
+						<select class="form-select">
+							<option>岗位竞聘要求</option>
+							<option>聘期履职要求</option>
+						</select>
 					</div>
-
-					<div class="form-section">
-						<h4 class="form-section-title"><span>2</span>映射配置</h4>
-						<div class="form-row">
-							<label class="form-label">对应能力维度</label>
-							<select v-model="editingMapping.indicatorDimension" class="form-select">
-								<option>教学能力</option>
-								<option>教研能力</option>
-								<option>实践能力</option>
-								<option>服务能力</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">对应能力要素</label>
-							<select class="form-select">
-								<option>教学设计与实施</option>
-								<option>教学资源开发</option>
-								<option>教学评价与反馈</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">对应能力指标</label>
-							<select v-model="editingMapping.indicatorName" class="form-select">
-								<option>教学工作量</option>
-								<option>课堂教学评价</option>
-								<option>教改项目</option>
-								<option>企业实践经历</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">要求等级</label>
-							<select v-model="editingMapping.level" class="form-select">
-								<option>新手</option>
-								<option>胜任</option>
-								<option>骨干</option>
-								<option>名师</option>
-							</select>
-						</div>
-						<div class="form-row">
-							<label class="form-label">等级标准</label>
-							<textarea
-								class="form-textarea"
-								rows="2"
-								v-model="editingMapping.levelCriteria"
-								placeholder="承担核心课程教学并保持较稳定教学质量"
-							></textarea>
-						</div>
-						<div class="form-row">
-							<label class="form-label">制度补充条件</label>
-							<input
-								type="text"
-								class="form-input"
-								v-model="editingMapping.documentCondition"
-								placeholder="近三年专业课程授课门数 ≥ 2"
-							/>
-						</div>
+					<div class="form-row">
+						<label class="form-label">适用对象</label>
+						<select class="form-select">
+							<option>申报讲师</option>
+							<option selected>申报副教授</option>
+							<option>申报教授</option>
+							<option>讲师聘期要求</option>
+							<option>副教授聘期要求</option>
+							<option>教授聘期要求</option>
+						</select>
 					</div>
-
-					<div class="form-section">
-						<h4 class="form-section-title"><span>3</span>对照依据</h4>
-						<div class="form-row">
-							<label class="form-label">可引用档案事实</label>
-							<input
-								type="text"
-								class="form-input"
-								placeholder="教学工作记录、课程表、授课任务记录"
-							/>
-						</div>
-						<div class="form-row">
-							<label class="form-label">映射说明</label>
-							<textarea
-								class="form-textarea"
-								rows="2"
-								placeholder="系统后续将优先引用正式入档的教学工作事实进行对照"
-							></textarea>
-						</div>
-						<div class="form-row radio-row">
-							<label class="form-label">确认状态</label>
-							<label class="radio-option">
-								<input v-model="editingMapping.confirmStatus" type="radio" value="confirmed" />
-								已确认
-							</label>
-							<label class="radio-option">
-								<input v-model="editingMapping.confirmStatus" type="radio" value="pending" />
-								待确认
-							</label>
-						</div>
+					<div class="form-row">
+						<label class="form-label">要求原文</label>
+						<textarea
+							class="form-textarea"
+							rows="3"
+							v-model="editingMapping.requirementText"
+							placeholder="请输入要求原文"
+						></textarea>
 					</div>
 				</div>
 
+				<div class="form-section">
+					<h4 class="form-section-title"><span>2</span>映射配置</h4>
+					<div class="form-row">
+						<label class="form-label">对应能力维度</label>
+						<select v-model="editingMapping.indicatorDimension" class="form-select">
+							<option>教学能力</option>
+							<option>教研能力</option>
+							<option>实践能力</option>
+							<option>服务能力</option>
+						</select>
+					</div>
+					<div class="form-row">
+						<label class="form-label">对应能力要素</label>
+						<select class="form-select">
+							<option>教学设计与实施</option>
+							<option>教学资源开发</option>
+							<option>教学评价与反馈</option>
+						</select>
+					</div>
+					<div class="form-row">
+						<label class="form-label">对应能力指标</label>
+						<select v-model="editingMapping.indicatorName" class="form-select">
+							<option>教学工作量</option>
+							<option>课堂教学评价</option>
+							<option>教改项目</option>
+							<option>企业实践经历</option>
+						</select>
+					</div>
+					<div class="form-row">
+						<label class="form-label">要求等级</label>
+						<select v-model="editingMapping.level" class="form-select">
+							<option>新手</option>
+							<option>胜任</option>
+							<option>骨干</option>
+							<option>名师</option>
+						</select>
+					</div>
+					<div class="form-row">
+						<label class="form-label">等级标准</label>
+						<textarea
+							class="form-textarea"
+							rows="2"
+							v-model="editingMapping.levelCriteria"
+							placeholder="承担核心课程教学并保持较稳定教学质量"
+						></textarea>
+					</div>
+					<div class="form-row">
+						<label class="form-label">制度补充条件</label>
+						<input
+							type="text"
+							class="form-input"
+							v-model="editingMapping.documentCondition"
+							placeholder="近三年专业课程授课门数 ≥ 2"
+						/>
+					</div>
+				</div>
+
+				<div class="form-section">
+					<h4 class="form-section-title"><span>3</span>对照依据</h4>
+					<div class="form-row">
+						<label class="form-label">可引用档案事实</label>
+						<input
+							type="text"
+							class="form-input"
+							placeholder="教学工作记录、课程表、授课任务记录"
+						/>
+					</div>
+					<div class="form-row">
+						<label class="form-label">映射说明</label>
+						<textarea
+							class="form-textarea"
+							rows="2"
+							placeholder="系统后续将优先引用正式入档的教学工作事实进行对照"
+						></textarea>
+					</div>
+					<div class="form-row radio-row">
+						<label class="form-label">确认状态</label>
+						<label class="radio-option">
+							<input v-model="editingMapping.confirmStatus" type="radio" value="confirmed" />
+							已确认
+						</label>
+						<label class="radio-option">
+							<input v-model="editingMapping.confirmStatus" type="radio" value="pending" />
+							待确认
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<template #footer>
 				<div class="drawer-actions">
 					<Button variant="danger" @click="deleteMapping">删除要求项</Button>
 					<div class="drawer-actions-right">
@@ -500,8 +496,8 @@
 						<Button @click="saveMapping">保存映射</Button>
 					</div>
 				</div>
-			</div>
-		</div>
+			</template>
+		</DetailSheet>
 		</div>
 	</AdminLayout>
 </template>
@@ -827,71 +823,9 @@
 		gap: var(--space-admin-sm);
 	}
 
-	/* 编辑抽屉样式 */
-	.edit-drawer-overlay {
-		position: fixed;
-		inset: 0;
-		z-index: 1000;
-		background: rgba(15, 23, 42, 0.42);
-		backdrop-filter: blur(2px);
-		display: flex;
-		justify-content: flex-end;
-		padding: 0;
-	}
-
-	.edit-drawer {
-		width: min(660px, 100vw);
-		height: 100%;
-		background: white;
+	.drawer-form {
 		display: flex;
 		flex-direction: column;
-		box-shadow: -8px 0 30px rgba(35, 64, 110, 0.18);
-	}
-
-	.drawer-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		min-height: 76px;
-		padding: 0 28px;
-		border-bottom: 1px solid var(--color-admin-border);
-	}
-
-	.drawer-title {
-		margin: 0;
-		font-size: 20px;
-		font-weight: 900;
-		color: var(--color-admin-text-strong);
-	}
-
-	.drawer-close {
-		display: flex;
-		width: 32px;
-		height: 32px;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		border-radius: var(--radius-sm);
-		background: transparent;
-		color: #263b63;
-		cursor: pointer;
-		transition: all 0.16s ease;
-	}
-
-	.drawer-close:hover {
-		background: #eaf2ff;
-		color: var(--color-primary);
-	}
-
-	.drawer-close svg {
-		width: 16px;
-		height: 16px;
-	}
-
-	.drawer-form {
-		flex: 1;
-		padding: 0 28px 24px;
-		overflow-y: auto;
 	}
 
 	.form-section {
@@ -992,11 +926,9 @@
 
 	.drawer-actions {
 		display: flex;
+		width: 100%;
 		justify-content: space-between;
 		gap: var(--space-admin-md);
-		padding: 20px 28px;
-		border-top: 1px solid var(--color-admin-border);
-		background: #fff;
 	}
 
 	.drawer-actions-right {
@@ -1007,11 +939,6 @@
 	@media (max-width: 768px) {
 		.main-workspace {
 			grid-template-columns: 1fr;
-		}
-
-		.edit-drawer {
-			width: 100%;
-			max-width: 100%;
 		}
 
 		.hero-stats {

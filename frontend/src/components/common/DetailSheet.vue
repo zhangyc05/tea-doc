@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 import { Button } from '@/components/ui'
 
-type DetailSheetWidth = 'sm' | 'md' | 'form' | 'source' | 'history' | 'lg' | 'xl'
+type DetailSheetWidth = 'sm' | 'md' | 'form' | 'source' | 'history' | 'lg' | 'complex' | 'xl'
 type DetailSheetMode = 'view' | 'edit' | 'confirm'
 type DetailSheetPlacement = 'full' | 'reader'
 
@@ -40,6 +40,7 @@ const widthClass = computed(() => {
     source: 'w-[540px]',
     history: 'w-[620px]',
     lg: 'w-[640px]',
+    complex: 'w-[660px]',
     xl: 'w-[760px]',
   }
 
