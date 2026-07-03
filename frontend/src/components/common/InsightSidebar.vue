@@ -39,7 +39,7 @@ defineProps<{
 .insight-sidebar__items {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .insight-sidebar__action {

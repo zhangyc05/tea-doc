@@ -878,11 +878,11 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   }
 
   .stats-container {
-    gap: 14px;
+    gap: var(--space-admin-md-lg);
   }
 
   .stat-card {
-    gap: 14px;
+    gap: var(--space-admin-md-lg);
     min-height: 168px;
     padding: 22px 18px;
   }

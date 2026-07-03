@@ -183,7 +183,7 @@ function openAiAssistant() {
           </article>
           <EmptyState
             v-if="filteredReports.length === 0"
-            class="report-empty-state"
+            class="col-span-full"
             title="暂无符合条件的分析报告"
           />
         </div>
@@ -516,10 +516,6 @@ function openAiAssistant() {
   border-color: var(--color-admin-primary);
   background: var(--color-admin-primary);
   color: #fff;
-}
-
-.report-empty-state {
-  grid-column: 1 / -1;
 }
 
 .detail-grid {

@@ -412,7 +412,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
   column-gap: 48px;
-  row-gap: 14px;
+  row-gap: var(--space-admin-md-lg);
 }
 
 .info-item {
@@ -1022,7 +1022,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   .info-grid {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
     column-gap: 32px;
-    row-gap: 18px;
+    row-gap: var(--space-admin-card-gap);
   }
 
   .batch-workspace {

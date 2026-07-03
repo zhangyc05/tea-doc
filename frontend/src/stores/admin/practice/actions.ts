@@ -71,7 +71,7 @@ export function confirmPracticeArchiveInState(state: PracticeState, recordId: st
     updateTime: '06-24 16:30',
     uploader: '实践管理',
     uploadBatch: '企业实践记录归档',
-    originalFile: record.company,
+    originalFile: `${record.company} / ${record.practicePeriod} / ${record.position}`,
     issues: [],
     processingHistory: ['2026-06-24 16:30 企业实践记录确认归档，生成成长档案待确认记录'],
   })

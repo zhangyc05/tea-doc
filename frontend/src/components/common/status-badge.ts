@@ -6,7 +6,7 @@ export type StatusBadgeMeta = {
   tone: StatusTone
 }
 
-export const teacherStatusRegistry: Record<string, StatusBadgeMeta> = {
+export const teacherStatusRegistry = {
   candidate: { label: '待你确认', tone: 'warning' },
   pendingConfirm: { label: '待你确认', tone: 'warning' },
   recognized: { label: '系统识别', tone: 'info' },
@@ -26,9 +26,9 @@ export const teacherStatusRegistry: Record<string, StatusBadgeMeta> = {
   异常待处理: { label: '异常待处理', tone: 'danger' },
   拟退中: { label: '拟退中', tone: 'danger' },
   已入档: { label: '已入档', tone: 'success' },
-}
+} as const satisfies Record<string, StatusBadgeMeta>
 
-export const adminStatusRegistry: Record<string, StatusBadgeMeta> = {
+export const adminStatusRegistry = {
   clue: { label: '线索', tone: 'neutral' },
   candidate: { label: '候选数据', tone: 'warning' },
   pendingConfirm: { label: '待确认', tone: 'warning' },
@@ -106,14 +106,20 @@ export const adminStatusRegistry: Record<string, StatusBadgeMeta> = {
   导出文件已生成: { label: '导出文件已生成', tone: 'success' },
   处理中: { label: '处理中', tone: 'info' },
   失败: { label: '失败', tone: 'danger' },
-}
+} as const satisfies Record<string, StatusBadgeMeta>
+
+export const teacherStatusKeys = Object.keys(teacherStatusRegistry) as Array<keyof typeof teacherStatusRegistry>
+export const adminStatusKeys = Object.keys(adminStatusRegistry) as Array<keyof typeof adminStatusRegistry>
+
+export type TeacherStatus = keyof typeof teacherStatusRegistry
+export type AdminStatus = keyof typeof adminStatusRegistry
 
 export function getStatusBadgeMeta(
   status: string,
   scene: StatusScene = 'admin',
   tone?: StatusTone,
 ): StatusBadgeMeta {
-  const registry = scene === 'teacher' || scene === 'mobile'
+  const registry: Readonly<Record<string, StatusBadgeMeta>> = scene === 'teacher' || scene === 'mobile'
     ? teacherStatusRegistry
     : adminStatusRegistry
   const fallback: StatusBadgeMeta = scene === 'teacher' || scene === 'mobile'

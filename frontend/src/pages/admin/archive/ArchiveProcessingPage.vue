@@ -904,7 +904,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   min-height: clamp(70px, 4.6vw, 82px);
   grid-template-columns: auto 1fr;
   align-items: center;
-  column-gap: 12px;
+  column-gap: var(--space-admin-md);
   border: 1px solid rgba(213, 226, 245, 0.92);
   border-radius: var(--radius-admin-panel);
   background: rgba(255, 255, 255, 0.86);

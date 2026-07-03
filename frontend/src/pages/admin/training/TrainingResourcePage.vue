@@ -655,7 +655,7 @@ function showIncompleteResources() {
 .pagination-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   padding: 16px 16px 20px;
   color: #52617a;
   font-size: 13px;

@@ -77,7 +77,6 @@ describe('EmptyState', () => {
     const pageSources = [
       abilityListBaseOptimizationPageSource,
       abilityListRequirementMappingPageSource,
-      reflectionOverviewPageSource,
       reportCenterPageSource,
       virtualLabRoomPageSource,
     ]
@@ -87,6 +86,14 @@ describe('EmptyState', () => {
       expect(pageSource).not.toContain('class="empty-cell"')
       expect(pageSource).not.toContain('class="empty-panel"')
       expect(pageSource).not.toContain('class="empty-state"')
+      expect(pageSource).not.toContain('class="report-empty-state"')
+      expect(pageSource).not.toContain('class="room-empty-state"')
     }
+  })
+
+  it('uses a table-cell empty state for the reflection overview table', () => {
+    expect(reflectionOverviewPageSource).toContain('EmptyState')
+    expect(reflectionOverviewPageSource).toContain('<EmptyState as="td" variant="cell" :colspan="7"')
+    expect(reflectionOverviewPageSource).not.toContain('<EmptyState v-if="filteredReflections.length === 0" title="未找到符合条件的反思记录" />')
   })
 })

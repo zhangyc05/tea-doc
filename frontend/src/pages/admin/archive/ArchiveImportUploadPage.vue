@@ -263,14 +263,14 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   margin: 14px 0 14px;
 }
 
 .step-group {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .step-item {
@@ -599,7 +599,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
   .instructions-panel ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px 22px;
+    gap: var(--space-admin-md-lg) 22px;
   }
 }
 </style>

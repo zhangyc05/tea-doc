@@ -506,7 +506,7 @@ function viewRelatedRecord(recordId: string) {
 .learning-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   padding-left: 6px;
 }
 

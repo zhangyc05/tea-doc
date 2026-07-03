@@ -108,6 +108,8 @@ F3-32 已完成卡片方向性外边距替换：页面和组件样式中的方�
 
 F3-33 已完成剩余方向性外边距审计：当前剩余方向性 `margin-*` 已无 `8/10/12/16/18/20/24px` 常用 token 档位硬编码；`2/3/4/5/6/7/9/11/13px` 归为图形、图标、文字基线或紧凑列表微调，`22/28/30/34/48/54px` 归为单页版式特例，暂不新增 token；`14px` 出现 19 处但不在现有间距体系内，需结合目标效果图做页面级复核后再决定是否新增 token 或局部保留。
 
+F3-34 已完成 `gap` 系列 14px 收敛：新增 `--space-admin-md-lg: 14px`，页面和组件样式中的非响应式 `gap: 14px`、`row-gap: 14px` 已替换为该 token；同步将此前未覆盖的 `column-gap: 12px`、`row-gap: 18px` 分别纳入 `--space-admin-md` 和 `--space-admin-card-gap`。本批不处理 padding、margin、定位或字体里的 14px。
+
 高频颜色候选：
 
 | 现有值 | 出现次数 | 建议归并 |
@@ -151,6 +153,7 @@ F3-33 已完成剩余方向性外边距审计：当前剩余方向性 `margin-*`
 | `12px` | 65 | F3-15 已替换 `gap: 12px` 为 `--space-admin-md`；padding/margin 和 `column-gap` 分后续批次处理 |
 | `8px` | 63 | F3-13 已替换 `gap: 8px` 为 `--space-admin-xs`；padding/margin 分后续批次处理 |
 | `18px` | 45 | F3-17 已替换显式 `gap: 18px` 为 `--space-admin-card-gap`；响应式 `clamp(...)`、padding/margin 分后续批次处理 |
+| `14px` | 19 | F3-34 已新增 `--space-admin-md-lg` 并替换非响应式 `gap` / `row-gap`；padding/margin/定位仍按页面级复核处理 |
 | `10px` | 44 | F3-14 已替换 `gap: 10px` 为 `--space-admin-sm`；padding/margin 分后续批次处理 |
 | `20px` | 35 | F3-18 已替换显式 `gap: 20px` 为 `--space-admin-xl`；padding/margin 分后续批次处理 |
 | `24px` | 19 | F3-19 已替换显式 `gap: 24px` 为 `--space-admin-2xl`；padding/margin 分后续批次处理 |
@@ -173,7 +176,7 @@ F3-33 已完成剩余方向性外边距审计：当前剩余方向性 `margin-*`
 | 剩余值 | 出现次数 | 处理口径 |
 | --- | ---: | --- |
 | `2px`、`3px`、`4px`、`5px`、`6px`、`7px`、`9px`、`11px`、`13px` | 23 | 低频微调值，主要服务图标、文字基线、紧凑列表和局部对齐；暂不新增 token |
-| `14px` | 19 | 高频但不在现有间距体系内；后续结合目标效果图做页面级复核后，再决定新增 token 还是局部保留 |
+| `14px` | 19 | `gap` 系列已在 F3-34 收敛为 `--space-admin-md-lg`；剩余 padding、margin、定位和字体值继续结合目标效果图做页面级复核 |
 | `22px`、`28px`、`30px`、`34px`、`48px`、`54px` | 12 | 单页版式特例或大段落错位控制；暂不纳入通用 spacing token |
 
 收敛顺序：
@@ -503,7 +506,7 @@ F4-44 收尾迁移：
 ### 状态徽章
 
 - 管理端业务状态优先使用 `frontend/src/components/common/StatusBadge.vue`。
-- 状态文案和 tone 统一维护在 `frontend/src/components/common/status-badge.ts`，公共入口导出 `adminStatusRegistry`、`teacherStatusRegistry` 和 `getStatusBadgeMeta`。
+- 状态文案和 tone 统一维护在 `frontend/src/components/common/status-badge.ts`，公共入口导出 `adminStatusRegistry`、`teacherStatusRegistry`、`adminStatusKeys`、`teacherStatusKeys`、`AdminStatus`、`TeacherStatus` 和 `getStatusBadgeMeta`。
 - 页面不应为业务状态新增局部 `.badge-status.status-*` 样式；确需特殊展示时，先判断是否应扩展 `StatusBadge` 的文案和 tone。
 - 业务状态枚举、文案和状态口径仍归属 `frontend/src/domain/admin/*`；`StatusBadge` 只负责稳定展示，不承载业务流转。
 - 已迁移范围：能力清单优化建议状态、基准模板启用态、执行版主状态、版本记录状态、发布确认状态、要求映射状态、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训资源状态、培训需求状态、培训计划状态、培训申请状态、培训记录材料状态、培训材料上传状态、培训参与状态、企业实践申请状态、企业实践年度跟踪状态、企业实践记录状态、虚拟教研活动记录状态、虚拟教研参与同步状态、报告中心报告状态、报告中心 AI 会话状态。
@@ -512,6 +515,7 @@ F5-01 当前扫描结论：
 
 - `StatusBadge` 当前支持 `success`、`warning`、`danger`、`info`、`neutral`、`purple` 六类 tone；未命中的管理端状态默认落到 `neutral`。
 - `StatusBadge` 通过共享 registry 维护管理端和教师端两套状态文案映射，管理端默认 `scene="admin"`；手机端或教师端状态必须显式使用教师端场景。
+- `adminStatusRegistry` 和 `teacherStatusRegistry` 使用 `as const satisfies Record<string, StatusBadgeMeta>` 定义；新增稳定业务状态时，优先让调用侧使用 `AdminStatus` / `TeacherStatus` union，只有未知后端字符串进入 `getStatusBadgeMeta(status: string)` 的兜底路径。
 - 已补入本轮新增管理端流程状态：`导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案`。
 - `frontend/src/domain/admin/domainTypes.test.ts` 已对能力清单、成长档案、培训、企业实践、虚拟教研、报告中心等页面做源码 guardrail，要求使用 `<StatusBadge>` 且不回退局部 `.badge-status`。
 - `frontend/src/components/common/StatusBadge.test.ts` 已覆盖新增管理端流程状态必须进入共享 registry，并验证组件按 registry 渲染文案和 tone。
@@ -541,7 +545,7 @@ F5-01 当前扫描结论：
 - 管理端表格和面板空状态优先使用 `frontend/src/components/common/EmptyState.vue`。
 - `EmptyState` 只负责空状态展示和可选操作按钮事件，不承载筛选、分页、store 或业务判断。
 - 表格空行使用 `as="td"`、`variant="cell"` 和显式 `colspan`，必须保留原表格列数。
-- 面板空状态使用默认 `as="div"` 和 `variant="panel"`；说明文案应给出下一步方向，不写泛化的“暂无数据”。
+- 面板空状态使用默认 `as="div"` 和 `variant="panel"`；在卡片栅格内需要跨列时使用通用布局类承接，不新增页面私有 `*-empty-state` class；说明文案应给出下一步方向，不写泛化的“暂无数据”。
 - 已迁移范围：培训、企业实践、能力清单、反思概览、报告中心、虚拟教研室共 14 个空状态点。
 
 ### 表格密度
@@ -581,6 +585,7 @@ E14-01 当前扫描结论：
 - 已覆盖第一批：培训资源、培训需求、培训申请。三页均为 4 个 select + 1 个搜索输入 + 重置 / 查询动作，布局接近，业务状态由页面和 `trainingStore` 承载。
 - 已覆盖第二批：培训计划、培训记录、虚拟教研室列表。培训计划和培训记录保留输入即过滤、不新增查询按钮；虚拟教研室保留显式查询动作和视图切换。
 - 已覆盖第三批：企业实践申请、年度实践跟踪、实践记录。三页保留原年度/院系/状态/完成情况/计入天数等筛选字段、搜索输入、重置 / 查询动作和操作反馈，实践跟踪与实践记录页顶部导出动作仍留在列表标题区。
+- 已覆盖第四批：教学反思总览。保留组织范围、学期、触发来源、搜索输入、问题定位提示和原有重置动作，不新增查询按钮，不迁移右侧共性观察。
 - 暂不迁移：档案查阅页。它是搜索区 + 筛选控件 + 视图/卡片结果组合，视觉权重高于普通表格筛选栏。
 - 禁止迁移：档案处理左侧筛选面板、报告中心 tab + 筛选混合工具区、能力清单优化建议来源侧栏。这些不是横向筛选栏，强迁会破坏目标图区域结构。
 
@@ -618,7 +623,7 @@ E14-01 当前扫描结论：
 - 保留现有 `FilterBar`，不在本轮改造中重写它。
 - 已新增 `frontend/src/components/common/CompactFilterBar.vue`，用于培训管理、企业实践和虚拟教研室列表这类紧凑表格筛选栏。
 - 组件测试只验证插槽区域和响应式外壳；页面 guardrail 只验证已迁移页面使用公共组件且保留筛选字段、搜索、重置、查询或必要业务动作入口。
-- 已覆盖培训资源、培训需求、培训申请、培训计划、培训记录、企业实践申请、企业实践跟踪、企业实践记录、虚拟教研室列表筛选区；目标效果图为培训管理资源/需求/申请/计划/记录、企业实践申请/跟踪/记录和虚拟教研室列表对应管理端效果图。
+- 已覆盖培训资源、培训需求、培训申请、培训计划、培训记录、企业实践申请、企业实践跟踪、企业实践记录、虚拟教研室列表、教学反思总览筛选区；目标效果图为培训管理资源/需求/申请/计划/记录、企业实践申请/跟踪/记录、虚拟教研室列表和教学反思总览对应管理端效果图。
 
 ### 详情页布局
 

@@ -270,7 +270,7 @@ function getAvatarTone(index: number): string {
 .filter-card {
   display: grid;
   grid-template-columns: minmax(260px, 1.25fr) repeat(4, minmax(150px, 0.8fr)) 40px;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   align-items: center;
   padding: 18px 20px;
   border-radius: var(--radius-lg);
@@ -411,7 +411,7 @@ function getAvatarTone(index: number): string {
 .teacher-card-main {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   padding-right: 88px;
 }
 

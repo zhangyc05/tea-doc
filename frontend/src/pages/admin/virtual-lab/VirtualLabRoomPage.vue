@@ -225,7 +225,7 @@ function viewDetail(roomId: string) {
               </article>
               <EmptyState
                 v-if="filteredRooms.length === 0"
-                class="room-empty-state"
+                class="col-span-full"
                 title="暂无符合条件的教研室"
               />
             </div>
@@ -722,10 +722,6 @@ function viewDetail(roomId: string) {
   margin-top: 4px;
   color: #8a98ad;
   font-size: 12px;
-}
-
-.room-empty-state {
-  grid-column: 1 / -1;
 }
 
 @media (max-width: 1360px) {

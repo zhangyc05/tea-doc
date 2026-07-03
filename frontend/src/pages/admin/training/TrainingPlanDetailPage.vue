@@ -740,7 +740,7 @@ function handleApplication(teacherId: string) {
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .sidebar .info-row {

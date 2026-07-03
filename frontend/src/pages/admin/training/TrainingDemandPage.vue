@@ -602,7 +602,7 @@ function matchDemand(id: string) {
 .suggestions-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .suggestion-item {

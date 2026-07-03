@@ -16,7 +16,7 @@ function collectStyleFiles(dir: string): string[] {
 }
 
 function collectGapValues(content: string): string[] {
-  return Array.from(content.matchAll(/(?:^|\n)\s*gap:\s*([^;]+);/g), ([, value]) => value)
+  return Array.from(content.matchAll(/(?:^|\n)\s*(?:gap|row-gap|column-gap):\s*([^;]+);/g), ([, value]) => value)
 }
 
 function collectPaddingValues(content: string): string[] {
@@ -258,6 +258,19 @@ describe('admin design tokens', () => {
     })
 
     expect(hardcodedMediumGapFiles).toEqual([])
+  })
+
+  it('keeps medium-large inline gaps behind the medium-large spacing token', () => {
+    expect(tokensCss).toContain('--space-admin-md-lg: 14px;')
+
+    const hardcodedMediumLargeGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)14px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedMediumLargeGapFiles).toEqual([])
   })
 
   it('keeps large inline gaps behind the large spacing token', () => {

@@ -855,6 +855,22 @@ describe('admin visual action guardrails', () => {
     expect(trainingPlanPage).not.toContain('<div class="filter-section">')
   })
 
+  it('uses CompactFilterBar for the reflection overview filter area', () => {
+    expect(reflectionOverviewPage).toContain('CompactFilterBar')
+    expect(reflectionOverviewPage).toContain('<CompactFilterBar>')
+    expect(reflectionOverviewPage).toContain('<template #fields>')
+    expect(reflectionOverviewPage).toContain('<template #search>')
+    expect(reflectionOverviewPage).toContain('<template #actions>')
+    expect(reflectionOverviewPage).toContain('<template #message>')
+    expect(reflectionOverviewPage).toContain('selectedOrganization')
+    expect(reflectionOverviewPage).toContain('selectedSemester')
+    expect(reflectionOverviewPage).toContain('selectedTrigger')
+    expect(reflectionOverviewPage).toContain('placeholder="搜索教师、课程、反思主题"')
+    expect(reflectionOverviewPage).toContain('activeIssueKeyword')
+    expect(reflectionOverviewPage).toContain('resetFilters')
+    expect(reflectionOverviewPage).not.toContain('<div class="filter-section">')
+  })
+
   it('uses CompactFilterBar for the training record filter area', () => {
     expect(trainingRecordPage).toContain('CompactFilterBar')
     expect(trainingRecordPage).toContain('<CompactFilterBar>')

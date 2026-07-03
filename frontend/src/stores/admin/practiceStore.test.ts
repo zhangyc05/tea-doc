@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getArchiveState, resetArchiveState } from './archiveStore'
+import {
+  confirmArchiveRecord,
+  getArchiveSourceRecordsForFact,
+  getArchiveState,
+  getTeacherArchiveFacts,
+  resetArchiveState,
+} from './archiveStore'
 import {
   approvePracticeApplication,
   confirmPracticeArchive,
@@ -67,6 +73,26 @@ describe('practice business state', () => {
       dimension: '企业实践',
       source: '企业实践',
       status: '待确认',
+    })
+  })
+
+  it('links confirmed practice archive facts back to detailed practice source records', () => {
+    confirmPracticeArchive('2')
+    confirmArchiveRecord('practice-2')
+
+    const facts = getTeacherArchiveFacts('王老师')
+    const practiceFact = facts.find(item => item.sourceRecordId === 'practice-2')
+    const sourceRecords = practiceFact ? getArchiveSourceRecordsForFact(practiceFact.id) : []
+
+    expect(practiceFact).toMatchObject({
+      dimension: '企业实践',
+      title: '企业实践记录：青岛工业机器人有限公司',
+      sourceRecordId: 'practice-2',
+    })
+    expect(sourceRecords[0]).toMatchObject({
+      id: 'practice-2',
+      originalFile: '青岛工业机器人有限公司 / 2026-06-10 至 2026-06-22 / 12 天 / 现场调试实践',
+      source: '企业实践',
     })
   })
 })

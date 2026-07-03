@@ -552,7 +552,7 @@ const filteredRecords = computed(() => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   padding: 18px 24px 24px;
   color: var(--color-admin-text-subtle);
   font-size: 14px;
@@ -657,11 +657,11 @@ const filteredRecords = computed(() => {
   }
 
   .stats-container {
-    gap: 14px;
+    gap: var(--space-admin-md-lg);
   }
 
   .stat-card {
-    gap: 14px;
+    gap: var(--space-admin-md-lg);
     min-height: 168px;
     padding: 22px 18px;
   }

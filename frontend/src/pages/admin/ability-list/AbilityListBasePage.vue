@@ -529,7 +529,7 @@ function deriveExecutionVersion() {
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .form-group {
@@ -564,7 +564,7 @@ function deriveExecutionVersion() {
 .version-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   overflow-y: auto;
   padding: var(--space-admin-2xl);
 }

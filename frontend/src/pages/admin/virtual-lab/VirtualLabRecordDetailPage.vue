@@ -285,7 +285,7 @@ function sendToArchive() {
   margin-top: 14px;
   display: grid;
   grid-template-columns: 0.98fr 0.98fr;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   align-items: start;
 }
 
@@ -511,7 +511,7 @@ function sendToArchive() {
 
   .record-info-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: var(--space-admin-md-lg);
   }
 }
 </style>

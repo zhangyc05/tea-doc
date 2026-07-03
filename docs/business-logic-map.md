@@ -348,13 +348,13 @@
 | 年度实践跟踪 | 提醒申请 | 调用 `remindPracticeApplication()` | 页面内闭环，保留完成天数不变 |
 | 年度实践跟踪 | 查看申请/记录 | 查看记录按教师跳转 `/admin/practice/records?recordId=...` | 已闭环到实践记录 |
 | 实践记录 | 提醒补材料 | 调用 `remindPracticeMaterial()` | 页面内闭环 |
-| 实践记录 | 确认归档 | 调用 `confirmPracticeArchive()` | 已同步年度天数，并生成成长档案待确认处理记录 |
+| 实践记录 | 确认归档 | 调用 `confirmPracticeArchive()` | 已同步年度天数，并生成成长档案待确认处理记录；来源记录包含企业、实践周期、天数和岗位 |
 | 实践记录 | 查看档案 | 跳转 `/admin/archive/processing?recordId=practice-...`，档案处理页读取 `recordId` 选中待确认记录 | 已闭环到成长档案处理工作台 |
 
 ### 8.4 后续审计点
 
 1. 当前企业实践记录归档后生成成长档案待确认记录，不直接入档，和培训管理口径保持一致。
-2. “查看档案”当前进入成长档案处理工作台待确认记录，后续确认入档后可再与教师档案事实详情来源打通。
+2. “查看档案”当前进入成长档案处理工作台待确认记录；管理端确认入档后，`teacherArchiveFacts.sourceRecordId` 可通过 `getArchiveSourceRecordsForFact()` 回到企业实践来源记录，来源字段已包含企业、实践周期、天数和岗位。
 3. 企业实践三页查看/定位类动作，以及同意、退回、提醒、确认归档和查看档案等动作均已按 F4 迁入公共 `Button`。
 
 ## 9. 管理端：虚拟教研
@@ -1201,7 +1201,7 @@
 | operationMessage | 已建立 `frontend/src/lib/operationMessage.ts`，并在能力清单优化建议页、要求映射页、档案详情页、能力画像群体页、虚拟教研室列表页、教研室详情页、活动详情页、记录详情页、培训计划页、培训计划详情页、培训记录详情页、分析报告中心统一页面局部消息的 `set` / `clear` / `fromStore` 模式；D-01 复扫管理端页面 `console.log` 命中 0；D-02 复扫 `operationMessage.set/fromStore` 共 46 处，已分类为真实状态动作、页面选择筛选、真实跳转或降级提示 | 后续新增页面按该模式接入；降级提示不能标记为业务完成，真实导出、成员全量列表或复制能力后续按模块补齐 |
 | 视觉态按钮 | E16 已处理管理端已知无动作按钮：只读值改为 `span`，档案查阅搜索接入真实过滤，能力画像“查看更多对象”改为明确降级提示；新增 `frontend/src/pages/admin/adminVisualActions.test.ts` 防止空按钮回归 | 后续新增按钮必须满足三选一：真实状态动作、真实跳转 / 过滤、明确降级提示；纯展示内容不得使用 `button` |
 | 状态枚举和文案映射 | 分析报告状态已从页面本地 `statusMap` 迁入 `domain/admin/report.ts`，由 `getReportStatusClass` 统一返回状态样式类；能力清单执行版状态已在 `domain/admin/ability-list.ts` 统一 `published`、`pending`、`historical` 的显示文案和主徽章样式类；能力清单优化建议状态已统一 `pending`、`adopted`、`deferred`、`rejected`、`applied` 的显示文案和样式类入口；能力指标状态已统一 `enabled`、`disabled`、`draft` 的显示文案和样式类入口；能力清单要求映射状态已统一 `confirmed`、`pending`、`unconfigured` 的显示文案和徽章样式类；成长档案处理状态已在 `domain/admin/archive.ts` 统一 `待确认`、`待检验`、`待补充`、`异常待处理`、`拟退中`、`已入档` 的徽章样式类；成长档案批次整体状态已统一 `recognizing`、`recognized`、`confirmed`、`cancelled` 的显示文案和页面状态类；成长档案批次文件状态已统一 `已接收`、`解析中`、`已解析`、`等待处理`、`已取消` 的文本样式类；培训计划状态已在 `domain/admin/training.ts` 统一 `草稿`、`报名中`、`进行中`、`已完成`、`材料待完善` 的样式类入口；培训申请状态已统一 `待处理`、`已同意`、`未同意`、`已取消` 的样式类入口；培训资源状态已统一 `可用`、`信息待完善`、`已停用` 的样式类入口；培训需求状态已统一 `待匹配`、`已匹配`、`暂不处理` 的样式类入口；培训记录材料总状态已统一 `学习中`、`待总结`、`证书待补`、`记录完整` 的样式类入口；培训材料上传状态已统一 `待补充`、`已上传` 的样式类入口；企业实践申请状态已统一 `待审核`、`已同意`、`退回修改`、`已撤回` 的样式类入口；企业实践年度进展状态已统一 `未启动申请`、`待审核申请`、`实践中`、`已完成` 的样式类入口；企业实践记录状态已统一 `实践中`、`待提交总结`、`待企业评价`、`待归档确认`、`已归档` 的样式类入口；虚拟教研活动记录状态已统一 `已形成记录`、`未形成记录`、`记录异常` 的样式类入口；虚拟教研记录入档状态已统一 `待沉淀`、`已生成待确认档案` 的样式类入口；D-07 复扫管理端页面状态相关命中 20 个文件、46 处，稳定业务状态由 domain helper 或 `<StatusBadge />` 承接，页面剩余局部 `classMap` 等仅用于等级、步骤、分布条等展示型样式 | 后续新增业务状态必须先进入 `domain/admin/*` 或 `StatusBadge`，展示型 UI tone 可留在页面或组件局部 |
-| 状态徽章组件 | `frontend/src/components/common/StatusBadge.vue` 已开始承接管理端业务状态展示；能力清单优化建议、基准模板启用态、执行版主状态、版本记录、发布确认、要求映射、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训管理资源/需求/计划/申请/记录/材料状态、企业实践申请/年度跟踪/实践记录状态、虚拟教研活动记录/参与同步状态、报告中心报告/AI 会话状态已移除页面局部 `badge-status` / `state-pill` / `inline-status` / `file-status` / `status-text` / `status-badge` / `card-status` / `panel-status` 状态样式，改为 `<StatusBadge />`；组件已拆出 `frontend/src/components/common/status-badge.ts` 共享 registry，公共导出 `adminStatusRegistry`、`teacherStatusRegistry` 和 `getStatusBadgeMeta`，并补入 `导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案` 等新增管理端流程状态 | 后续新增业务状态必须先进入 `domain/admin/*` 或 `StatusBadge` 共享 registry；若需要继续收敛，再评估按模块拆分强类型状态集合 |
+| 状态徽章组件 | `frontend/src/components/common/StatusBadge.vue` 已开始承接管理端业务状态展示；能力清单优化建议、基准模板启用态、执行版主状态、版本记录、发布确认、要求映射、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训管理资源/需求/计划/申请/记录/材料状态、企业实践申请/年度跟踪/实践记录状态、虚拟教研活动记录/参与同步状态、报告中心报告/AI 会话状态已移除页面局部 `badge-status` / `state-pill` / `inline-status` / `file-status` / `status-text` / `status-badge` / `card-status` / `panel-status` 状态样式，改为 `<StatusBadge />`；组件已拆出 `frontend/src/components/common/status-badge.ts` 共享 registry，公共导出 `adminStatusRegistry`、`teacherStatusRegistry`、`adminStatusKeys`、`teacherStatusKeys`、`AdminStatus`、`TeacherStatus` 和 `getStatusBadgeMeta`，并补入 `导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案` 等新增管理端流程状态 | 后续新增业务状态必须先进入 `domain/admin/*` 或 `StatusBadge` 共享 registry；稳定调用侧优先使用 `AdminStatus` / `TeacherStatus` union，未知后端字符串由 `getStatusBadgeMeta(status: string)` 兜底 |
 
 ## 19. 下一步执行顺序
 

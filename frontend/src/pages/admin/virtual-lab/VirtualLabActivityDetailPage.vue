@@ -322,7 +322,7 @@ function goBack() {
 .header-content {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .back-button {
@@ -383,7 +383,7 @@ function goBack() {
 .title-with-status {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .title-with-status h1 {
@@ -513,7 +513,7 @@ function goBack() {
 .two-column-layout {
   margin-top: 14px;
   display: grid;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .top-layout {

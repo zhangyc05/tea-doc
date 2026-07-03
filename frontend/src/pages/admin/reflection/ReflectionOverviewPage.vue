@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { EmptyState } from '@/components/common'
+import { CompactFilterBar, EmptyState } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionOverviewMock } from '@/services/mock/reflection'
@@ -150,11 +150,8 @@ function viewRelatedRecords() {
               </div>
 
               <!-- 筛选区 -->
-              <div class="filter-section">
-                <p v-if="activeIssueKeyword" class="issue-filter-message">
-                  当前问题定位：{{ activeIssueKeyword }}
-                </p>
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
                     <select v-model="selectedOrganization" class="filter-select">
@@ -179,6 +176,8 @@ function viewRelatedRecords() {
                       </option>
                     </select>
                   </div>
+                </template>
+                <template #search>
                   <div class="search-row">
                     <input
                       v-model="searchQuery"
@@ -187,9 +186,16 @@ function viewRelatedRecords() {
                       class="search-input"
                     />
                   </div>
+                </template>
+                <template #actions>
                   <Button class="reflection-reset-action" variant="outline" @click="resetFilters">重置</Button>
-                </div>
-              </div>
+                </template>
+                <template #message>
+                  <p v-if="activeIssueKeyword" class="issue-filter-message">
+                    当前问题定位：{{ activeIssueKeyword }}
+                  </p>
+                </template>
+              </CompactFilterBar>
 
               <!-- 数据表格 -->
               <div class="table-container">
@@ -221,9 +227,11 @@ function viewRelatedRecords() {
                         </Button>
                       </td>
                     </tr>
+                    <tr v-if="filteredReflections.length === 0">
+                      <EmptyState as="td" variant="cell" :colspan="7" title="未找到符合条件的反思记录" />
+                    </tr>
                   </tbody>
                 </table>
-                <EmptyState v-if="filteredReflections.length === 0" title="未找到符合条件的反思记录" />
               </div>
             </div>
           </div>
@@ -390,7 +398,7 @@ function viewRelatedRecords() {
 .reflection-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
 }
 
 .main-content {
@@ -417,13 +425,8 @@ function viewRelatedRecords() {
   color: #07183d;
 }
 
-/* 筛选区 */
-.filter-section {
-  padding: var(--space-admin-card-gap);
-}
-
 .issue-filter-message {
-  margin: 0 0 12px;
+  margin: 0;
   padding: 10px 12px;
   border: 1px solid #cfe0ff;
   border-radius: var(--radius-sm);
@@ -431,14 +434,6 @@ function viewRelatedRecords() {
   color: #174ea6;
   font-size: 13px;
   font-weight: 700;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: 220px 250px 150px minmax(220px, 1fr);
-  gap: var(--space-admin-card-gap);
-  align-items: center;
-  margin-bottom: 0;
 }
 
 .filter-item {
@@ -599,7 +594,7 @@ function viewRelatedRecords() {
 
 .issue-item {
   display: flex;
-  gap: 14px;
+  gap: var(--space-admin-md-lg);
   align-items: flex-start;
   padding: 0 0 30px;
   margin-bottom: 30px;
@@ -663,10 +658,6 @@ function viewRelatedRecords() {
   .stats-container,
   .main-section {
     width: min(100% - 32px, 1500px);
-  }
-
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .stat-card {
