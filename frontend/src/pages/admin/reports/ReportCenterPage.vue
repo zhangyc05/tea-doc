@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { EmptyState, StatusBadge } from '@/components/common'
+import { PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -12,8 +14,11 @@ import {
   openReportDetail,
   regenerateReport,
 } from '@/stores/admin/reportStore'
+import { reportCenterPageReview } from './ReportCenterPage.review'
 
+const route = useRoute()
 const reportState = getReportState()
+const reviewPanelOpen = ref(route.query.review === '1')
 const activeTab = ref('全部')
 const selectedTarget = ref('全部')
 const selectedPeriod = ref('全部')
@@ -86,6 +91,10 @@ function applyFilters() {
 function openAiAssistant() {
   openReportAiAssistant(filteredReports.value.map(report => report.id))
   operationMessage.fromStore(reportState)
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 
 </script>
@@ -233,6 +242,21 @@ function openAiAssistant() {
           <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
         </div>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="reportCenterPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -601,6 +625,33 @@ function openAiAssistant() {
   color: #fff;
   box-shadow: 0 12px 24px rgba(18, 104, 246, 0.24);
   font-size: 16px;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1360px) {

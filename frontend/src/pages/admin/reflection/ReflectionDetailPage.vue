@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionDetailMock } from '@/services/mock/reflection'
 import { getReflectionRecord, getReflectionState, sendReflectionToArchive } from '@/stores/admin/reflectionStore'
+import { reflectionDetailPageReview } from './ReflectionDetailPage.review'
 
 const router = useRouter()
 const route = useRoute()
+const reviewPanelOpen = ref(route.query.review === '1')
 
 // 从路由参数获取反思ID
 const reflectionId = route.params.reflectionId as string
@@ -43,6 +46,10 @@ function viewMoreRelated() {
 
 function sendToArchive() {
   sendReflectionToArchive(reflectionId)
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -223,6 +230,21 @@ function sendToArchive() {
           </div>
         </div>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="reflectionDetailPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -578,6 +600,33 @@ function sendToArchive() {
   color: var(--color-admin-text-subtle);
   font-size: 13px;
   line-height: 1.6;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1300px) {

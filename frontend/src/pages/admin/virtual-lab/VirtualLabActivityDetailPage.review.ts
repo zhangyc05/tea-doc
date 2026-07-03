@@ -1,0 +1,37 @@
+export const virtualLabActivityDetailPageReview = {
+  route: '/admin/virtual-lab/activities/:activityId',
+  title: '发展活动 / 虚拟教研活动详情',
+  goal: '查看教研活动的会议信息、参与情况、资料、时间线和记录形成状态，并在需要时形成教研记录。',
+  screenshot: '效果图/管理PC端/4发展活动/4虚拟教研/管理端PC｜虚拟教研｜教研活动详细记录.png',
+  sections: [
+    '面包屑与返回入口',
+    '活动信息卡',
+    '状态汇总卡',
+    '会议与参与情况',
+    '活动资料',
+    '活动时间线',
+    '已形成记录入口',
+  ],
+  dataRules: [
+    '活动详情按 route.params.activityId 读取 virtualLabStore。',
+    '会议参与、时间线等展示数据来自 getVirtualLabActivityDetailMock()。',
+    '活动资料按 activityId 从 virtualLabStore 读取。',
+    '未形成记录时，查看记录必须调用 formVirtualLabRecordFromActivity() 形成记录再跳转。',
+  ],
+  interactions: [
+    '返回调用 router.back()。',
+    '编辑活动和查看会议记录在当前页显示反馈。',
+    '查看全部参与教师展开参与表。',
+    '复制会议号需处理浏览器不支持或复制失败的反馈。',
+    '查看资料更新选中资料并显示反馈。',
+    '查看记录跳转到已形成或新形成的记录详情。',
+  ],
+  formRules: [],
+  checklist: [
+    '活动信息、状态卡、参与表、资料和时间线与效果图基本一致',
+    '按 activityId 展示对应活动',
+    '参与教师展开、资料选中和会议号复制反馈可用',
+    '未形成记录时可形成记录并跳转',
+    '已形成记录时直接跳转对应记录',
+  ],
+}

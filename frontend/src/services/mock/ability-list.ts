@@ -11,12 +11,37 @@ import type {
   RequirementGroup,
 } from '@/domain/admin/ability-list'
 
-const teachingChildren = [
-  { key: 'teaching-design', label: '教学设计与实施' },
-  { key: 'teaching-resource', label: '教学资源开发' },
-  { key: 'teaching-evaluation', label: '教学评价与反馈' },
-  { key: 'teaching-innovation', label: '教学创新与改进' },
-]
+const abilityTreeChildren = {
+  basic: [
+    { key: 'basic-ethics', label: '师德师风' },
+    { key: 'basic-qualification', label: '从业资格' },
+    { key: 'basic-duty', label: '岗位履职' },
+  ],
+  teaching: [
+    { key: 'teaching-implementation', label: '教学实施' },
+    { key: 'teaching-curriculum-ideology', label: '课程思政' },
+    { key: 'teaching-digital-literacy', label: '数字素养' },
+    { key: 'teaching-guidance', label: '教学指导' },
+    { key: 'teaching-skills-competition', label: '技能竞赛' },
+    { key: 'teaching-team-building', label: '团队建设' },
+  ],
+  research: [
+    { key: 'research-teaching-research', label: '教学研究' },
+    { key: 'research-scientific-research', label: '科学研究' },
+    { key: 'research-standards', label: '标准制定' },
+    { key: 'research-platform', label: '平台建设' },
+  ],
+  practice: [
+    { key: 'practice-skills-improvement', label: '技能提升' },
+    { key: 'practice-project-practice', label: '项目实践' },
+    { key: 'practice-skills-honor', label: '技能荣誉' },
+    { key: 'practice-base-building', label: '基地建设' },
+  ],
+  service: [
+    { key: 'service-external-service', label: '对外服务' },
+    { key: 'service-international-service', label: '国际服务' },
+  ],
+}
 
 const suggestionSources: AbilityListOption[] = [
   { key: 'all', label: '全部建议', icon: '●' },
@@ -129,31 +154,35 @@ function createAbilityTree(icons: AbilityListIconMap, includeColors: boolean): A
       label: '基本能力',
       icon: icons.basic,
       ...(includeColors ? { color: 'blue' as const } : {}),
+      children: abilityTreeChildren.basic.map(child => ({ ...child })),
     },
     {
       key: 'teaching',
       label: '教学能力',
       icon: icons.teaching,
       ...(includeColors ? { color: 'blue' as const } : {}),
-      children: teachingChildren.map(child => ({ ...child })),
+      children: abilityTreeChildren.teaching.map(child => ({ ...child })),
     },
     {
       key: 'research',
       label: '教研能力',
       icon: icons.research,
       ...(includeColors ? { color: 'orange' as const } : {}),
+      children: abilityTreeChildren.research.map(child => ({ ...child })),
     },
     {
       key: 'practice',
       label: '实践能力',
       icon: icons.practice,
       ...(includeColors ? { color: 'green' as const } : {}),
+      children: abilityTreeChildren.practice.map(child => ({ ...child })),
     },
     {
       key: 'service',
       label: '服务能力',
       icon: icons.service,
       ...(includeColors ? { color: 'purple' as const } : {}),
+      children: abilityTreeChildren.service.map(child => ({ ...child })),
     },
   ]
 }

@@ -35,7 +35,7 @@ const { abilityTree } = getAbilityListBaseMock({
   service: iconAbilityService,
 })
 
-const selectedAbility = ref('teaching-design')
+const selectedAbility = ref('teaching-implementation')
 const selectedIndicator = ref<AbilityIndicator | null>(null)
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})

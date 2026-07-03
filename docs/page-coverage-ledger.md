@@ -92,31 +92,31 @@ cd teacher-mobile && npm run test:profile-business && npm run test:mobile-admin-
 
 | 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| 教学反思总览 | `frontend/src/pages/admin/reflection/ReflectionOverviewPage.vue` | `/admin/reflection` | 反思记录列表、筛选、共性观察、相关记录过滤 | 已映射；支持接收 `keyword` query 并按共性问题过滤 |
-| 教学反思详情 | `frontend/src/pages/admin/reflection/ReflectionDetailPage.vue` | `/admin/reflection/:reflectionId` | 反思内容、来源数据、相关反思、记录去向 | 已映射；来源数据页面内反馈，相关反思和更多相关记录均已闭环到详情或列表 |
+| 教学反思总览 | `frontend/src/pages/admin/reflection/ReflectionOverviewPage.vue` | `/admin/reflection` | 反思记录列表、筛选、共性观察、相关记录过滤；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；支持接收 `keyword` query 并按共性问题过滤；页面级验收说明已接入 `frontend/src/pages/admin/reflection/ReflectionOverviewPage.review.ts` |
+| 教学反思详情 | `frontend/src/pages/admin/reflection/ReflectionDetailPage.vue` | `/admin/reflection/:reflectionId` | 反思内容、来源数据、相关反思、记录去向；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；来源数据页面内反馈，相关反思和更多相关记录均已闭环到详情或列表；页面级验收说明已接入 `frontend/src/pages/admin/reflection/ReflectionDetailPage.review.ts` |
 
 ### 逐图台账：企业实践
 
 | 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| 年度实践跟踪 | `frontend/src/pages/admin/practice/PracticeTrackingPage.vue` | `/admin/practice/tracking` | 年度完成情况、当前办理情况、教师实践跟踪列表 | 已映射；读取 `practiceStore.trackings`，申请同意和归档会同步跟踪状态 |
-| 申请处理 | `frontend/src/pages/admin/practice/PracticeApplicationPage.vue` | `/admin/practice/applications` | 实践申请列表、筛选、同意、退回 | 已映射；申请同意/退回写入 `practiceStore.applications` 并同步跟踪和记录 |
-| 记录总览 | `frontend/src/pages/admin/practice/PracticeRecordPage.vue` | `/admin/practice/records` | 实践记录列表、材料状态、确认归档 | 已映射；确认归档写入 `practiceStore.records`，并生成成长档案待确认处理记录 |
+| 年度实践跟踪 | `frontend/src/pages/admin/practice/PracticeTrackingPage.vue` | `/admin/practice/tracking` | 年度完成情况、当前办理情况、教师实践跟踪列表；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；读取 `practiceStore.trackings`，申请同意和归档会同步跟踪状态；页面级验收说明已接入 `frontend/src/pages/admin/practice/PracticeTrackingPage.review.ts` |
+| 申请处理 | `frontend/src/pages/admin/practice/PracticeApplicationPage.vue` | `/admin/practice/applications` | 实践申请列表、筛选、同意、退回；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；申请同意/退回写入 `practiceStore.applications` 并同步跟踪和记录；页面级验收说明已接入 `frontend/src/pages/admin/practice/PracticeApplicationPage.review.ts` |
+| 记录总览 | `frontend/src/pages/admin/practice/PracticeRecordPage.vue` | `/admin/practice/records` | 实践记录列表、材料状态、确认归档；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；确认归档写入 `practiceStore.records`，并生成成长档案待确认处理记录；页面级验收说明已接入 `frontend/src/pages/admin/practice/PracticeRecordPage.review.ts` |
 
 ### 逐图台账：虚拟教研
 
 | 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| 虚拟教研室列表 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue` | `/admin/virtual-lab` | 教研室统计、筛选、卡片/表格视图、查看详情 | 已映射；读取 `virtualLabStore.rooms`，新增教研室草稿写入共享状态 |
-| 虚拟教研室详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue` | `/admin/virtual-lab/rooms/:roomId` | 教研室基本信息、成员、近期活动、已形成记录 | 已映射；按 `roomId` 读取成员、活动、记录，邀请教师/移出成员/新建活动均写入 `virtualLabStore` |
-| 教研活动详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabActivityDetailPage.vue` | `/admin/virtual-lab/activities/:activityId` | 活动信息、会议参与、活动资料、已形成记录、时间线 | 已映射；按 `activityId` 读取活动，未形成记录时可生成教研记录并进入记录详情；会议参与和时间线展示数据已迁入 `frontend/src/services/mock/virtual-lab.ts` |
-| 教研记录详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue` | `/admin/virtual-lab/records/:recordId` | 记录正文、参与记录、来源资料、来源活动 | 已映射；按 `recordId` 读取记录，来源活动真实跳转，生成档案待确认会写入 `archiveStore.processingRecords`；记录正文和参与记录展示数据已迁入 `frontend/src/services/mock/virtual-lab.ts` |
+| 虚拟教研室列表 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue` | `/admin/virtual-lab` | 教研室统计、筛选、卡片/表格视图、查看详情；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；读取 `virtualLabStore.rooms`，新增教研室草稿写入共享状态；页面级验收说明已接入 `frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.review.ts` |
+| 虚拟教研室详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue` | `/admin/virtual-lab/rooms/:roomId` | 教研室基本信息、成员、近期活动、已形成记录；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；按 `roomId` 读取成员、活动、记录，邀请教师/移出成员/新建活动均写入 `virtualLabStore`；页面级验收说明已接入 `frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.review.ts` |
+| 教研活动详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabActivityDetailPage.vue` | `/admin/virtual-lab/activities/:activityId` | 活动信息、会议参与、活动资料、已形成记录、时间线；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；按 `activityId` 读取活动，未形成记录时可生成教研记录并进入记录详情；会议参与和时间线展示数据已迁入 `frontend/src/services/mock/virtual-lab.ts`；页面级验收说明已接入 `frontend/src/pages/admin/virtual-lab/VirtualLabActivityDetailPage.review.ts` |
+| 教研记录详情 | `frontend/src/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue` | `/admin/virtual-lab/records/:recordId` | 记录正文、参与记录、来源资料、来源活动；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；按 `recordId` 读取记录，来源活动真实跳转，生成档案待确认会写入 `archiveStore.processingRecords`；记录正文和参与记录展示数据已迁入 `frontend/src/services/mock/virtual-lab.ts`；页面级验收说明已接入 `frontend/src/pages/admin/virtual-lab/VirtualLabRecordDetailPage.review.ts` |
 
 ### 逐图台账：分析报告
 
 | 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| 分析报告中心 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | `/admin/reports` | 报告卡片、筛选、详情面板、AI 分析会话 | 已映射；读取 `reportStore.reports`，对象/周期/状态/搜索筛选均绑定报告数据，查看/查看大屏/查看原因打开同页面板，导出创建 `exportTasks`，继续分析/继续追问/AI 助手创建 `aiThreads` |
+| 分析报告中心 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | `/admin/reports` | 报告卡片、筛选、详情面板、AI 分析会话；追加 `?review=1` 可查看页面说明 / 验收面板 | 已映射；读取 `reportStore.reports`，对象/周期/状态/搜索筛选均绑定报告数据，查看/查看大屏/查看原因打开同页面板，导出创建 `exportTasks`，继续分析/继续追问/AI 助手创建 `aiThreads`；页面级验收说明已接入 `frontend/src/pages/admin/reports/ReportCenterPage.review.ts` |
 
 ### 已处理问题
 

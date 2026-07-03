@@ -536,6 +536,48 @@ describe('admin visual action guardrails', () => {
     })
   })
 
+  it('exposes in-page review criteria for the first P5 development activity pages', () => {
+    const reviewPages = [
+      ['ReflectionOverviewPage.vue', reflectionOverviewPage, 'reflectionOverviewPageReview'],
+      ['ReflectionDetailPage.vue', reflectionDetailPage, 'reflectionDetailPageReview'],
+      ['PracticeTrackingPage.vue', practiceTrackingPage, 'practiceTrackingPageReview'],
+      ['PracticeApplicationPage.vue', practiceApplicationPage, 'practiceApplicationPageReview'],
+      ['PracticeRecordPage.vue', practiceRecordPage, 'practiceRecordPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('exposes in-page review criteria for the final P5 and P6 pages', () => {
+    const reviewPages = [
+      ['VirtualLabRoomPage.vue', virtualLabRoomPage, 'virtualLabRoomPageReview'],
+      ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage, 'virtualLabRoomDetailPageReview'],
+      ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, 'virtualLabActivityDetailPageReview'],
+      ['VirtualLabRecordDetailPage.vue', virtualLabRecordDetailPage, 'virtualLabRecordDetailPageReview'],
+      ['ReportCenterPage.vue', reportCenterPage, 'reportCenterPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
   it('guards ability list base indicator filtering and required edit validation', () => {
     expect(abilityListBasePage).toContain('filteredIndicators')
     expect(abilityListBasePage).toContain('indicator.abilityKey === selectedAbility.value')

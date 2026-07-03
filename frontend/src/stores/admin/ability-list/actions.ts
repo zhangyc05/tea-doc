@@ -26,7 +26,7 @@ export function deriveNextExecutionVersionInState(state: AbilityListState) {
     sourceTitle: '2026 年度教师能力清单执行版',
     templateTitle: '教师能力清单基准模板 V1.0',
     scope: '全校教师',
-    indicatorCount: state.executionIndicators.length + 63,
+    indicatorCount: state.executionIndicators.length,
     lastUpdated: '待发布',
     status: 'pending',
     publishedAt: '待发布',
