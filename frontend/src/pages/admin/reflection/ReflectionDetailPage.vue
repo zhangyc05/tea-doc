@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionDetailMock } from '@/services/mock/reflection'
-import { getReflectionState, sendReflectionToArchive } from '@/stores/admin/reflectionStore'
+import { getReflectionRecord, getReflectionState, sendReflectionToArchive } from '@/stores/admin/reflectionStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -14,9 +14,14 @@ const reflectionId = route.params.reflectionId as string
 const sourceMessage = ref('')
 const reflectionDetailMock = getReflectionDetailMock(reflectionId)
 
-const reflectionDetail = ref(reflectionDetailMock.reflectionDetail)
+const reflectionDetail = ref(getReflectionRecord(reflectionId))
 const reflectionContent = reflectionDetailMock.reflectionContent
-const sourceData = reflectionDetailMock.sourceData
+const sourceData = computed(() => ({
+  trigger: reflectionDetail.value.trigger,
+  relatedData: reflectionDetail.value.sourceMaterials?.length
+    ? reflectionDetail.value.sourceMaterials
+    : reflectionDetailMock.sourceData.relatedData,
+}))
 const relatedReflections = reflectionDetailMock.relatedReflections
 const reflectionState = getReflectionState()
 
@@ -25,7 +30,7 @@ function goBack() {
 }
 
 function viewSourceData() {
-  sourceMessage.value = `已关联：${sourceData.relatedData.join('、')}`
+  sourceMessage.value = `已关联：${sourceData.value.relatedData.join('、')}`
 }
 
 function viewRelatedDetail(id: string) {

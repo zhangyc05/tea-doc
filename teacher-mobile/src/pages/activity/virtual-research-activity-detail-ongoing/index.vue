@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { submitStageMaterial } from '../../../domain/virtualResearch'
 
 const materialRows = [
   { title: '会议纪要', desc: '会议结束后由系统自动生成', status: '待生成', tone: 'blue', icon: 'doc' },
@@ -16,6 +17,15 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goStageMaterial() {
+  submitStageMaterial()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-award-management/index' })
 }
 </script>
 
@@ -117,7 +127,7 @@ function showToast(title: string) {
               <text>主持人：林老师</text>
             </view>
           </view>
-          <MobileActionButton class="join-button" variant="primary" @tap="showToast('进入会议')">
+          <MobileActionButton class="join-button" variant="primary" @tap="showToast('会议入口待接入')">
             进入会议
           </MobileActionButton>
         </view>
@@ -150,8 +160,11 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-action">
-      <MobileActionButton class="return-button" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="return-button" variant="outline" @tap="goResearchRoom">
         返回教研室
+      </MobileActionButton>
+      <MobileActionButton class="return-button" variant="primary" @tap="goStageMaterial">
+        提交阶段材料
       </MobileActionButton>
     </view>
   </view>

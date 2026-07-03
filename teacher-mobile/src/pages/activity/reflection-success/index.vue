@@ -3,6 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { confirmReflection, getConfirmedReflectionArchiveRecord } from '../../../domain/reflection'
+
+confirmReflection()
 
 function goBack() {
   uni.navigateBack()
@@ -10,6 +13,15 @@ function goBack() {
 
 function goActivityHome() {
   uni.reLaunch({ url: '/pages/activity/index' })
+}
+
+function goReflectionDetail() {
+  const archiveRecord = getConfirmedReflectionArchiveRecord()
+  uni.navigateTo({ url: `/pages/archive/record-detail/index?recordId=${archiveRecord.id}` })
+}
+
+function goNewReflection() {
+  uni.navigateTo({ url: '/pages/activity/reflection-start/index' })
 }
 </script>
 
@@ -64,8 +76,8 @@ function goActivityHome() {
           <text class="card-title">你还可以</text>
         </view>
         <view class="action-list">
-          <MobileActionButton class="action-button" variant="outline">查看反思详情</MobileActionButton>
-          <MobileActionButton class="action-button action-button--muted" variant="outline">再做一篇反思</MobileActionButton>
+          <MobileActionButton class="action-button" variant="outline" @tap="goReflectionDetail">查看反思详情</MobileActionButton>
+          <MobileActionButton class="action-button action-button--muted" variant="outline" @tap="goNewReflection">再做一篇反思</MobileActionButton>
           <MobileActionButton class="action-button action-button--primary" variant="primary" @tap="goActivityHome">返回活动首页</MobileActionButton>
         </view>
       </MobileCard>

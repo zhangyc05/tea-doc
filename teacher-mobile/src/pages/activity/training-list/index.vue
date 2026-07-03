@@ -1,46 +1,32 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { getMobileTrainingState, submitTrainingApplication } from '../../../domain/training'
 
-const recommendTrainings = [
-  {
-    title: '数字化教学能力提升',
-    meta: '线上课程  |  可直接学习  |  12 学时',
-    reason: '与你的“数字化教学应用”提升建议相关',
-    action: '直接学习',
-    icon: 'video',
-    primary: true,
-  },
-  {
-    title: '项目化课程设计工作坊',
-    meta: '线下培训  |  需申请  |  3 天',
-    reason: '适合补充课堂案例设计与项目化教学能力',
-    action: '申请培训',
-    icon: 'classroom',
-    primary: false,
-  },
-]
+const trainingState = getMobileTrainingState()
 
-const myTrainings = [
-  {
-    title: '数字化教学能力提升',
-    status: '学习中',
-    desc: '已记录 2 条学习心得',
-    action: '记录学习',
-    icon: 'book',
-    active: true,
-  },
-  {
-    title: '项目化课程设计工作坊',
-    status: '已结束',
-    desc: 'AI 可帮你整理培训总结',
-    action: '整理总结',
-    icon: 'summary',
-    active: false,
-  },
-]
+const recommendTrainings = computed(() => trainingState.resources.map((item, index) => ({
+  id: item.id,
+  title: item.title,
+  meta: item.meta,
+  reason: item.reason,
+  action: item.action,
+  icon: index === 0 ? 'video' : 'classroom',
+  primary: item.action === '直接学习',
+})))
+
+const myTrainings = computed(() => trainingState.records.map((item, index) => ({
+  id: item.id,
+  title: item.title,
+  status: item.status,
+  desc: item.desc,
+  action: item.status === '学习中' ? '记录学习' : '整理总结',
+  icon: index === 0 ? 'book' : 'summary',
+  active: item.status === '学习中',
+})))
 
 function goBack() {
   uni.navigateBack()
@@ -50,12 +36,17 @@ function goDemand() {
   uni.navigateTo({ url: '/pages/activity/training-demand/index' })
 }
 
-function goApplication() {
-  uni.navigateTo({ url: '/pages/activity/training-application/index' })
+function goApplication(planId = 'project-course-workshop') {
+  const application = submitTrainingApplication(planId)
+  uni.navigateTo({ url: `/pages/activity/training-application/index?applicationId=${application.id}` })
 }
 
-function goSummary() {
-  uni.navigateTo({ url: '/pages/activity/training-summary/index' })
+function goSummary(recordId = 'digital-teaching-record') {
+  uni.navigateTo({ url: `/pages/activity/training-summary/index?recordId=${recordId}` })
+}
+
+function startLearning(recordId = 'digital-teaching-record') {
+  uni.navigateTo({ url: `/pages/activity/training-summary/index?recordId=${recordId}` })
 }
 </script>
 
@@ -96,7 +87,7 @@ function goSummary() {
             class="recommend-item__button"
             :variant="item.primary ? 'primary' : 'outline'"
             arrow
-            @tap="item.primary ? undefined : goApplication()"
+            @tap="item.primary ? startLearning() : goApplication(item.id)"
           >
             {{ item.action }}
           </MobileActionButton>
@@ -123,7 +114,7 @@ function goSummary() {
             class="mine-item__button"
             variant="outline"
             arrow
-            @tap="item.action === '整理总结' ? goSummary() : undefined"
+            @tap="goSummary(item.id)"
           >
             {{ item.action }}
           </MobileActionButton>

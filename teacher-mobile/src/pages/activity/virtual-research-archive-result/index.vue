@@ -2,6 +2,9 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { submitVirtualResearchArchive } from '../../../domain/virtualResearch'
+
+submitVirtualResearchArchive()
 
 const contributions = [
   {
@@ -42,6 +45,10 @@ function goArchiveRecord() {
   uni.navigateTo({
     url: '/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting',
   })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
 }
 </script>
 
@@ -153,7 +160,7 @@ function goArchiveRecord() {
           </view>
         </view>
         <view class="destination-grid">
-          <view v-for="item in destinations" :key="item.title" class="destination-item" @tap="item.type === 'archive' ? goArchiveRecord() : showToast(item.title)">
+          <view v-for="item in destinations" :key="item.title" class="destination-item" @tap="item.type === 'archive' ? goArchiveRecord() : goResearchRoom()">
             <view class="destination-icon" :class="`destination-icon--${item.type}`"></view>
             <view class="destination-copy">
               <text class="destination-title">{{ item.title }}</text>
@@ -170,7 +177,7 @@ function goArchiveRecord() {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button outline-button" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="action-button outline-button" variant="outline" @tap="goResearchRoom">
         返回教研室
       </MobileActionButton>
       <MobileActionButton class="action-button primary-button" variant="primary" @tap="goArchiveRecord">

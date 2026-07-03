@@ -31,8 +31,8 @@ if (!archiveDomainSource.includes("status: 'pending-verify'")) {
 }
 
 const summarySource = source(files.trainingSummary)
-if (!summarySource.includes('createTrainingArchiveRecord')) {
-  failures.push('training summary submit does not create or locate training archive record')
+if (!summarySource.includes('submitTrainingArchive')) {
+  failures.push('training summary submit does not update training record and create archive trace')
 }
 
 if (!summarySource.includes('recordId=')) {

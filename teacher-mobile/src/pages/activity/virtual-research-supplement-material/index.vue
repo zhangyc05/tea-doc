@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { saveSupplementDraft, submitSupplementMaterial } from '../../../domain/virtualResearch'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 
 const supplementItems = [
@@ -29,6 +30,16 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function saveDraft() {
+  saveSupplementDraft()
+  uni.showToast({ title: '补充材料草稿已保存', icon: 'none' })
+}
+
+function submitAgain() {
+  submitSupplementMaterial()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-resubmitted/index' })
 }
 </script>
 
@@ -144,10 +155,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button draft-button" variant="outline" @tap="showToast('保存草稿')">
+      <MobileActionButton class="action-button draft-button" variant="outline" @tap="saveDraft">
         保存草稿
       </MobileActionButton>
-      <MobileActionButton class="action-button submit-button" variant="primary" @tap="showToast('重新提交')">
+      <MobileActionButton class="action-button submit-button" variant="primary" @tap="submitAgain">
         重新提交
       </MobileActionButton>
     </view>

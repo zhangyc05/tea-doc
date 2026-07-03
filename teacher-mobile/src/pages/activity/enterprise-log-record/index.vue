@@ -1,8 +1,21 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveEnterpriseLog, saveEnterpriseLogDraft } from '../../../domain/enterprise'
+
+type LogRecordQuery = {
+  recordId?: string
+}
+
+const query = ref<LogRecordQuery>({})
+
+onLoad((options) => {
+  query.value = options as LogRecordQuery
+})
 
 const draftSections = [
   {
@@ -17,6 +30,16 @@ const draftSections = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function saveDraft() {
+  saveEnterpriseLogDraft(query.value.recordId)
+  uni.showToast({ title: '日志草稿已保存', icon: 'none' })
+}
+
+function saveLog() {
+  saveEnterpriseLog(query.value.recordId)
+  uni.navigateTo({ url: '/pages/activity/enterprise-progress-detail/index' })
 }
 </script>
 
@@ -124,8 +147,8 @@ function goBack() {
       </MobileCard>
 
       <view class="bottom-actions">
-        <MobileActionButton class="bottom-button bottom-button--draft" variant="outline">保存草稿</MobileActionButton>
-        <MobileActionButton class="bottom-button" variant="primary">保存日志</MobileActionButton>
+        <MobileActionButton class="bottom-button bottom-button--draft" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="primary" @tap="saveLog">保存日志</MobileActionButton>
       </view>
     </view>
 

@@ -11,6 +11,9 @@ const files = {
   submit: resolve(root, 'src/pages/todo/certificate-submit/index.vue'),
   archiveSuccess: resolve(root, 'src/pages/todo/certificate-archive-success/index.vue'),
   removed: resolve(root, 'src/pages/todo/certificate-removed/index.vue'),
+  dynamics: resolve(root, 'src/pages/todo/dynamics/index.vue'),
+  docsBusiness: resolve(root, '../docs/business-logic-map.md'),
+  docsLedger: resolve(root, '../docs/page-coverage-ledger.md'),
 }
 
 const failures = []
@@ -34,6 +37,34 @@ if (!storeSource.includes('submitTodoCertificateCorrection')) {
 
 if (!storeSource.includes('removeTodoCertificate')) {
   failures.push('todo store does not expose removeTodoCertificate')
+}
+
+if (!storeSource.includes('previewTodoCertificateMaterial')) {
+  failures.push('todo store does not expose previewTodoCertificateMaterial')
+}
+
+if (!storeSource.includes('replaceTodoCertificateMaterial')) {
+  failures.push('todo store does not expose replaceTodoCertificateMaterial')
+}
+
+if (!storeSource.includes('todoDynamics')) {
+  failures.push('todo store does not keep dynamic events in shared state')
+}
+
+if (!storeSource.includes('submissionRecords')) {
+  failures.push('todo store does not keep traceable submission records')
+}
+
+if (!storeSource.includes('removeReason')) {
+  failures.push('todo store does not keep certificate removal reason')
+}
+
+if (!storeSource.includes('archiveStore.processingRecords')) {
+  failures.push('todo store does not align todo records with archiveStore.processingRecords')
+}
+
+if (!storeSource.includes('getTodoActionUrl')) {
+  failures.push('todo store does not expose action routes for non-certificate todos')
 }
 
 if (!storeSource.includes("'pending-verify'")) {
@@ -73,16 +104,62 @@ if (!source(files.detail).includes('removeTodoCertificate(')) {
   failures.push('certificate detail removal does not update shared todo state')
 }
 
+if (!source(files.detail).includes('previewTodoCertificateMaterial(')) {
+  failures.push('certificate detail material preview does not use shared material state')
+}
+
 if (!source(files.edit).includes('submitTodoCertificateCorrection(')) {
   failures.push('certificate edit submit does not update shared todo state')
+}
+
+if (!source(files.edit).includes('replaceTodoCertificateMaterial(')) {
+  failures.push('certificate edit material replacement does not update shared material state')
+}
+
+if (!source(files.edit).includes('updateTodoCertificateField(')) {
+  failures.push('certificate edit fields do not write shared form values')
+}
+
+if (!source(files.submit).includes('submissionRecords')) {
+  failures.push('certificate submit result does not show traceable submission records')
+}
+
+if (!source(files.removed).includes('removeReason')) {
+  failures.push('certificate removed result does not show removal reason')
 }
 
 if (!source(files.todoIndex).includes('visibleTodoItems')) {
   failures.push('todo index does not derive visible todos from shared state')
 }
 
+if (!source(files.todoIndex).includes('todoDynamics')) {
+  failures.push('todo index does not derive recent dynamics from shared state')
+}
+
 if (!source(files.todoAll).includes('visibleTodos')) {
   failures.push('all todo page does not derive visible todos from shared state')
+}
+
+if (!source(files.todoAll).includes('getTodoActionUrl')) {
+  failures.push('all todo page does not route non-certificate todos through shared action map')
+}
+
+if (!source(files.dynamics).includes('todoDynamics')) {
+  failures.push('dynamics page does not derive events from shared state')
+}
+
+const businessDoc = source(files.docsBusiness)
+if (!businessDoc.includes('手机端待办闭环已补第一版')) {
+  failures.push('business map does not mark mobile todo closure implementation status')
+}
+
+if (!businessDoc.includes('archiveStore.processingRecords')) {
+  failures.push('business map does not document todo alignment with archiveStore.processingRecords')
+}
+
+const ledgerDoc = source(files.docsLedger)
+if (!ledgerDoc.includes('手机端待办闭环已补第一版')) {
+  failures.push('coverage ledger does not mark mobile todo closure implementation status')
 }
 
 if (failures.length > 0) {

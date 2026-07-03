@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import {
+  filteredResearchActivities,
+  getMobileVirtualResearchState,
+  setVirtualResearchFilter,
+  type VirtualResearchActivity,
+  type VirtualResearchFilter,
+} from '../../../domain/virtualResearch'
 
 const summaryStats = [
   { value: '2', label: '待确认贡献', tone: 'orange' },
@@ -10,56 +18,16 @@ const summaryStats = [
   { value: '2', label: '已归档', tone: 'green' },
 ]
 
-const filters = ['全部 (4)', '待确认 (2)', '进行中 (1)', '需补充 (1)', '已归档 (2)']
-
-const activities = [
-  {
-    status: '待确认',
-    tone: 'orange',
-    title: '智能制造课程资源共建研讨',
-    time: '2026-05-22　14:00-16:30',
-    team: '教研团队：智能制造专业群',
-    detail: 'AI 已识别你的 1 项贡献',
-    chip: '设备调试案例整理',
-    tip: '请确认系统识别的贡献是否准确',
-    action: '确认贡献',
-    icon: 'group',
-  },
-  {
-    status: '进行中',
-    tone: 'blue',
-    title: '《智能制造基础》课程改革小组',
-    time: '2026-05-30　10:00-12:00',
-    team: '教研团队：机电工程学院课程小组',
-    detail: '阶段任务：案例素材整理中',
-    chip: '进行中',
-    next: '下次会议：2026-06-03（周二）14:00',
-    action: '查看详情',
-    icon: 'chart',
-  },
-  {
-    status: '已归档',
-    tone: 'green',
-    title: '数字化教学资源建设研讨',
-    time: '2026-04-28　09:00-11:30',
-    team: '教研团队：智慧教学研究小组',
-    detail: '会议纪要已归档　|　个人贡献已确认',
-    action: '查看记录',
-    icon: 'archive',
-  },
-  {
-    status: '需补充',
-    tone: 'amber',
-    title: '产教融合案例开发讨论',
-    time: '2026-05-18　15:00-17:00',
-    team: '教研团队：工业互联网课程建设组',
-    detail: '缺少阶段材料：案例附件',
-    chip: '需补充',
-    tip: '补充后可提交入档',
-    action: '补充材料',
-    icon: 'upload',
-  },
+const filters: Array<{ label: string; value: VirtualResearchFilter }> = [
+  { label: '全部 (4)', value: '全部' },
+  { label: '待确认 (2)', value: '待确认' },
+  { label: '进行中 (1)', value: '进行中' },
+  { label: '需补充 (1)', value: '需补充' },
+  { label: '已归档 (2)', value: '已归档' },
 ]
+
+const virtualResearchState = getMobileVirtualResearchState()
+const activities = computed(() => filteredResearchActivities().map(toActivityView))
 
 function goBack() {
   uni.navigateBack()
@@ -67,6 +35,69 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function selectFilter(filter: VirtualResearchFilter) {
+  setVirtualResearchFilter(filter)
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
+}
+
+function goSupplementMaterial() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-supplement-material/index' })
+}
+
+function goActivityDetail(activityId = 'virtual-research-course-reform') {
+  uni.navigateTo({ url: `/pages/activity/virtual-research-activity-detail-ongoing/index?activityId=${activityId}` })
+}
+
+function handleActivityAction(item: ReturnType<typeof toActivityView>) {
+  if (item.status === '待确认') {
+    goContributionConfirm()
+    return
+  }
+  if (item.status === '需补充') {
+    goSupplementMaterial()
+    return
+  }
+  if (item.status === '进行中') {
+    goActivityDetail(item.id)
+    return
+  }
+  uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=virtual-research-course-resource-coconstruction' })
+}
+
+function toActivityView(activity: VirtualResearchActivity) {
+  return {
+    id: activity.id,
+    status: activity.status,
+    tone: getTone(activity.status),
+    title: activity.title,
+    time: '2026-05-22　14:00-16:30',
+    team: '教研团队：智能制造专业群',
+    detail: activity.detail,
+    chip: activity.status === '待确认' ? '设备调试案例整理' : activity.status,
+    tip: activity.status === '待确认' ? '请确认系统识别的贡献是否准确' : activity.status === '需补充' ? '补充后可提交入档' : '',
+    next: activity.status === '进行中' ? '下次会议：2026-06-03（周二）14:00' : '',
+    action: getAction(activity.status),
+    icon: activity.status === '已归档' ? 'archive' : activity.status === '需补充' ? 'upload' : activity.status === '进行中' ? 'chart' : 'group',
+  }
+}
+
+function getAction(status: VirtualResearchActivity['status']): string {
+  if (status === '待确认') return '确认贡献'
+  if (status === '需补充') return '补充材料'
+  if (status === '已归档') return '查看记录'
+  return '查看详情'
+}
+
+function getTone(status: VirtualResearchActivity['status']): string {
+  if (status === '待确认') return 'orange'
+  if (status === '需补充') return 'amber'
+  if (status === '已归档') return 'green'
+  return 'blue'
 }
 </script>
 
@@ -110,7 +141,7 @@ function showToast(title: string) {
           <text class="todo-title">当前需要处理</text>
         </view>
         <text class="todo-desc">系统已根据会议纪要识别出你的 2 项贡献，请确认是否准确。</text>
-        <MobileActionButton class="todo-action" variant="primary" arrow @tap="showToast('去确认')">
+        <MobileActionButton class="todo-action" variant="primary" arrow @tap="goContributionConfirm">
           去确认
         </MobileActionButton>
       </MobileCard>
@@ -118,17 +149,17 @@ function showToast(title: string) {
       <view class="filter-tabs">
         <button
           v-for="(item, index) in filters"
-          :key="item"
+          :key="item.value"
           class="filter-tab"
-          :class="{ 'filter-tab--active': index === 0 }"
-          @tap="showToast(item)"
+          :class="{ 'filter-tab--active': item.value === virtualResearchState.selectedFilter }"
+          @tap="selectFilter(item.value)"
         >
-          {{ item }}
+          {{ item.label }}
         </button>
       </view>
 
       <view class="card-list">
-        <MobileCard v-for="item in activities" :key="item.title" class="activity-card">
+        <MobileCard v-for="item in activities" :key="item.id" class="activity-card">
           <view class="status-ribbon" :class="`status-ribbon--${item.tone}`">{{ item.status }}</view>
           <view class="activity-icon" :class="[`activity-icon--${item.icon}`, `activity-icon--${item.tone}`]"></view>
           <view class="activity-body">
@@ -160,7 +191,7 @@ function showToast(title: string) {
               <view class="tip-icon"></view>
               <text>{{ item.tip }}</text>
             </view>
-            <MobileActionButton class="card-action" variant="outline" @tap="showToast(item.action)">
+            <MobileActionButton class="card-action" variant="outline" @tap="handleActivityAction(item)">
               {{ item.action }}
             </MobileActionButton>
           </view>

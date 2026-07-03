@@ -1,8 +1,23 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { findTrainingDemandById, submitTrainingDemand } from '../../../domain/training'
+
+type TrainingDemandResultQuery = {
+  demandId?: string
+}
+
+const query = ref<TrainingDemandResultQuery>({})
+
+onLoad((options) => {
+  query.value = options as TrainingDemandResultQuery
+})
+
+const demand = computed(() => findTrainingDemandById(query.value.demandId) || submitTrainingDemand('found-training'))
 
 const submitRows = [
   ['需求类型：', '我已找到想参加的培训'],
@@ -42,7 +57,7 @@ function goActivityHome() {
         <view class="success-card__copy">
           <text class="success-card__title">培训需求已提交</text>
           <text class="success-card__desc">你想参加的培训已提交给业务部门确认</text>
-          <text class="status-pill">等待确认</text>
+          <text class="status-pill">{{ demand.status }}</text>
         </view>
       </MobileCard>
 
@@ -77,7 +92,7 @@ function goActivityHome() {
             <view class="timeline-step__dot">2</view>
             <view class="timeline-step__body">
               <text class="timeline-step__title">部门确认中</text>
-              <text class="timeline-step__desc">业务部门将尽快确认你的需求</text>
+              <text class="timeline-step__desc">{{ demand.nextStep }} 当前状态：待匹配</text>
             </view>
           </view>
           <view class="timeline-step">

@@ -1,112 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-
-type Tone = 'green' | 'blue' | 'orange' | 'purple'
+import { getTodoState, type MobileTodoDynamic } from '../../../stores/todoStore'
 
 const filters = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
 const timeOptions = ['全部', '今天', '昨天', '近 7 天', '近 30 天']
 const typeOptions = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
 const categoryOptions = ['全部', '培训与研修', '教学实践', '教学改革', '企业实践', '教学与研究']
-
-const groups: Array<{
-  label: string
-  count: string
-  items: Array<{
-    title: string
-    desc: string
-    category: string
-    time: string
-    tone: Tone
-    icon: 'check' | 'file' | 'book' | 'star' | 'building' | 'edit'
-  }>
-}> = [
-  {
-    label: '今天',
-    count: '3 条',
-    items: [
-      {
-        title: '已确认一条培训证书',
-        desc: '《数字化教学能力提升》证书已完成本人确认',
-        category: '培训与研修',
-        time: '09:21',
-        tone: 'green',
-        icon: 'check',
-      },
-      {
-        title: '培训学时已记录',
-        desc: '《数字化教学能力提升》已记录 16 学时',
-        category: '培训与研修',
-        time: '10:35',
-        tone: 'blue',
-        icon: 'file',
-      },
-      {
-        title: '已保存一篇教学反思',
-        desc: '《智能制造基础》第 5 次课后反思已保存草稿',
-        category: '教学实践',
-        time: '11:48',
-        tone: 'orange',
-        icon: 'book',
-      },
-    ],
-  },
-  {
-    label: '昨天',
-    count: '2 条',
-    items: [
-      {
-        title: '已确认一条精品课程建设成果',
-        desc: '《智能制造课程建设成果》已完成本人确认',
-        category: '教学改革',
-        time: '16:45',
-        tone: 'purple',
-        icon: 'star',
-      },
-      {
-        title: '企业实践记录已更新',
-        desc: '已更新企业实践记录：XX 科技有限公司',
-        category: '社会服务',
-        time: '14:22',
-        tone: 'green',
-        icon: 'building',
-      },
-    ],
-  },
-  {
-    label: '更早',
-    count: '3 条',
-    items: [
-      {
-        title: '材料已补充完成',
-        desc: '已补充“企业实践证明材料”相关附件',
-        category: '成果与贡献',
-        time: '03-18 18:30',
-        tone: 'blue',
-        icon: 'file',
-      },
-      {
-        title: '教学反思已更新',
-        desc: '《智能制造基础》第 4 次课后反思已更新',
-        category: '教学实践',
-        time: '03-17 21:10',
-        tone: 'orange',
-        icon: 'edit',
-      },
-      {
-        title: '一条记录已确认',
-        desc: '《资深教学评论文记录》已完成本人确认',
-        category: '教学与研究',
-        time: '03-16 09:15',
-        tone: 'green',
-        icon: 'check',
-      },
-    ],
-  },
-]
+const todoState = getTodoState()
+const todoDynamics = computed(() => todoState.todoDynamics)
+const groups = computed(() => {
+  const groupLabels: Array<MobileTodoDynamic['group']> = ['今天', '昨天', '更早']
+  return groupLabels
+    .map(label => {
+      const items = todoDynamics.value.filter(item => item.group === label)
+      return {
+        label,
+        count: `${items.length} 条`,
+        items,
+      }
+    })
+    .filter(group => group.items.length > 0)
+})
 
 function goBack() {
   uni.navigateBack()

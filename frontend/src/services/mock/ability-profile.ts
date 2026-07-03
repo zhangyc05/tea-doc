@@ -7,6 +7,8 @@ import type {
   AbilityProfileTeacherDetailMock,
   AbilityProfileTeacherListMock,
 } from '@/domain/admin/ability-profile'
+import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import type { TeacherArchiveFact } from '@/domain/admin/archive'
 
 const schoolRadarData: AbilityProfileScore[] = [
   { label: '教学能力', value: 72 },
@@ -200,6 +202,58 @@ export function getAbilityProfileTeacherDetailMock(teacherId: string): AbilityPr
   }
 }
 
+export function calculateTeacherAbilityProfile(
+  teacherName: string,
+  archiveFacts: TeacherArchiveFact[],
+  executionIndicators: AbilityIndicator[],
+): AbilityProfileTeacherDetailMock {
+  const baseProfile = getAbilityProfileTeacherDetailMock('lin')
+  const teacherFacts = archiveFacts.filter(fact => fact.teacher === teacherName)
+  const dimensions = ['教学能力', '教研能力', '实践能力', '服务能力']
+  const abilityDimensions = dimensions.map((dimension) => {
+    const relatedFacts = teacherFacts.filter(fact => mapArchiveDimensionToAbility(fact.dimension) === dimension)
+    const relatedIndicators = executionIndicators.filter(indicator =>
+      mapIndicatorToAbility(indicator.name, indicator.basisLabel) === dimension,
+    )
+    const evidenceScore = Math.min(95, 58 + relatedFacts.length * 12 + relatedIndicators.length * 4)
+    return {
+      dimension,
+      index: evidenceScore,
+      composition: relatedIndicators.length > 0
+        ? relatedIndicators.map(indicator => indicator.name).join('、')
+        : `${dimension}执行版指标待补充`,
+    }
+  })
+  const radarData = abilityDimensions.map(item => ({ label: item.dimension, value: item.index }))
+  const averageScore = Math.round(radarData.reduce((sum, item) => sum + item.value, 0) / radarData.length)
+  const evidenceTitles = teacherFacts.map(fact => fact.title)
+
+  return {
+    ...baseProfile,
+    teacherInfo: {
+      ...baseProfile.teacherInfo,
+      name: teacherName,
+      dataBasis: '正式档案事实 + 执行版能力清单',
+      updateTime: teacherFacts[0]?.archiveTime || baseProfile.teacherInfo.updateTime,
+    },
+    developmentIndex: {
+      ...baseProfile.developmentIndex,
+      score: averageScore,
+      typeBasis: evidenceTitles.length > 0
+        ? `依据 ${teacherFacts.length} 条正式档案事实和 ${executionIndicators.length} 个执行版指标计算`
+        : '暂无正式档案事实，沿用执行版指标口径观察',
+    },
+    radarData,
+    abilityDimensions,
+    supportDirections: supportDirections.map((item, index) => ({
+      ...item,
+      focus: evidenceTitles[index]
+        ? `${item.focus}；已引用证据：${evidenceTitles[index]}`
+        : `${item.focus}；当前维度缺少正式档案事实支撑`,
+    })),
+  }
+}
+
 function cloneScores(scores: AbilityProfileScore[]) {
   return scores.map(item => ({ ...item }))
 }
@@ -209,4 +263,20 @@ function cloneDimensions(dimensions: AbilityProfileDimension[]) {
     ...item,
     distribution: item.distribution?.map(distribution => ({ ...distribution })),
   }))
+}
+
+function mapArchiveDimensionToAbility(dimension: string): string {
+  if (dimension.includes('教学')) return '教学能力'
+  if (dimension.includes('教研') || dimension.includes('科研')) return '教研能力'
+  if (dimension.includes('企业') || dimension.includes('实践')) return '实践能力'
+  if (dimension.includes('服务')) return '服务能力'
+  return '教学能力'
+}
+
+function mapIndicatorToAbility(name: string, basisLabel: string): string {
+  const text = `${name}${basisLabel}`
+  if (text.includes('实践') || text.includes('企业')) return '实践能力'
+  if (text.includes('教研') || text.includes('科研') || text.includes('课题')) return '教研能力'
+  if (text.includes('服务')) return '服务能力'
+  return '教学能力'
 }

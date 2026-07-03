@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { approveEnterprisePlan } from '../../../domain/enterprise'
 
 const planRows = [
   { label: '实践单位：', value: '山东智联装备有限公司' },
@@ -21,6 +22,16 @@ const confirmedRows = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function goEnterpriseList() {
+  approveEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
+}
+
+function goLogRecord() {
+  approveEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-log-record/index?recordId=enterprise-new-plan' })
 }
 </script>
 
@@ -79,14 +90,14 @@ function goBack() {
             <text class="section-title">下一步</text>
           </view>
           <text class="next-desc">实践过程中可随时记录日志，后续系统会根据日志和附件整理实践总结草稿。</text>
-          <MobileActionButton class="next-button" variant="outline">开始记录日志</MobileActionButton>
+          <MobileActionButton class="next-button" variant="outline" @tap="goLogRecord">开始记录日志</MobileActionButton>
         </view>
         <view class="next-art"></view>
       </MobileCard>
 
       <view class="bottom-actions">
-        <MobileActionButton class="bottom-button" variant="outline">返回实践列表</MobileActionButton>
-        <MobileActionButton class="bottom-button" variant="primary">开始记录日志</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="outline" @tap="goEnterpriseList">返回实践列表</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="primary" @tap="goLogRecord">开始记录日志</MobileActionButton>
       </view>
     </view>
 

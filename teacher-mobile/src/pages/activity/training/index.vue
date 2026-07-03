@@ -1,46 +1,32 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { getMobileTrainingState } from '../../../domain/training'
 
-const recommendList = [
-  {
-    title: '数字化教学能力提升',
-    meta: '线上课程  |  第三方学习资源  |  12 学时',
-    reason: '与“数字化教学应用”提升方向相关',
-    tone: 'green',
-    icon: 'screen',
-    action: '打开资源',
-  },
-  {
-    title: '职业院校教师数字化教学研修班',
-    meta: '线下培训  |  南京  |  2026-06-18 至 06-20',
-    reason: '适合补充数字化教学应用相关学习记录',
-    tone: 'blue',
-    icon: 'school',
-    action: '查看详情',
-  },
-]
+const trainingState = getMobileTrainingState()
 
-const myTrainings = [
-  {
-    title: '数字化教学能力提升',
-    status: '学习中',
-    desc: '已记录 2 条心得',
-    icon: 'book',
-    action: '记录心得',
-    tone: 'green',
-  },
-  {
-    title: '智能课堂互动工作坊',
-    status: '待确认总结和结业材料',
-    desc: 'AI 已生成培训总结草稿',
-    icon: 'note',
-    action: '去总结',
-    tone: 'purple',
-  },
-]
+const recommendList = computed(() => trainingState.resources.map((item, index) => ({
+  title: item.title,
+  meta: item.meta,
+  reason: item.reason,
+  tone: index === 0 ? 'green' : 'blue',
+  icon: index === 0 ? 'screen' : 'school',
+  action: item.action === '直接学习' ? '打开资源' : '查看详情',
+  id: item.id,
+})))
+
+const myTrainings = computed(() => trainingState.records.map((item, index) => ({
+  title: item.title,
+  status: item.status,
+  desc: item.desc,
+  icon: index === 0 ? 'book' : 'note',
+  action: item.status === '归档确认中' ? '查看进度' : '记录心得',
+  tone: item.status === '学习中' ? 'green' : 'purple',
+  id: item.id,
+})))
 
 function goBack() {
   uni.navigateBack()
@@ -52,6 +38,14 @@ function goDemand() {
 
 function goTrainingList() {
   uni.navigateTo({ url: '/pages/activity/training-list/index' })
+}
+
+function goSummary(recordId = 'digital-teaching-record') {
+  uni.navigateTo({ url: `/pages/activity/training-summary/index?recordId=${recordId}` })
+}
+
+function openLearningResource(recordId = 'digital-teaching-record') {
+  uni.navigateTo({ url: `/pages/activity/training-summary/index?recordId=${recordId}` })
 }
 </script>
 
@@ -93,8 +87,8 @@ function goTrainingList() {
         </view>
 
         <view class="task-actions">
-          <MobileActionButton class="task-actions__primary" variant="primary">记录心得</MobileActionButton>
-          <MobileActionButton class="task-actions__outline" variant="outline">打开资源</MobileActionButton>
+          <MobileActionButton class="task-actions__primary" variant="primary" @tap="goSummary()">记录心得</MobileActionButton>
+          <MobileActionButton class="task-actions__outline" variant="outline" @tap="openLearningResource()">打开资源</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -116,8 +110,8 @@ function goTrainingList() {
             <text class="recommend-row__meta">{{ item.meta }}</text>
             <text class="recommend-row__reason" :class="`recommend-row__reason--${item.tone}`">{{ item.reason }}</text>
             <view class="recommend-row__actions">
-              <MobileActionButton class="recommend-row__button" variant="outline">{{ item.action }}</MobileActionButton>
-              <MobileActionButton v-if="item.action === '打开资源'" class="recommend-row__button recommend-row__button--muted" variant="outline">记录心得</MobileActionButton>
+              <MobileActionButton class="recommend-row__button" variant="outline" @tap="item.action === '打开资源' ? openLearningResource() : goTrainingList()">{{ item.action }}</MobileActionButton>
+              <MobileActionButton v-if="item.action === '打开资源'" class="recommend-row__button recommend-row__button--muted" variant="outline" @tap="goSummary()">记录心得</MobileActionButton>
             </view>
           </view>
         </view>
@@ -129,7 +123,7 @@ function goTrainingList() {
             <view class="section-head__icon section-head__icon--user"></view>
             <text class="section-title">我的培训</text>
           </view>
-          <MobileActionButton class="section-link" variant="link" arrow>查看全部</MobileActionButton>
+          <MobileActionButton class="section-link" variant="link" arrow @tap="goTrainingList">查看全部</MobileActionButton>
         </view>
 
         <view v-for="item in myTrainings" :key="item.title" class="mine-row">
@@ -144,7 +138,7 @@ function goTrainingList() {
               <text>{{ item.desc }}</text>
             </view>
           </view>
-          <MobileActionButton class="mine-row__button" variant="outline">{{ item.action }}</MobileActionButton>
+          <MobileActionButton class="mine-row__button" variant="outline" @tap="goSummary(item.id)">{{ item.action }}</MobileActionButton>
           <view class="row-arrow"></view>
         </view>
       </MobileCard>

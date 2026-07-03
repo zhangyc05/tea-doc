@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { submitEnterprisePlan } from '../../../domain/enterprise'
 
 const submitRows = [
   { label: '档案类型：', value: '企业实践 ｜ 行业实践' },
@@ -20,6 +21,11 @@ const processSteps = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function submitPlan() {
+  submitEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-import-export/index' })
 }
 </script>
 
@@ -90,8 +96,8 @@ function goBack() {
       </view>
 
       <view class="bottom-actions">
-        <MobileActionButton class="bottom-button" variant="outline">返回修改</MobileActionButton>
-        <MobileActionButton class="bottom-button" variant="primary">提交核验</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="outline" @tap="goBack">返回修改</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="primary" @tap="submitPlan">提交核验</MobileActionButton>
       </view>
     </view>
 

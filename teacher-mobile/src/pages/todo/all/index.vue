@@ -5,7 +5,7 @@ import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
-import { getVisibleTodoItems, type MobileTodoItem } from '../../../stores/todoStore'
+import { getTodoActionUrl, getVisibleTodoItems, type MobileTodoItem } from '../../../stores/todoStore'
 
 const visibleTodos = computed(() => getVisibleTodoItems())
 const filters = computed(() => {
@@ -26,8 +26,9 @@ function goBack() {
 }
 
 function showTodoAction(item: MobileTodoItem) {
-  if (item.id === 'certificate-digital-literacy') {
-    uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
+  const actionUrl = getTodoActionUrl(item.id)
+  if (actionUrl) {
+    uni.navigateTo({ url: actionUrl })
     return
   }
 

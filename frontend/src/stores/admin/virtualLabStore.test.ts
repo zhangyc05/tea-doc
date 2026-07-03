@@ -4,10 +4,15 @@ import {
   createVirtualLabActivity,
   createVirtualLabRoom,
   formVirtualLabRecordFromActivity,
+  archiveVirtualLabRoom,
   getVirtualLabState,
   inviteVirtualLabMember,
+  markVirtualLabMaterialSyncFailed,
+  publishVirtualLabRoom,
+  resyncVirtualLabMaterial,
   resetVirtualLabState,
   sendVirtualLabRecordToArchive,
+  stopVirtualLabRoom,
 } from './virtualLabStore'
 
 describe('virtual lab business state', () => {
@@ -23,11 +28,26 @@ describe('virtual lab business state', () => {
 
     expect(room).toMatchObject({
       name: '新增虚拟教研室待完善',
+      status: '草稿',
       leader: '待指定',
       members: 0,
       inProgressActivities: 0,
       recordsCount: 0,
     })
+  })
+
+  it('moves virtual lab rooms through draft, running, stopped and archived statuses', () => {
+    const draft = createVirtualLabRoom()
+
+    publishVirtualLabRoom(draft.id)
+    expect(getVirtualLabState().rooms.find(item => item.id === draft.id)?.status).toBe('运行中')
+
+    stopVirtualLabRoom(draft.id)
+    expect(getVirtualLabState().rooms.find(item => item.id === draft.id)?.status).toBe('停用')
+
+    archiveVirtualLabRoom(draft.id)
+    expect(getVirtualLabState().rooms.find(item => item.id === draft.id)?.status).toBe('归档')
+    expect(getVirtualLabState().operationMessage).toContain('已归档')
   })
 
   it('invites a member and updates the room member count', () => {
@@ -93,5 +113,23 @@ describe('virtual lab business state', () => {
       status: '待确认',
     })
     expect(getArchiveState().teacherArchiveFacts).toHaveLength(0)
+  })
+
+  it('tracks activity material sync failure and retry status', () => {
+    markVirtualLabMaterialSyncFailed('1')
+
+    const failed = getVirtualLabState().materials.find(item => item.id === '1')
+    expect(failed).toMatchObject({
+      syncStatus: '同步失败',
+      syncMessage: '资料同步失败，请重新同步',
+    })
+
+    resyncVirtualLabMaterial('1')
+
+    const retrying = getVirtualLabState().materials.find(item => item.id === '1')
+    expect(retrying).toMatchObject({
+      syncStatus: '重新同步中',
+      syncMessage: '已发起重新同步',
+    })
   })
 })

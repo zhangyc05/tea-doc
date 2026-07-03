@@ -12,10 +12,19 @@ export function openReportDetailInState(state: ReportState, reportId: string, mo
 export function exportReportInState(state: ReportState, reportId: string) {
   const report = findReport(state, reportId)
   if (!report || report.status !== '已生成') return null
-  report.exportStatus = '导出文件已生成'
-  report.actionHistory = ['刚刚 生成导出文件', ...report.actionHistory]
-  state.operationMessage = `${report.title}：导出文件已生成。`
-  return report
+  const task = {
+    id: `export-${report.id}-${state.exportTasks.length + 1}`,
+    reportId: report.id,
+    reportTitle: report.title,
+    type: '报告导出' as const,
+    status: '处理中' as const,
+    createdAt: '刚刚',
+  }
+  state.exportTasks = [task, ...state.exportTasks]
+  report.exportStatus = '导出中'
+  report.actionHistory = ['刚刚 创建导出任务', ...report.actionHistory]
+  state.operationMessage = `${report.title}：已创建异步导出任务。`
+  return task
 }
 
 export function regenerateReportInState(state: ReportState, reportId: string) {
@@ -31,25 +40,43 @@ export function regenerateReportInState(state: ReportState, reportId: string) {
 export function continueReportAnalysisInState(state: ReportState, reportId: string, action = '继续分析') {
   const report = findReport(state, reportId)
   if (!report) return null
+  const prompt = `围绕${report.title}${action}`
+  const thread = {
+    id: `ai-thread-${report.id}-${state.aiThreads.length + 1}`,
+    sourceReportId: report.id,
+    sourceReportTitle: report.title,
+    status: '进行中' as const,
+    messages: [prompt],
+  }
+  state.aiThreads = [thread, ...state.aiThreads]
   state.aiSession = {
     active: true,
     sourceReportId: report.id,
-    prompt: `围绕${report.title}${action}`,
+    prompt,
   }
   state.selectedReportId = report.id
   state.detailMode = 'report'
   state.operationMessage = `${report.title}：AI 助手已进入${action}。`
-  return state.aiSession
+  return thread
 }
 
 export function openReportAiAssistantInState(state: ReportState, reportIds: string[]) {
+  const prompt = `基于当前 ${reportIds.length} 条筛选结果生成分析`
+  const thread = {
+    id: `ai-thread-filter-${state.aiThreads.length + 1}`,
+    sourceReportId: reportIds[0] ?? '',
+    sourceReportTitle: '当前筛选结果',
+    status: '进行中' as const,
+    messages: [prompt],
+  }
+  state.aiThreads = [thread, ...state.aiThreads]
   state.aiSession = {
     active: true,
     sourceReportId: reportIds[0] ?? '',
-    prompt: `基于当前 ${reportIds.length} 条筛选结果生成分析`,
+    prompt,
   }
   state.operationMessage = 'AI 助理已准备基于当前筛选结果生成分析。'
-  return state.aiSession
+  return thread
 }
 
 function findReport(state: ReportState, reportId: string) {

@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveEnterprisePlanDraft, submitEnterprisePlan } from '../../../domain/enterprise'
 
 const rejectRows = [
   { label: '退回人：', value: '智能制造学院教学办公室' },
@@ -33,6 +34,16 @@ const aiRows = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function saveDraft() {
+  saveEnterprisePlanDraft()
+  uni.showToast({ title: '草稿已保存', icon: 'none' })
+}
+
+function resubmitPlan() {
+  submitEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-import-export/index' })
 }
 </script>
 
@@ -147,8 +158,8 @@ function goBack() {
       </MobileCard>
 
       <view class="bottom-actions">
-        <MobileActionButton class="bottom-button" variant="outline">保存草稿</MobileActionButton>
-        <MobileActionButton class="bottom-button" variant="primary">重新提交</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="primary" @tap="resubmitPlan">重新提交</MobileActionButton>
       </view>
     </view>
 

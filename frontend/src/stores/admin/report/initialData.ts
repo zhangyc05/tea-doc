@@ -12,6 +12,8 @@ export const initialReports: ReportCard[] = [
 export function createInitialReportState(): ReportState {
   return {
     reports: cloneReports(initialReports),
+    exportTasks: [],
+    aiThreads: [],
     selectedReportId: '',
     detailMode: 'report',
     aiSession: {

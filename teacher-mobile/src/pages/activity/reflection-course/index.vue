@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { addReflectionMaterial, selectReflectionCourse } from '../../../domain/reflection'
 
 const scopeOptions = [
   { title: '单次课', active: false },
@@ -39,7 +40,27 @@ function goBack() {
 }
 
 function goEvidenceSelect() {
+  selectReflectionCourse('智能制造基础')
   uni.navigateTo({ url: '/pages/activity/reflection-evidence/index' })
+}
+
+function switchCourse() {
+  selectReflectionCourse('智能制造基础')
+  uni.showToast({ title: '已选择当前课程', icon: 'none' })
+}
+
+function uploadMaterial() {
+  addReflectionMaterial('补充教学资料', 'material')
+  uni.showToast({ title: '教学资料已加入依据', icon: 'none' })
+}
+
+function recordAudio() {
+  addReflectionMaterial('课堂录音', 'audio')
+  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
+}
+
+function goDirectChat() {
+  uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
 }
 </script>
 
@@ -73,7 +94,7 @@ function goEvidenceSelect() {
             <text class="course-meta">智能制造 2301 班 | 共 16 周 | 32 学时</text>
             <text class="course-desc">已整理课堂过程、成绩与评价数据</text>
           </view>
-          <MobileActionButton class="switch-button" variant="outline">切换课程</MobileActionButton>
+          <MobileActionButton class="switch-button" variant="outline" @tap="switchCourse">切换课程</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -133,9 +154,9 @@ function goEvidenceSelect() {
       <MobileCard class="supplement-card">
         <text class="section-title">还可以补充</text>
         <view class="supplement-actions">
-          <MobileActionButton class="supplement-button" variant="outline">上传教学资料</MobileActionButton>
-          <MobileActionButton class="supplement-button" variant="outline">录制课堂音频</MobileActionButton>
-          <MobileActionButton class="supplement-button" variant="outline">直接与 AI 对话</MobileActionButton>
+          <MobileActionButton class="supplement-button" variant="outline" @tap="uploadMaterial">上传教学资料</MobileActionButton>
+          <MobileActionButton class="supplement-button" variant="outline" @tap="recordAudio">录制课堂音频</MobileActionButton>
+          <MobileActionButton class="supplement-button" variant="outline" @tap="goDirectChat">直接与 AI 对话</MobileActionButton>
         </view>
       </MobileCard>
     </view>

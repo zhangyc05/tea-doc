@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { saveEnterpriseArchiveDraft, submitEnterpriseArchive } from '../../../domain/enterprise'
 
 const summaryItems = [
   {
@@ -29,6 +30,16 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function saveArchiveDraft() {
+  saveEnterpriseArchiveDraft()
+  uni.showToast({ title: '归档草稿已保存', icon: 'none' })
+}
+
+function submitArchive() {
+  const archiveRecord = submitEnterpriseArchive()
+  uni.navigateTo({ url: `/pages/activity/enterprise-archive-result/index?recordId=${archiveRecord.id}` })
 }
 </script>
 
@@ -146,10 +157,10 @@ function showToast(title: string) {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="bottom-button" variant="outline" @tap="showToast('保存草稿')">
+      <MobileActionButton class="bottom-button" variant="outline" @tap="saveArchiveDraft">
         保存草稿
       </MobileActionButton>
-      <MobileActionButton class="bottom-button" variant="primary" @tap="showToast('提交归档')">
+      <MobileActionButton class="bottom-button" variant="primary" @tap="submitArchive">
         提交归档
       </MobileActionButton>
     </view>

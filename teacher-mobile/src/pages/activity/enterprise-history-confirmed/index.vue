@@ -28,12 +28,12 @@ function goBack() {
   uni.navigateBack()
 }
 
-function backToList() {
-  uni.showToast({ title: '返回实践列表', icon: 'none' })
+function goEnterpriseList() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
 }
 
-function viewArchive() {
-  uni.showToast({ title: '查看企业实践档案', icon: 'none' })
+function goEnterpriseArchive() {
+  uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=enterprise-practice-smart-equipment-archive' })
 }
 </script>
 
@@ -116,10 +116,10 @@ function viewArchive() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="action-button action-button--list" variant="outline" @tap="backToList">
+      <MobileActionButton class="action-button action-button--list" variant="outline" @tap="goEnterpriseList">
         返回实践列表
       </MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary" @tap="viewArchive">
+      <MobileActionButton class="action-button" variant="primary" @tap="goEnterpriseArchive">
         查看企业实践档案
       </MobileActionButton>
     </view>

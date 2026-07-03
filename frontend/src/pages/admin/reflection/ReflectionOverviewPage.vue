@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionOverviewMock } from '@/services/mock/reflection'
+import { getReflectionRecords } from '@/stores/admin/reflectionStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -20,13 +21,20 @@ const activeIssueKeyword = ref(String(route.query.keyword || ''))
 const organizations = reflectionOverview.organizations
 const semesters = reflectionOverview.semesters
 const triggers = reflectionOverview.triggers
-const reflections = reflectionOverview.reflections
+const receivedReflections = getReflectionRecords()
+const reflections = computed(() => {
+  const existingIds = new Set(receivedReflections.map(item => item.id))
+  return [...receivedReflections, ...reflectionOverview.reflections.filter(item => !existingIds.has(item.id))]
+})
 const commonIssues = reflectionOverview.commonIssues
-const stats = reflectionOverview.stats
+const stats = computed(() => ({
+  ...reflectionOverview.stats,
+  reflectionCount: reflectionOverview.stats.reflectionCount + receivedReflections.length,
+}))
 
 const filteredReflections = computed(() => {
   const keyword = searchQuery.value.trim().toLowerCase()
-  return reflections.filter((reflection) => {
+  return reflections.value.filter((reflection) => {
     const organizationMatched =
       selectedOrganization.value === '全校' || reflection.department === selectedOrganization.value
     const triggerMatched = selectedTrigger.value === '全部' || reflection.trigger === selectedTrigger.value

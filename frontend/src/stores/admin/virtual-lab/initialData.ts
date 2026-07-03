@@ -75,11 +75,11 @@ export const initialActivities: VirtualLabActivity[] = [
 ]
 
 export const initialMaterials: VirtualLabMaterial[] = [
-  { id: '1', activityId: 'smart-line-seminar', name: '会议纪要', source: '系统生成', type: '会议纪要', time: '2026-06-18 16:20', description: '系统基于会议生成的纪要', tone: 'blue' },
-  { id: '2', activityId: 'smart-line-seminar', name: '任务分工表', source: '活动负责人补充', type: '任务分工', time: '2026-06-18 16:30', description: '活动负责人补充任务分工内容', tone: 'green' },
-  { id: '3', activityId: 'smart-line-seminar', name: '课程项目化改造方案初稿', source: '林老师上传', type: '阶段成果', time: '2026-06-18 17:10', description: '课程改造方案初稿材料', tone: 'orange' },
-  { id: '4', activityId: 'smart-line-seminar', name: '产线课程现状分析材料', source: '张老师上传', type: '过程材料', time: '2026-06-18 17:35', description: '课程现状分析材料', tone: 'red' },
-  { id: '5', activityId: 'smart-line-seminar', name: '课堂实施流程文档', source: '李老师上传', type: '过程材料', time: '2026-06-18 17:25', description: '课堂实施流程与安排说明', tone: 'blue' },
+  { id: '1', activityId: 'smart-line-seminar', name: '会议纪要', syncStatus: '已同步', syncMessage: '资料已同步', source: '系统生成', type: '会议纪要', time: '2026-06-18 16:20', description: '系统基于会议生成的纪要', tone: 'blue' },
+  { id: '2', activityId: 'smart-line-seminar', name: '任务分工表', syncStatus: '已同步', syncMessage: '资料已同步', source: '活动负责人补充', type: '任务分工', time: '2026-06-18 16:30', description: '活动负责人补充任务分工内容', tone: 'green' },
+  { id: '3', activityId: 'smart-line-seminar', name: '课程项目化改造方案初稿', syncStatus: '已同步', syncMessage: '资料已同步', source: '林老师上传', type: '阶段成果', time: '2026-06-18 17:10', description: '课程改造方案初稿材料', tone: 'orange' },
+  { id: '4', activityId: 'smart-line-seminar', name: '产线课程现状分析材料', syncStatus: '已同步', syncMessage: '资料已同步', source: '张老师上传', type: '过程材料', time: '2026-06-18 17:35', description: '课程现状分析材料', tone: 'red' },
+  { id: '5', activityId: 'smart-line-seminar', name: '课堂实施流程文档', syncStatus: '已同步', syncMessage: '资料已同步', source: '李老师上传', type: '过程材料', time: '2026-06-18 17:25', description: '课堂实施流程与安排说明', tone: 'blue' },
 ]
 
 export const initialRecords: VirtualLabRecord[] = [
@@ -99,7 +99,7 @@ export function createInitialVirtualLabState(): VirtualLabState {
 }
 
 export function makeRoom(id: string, name: string, direction: string, affiliation: string, leader: string, members: number, inProgressActivities: number, recordsCount: number, recentActivity: string, recentTime: string, createdAt: string, description: string): VirtualLabRoom {
-  return { id, name, direction, affiliation, leader, members, inProgressActivities, recordsCount, recentActivity, recentTime, createdAt, description }
+  return { id, name, status: '运行中', direction, affiliation, leader, members, inProgressActivities, recordsCount, recentActivity, recentTime, createdAt, description }
 }
 
 export function makeRecord(id: string, roomId: string, sourceActivityId: string, title: string, sourceActivity: string, formedTime: string, content: string, ownerTeacher: string, activity?: VirtualLabActivity): VirtualLabRecord {

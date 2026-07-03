@@ -20,7 +20,8 @@ describe('report store structure', () => {
     exportReportInState(state, '1')
     regenerateReportInState(state, '4')
 
-    expect(state.reports.find(item => item.id === '1')?.exportStatus).toBe('导出文件已生成')
+    expect(state.reports.find(item => item.id === '1')?.exportStatus).toBe('导出中')
+    expect(state.exportTasks[0]).toMatchObject({ reportId: '1', status: '处理中' })
     expect(state.reports.find(item => item.id === '4')).toMatchObject({
       status: '已生成',
       generatedTime: '刚刚',
@@ -32,10 +33,10 @@ describe('report store structure', () => {
 
     continueReportAnalysisInState(state, '6', '继续追问')
 
-    expect(state.aiSession).toMatchObject({
-      active: true,
+    expect(state.aiThreads[0]).toMatchObject({
       sourceReportId: '6',
-      prompt: '围绕岗位 / 聘期要求对照问答继续追问',
+      status: '进行中',
     })
+    expect(state.aiSession.prompt).toBe('围绕岗位 / 聘期要求对照问答继续追问')
   })
 })

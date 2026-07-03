@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveEnterprisePlanDraft, submitEnterprisePlan } from '../../../domain/enterprise'
 
 const baseFields = [
   { label: '实践单位', value: '山东智联装备有限公司' },
@@ -19,6 +20,16 @@ const planRows = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function saveDraft() {
+  saveEnterprisePlanDraft()
+  uni.showToast({ title: '草稿已保存', icon: 'none' })
+}
+
+function submitPlan() {
+  submitEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-import-export/index' })
 }
 </script>
 
@@ -141,8 +152,8 @@ function goBack() {
       </view>
 
       <view class="bottom-actions">
-        <MobileActionButton class="bottom-button" variant="outline">保存草稿</MobileActionButton>
-        <MobileActionButton class="bottom-button" variant="primary">提交计划</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
+        <MobileActionButton class="bottom-button" variant="primary" @tap="submitPlan">提交计划</MobileActionButton>
       </view>
     </view>
 

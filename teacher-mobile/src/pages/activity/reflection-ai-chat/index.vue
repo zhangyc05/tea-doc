@@ -3,6 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { addReflectionMaterial, saveReflectionDraft, startReflectionAiSession } from '../../../domain/reflection'
+
+startReflectionAiSession()
 
 const firstOptions = ['课堂互动不够', '学生掌握不稳', '案例讲解效果一般', '我想随便说说']
 const secondOptions = ['某一节课', '最近几次课', '整门课都存在', '我还不太确定']
@@ -14,7 +17,13 @@ function goBack() {
 }
 
 function goDraft() {
+  saveReflectionDraft('自主 AI 对话已生成反思草稿')
   uni.navigateTo({ url: '/pages/activity/reflection-draft/index' })
+}
+
+function addSupplement(item: string) {
+  addReflectionMaterial(item, item.includes('音频') ? 'audio' : item.includes('报告') ? 'report' : 'material')
+  uni.showToast({ title: '材料已加入依据', icon: 'none' })
 }
 </script>
 
@@ -123,7 +132,7 @@ function goDraft() {
       <view class="supplement-panel">
         <text class="panel-title">可随时补充</text>
         <view class="supplement-grid">
-          <view v-for="item in supplementItems" :key="item" class="supplement-item">
+          <view v-for="item in supplementItems" :key="item" class="supplement-item" @tap="addSupplement(item)">
             <view class="supplement-icon"></view>
             <text>{{ item }}</text>
           </view>

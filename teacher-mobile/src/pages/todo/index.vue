@@ -4,38 +4,19 @@ import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../components/MobileStatusTag.vue'
-import { getHomeTodoItems, type MobileTodoItem } from '../../stores/todoStore'
+import { getHomeTodoItems, getRecentTodoDynamics, getTodoActionUrl, type MobileTodoItem } from '../../stores/todoStore'
 
 const visibleTodoItems = computed(() => getHomeTodoItems())
-
-const dynamics = [
-  {
-    title: '已确认一条精品课程建设课',
-    desc: '《智能制造课程建设成果》已完成本人确认',
-    time: '今天 09:21',
-    tone: 'green',
-  },
-  {
-    title: '培训学时已记录',
-    desc: '《数字化教学能力提升》培训学时已更新',
-    time: '昨天 16:45',
-    tone: 'blue',
-  },
-  {
-    title: '已保存一篇教学反思',
-    desc: '《智能制造基础》第5次课后反思已保存草稿',
-    time: '03-18 10:30',
-    tone: 'orange',
-  },
-]
+const todoDynamics = computed(() => getRecentTodoDynamics())
 
 function goAllTodo() {
   uni.navigateTo({ url: '/pages/todo/all/index' })
 }
 
 function showTodoAction(item: MobileTodoItem) {
-  if (item.id === 'certificate-digital-literacy') {
-    uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
+  const actionUrl = getTodoActionUrl(item.id)
+  if (actionUrl) {
+    uni.navigateTo({ url: actionUrl })
     return
   }
 
@@ -107,7 +88,7 @@ function goAllDynamics() {
         <MobileActionButton class="all-link" variant="link" arrow @tap="goAllDynamics">全部</MobileActionButton>
       </view>
 
-      <view v-for="item in dynamics" :key="item.title" class="dynamic-row">
+      <view v-for="item in todoDynamics" :key="item.id" class="dynamic-row">
         <view class="dynamic-icon" :class="`dynamic-icon--${item.tone}`"></view>
         <view class="dynamic-row__body">
           <text class="dynamic-row__title">{{ item.title }}</text>

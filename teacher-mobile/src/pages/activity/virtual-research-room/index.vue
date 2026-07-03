@@ -3,6 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { getMobileVirtualResearchState } from '../../../domain/virtualResearch'
+
+const virtualResearchState = getMobileVirtualResearchState()
 
 const stats = [
   { label: '已加入', value: '1', unit: '个教研室', type: 'members' },
@@ -57,8 +60,28 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function goResearchInvitation() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-invitation/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-position-management/index' })
+}
+
+function goResearchActivityList() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-list/index' })
+}
+
+function handleTodoAction(type: string) {
+  if (type === 'invite') {
+    goResearchInvitation()
+    return
+  }
+  goContributionConfirm()
 }
 </script>
 
@@ -97,7 +120,7 @@ function showToast(title: string) {
               </view>
               <text class="todo-desc">{{ item.desc }}</text>
             </view>
-            <MobileActionButton class="todo-button" variant="outline" arrow @tap="showToast(item.action)">
+            <MobileActionButton class="todo-button" variant="outline" arrow @tap="handleTodoAction(item.type)">
               {{ item.action }}
             </MobileActionButton>
           </MobileCard>
@@ -111,7 +134,7 @@ function showToast(title: string) {
           <view class="room-main">
             <view class="room-title-row">
               <text class="room-title">智能制造教研室</text>
-              <text class="room-status">已加入</text>
+              <text class="room-status">{{ virtualResearchState.memberStatus === '已加入' ? '已加入' : '待加入' }}</text>
             </view>
             <text class="room-meta">8 位成员 | 本月 2 次活动 | 1 项进行中任务</text>
             <text class="room-desc">聚焦智能制造课程建设、企业案例共建与数字化教学资源整理。</text>
@@ -120,7 +143,7 @@ function showToast(title: string) {
               <text class="room-chip">数字化教学资源建设</text>
               <text class="room-chip room-chip--warn">2 项贡献待确认</text>
             </view>
-            <MobileActionButton class="room-button" variant="primary" arrow @tap="showToast('进入教研室')">
+            <MobileActionButton class="room-button" variant="primary" arrow @tap="goResearchRoom">
               进入教研室
             </MobileActionButton>
           </view>
@@ -130,7 +153,7 @@ function showToast(title: string) {
       <view class="section recent-section">
         <view class="section-head">
           <text class="section-title">最近教研活动</text>
-          <button class="all-link" @tap="showToast('全部教研活动')">
+          <button class="all-link" @tap="goResearchActivityList">
             <text>全部</text>
             <view class="link-arrow"></view>
           </button>

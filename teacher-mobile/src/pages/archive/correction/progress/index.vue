@@ -7,10 +7,11 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveRecordById } from '../../../../domain/archive'
+import { archiveRecords, findArchiveCorrectionById, findArchiveRecordById, updateArchiveCorrectionStatus } from '../../../../domain/archive'
 
 type ProgressQuery = {
   recordId?: string
+  correctionId?: string
   reason?: string
   status?: 'pending-verify' | 'supplemented'
 }
@@ -22,7 +23,8 @@ onLoad((options) => {
 })
 
 const record = computed(() => findArchiveRecordById(query.value.recordId) || archiveRecords[0])
-const reason = computed(() => (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
+const correction = computed(() => findArchiveCorrectionById(query.value.correctionId))
+const reason = computed(() => correction.value?.reason || (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
 const progressStatus = computed(() => query.value.status || 'pending-verify')
 const statusLabel = computed(() => progressStatus.value === 'supplemented' ? '已补充' : '待核验')
 const statusDesc = computed(() => progressStatus.value === 'supplemented'
@@ -40,8 +42,9 @@ function goRecordDetail() {
 }
 
 function goCorrectionResult() {
+  if (correction.value) updateArchiveCorrectionStatus(correction.value.id, 'need-supplement')
   uni.navigateTo({
-    url: `/pages/archive/correction/result/index?recordId=${record.value.id}&result=need-supplement&reason=${encodeURIComponent(reason.value)}`,
+    url: `/pages/archive/correction/result/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}&result=need-supplement`,
   })
 }
 

@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { rejectEnterprisePlan } from '../../../domain/enterprise'
 
 const rejectRows = [
   { icon: 'person', label: '退回人', value: '信息工程学院教学办公室' },
@@ -32,6 +33,16 @@ const modifyItems = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function goEnterpriseList() {
+  rejectEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
+}
+
+function goPlanEdit() {
+  rejectEnterprisePlan()
+  uni.navigateTo({ url: '/pages/activity/enterprise-plan-edit/index' })
 }
 </script>
 
@@ -119,8 +130,8 @@ function goBack() {
     </scroll-view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button" variant="outline">返回实践列表</MobileActionButton>
-      <MobileActionButton class="action-button action-button--primary" variant="primary">修改计划并重新提交</MobileActionButton>
+      <MobileActionButton class="action-button" variant="outline" @tap="goEnterpriseList">返回实践列表</MobileActionButton>
+      <MobileActionButton class="action-button action-button--primary" variant="primary" @tap="goPlanEdit">修改计划并重新提交</MobileActionButton>
     </view>
   </view>
 </template>

@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { confirmContribution, rejectContribution } from '../../../domain/virtualResearch'
 
 const contributions = [
   {
@@ -24,6 +25,20 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function goSupplementContribution() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-skill-management/index' })
+}
+
+function markNotMine() {
+  rejectContribution()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-submitted/index' })
+}
+
+function submitContribution() {
+  confirmContribution()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-submitted/index' })
 }
 </script>
 
@@ -126,7 +141,7 @@ function showToast(title: string) {
         </view>
       </MobileCard>
 
-      <button class="missing-link" @tap="showToast('补充遗漏内容')">
+      <button class="missing-link" @tap="goSupplementContribution">
         <view class="missing-icon"></view>
         <text>补充遗漏内容</text>
         <view class="link-arrow"></view>
@@ -134,10 +149,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="bottom-button reject-button" variant="outline" @tap="showToast('不是我的')">
+      <MobileActionButton class="bottom-button reject-button" variant="outline" @tap="markNotMine">
         不是我的
       </MobileActionButton>
-      <MobileActionButton class="bottom-button confirm-button" variant="primary" @tap="showToast('确认贡献')">
+      <MobileActionButton class="bottom-button confirm-button" variant="primary" @tap="submitContribution">
         确认贡献
       </MobileActionButton>
     </view>

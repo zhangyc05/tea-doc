@@ -1,8 +1,29 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { findTrainingApplicationById, submitTrainingApplication } from '../../../domain/training'
+
+type TrainingApplicationQuery = {
+  applicationId?: string
+  mode?: string
+}
+
+const query = ref<TrainingApplicationQuery>({})
+
+onLoad((options) => {
+  query.value = options as TrainingApplicationQuery
+})
+
+const application = computed(() => findTrainingApplicationById(query.value.applicationId) || submitTrainingApplication())
+const statusText = computed(() => {
+  if (application.value.status === '已同意') return '已通过'
+  if (application.value.status === '未同意') return '未通过'
+  return '等待确认'
+})
 
 const summaryRows = [
   { icon: 'type', text: '线下培训  |  需申请  |  3 天  |  24 学时' },
@@ -29,6 +50,10 @@ function goTraining() {
 function goActivityHome() {
   uni.redirectTo({ url: '/pages/activity/index' })
 }
+
+function goApplicationDetail() {
+  uni.navigateTo({ url: `/pages/activity/training-application/index?applicationId=${application.value.id}&mode=detail` })
+}
 </script>
 
 <template>
@@ -54,7 +79,7 @@ function goActivityHome() {
           <text class="success-desc">你的申请已提交给业务部门确认</text>
           <view class="wait-tag">
             <view class="wait-tag__clock"></view>
-            <text>等待确认</text>
+            <text>{{ statusText }}</text>
           </view>
         </view>
       </MobileCard>
@@ -66,7 +91,7 @@ function goActivityHome() {
         </view>
         <view class="summary-title-row">
           <view class="mini-icon mini-icon--file"></view>
-          <text class="summary-title">项目化课程设计工作坊</text>
+          <text class="summary-title">{{ application.trainingName }}</text>
         </view>
         <view v-for="row in summaryRows" :key="row.text" class="summary-row">
           <view class="mini-icon" :class="`mini-icon--${row.icon}`"></view>
@@ -115,7 +140,7 @@ function goActivityHome() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="bottom-actions__button" variant="outline">查看申请详情</MobileActionButton>
+        <MobileActionButton class="bottom-actions__button" variant="outline" @tap="goApplicationDetail">查看申请详情</MobileActionButton>
       <MobileActionButton class="bottom-actions__button bottom-actions__button--primary" variant="primary" @tap="goTraining">返回培训进修</MobileActionButton>
       <MobileActionButton class="bottom-actions__button bottom-actions__button--link" variant="link" @tap="goActivityHome">返回活动首页</MobileActionButton>
     </view>

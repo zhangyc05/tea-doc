@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { saveStageMaterialDraft, submitStageMaterial } from '../../../domain/virtualResearch'
 
 const uploadActions = [
   { icon: 'folder', title: '上传资料', desc: '支持 PDF/Word/PPT 等' },
@@ -15,6 +16,16 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function saveDraft() {
+  saveStageMaterialDraft()
+  uni.showToast({ title: '阶段材料草稿已保存', icon: 'none' })
+}
+
+function submitMaterial() {
+  submitStageMaterial()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-stage-submitted/index' })
 }
 </script>
 
@@ -134,10 +145,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="draft-button" variant="outline" @tap="showToast('保存草稿')">
+      <MobileActionButton class="draft-button" variant="outline" @tap="saveDraft">
         保存草稿
       </MobileActionButton>
-      <MobileActionButton class="submit-button" variant="primary" @tap="showToast('提交材料')">
+      <MobileActionButton class="submit-button" variant="primary" @tap="submitMaterial">
         提交材料
       </MobileActionButton>
     </view>

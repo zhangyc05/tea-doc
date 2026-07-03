@@ -1,8 +1,28 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { createTrainingArchiveRecord } from '../../../domain/archive'
+import {
+  getTrainingSummaryDraft,
+  optimizeTrainingSummary,
+  saveTrainingSummaryDraft,
+  submitTrainingArchive,
+  uploadTrainingMaterial,
+} from '../../../domain/training'
+
+type TrainingSummaryQuery = {
+  recordId?: string
+}
+
+const query = ref<TrainingSummaryQuery>({})
+
+onLoad((options) => {
+  query.value = options as TrainingSummaryQuery
+})
+
+const trainingRecord = computed(() => getTrainingSummaryDraft(query.value.recordId))
 
 const readyItems = [
   { text: '培训信息已带出', done: true },
@@ -22,8 +42,32 @@ function goBack() {
 }
 
 function goArchiveResult() {
-  const record = createTrainingArchiveRecord()
+  const record = submitTrainingArchive(trainingRecord.value.id)
   uni.navigateTo({ url: `/pages/activity/training-archive-result/index?recordId=${record.id}` })
+}
+
+function goLearningRecord() {
+  uni.showToast({ title: '原学习记录已用于当前总结', icon: 'none' })
+}
+
+function editSummary() {
+  saveTrainingSummaryDraft(trainingRecord.value.id)
+  uni.showToast({ title: '已进入总结编辑状态', icon: 'none' })
+}
+
+function optimizeSummary() {
+  optimizeTrainingSummary(trainingRecord.value.id)
+  uni.showToast({ title: 'AI 已重新优化', icon: 'none' })
+}
+
+function replaceMaterial() {
+  uploadTrainingMaterial(trainingRecord.value.id)
+  uni.showToast({ title: '培训材料已更新', icon: 'none' })
+}
+
+function saveDraft() {
+  saveTrainingSummaryDraft(trainingRecord.value.id)
+  uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 </script>
 
@@ -51,7 +95,7 @@ function goArchiveResult() {
           <view class="cover-book"></view>
         </view>
         <view class="course-info">
-          <text class="course-title">数字化教学能力提升</text>
+          <text class="course-title">{{ trainingRecord.title }}</text>
           <view class="course-tags">
             <text>线上课程</text>
             <text>第三方学习资源</text>
@@ -63,7 +107,7 @@ function goArchiveResult() {
           </view>
           <view class="meta-row">
             <view class="meta-icon meta-icon--state"></view>
-            <text>培训状态：<text class="green-text">已结束</text></text>
+            <text>培训状态：<text class="green-text">{{ trainingRecord.status }}</text></text>
           </view>
         </view>
         <view class="course-tip">
@@ -91,16 +135,16 @@ function goArchiveResult() {
             <text class="section-title">AI 培训总结草稿</text>
             <view class="spark"></view>
           </view>
-          <view class="plain-link">
+          <view class="plain-link" @tap="goLearningRecord">
             <text>查看原学习记录</text>
             <view class="plain-link__arrow"></view>
           </view>
         </view>
-        <text class="draft-text">本次培训围绕数字化教学资源设计、课堂互动工具应用和学习数据反馈展开。通过学习，我进一步理解了如何利用数字化工具支持课前任务发布、课堂互动和课后反馈。</text>
+        <text class="draft-text">{{ trainingRecord.summaryDraft }}</text>
         <text class="draft-text">结合《智能制造基础》课程，后续可尝试将在线测验、学习任务单和课堂即时反馈结合起来，用于了解学生掌握情况，并辅助课堂分层指导。</text>
         <view class="panel-actions">
-          <MobileActionButton class="panel-action" variant="outline">修改总结</MobileActionButton>
-          <MobileActionButton class="panel-action" variant="outline">让 AI 再优化</MobileActionButton>
+          <MobileActionButton class="panel-action" variant="outline" @tap="editSummary">修改总结</MobileActionButton>
+          <MobileActionButton class="panel-action" variant="outline" @tap="optimizeSummary">让 AI 再优化</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -133,7 +177,7 @@ function goArchiveResult() {
             <text class="file-tag">AI 已识别</text>
             <text class="file-desc">数字化教学能力提升 | 12 学时 | 2026-04-20</text>
           </view>
-          <text class="replace-link">更换材料</text>
+          <text class="replace-link" @tap="replaceMaterial">更换材料</text>
         </view>
       </MobileCard>
 
@@ -157,7 +201,7 @@ function goArchiveResult() {
           <text class="optional">（可选）</text>
           <text class="upload-tip">支持上传学习截图、课程通知、报名记录等</text>
         </view>
-        <text class="upload-link">上传材料</text>
+        <text class="upload-link" @tap="replaceMaterial">上传材料</text>
       </MobileCard>
     </view>
 
@@ -166,7 +210,7 @@ function goArchiveResult() {
         <view class="ready-state__dot"></view>
         <text>材料已齐，可提交归档</text>
       </view>
-      <MobileActionButton class="bottom-actions__button" variant="outline">保存草稿</MobileActionButton>
+      <MobileActionButton class="bottom-actions__button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
       <MobileActionButton class="bottom-actions__button" variant="primary" @tap="goArchiveResult">提交归档</MobileActionButton>
     </view>
   </view>

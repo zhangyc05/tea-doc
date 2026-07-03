@@ -5,7 +5,12 @@ import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
-import { getTodoState, submitTodoCertificateCorrection } from '../../../stores/todoStore'
+import {
+  getTodoState,
+  replaceTodoCertificateMaterial,
+  submitTodoCertificateCorrection,
+  updateTodoCertificateField,
+} from '../../../stores/todoStore'
 
 const todoState = getTodoState()
 const certificate = computed(() => todoState.certificate)
@@ -20,8 +25,14 @@ function goSubmitResult() {
   uni.navigateTo({ url: '/pages/todo/certificate-submit/index' })
 }
 
-function showMaterialTip() {
-  uni.showToast({ title: '材料更换入口待接入上传', icon: 'none' })
+function replaceMaterial() {
+  replaceTodoCertificateMaterial()
+  uni.showToast({ title: '材料已更换，提交后核验', icon: 'none' })
+}
+
+function updateField(label: string, event: unknown) {
+  const value = (event as { detail?: { value?: string } }).detail?.value || ''
+  updateTodoCertificateField(label, value)
 }
 </script>
 
@@ -58,7 +69,7 @@ function showMaterialTip() {
       <text class="section-title">可修改信息</text>
       <view v-for="item in editableInfo" :key="item.label" class="field-row">
         <text class="field-label">{{ item.label }}：</text>
-        <input class="field-input" :value="item.value" />
+        <input class="field-input" :value="item.value" @input="updateField(item.label, $event)" />
         <text class="edit-icon">✎</text>
       </view>
     </MobileCard>
@@ -73,7 +84,7 @@ function showMaterialTip() {
           <text class="material-name">{{ certificate.material.name }}</text>
           <text class="material-meta">{{ certificate.material.meta }}</text>
         </view>
-        <MobileActionButton class="replace-button" variant="outline" @tap="showMaterialTip">更换材料</MobileActionButton>
+        <MobileActionButton class="replace-button" variant="outline" @tap="replaceMaterial">更换材料</MobileActionButton>
       </view>
     </MobileCard>
 

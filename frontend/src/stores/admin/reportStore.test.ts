@@ -25,12 +25,22 @@ describe('report center business state', () => {
   })
 
   it('exports a generated report and records the export state', () => {
-    exportReport('1')
+    const task = exportReport('1')
 
-    const report = getReportState().reports.find(item => item.id === '1')
+    const state = getReportState()
+    const report = state.reports.find(item => item.id === '1')
 
-    expect(report?.exportStatus).toBe('导出文件已生成')
-    expect(report?.actionHistory).toContain('刚刚 生成导出文件')
+    expect(task).toMatchObject({
+      reportId: '1',
+      status: '处理中',
+      type: '报告导出',
+    })
+    expect(report?.exportStatus).toBe('导出中')
+    expect(state.exportTasks[0]).toMatchObject({
+      reportId: '1',
+      status: '处理中',
+    })
+    expect(report?.actionHistory).toContain('刚刚 创建导出任务')
   })
 
   it('regenerates stale reports and keeps an action history', () => {
@@ -46,10 +56,19 @@ describe('report center business state', () => {
   })
 
   it('starts an AI analysis session from a report', () => {
-    continueReportAnalysis('6', '继续追问')
+    const thread = continueReportAnalysis('6', '继续追问')
 
     const state = getReportState()
 
+    expect(thread).toMatchObject({
+      sourceReportId: '6',
+      status: '进行中',
+      messages: ['围绕岗位 / 聘期要求对照问答继续追问'],
+    })
+    expect(state.aiThreads[0]).toMatchObject({
+      sourceReportId: '6',
+      status: '进行中',
+    })
     expect(state.aiSession).toMatchObject({
       active: true,
       sourceReportId: '6',

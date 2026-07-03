@@ -7,10 +7,11 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveRecordById } from '../../../../domain/archive'
+import { archiveRecords, findArchiveCorrectionById, findArchiveRecordById, submitArchiveCorrectionSupplement } from '../../../../domain/archive'
 
 type SupplementQuery = {
   recordId?: string
+  correctionId?: string
   reason?: string
 }
 
@@ -27,7 +28,8 @@ onLoad((options) => {
 })
 
 const record = computed(() => findArchiveRecordById(query.value.recordId) || archiveRecords[0])
-const reason = computed(() => (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
+const correction = computed(() => findArchiveCorrectionById(query.value.correctionId))
+const reason = computed(() => correction.value?.reason || (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
 
 function goBack() {
   uni.navigateBack()
@@ -40,8 +42,9 @@ function goRecordDetail() {
 }
 
 function submitSupplement() {
+  if (correction.value) submitArchiveCorrectionSupplement(correction.value.id)
   uni.redirectTo({
-    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&status=supplemented&reason=${encodeURIComponent(reason.value)}`,
+    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}&status=supplemented`,
   })
 }
 </script>

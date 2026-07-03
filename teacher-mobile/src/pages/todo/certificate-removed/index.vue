@@ -67,6 +67,10 @@ function goPendingList() {
       <view class="note-list">
         <view class="note-row">
           <view class="dot"></view>
+          <text>移出原因：{{ certificate.removeReason || '系统识别记录与本人实际经历不一致' }}</text>
+        </view>
+        <view class="note-row">
+          <view class="dot"></view>
           <text>系统将不再把这条记录放入你的待确认记录中</text>
         </view>
         <view class="note-row">

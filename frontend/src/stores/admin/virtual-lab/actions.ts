@@ -6,8 +6,35 @@ type UpsertArchiveRecord = (record: ArchiveProcessingRecord) => unknown
 
 export function createVirtualLabRoomInState(state: VirtualLabState) {
   const room = makeRoom(`draft-${state.rooms.length + 1}`, '新增虚拟教研室待完善', '待补充教研方向', '智能制造学院 | 待确认专业群', '待指定', 0, 0, 0, '待创建首次教研活动', '待安排', '待确认', '待补充教研室说明。')
+  room.status = '草稿'
   state.rooms = [room, ...state.rooms]
   state.operationMessage = '已创建待完善教研室草稿。'
+  return room
+}
+
+export function publishVirtualLabRoomInState(state: VirtualLabState, roomId: string) {
+  const room = findRoom(state, roomId)
+  if (!room) return null
+  room.status = '运行中'
+  state.operationMessage = `${room.name} 已进入运行中状态。`
+  return room
+}
+
+export function stopVirtualLabRoomInState(state: VirtualLabState, roomId: string) {
+  const room = findRoom(state, roomId)
+  if (!room) return null
+  room.status = '停用'
+  room.inProgressActivities = 0
+  state.operationMessage = `${room.name} 已停用。`
+  return room
+}
+
+export function archiveVirtualLabRoomInState(state: VirtualLabState, roomId: string) {
+  const room = findRoom(state, roomId)
+  if (!room) return null
+  room.status = '归档'
+  room.inProgressActivities = 0
+  state.operationMessage = `${room.name} 已归档。`
   return room
 }
 
@@ -146,6 +173,24 @@ export function getVirtualLabMaterialsByActivityInState(state: VirtualLabState, 
   return state.materials.filter(item => item.activityId === activityId)
 }
 
+export function markVirtualLabMaterialSyncFailedInState(state: VirtualLabState, materialId: string) {
+  const material = findMaterial(state, materialId)
+  if (!material) return null
+  material.syncStatus = '同步失败'
+  material.syncMessage = '资料同步失败，请重新同步'
+  state.operationMessage = `${material.name} 同步失败。`
+  return material
+}
+
+export function resyncVirtualLabMaterialInState(state: VirtualLabState, materialId: string) {
+  const material = findMaterial(state, materialId)
+  if (!material) return null
+  material.syncStatus = '重新同步中'
+  material.syncMessage = '已发起重新同步'
+  state.operationMessage = `${material.name} 已发起重新同步。`
+  return material
+}
+
 function findRoom(state: VirtualLabState, roomId: string) {
   return state.rooms.find(item => item.id === roomId)
 }
@@ -156,6 +201,10 @@ function findActivity(state: VirtualLabState, activityId: string) {
 
 function findRecord(state: VirtualLabState, recordId: string) {
   return state.records.find(item => item.id === recordId)
+}
+
+function findMaterial(state: VirtualLabState, materialId: string) {
+  return state.materials.find(item => item.id === materialId)
 }
 
 function getRoomCollege(affiliation: string) {

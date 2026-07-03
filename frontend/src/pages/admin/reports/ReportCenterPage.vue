@@ -24,6 +24,10 @@ const operationMessage = useOperationMessage()
 
 const tabs = ['全部', '分析报告', '分析大屏', '专题解读', '数据问答']
 const selectedReport = computed(() => reportState.reports.find(report => report.id === reportState.selectedReportId) ?? null)
+const selectedReportExportTasks = computed(() =>
+  reportState.exportTasks.filter(task => task.reportId === reportState.selectedReportId),
+)
+const activeAiThread = computed(() => reportState.aiThreads[0] ?? null)
 
 const filteredReports = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -199,6 +203,11 @@ function openAiAssistant() {
               <p>分析依据：{{ selectedReport.basis }}</p>
               <p>生成时间：{{ selectedReport.generatedTime }}</p>
               <p>导出状态：{{ selectedReport.exportStatus }}</p>
+              <div v-if="selectedReportExportTasks.length" class="history-list">
+                <span v-for="task in selectedReportExportTasks" :key="task.id">
+                  {{ task.createdAt }} {{ task.type }}：{{ task.status }}
+                </span>
+              </div>
               <div class="history-list">
                 <span v-for="item in selectedReport.actionHistory" :key="item">{{ item }}</span>
               </div>
@@ -213,6 +222,7 @@ function openAiAssistant() {
             <div class="detail-content">
               <strong>{{ reportState.aiSession.prompt }}</strong>
               <p>来源报告：{{ selectedReport?.title || '当前筛选结果' }}</p>
+              <p v-if="activeAiThread">线程状态：{{ activeAiThread.status }} ｜ 消息数：{{ activeAiThread.messages.length }}</p>
               <p>下一步可基于当前报告依据继续生成追问、解读或管理建议。</p>
             </div>
           </section>

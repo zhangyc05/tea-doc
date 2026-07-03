@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { addReflectionMaterial, selectReflectionEvidence } from '../../../domain/reflection'
 
 const scopeOptions = [
   { title: '单次课', active: false },
@@ -61,7 +62,26 @@ function goBack() {
 }
 
 function goSelfReflection() {
+  selectReflectionEvidence('class-analysis-report')
   uni.navigateTo({ url: '/pages/activity/reflection-self/index' })
+}
+
+function selectEvidence() {
+  selectReflectionEvidence('class-analysis-report')
+}
+
+function uploadMaterial() {
+  addReflectionMaterial('阶段教学资料', 'material')
+  uni.showToast({ title: '阶段材料已加入依据', icon: 'none' })
+}
+
+function recordAudio() {
+  addReflectionMaterial('阶段课堂音频', 'audio')
+  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
+}
+
+function goDirectChat() {
+  uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
 }
 </script>
 
@@ -116,7 +136,7 @@ function goSelfReflection() {
         </view>
 
         <view class="evidence-list">
-          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': row.selected }">
+          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': row.selected }" @tap="selectEvidence">
             <view class="evidence-icon" :class="`evidence-icon--${row.icon}`"></view>
             <view class="evidence-row__body">
               <text class="row-title">{{ row.title }}</text>
@@ -131,15 +151,15 @@ function goSelfReflection() {
       <MobileCard class="supplement-card">
         <text class="section-title">还可以补充</text>
         <view class="supplement-actions">
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="uploadMaterial">
             <view class="supplement-icon supplement-icon--upload"></view>
             <text>上传教学资料</text>
           </view>
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="recordAudio">
             <view class="supplement-icon supplement-icon--mic"></view>
             <text>录制课堂音频</text>
           </view>
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="goDirectChat">
             <view class="supplement-icon supplement-icon--chat"></view>
             <text>直接与 AI 对话</text>
           </view>

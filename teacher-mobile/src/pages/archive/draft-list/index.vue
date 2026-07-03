@@ -25,6 +25,10 @@ function goRecord(record: MobileArchiveRecord) {
     url: `/pages/archive/record-detail/index?recordId=${record.id}`,
   })
 }
+
+function getRecordTone(record: MobileArchiveRecord): 'orange' {
+  return record.status === 'need-supplement' ? 'orange' : 'orange'
+}
 </script>
 
 <template>
@@ -50,7 +54,7 @@ function goRecord(record: MobileArchiveRecord) {
         @tap="goRecord(record)"
       >
         <view class="record-head">
-          <MobileStatusTag tone="orange">{{ getArchiveRecordStatusLabel(record.status) }}</MobileStatusTag>
+          <MobileStatusTag :tone="getRecordTone(record)">{{ getArchiveRecordStatusLabel(record.status) }}</MobileStatusTag>
           <text class="record-date">{{ record.updatedAt }}</text>
         </view>
         <text class="record-title">{{ record.title }}</text>

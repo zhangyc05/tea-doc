@@ -11,9 +11,13 @@ import { createInitialReportState } from './report/initialData'
 
 export type {
   ReportAiSession,
+  ReportAiThread,
+  ReportAiThreadStatus,
   ReportCard,
   ReportDetailMode,
   ReportExportStatus,
+  ReportExportTask,
+  ReportExportTaskStatus,
   ReportState,
   ReportStatus,
   ReportType,

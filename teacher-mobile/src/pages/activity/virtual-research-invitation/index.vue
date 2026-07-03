@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { confirmResearchInvitation, declineResearchInvitation } from '../../../domain/virtualResearch'
 
 const infoRows = [
   { label: '邀请人：', value: '王主任', icon: 'user' },
@@ -47,6 +48,16 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function confirmInvitation() {
+  confirmResearchInvitation()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-position-management/index' })
+}
+
+function declineInvitation() {
+  declineResearchInvitation()
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
 }
 </script>
 
@@ -136,10 +147,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button action-button--ghost" variant="outline" @tap="showToast('暂不加入')">
+      <MobileActionButton class="action-button action-button--ghost" variant="outline" @tap="declineInvitation">
         暂不加入
       </MobileActionButton>
-      <MobileActionButton class="action-button action-button--primary" variant="primary" @tap="showToast('确认加入')">
+      <MobileActionButton class="action-button action-button--primary" variant="primary" @tap="confirmInvitation">
         确认加入
       </MobileActionButton>
     </view>

@@ -3,13 +3,20 @@ import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
-import { getAbilityProfileTeacherDetailMock } from '@/services/mock/ability-profile'
+import { calculateTeacherAbilityProfile, getAbilityProfileTeacherDetailMock } from '@/services/mock/ability-profile'
+import { getAbilityListState } from '@/stores/admin/abilityListStore'
+import { getTeacherArchiveFacts } from '@/stores/admin/archiveStore'
 
 const router = useRouter()
 const route = useRoute()
 
 const teacherId = route.params.teacherId as string
-const teacherDetailProfile = getAbilityProfileTeacherDetailMock(teacherId)
+const teacherDetailMock = getAbilityProfileTeacherDetailMock(teacherId)
+const teacherDetailProfile = calculateTeacherAbilityProfile(
+  teacherDetailMock.teacherInfo.name,
+  getTeacherArchiveFacts(teacherDetailMock.teacherInfo.name),
+  getAbilityListState().executionIndicators,
+)
 
 const teacherInfo = ref(teacherDetailProfile.teacherInfo)
 const developmentIndex = ref(teacherDetailProfile.developmentIndex)

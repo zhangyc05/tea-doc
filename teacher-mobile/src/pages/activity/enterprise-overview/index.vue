@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import {
+  filteredEnterpriseRecords,
+  getMobileEnterpriseState,
+  setEnterpriseFilter,
+  type EnterpriseFilter,
+  type EnterpriseRecordStatus,
+  type MobileEnterpriseRecord,
+} from '../../../domain/enterprise'
 
 type PracticeTone = 'green' | 'orange' | 'blue'
 
-const filters = ['全部', '进行中', '待归档', '已归档', '需补充']
-
-const records: Array<{
+type RecordView = {
+  id: string
   company: string
   role: string
   date: string
@@ -16,38 +24,67 @@ const records: Array<{
   status: string
   action: string
   tone: PracticeTone
-}> = [
-  {
-    company: '山东某智能装备有限公司',
-    role: '软件开发工程师',
-    date: '2026-05-10 至 2026-05-20',
-    note: '已记录 8 天',
-    status: '进行中',
-    action: '继续记录',
-    tone: 'green',
-  },
-  {
-    company: '济南智能制造实训基地',
-    role: '设备调试与产线观察',
-    date: '2026-03-01 至 2026-03-08',
-    note: '待补充材料',
-    status: '需补充',
-    action: '补充材料',
-    tone: 'orange',
-  },
-  {
-    company: '青岛某装备有限公司',
-    role: '工业机器人应用实践',
-    date: '2025-07-01 至 2025-07-20',
-    note: '20 天',
-    status: '已归档',
-    action: '查看详情',
-    tone: 'blue',
-  },
-]
+}
+
+const filters: EnterpriseFilter[] = ['全部', '进行中', '待归档', '已归档', '需补充']
+const enterpriseState = getMobileEnterpriseState()
+const records = computed<RecordView[]>(() => filteredEnterpriseRecords().map(toRecordView))
 
 function goBack() {
   uni.navigateBack()
+}
+
+function selectFilter(filter: EnterpriseFilter) {
+  setEnterpriseFilter(filter)
+}
+
+function goLogRecord(recordId = 'enterprise-smart-equipment') {
+  uni.navigateTo({ url: `/pages/activity/enterprise-log-record/index?recordId=${recordId}` })
+}
+
+function goSupplement(recordId = 'enterprise-jinan-training-base') {
+  uni.navigateTo({ url: `/pages/activity/enterprise-supplement-needed/index?recordId=${recordId}` })
+}
+
+function goHistorySupplement() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-history-supplement/index' })
+}
+
+function handleRecordAction(item: RecordView) {
+  if (item.status === '进行中' || item.status === '待归档') {
+    goLogRecord(item.id)
+    return
+  }
+  if (item.status === '需补充') {
+    goSupplement(item.id)
+    return
+  }
+  uni.navigateTo({ url: `/pages/archive/record-detail/index?recordId=enterprise-practice-shandong-software` })
+}
+
+function toRecordView(record: MobileEnterpriseRecord): RecordView {
+  return {
+    id: record.id,
+    company: record.company,
+    role: record.role,
+    date: record.date,
+    note: record.note,
+    status: record.status,
+    action: getRecordAction(record.status),
+    tone: getRecordTone(record.status),
+  }
+}
+
+function getRecordAction(status: EnterpriseRecordStatus): string {
+  if (status === '需补充') return '补充材料'
+  if (status === '已归档') return '查看详情'
+  return '继续记录'
+}
+
+function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
+  if (status === '需补充') return 'orange'
+  if (status === '已归档' || status === '归档确认中') return 'blue'
+  return 'green'
 }
 </script>
 
@@ -103,17 +140,23 @@ function goBack() {
             </view>
             <text class="todo-note">今天可以补充一条实践日志</text>
           </view>
-          <MobileActionButton class="continue-button" variant="outline">继续记录</MobileActionButton>
+          <MobileActionButton class="continue-button" variant="outline" @tap="goLogRecord()">继续记录</MobileActionButton>
         </view>
       </MobileCard>
 
       <MobileCard class="records-card">
         <text class="section-title">实践记录</text>
         <view class="filter-row">
-          <text v-for="item in filters" :key="item" class="filter-chip" :class="{ 'filter-chip--active': item === '进行中' }">{{ item }}</text>
+          <text
+            v-for="item in filters"
+            :key="item"
+            class="filter-chip"
+            :class="{ 'filter-chip--active': item === enterpriseState.selectedFilter }"
+            @tap="selectFilter(item)"
+          >{{ item }}</text>
         </view>
 
-        <view v-for="item in records" :key="item.company" class="record-row">
+        <view v-for="item in records" :key="item.id" class="record-row">
           <view class="record-icon" :class="`record-icon--${item.tone}`"></view>
           <view class="record-copy">
             <text class="record-title">{{ item.company }}</text>
@@ -122,7 +165,7 @@ function goBack() {
           </view>
           <view class="record-actions">
             <text class="status-tag" :class="`status-tag--${item.tone}`">{{ item.status }}</text>
-            <MobileActionButton class="record-button" variant="outline">{{ item.action }}</MobileActionButton>
+            <MobileActionButton class="record-button" variant="outline" @tap="handleRecordAction(item)">{{ item.action }}</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -133,7 +176,7 @@ function goBack() {
           <text class="history-title">有已完成但未记录的实践？</text>
           <text class="history-desc">可以补充附件资料，提交后等待确认。</text>
         </view>
-        <MobileActionButton class="history-button" variant="outline">补充历史实践</MobileActionButton>
+        <MobileActionButton class="history-button" variant="outline" @tap="goHistorySupplement">补充历史实践</MobileActionButton>
       </MobileCard>
     </view>
 

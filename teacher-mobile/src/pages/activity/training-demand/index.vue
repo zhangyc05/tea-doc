@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { submitTrainingDemand } from '../../../domain/training'
 
 const recognizedInfo = [
   ['培训名称：', '全国职业院校数字化教学能力提升研修班'],
@@ -17,7 +18,8 @@ function goBack() {
 }
 
 function submitDemand() {
-  uni.navigateTo({ url: '/pages/activity/training-demand-result/index' })
+  const demand = submitTrainingDemand('found-training')
+  uni.navigateTo({ url: `/pages/activity/training-demand-result/index?demandId=${demand.id}` })
 }
 </script>
 

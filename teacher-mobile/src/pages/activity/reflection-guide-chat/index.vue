@@ -3,6 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveReflectionDraft, startReflectionAiSession } from '../../../domain/reflection'
+
+startReflectionAiSession()
 
 const firstOptions = ['知识点偏难', '提问设计少', '学生还不熟悉', '我来说说']
 const secondOptions = ['增加开放式问题', '先让学生讨论', '结合企业案例', '语音回答']
@@ -12,6 +15,7 @@ function goBack() {
 }
 
 function goDraft() {
+  saveReflectionDraft('AI 引导会话已生成反思草稿')
   uni.navigateTo({ url: '/pages/activity/reflection-draft/index' })
 }
 </script>

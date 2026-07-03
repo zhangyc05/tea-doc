@@ -11,7 +11,7 @@ export type ArchiveCategoryKey =
 
 export type ConcreteArchiveCategoryKey = Exclude<ArchiveCategoryKey, 'all'>
 
-export type MobileArchiveRecordStatus = 'archived' | 'pending-verify'
+export type MobileArchiveRecordStatus = 'archived' | 'pending-verify' | 'need-supplement' | 'removed'
 
 export type MobileArchiveRecord = {
   id: string
@@ -29,6 +29,7 @@ export type MobileArchiveRecord = {
   materials: Array<{ name: string; meta: string }>
   usages: string[]
   sourceSteps: Array<{ title: string; desc: string; time: string }>
+  adminStoreRefs?: string[]
 }
 
 export type ArchiveCategorySummary = {
@@ -39,6 +40,19 @@ export type ArchiveCategorySummary = {
   updated: string
   coverage: string
   focus: string[]
+}
+
+export type ArchiveCorrectionStatus = 'pending-verify' | 'approved' | 'rejected' | 'need-supplement' | 'supplemented'
+
+export type ArchiveCorrectionRecord = {
+  id: string
+  recordId: string
+  reason: string
+  description: string
+  status: ArchiveCorrectionStatus
+  submittedAt: string
+  materials: Array<{ name: string; meta: string }>
+  adminStoreRefs: string[]
 }
 
 const archivedTrainingSteps = [
@@ -341,8 +355,17 @@ export const archiveRecords: MobileArchiveRecord[] = [
   },
 ]
 
+export const archiveCorrections: ArchiveCorrectionRecord[] = []
+
 export function getArchiveCategorySummary(category: ArchiveCategoryKey): ArchiveCategorySummary {
-  return archiveCategorySummaries[category] || archiveCategorySummaries['personal-development']
+  const summary = archiveCategorySummaries[category] || archiveCategorySummaries['personal-development']
+  const records = getArchiveRecordsByCategory(category)
+  const archivedCount = records.filter((record) => record.status === 'archived').length
+  return {
+    ...summary,
+    count: String(archivedCount),
+    focus: summary.focus,
+  }
 }
 
 export function getArchiveRecordsByCategory(category: ArchiveCategoryKey): MobileArchiveRecord[] {
@@ -350,11 +373,79 @@ export function getArchiveRecordsByCategory(category: ArchiveCategoryKey): Mobil
 }
 
 export function getRecentArchiveRecords(limit = 3): MobileArchiveRecord[] {
-  return archiveRecords.slice(0, limit)
+  return archiveRecords.filter((record) => record.status === 'archived').slice(0, limit)
 }
 
 export function getPendingArchiveRecords(): MobileArchiveRecord[] {
-  return archiveRecords.filter((record) => record.status === 'pending-verify')
+  return archiveRecords.filter((record) => record.status === 'pending-verify' || record.status === 'need-supplement')
+}
+
+export function getArchiveOverviewStats() {
+  const archivedCount = archiveRecords.filter((record) => record.status === 'archived').length
+  const pendingCount = getPendingArchiveRecords().length
+  return {
+    archivedCount,
+    pendingCount,
+    categoryCount: archiveCategorySummaries.all.focus.length + 5,
+  }
+}
+
+export function searchArchiveRecords(queryText = '', categoryName = '全部'): MobileArchiveRecord[] {
+  const keyword = queryText.trim()
+  return archiveRecords.filter((record) => {
+    const matchesCategory = categoryName === '全部' || record.categoryName === categoryName
+    const matchesKeyword = keyword.length === 0
+      || record.title.includes(keyword)
+      || record.summary.includes(keyword)
+      || record.type.includes(keyword)
+      || record.source.includes(keyword)
+      || record.fields.some((field) => field.value.includes(keyword) || field.label.includes(keyword))
+    return matchesCategory && matchesKeyword
+  })
+}
+
+export function submitArchiveCorrection(recordId: string, reason: string, description = ''): ArchiveCorrectionRecord {
+  const existing = archiveCorrections.find((correction) => correction.recordId === recordId && correction.status === 'pending-verify')
+  if (existing) return existing
+  const correction: ArchiveCorrectionRecord = {
+    id: `archive-correction-${recordId}`,
+    recordId,
+    reason,
+    description,
+    status: 'pending-verify',
+    submittedAt: '刚刚',
+    materials: [],
+    adminStoreRefs: ['archiveStore.processingRecords', 'teacherArchiveFacts'],
+  }
+  archiveCorrections.unshift(correction)
+  return correction
+}
+
+export function findArchiveCorrectionById(correctionId?: string): ArchiveCorrectionRecord | undefined {
+  return correctionId ? archiveCorrections.find((correction) => correction.id === correctionId) : archiveCorrections[0]
+}
+
+export function updateArchiveCorrectionStatus(correctionId: string, status: ArchiveCorrectionStatus) {
+  const correction = findArchiveCorrectionById(correctionId)
+  if (!correction) return undefined
+  correction.status = status
+  const record = findArchiveRecordById(correction.recordId)
+  if (record && status === 'need-supplement') record.status = 'need-supplement'
+  if (record && status === 'approved') record.status = 'archived'
+  return correction
+}
+
+export function submitArchiveCorrectionSupplement(correctionId: string) {
+  const correction = findArchiveCorrectionById(correctionId)
+  if (!correction) return undefined
+  correction.status = 'supplemented'
+  correction.materials = [
+    ...correction.materials,
+    { name: '更正补充说明.pdf', meta: 'PDF · 来源于更正补充材料' },
+  ]
+  const record = findArchiveRecordById(correction.recordId)
+  if (record) record.status = 'pending-verify'
+  return correction
 }
 
 export function createArchiveSupplementRecord(): MobileArchiveRecord {
@@ -385,6 +476,7 @@ export function createArchiveSupplementRecord(): MobileArchiveRecord {
       { title: '等待核验', desc: '部门或系统确认材料是否可作为正式档案事实。', time: '进行中' },
       { title: '写入档案', desc: '核验通过后进入对应成长档案维度。', time: '待完成' },
     ],
+    adminStoreRefs: ['archiveStore.processingRecords', 'teacherArchiveFacts'],
   }
 
   archiveRecords.unshift(record)
@@ -416,6 +508,7 @@ export function createTrainingArchiveRecord(): MobileArchiveRecord {
     materials: [{ name: '数字化教学能力提升培训总结.pdf', meta: 'PDF · 680KB · 来源于培训归档' }],
     usages: ['个人发展报告：计入培训进修记录', '能力画像：支撑数字化教学能力证据'],
     sourceSteps: pendingVerifySteps,
+    adminStoreRefs: ['archiveStore.processingRecords'],
   }
 
   archiveRecords.unshift(record)
@@ -454,6 +547,43 @@ export function createEnterprisePracticeArchiveRecord(): MobileArchiveRecord {
       { title: '学院核验', desc: '等待学院确认实践经历、岗位、时间和材料真实性。', time: '进行中' },
       { title: '写入档案', desc: '核验通过后进入成长档案企业实践维度。', time: '待完成' },
     ],
+    adminStoreRefs: ['archiveStore.processingRecords'],
+  }
+
+  archiveRecords.unshift(record)
+  return record
+}
+
+export function createTeachingReflectionArchiveRecord(): MobileArchiveRecord {
+  const existingRecord = findArchiveRecordById('teaching-reflection-smart-manufacturing-lesson-5')
+  if (existingRecord) return existingRecord
+
+  const record: MobileArchiveRecord = {
+    id: 'teaching-reflection-smart-manufacturing-lesson-5',
+    title: '《智能制造基础》第 5 次课后反思',
+    category: 'teaching',
+    categoryName: '教学工作',
+    type: '教学反思',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: '教学反思确认',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '教师已确认教学反思记录，正在等待沉淀到成长档案教学工作维度。确认通过后才会成为正式档案事实。',
+    fields: [
+      { label: '课程', value: '智能制造基础' },
+      { label: '课次', value: '第 5 次课' },
+      { label: '班级', value: '智能制造 2301 班' },
+      { label: '依据材料', value: '课堂分析报告、课堂录音、教师补充想法' },
+    ],
+    materials: [{ name: '教学反思报告草稿.pdf', meta: 'PDF · 来源于教学反思确认' }],
+    usages: ['能力画像：待核验后支撑教学改进能力证据', '个人发展报告：待核验后计入教学反思记录'],
+    sourceSteps: [
+      { title: '确认反思', desc: '教师确认 AI 整理的教学反思草稿。', time: '刚刚' },
+      { title: '生成待确认记录', desc: '系统生成成长档案教学工作维度待确认记录。', time: '进行中' },
+      { title: '写入档案', desc: '管理端确认后成为正式档案事实。', time: '待完成' },
+    ],
+    adminStoreRefs: ['archiveStore.processingRecords'],
   }
 
   archiveRecords.unshift(record)
@@ -468,6 +598,9 @@ export function findArchiveRecordByTitle(title?: string): MobileArchiveRecord | 
   return title ? archiveRecords.find((record) => record.title === title) : undefined
 }
 
-export function getArchiveRecordStatusLabel(status: MobileArchiveRecordStatus): '已入档' | '归档确认中' {
-  return status === 'pending-verify' ? '归档确认中' : '已入档'
+export function getArchiveRecordStatusLabel(status: MobileArchiveRecordStatus): '已入档' | '归档确认中' | '需补充' | '已移出' {
+  if (status === 'pending-verify') return '归档确认中'
+  if (status === 'need-supplement') return '需补充'
+  if (status === 'removed') return '已移出'
+  return '已入档'
 }

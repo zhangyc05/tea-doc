@@ -1,8 +1,23 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { findTrainingDemandById, submitTrainingDemand } from '../../../domain/training'
+
+type TrainingNeedResultQuery = {
+  demandId?: string
+}
+
+const query = ref<TrainingNeedResultQuery>({})
+
+onLoad((options) => {
+  query.value = options as TrainingNeedResultQuery
+})
+
+const demand = computed(() => findTrainingDemandById(query.value.demandId) || submitTrainingDemand('ability-improvement'))
 
 const submitRows = [
   { icon: 'person', label: '需求类型', value: '我想提升某项能力' },
@@ -53,7 +68,7 @@ function goHome() {
           <text class="success-desc">你的需求已提交给业务部门确认</text>
           <view class="status-pill">
             <view class="clock-icon"></view>
-            <text>等待确认</text>
+            <text>{{ demand.status }}</text>
           </view>
         </view>
       </MobileCard>
@@ -87,7 +102,7 @@ function goHome() {
             <view class="timeline-step__dot"></view>
             <view class="timeline-step__body">
               <text class="timeline-step__title">{{ step.title }}</text>
-              <text class="timeline-step__desc">{{ step.desc }}</text>
+              <text class="timeline-step__desc">{{ index === 1 ? `${demand.nextStep} 当前状态：待匹配` : step.desc }}</text>
             </view>
           </view>
         </view>

@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveEnterpriseArchiveDraft, submitEnterpriseArchive } from '../../../domain/enterprise'
 
 const infoRows = [
   { label: '档案分类：', value: '企业实践  |  行业实践' },
@@ -26,11 +27,13 @@ function supplementMaterial() {
 }
 
 function backDraft() {
-  uni.showToast({ title: '返回草稿', icon: 'none' })
+  saveEnterpriseArchiveDraft()
+  uni.showToast({ title: '归档草稿已保存', icon: 'none' })
 }
 
 function saveEdit() {
-  uni.showToast({ title: '保存修改', icon: 'none' })
+  const archiveRecord = submitEnterpriseArchive()
+  uni.navigateTo({ url: `/pages/activity/enterprise-archive-result/index?recordId=${archiveRecord.id}` })
 }
 </script>
 

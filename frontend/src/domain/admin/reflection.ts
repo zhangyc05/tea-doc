@@ -29,6 +29,8 @@ export type ReflectionDetail = ReflectionRecord & {
   source: string
   method: string
   destination: string
+  sourceMaterials?: string[]
+  sourceRecordId?: string
 }
 
 export type ReflectionContent = {
@@ -69,5 +71,11 @@ export type ReflectionDetailMock = {
 }
 
 export type ReflectionState = {
+  records: ReflectionDetail[]
   operationMessage: string
+}
+
+export type MobileReflectionSubmission = ReflectionRecord & {
+  sourceMaterials: string[]
+  sourceRecordId: string
 }

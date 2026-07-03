@@ -1,8 +1,12 @@
 export const virtualLabActivityRecordStatuses = ['已形成记录', '未形成记录', '记录异常'] as const
 export const virtualLabRecordArchiveStatuses = ['待沉淀', '已生成待确认档案'] as const
+export const virtualLabRoomStatuses = ['草稿', '运行中', '停用', '归档'] as const
+export const virtualLabMaterialSyncStatuses = ['已同步', '同步失败', '重新同步中'] as const
 
 export type VirtualLabActivityRecordStatus = typeof virtualLabActivityRecordStatuses[number]
 export type VirtualLabRecordArchiveStatus = typeof virtualLabRecordArchiveStatuses[number]
+export type VirtualLabRoomStatus = typeof virtualLabRoomStatuses[number]
+export type VirtualLabMaterialSyncStatus = typeof virtualLabMaterialSyncStatuses[number]
 
 export const virtualLabActivityRecordStatusClassMap: Record<VirtualLabActivityRecordStatus, string> = {
   已形成记录: 'success',
@@ -26,6 +30,7 @@ export function getVirtualLabRecordArchiveStatusClass(status: VirtualLabRecordAr
 export type VirtualLabRoom = {
   id: string
   name: string
+  status: VirtualLabRoomStatus
   direction: string
   affiliation: string
   leader: string
@@ -70,6 +75,8 @@ export type VirtualLabMaterial = {
   id: string
   activityId: string
   name: string
+  syncStatus: VirtualLabMaterialSyncStatus
+  syncMessage: string
   source: string
   type: string
   time: string

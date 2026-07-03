@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { confirmReflection, optimizeReflectionDraft, saveReflectionDraft } from '../../../domain/reflection'
 
 const sections = [
   {
@@ -44,7 +45,28 @@ function goBack() {
 }
 
 function goSuccess() {
+  confirmReflection()
   uni.navigateTo({ url: '/pages/activity/reflection-success/index' })
+}
+
+function editDraft() {
+  saveReflectionDraft('教师已修改反思草稿内容')
+  uni.showToast({ title: '草稿已进入编辑状态', icon: 'none' })
+}
+
+function addThought() {
+  saveReflectionDraft('补充一句想法：下次增加开放式提问。')
+  uni.showToast({ title: '已补充想法', icon: 'none' })
+}
+
+function optimizeDraft() {
+  optimizeReflectionDraft()
+  uni.showToast({ title: 'AI 已重新优化', icon: 'none' })
+}
+
+function saveDraft() {
+  saveReflectionDraft()
+  uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 </script>
 
@@ -94,9 +116,9 @@ function goSuccess() {
       </MobileCard>
 
       <view class="tool-row">
-        <MobileActionButton class="tool-button" variant="outline">修改草稿</MobileActionButton>
-        <MobileActionButton class="tool-button" variant="outline">补充一句想法</MobileActionButton>
-        <MobileActionButton class="tool-button" variant="outline">重新让 AI 优化</MobileActionButton>
+        <MobileActionButton class="tool-button" variant="outline" @tap="editDraft">修改草稿</MobileActionButton>
+        <MobileActionButton class="tool-button" variant="outline" @tap="addThought">补充一句想法</MobileActionButton>
+        <MobileActionButton class="tool-button" variant="outline" @tap="optimizeDraft">重新让 AI 优化</MobileActionButton>
       </view>
 
       <view class="confirm-note">
@@ -105,7 +127,7 @@ function goSuccess() {
       </view>
 
       <view class="bottom-actions">
-        <MobileActionButton class="save-button" variant="outline">保存草稿</MobileActionButton>
+        <MobileActionButton class="save-button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
         <MobileActionButton class="confirm-button" variant="primary" @tap="goSuccess">确认反思</MobileActionButton>
       </view>
     </view>

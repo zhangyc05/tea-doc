@@ -3,6 +3,7 @@ import { upsertArchiveProcessingRecord } from './archiveStore'
 import {
   createVirtualLabActivityInState,
   createVirtualLabRoomInState,
+  archiveVirtualLabRoomInState,
   formVirtualLabRecordFromActivityInState,
   getVirtualLabActivitiesByRoomInState,
   getVirtualLabActivityInState,
@@ -12,8 +13,12 @@ import {
   getVirtualLabRecordsByRoomInState,
   getVirtualLabRoomInState,
   inviteVirtualLabMemberInState,
+  markVirtualLabMaterialSyncFailedInState,
   removeVirtualLabMemberInState,
+  publishVirtualLabRoomInState,
+  resyncVirtualLabMaterialInState,
   sendVirtualLabRecordToArchiveInState,
+  stopVirtualLabRoomInState,
 } from './virtual-lab/actions'
 import { createInitialVirtualLabState } from './virtual-lab/initialData'
 
@@ -21,10 +26,12 @@ export type {
   VirtualLabActivity,
   VirtualLabActivityRecordStatus,
   VirtualLabMaterial,
+  VirtualLabMaterialSyncStatus,
   VirtualLabMember,
   VirtualLabRecord,
   VirtualLabRecordArchiveStatus,
   VirtualLabRoom,
+  VirtualLabRoomStatus,
   VirtualLabState,
 } from '@/domain/admin/virtual-lab'
 
@@ -40,6 +47,18 @@ export function resetVirtualLabState() {
 
 export function createVirtualLabRoom() {
   return createVirtualLabRoomInState(state)
+}
+
+export function publishVirtualLabRoom(roomId: string) {
+  return publishVirtualLabRoomInState(state, roomId)
+}
+
+export function stopVirtualLabRoom(roomId: string) {
+  return stopVirtualLabRoomInState(state, roomId)
+}
+
+export function archiveVirtualLabRoom(roomId: string) {
+  return archiveVirtualLabRoomInState(state, roomId)
 }
 
 export function inviteVirtualLabMember(roomId: string) {
@@ -88,4 +107,12 @@ export function getVirtualLabRecordsByRoom(roomId: string) {
 
 export function getVirtualLabMaterialsByActivity(activityId: string) {
   return getVirtualLabMaterialsByActivityInState(state, activityId)
+}
+
+export function markVirtualLabMaterialSyncFailed(materialId: string) {
+  return markVirtualLabMaterialSyncFailedInState(state, materialId)
+}
+
+export function resyncVirtualLabMaterial(materialId: string) {
+  return resyncVirtualLabMaterialInState(state, materialId)
 }

@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import {
-  archiveRecords,
   getArchiveRecordStatusLabel,
+  searchArchiveRecords,
   type ConcreteArchiveCategoryKey,
   type MobileArchiveRecord,
 } from '../../../domain/archive'
@@ -32,11 +32,7 @@ const selectedFilter = ref(filters[0])
 const queryText = ref('成长记录')
 
 const filteredRecords = computed(() => {
-  if (selectedFilter.value === '全部') {
-    return archiveRecords
-  }
-
-  return archiveRecords.filter((record) => record.categoryName === selectedFilter.value)
+  return searchArchiveRecords(queryText.value, selectedFilter.value)
 })
 
 function goBack() {
@@ -111,6 +107,10 @@ function showRecord(recordId: string) {
           <text class="record-meta">{{ getRecordMeta(record) }}</text>
         </view>
         <view class="record-arrow"></view>
+      </view>
+      <view v-if="filteredRecords.length === 0" class="empty-card">
+        <text class="empty-title">暂无匹配档案</text>
+        <text class="empty-desc">可调整关键词或切换分类后重新查询。</text>
       </view>
     </view>
   </MobilePageShell>
@@ -388,6 +388,30 @@ function showRecord(recordId: string) {
   display: flex;
   flex-direction: column;
   gap: 10rpx;
+}
+
+.empty-card {
+  padding: 36rpx 28rpx;
+  border: 2rpx dashed rgba(150, 164, 190, 0.34);
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.empty-title {
+  display: block;
+  color: #10172d;
+  font-size: 30rpx;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.empty-desc {
+  display: block;
+  margin-top: 12rpx;
+  color: #66728a;
+  font-size: 25rpx;
+  line-height: 1.4;
 }
 
 .record-card {

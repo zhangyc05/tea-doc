@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { submitEnterpriseSupplement } from '../../../domain/enterprise'
 
 const infoRows = [
   { label: '实践单位：', value: '山东某软件科技有限公司' },
@@ -20,6 +21,7 @@ function goSupplement() {
 }
 
 function submitAgain() {
+  submitEnterpriseSupplement()
   uni.navigateTo({ url: '/pages/activity/enterprise-supplement-submitted/index' })
 }
 </script>

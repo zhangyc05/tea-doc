@@ -7,12 +7,13 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveRecordById } from '../../../../domain/archive'
+import { archiveRecords, findArchiveCorrectionById, findArchiveRecordById } from '../../../../domain/archive'
 
 type CorrectionResult = 'approved' | 'rejected' | 'need-supplement'
 
 type ResultQuery = {
   recordId?: string
+  correctionId?: string
   reason?: string
   result?: CorrectionResult
 }
@@ -24,7 +25,8 @@ onLoad((options) => {
 })
 
 const record = computed(() => findArchiveRecordById(query.value.recordId) || archiveRecords[0])
-const reason = computed(() => (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
+const correction = computed(() => findArchiveCorrectionById(query.value.correctionId))
+const reason = computed(() => correction.value?.reason || (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
 const result = computed<CorrectionResult>(() => query.value.result || 'need-supplement')
 
 const resultView = computed(() => {
@@ -69,13 +71,13 @@ function goRecordDetail() {
 
 function goCorrectionProgress() {
   uni.navigateTo({
-    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&status=supplemented&reason=${encodeURIComponent(reason.value)}`,
+    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}&status=supplemented`,
   })
 }
 
 function goCorrectionSupplement() {
   uni.navigateTo({
-    url: `/pages/archive/correction/supplement/index?recordId=${record.value.id}&reason=${encodeURIComponent(reason.value)}`,
+    url: `/pages/archive/correction/supplement/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}`,
   })
 }
 

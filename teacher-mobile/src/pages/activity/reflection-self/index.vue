@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { addReflectionMaterial, startReflectionAiSession } from '../../../domain/reflection'
 
 const scopeCards = [
   { title: '单次课', icon: 'video', active: false },
@@ -22,7 +23,13 @@ function goBack() {
 }
 
 function goAiChat() {
+  startReflectionAiSession()
   uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
+}
+
+function addMaterial(title: string) {
+  addReflectionMaterial(title, title.includes('音频') ? 'audio' : 'material')
+  uni.showToast({ title: '材料已加入依据', icon: 'none' })
 }
 </script>
 
@@ -104,7 +111,7 @@ function goAiChat() {
           <text>还可以补充</text>
         </view>
         <view class="supplement-grid">
-          <view v-for="item in supplementItems" :key="item.title" class="supplement-item">
+          <view v-for="item in supplementItems" :key="item.title" class="supplement-item" @tap="addMaterial(item.title)">
             <view class="supplement-icon" :class="`supplement-icon--${item.icon}`"></view>
             <view>
               <text class="supplement-title">{{ item.title }}</text>

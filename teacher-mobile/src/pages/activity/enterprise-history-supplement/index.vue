@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { saveEnterpriseArchiveDraft, submitEnterpriseHistory } from '../../../domain/enterprise'
 
 const baseFields = [
   { label: '实践单位：', value: '济南智能制造实训基地' },
@@ -22,10 +23,12 @@ function goBack() {
 }
 
 function saveDraft() {
+  saveEnterpriseArchiveDraft('enterprise-jinan-training-base')
   uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 
 function goConfirmed() {
+  submitEnterpriseHistory()
   uni.navigateTo({ url: '/pages/activity/enterprise-history-confirmed/index' })
 }
 </script>

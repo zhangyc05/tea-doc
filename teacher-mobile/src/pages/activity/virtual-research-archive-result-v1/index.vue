@@ -3,6 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { submitVirtualResearchArchive } from '../../../domain/virtualResearch'
+
+submitVirtualResearchArchive()
 
 const activityMeta = [
   { icon: 'doc', label: '活动名称：', value: '智能制造课程资源共建研讨' },
@@ -43,6 +46,10 @@ function goArchiveRecord() {
   uni.navigateTo({
     url: '/pages/archive/record-detail/index?recordId=virtual-research-course-resource-coconstruction',
   })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
 }
 </script>
 
@@ -139,7 +146,7 @@ function goArchiveRecord() {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="footer-button" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="footer-button" variant="outline" @tap="goResearchRoom">
         返回教研室
       </MobileActionButton>
       <MobileActionButton class="footer-button" variant="primary" @tap="goArchiveRecord">

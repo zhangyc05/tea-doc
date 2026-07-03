@@ -9,6 +9,7 @@ import { getTodoState } from '../../../stores/todoStore'
 const todoState = getTodoState()
 const certificate = computed(() => todoState.certificate)
 const changes = computed(() => certificate.value.changes)
+const submissionRecords = computed(() => certificate.value.submissionRecords)
 
 const nextSteps = [
   '部门将核验你修改后的证书信息',
@@ -25,7 +26,7 @@ function goTodo() {
 }
 
 function showSubmitRecord() {
-  uni.showToast({ title: '提交记录已在当前页展示', icon: 'none' })
+  uni.showToast({ title: submissionRecords.value[0]?.title || '暂无提交记录', icon: 'none' })
 }
 </script>
 
@@ -85,6 +86,10 @@ function showSubmitRecord() {
 
     <MobileCard class="progress-card">
       <text class="section-title">当前进度</text>
+      <view v-for="record in submissionRecords" :key="record.id" class="submit-record">
+        <text class="submit-record__title">{{ record.title }}</text>
+        <text class="submit-record__meta">{{ record.submittedAt }} ｜ {{ record.status }} ｜ {{ record.adminStoreRefs.join(' / ') }}</text>
+      </view>
       <view class="progress-line">
         <view class="progress-step progress-step--done">
           <view class="step-dot">✓</view>

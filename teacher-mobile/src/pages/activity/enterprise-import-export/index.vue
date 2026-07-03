@@ -24,11 +24,11 @@ function goBack() {
 }
 
 function viewSubmit() {
-  uni.showToast({ title: '查看提交内容', icon: 'none' })
+  uni.navigateTo({ url: '/pages/activity/enterprise-plan-confirm/index' })
 }
 
-function backToList() {
-  uni.showToast({ title: '返回实践列表', icon: 'none' })
+function goEnterpriseList() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
 }
 </script>
 
@@ -91,7 +91,7 @@ function backToList() {
 
     <view class="bottom-actions">
       <MobileActionButton class="action-button" variant="outline" @tap="viewSubmit">查看提交内容</MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary" @tap="backToList">返回实践列表</MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="goEnterpriseList">返回实践列表</MobileActionButton>
     </view>
 
     <MobileTabBar active="activity" />

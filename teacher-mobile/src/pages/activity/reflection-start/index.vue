@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { startReflection, type ReflectionStartMethod } from '../../../domain/reflection'
 
 const reportStarts = [
   {
@@ -50,8 +51,23 @@ function goBack() {
   uni.navigateBack()
 }
 
-function goCourseSelect() {
+function goCourseSelect(method: ReflectionStartMethod) {
+  startReflection(method)
+  if (method === 'chat') {
+    uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
+    return
+  }
   uni.navigateTo({ url: '/pages/activity/reflection-course/index' })
+}
+
+function continueReflectionDraft() {
+  uni.navigateTo({ url: '/pages/activity/reflection-draft/index' })
+}
+
+function getManualStartMethod(icon: string): ReflectionStartMethod {
+  if (icon === 'mic') return 'audio'
+  if (icon === 'upload') return 'material'
+  return 'chat'
 }
 </script>
 
@@ -82,7 +98,7 @@ function goCourseSelect() {
               <text>{{ item.badge }}</text>
             </view>
           </view>
-          <MobileActionButton class="row-action" variant="outline" @tap="goCourseSelect">选择</MobileActionButton>
+          <MobileActionButton class="row-action" variant="outline" @tap="goCourseSelect('report')">选择</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -94,7 +110,7 @@ function goCourseSelect() {
             <text class="start-row__title">{{ item.title }}</text>
             <text class="start-row__desc">{{ item.desc }}</text>
           </view>
-          <MobileActionButton class="row-action" variant="outline" @tap="goCourseSelect">开始</MobileActionButton>
+          <MobileActionButton class="row-action" variant="outline" @tap="goCourseSelect(getManualStartMethod(item.icon))">开始</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -110,7 +126,7 @@ function goCourseSelect() {
             </view>
             <text class="draft-desc">已整理课堂问题与改进思路，可继续完善</text>
           </view>
-          <MobileActionButton class="draft-action" variant="outline">继续完善</MobileActionButton>
+          <MobileActionButton class="draft-action" variant="outline" @tap="continueReflectionDraft">继续完善</MobileActionButton>
         </view>
       </MobileCard>
     </view>

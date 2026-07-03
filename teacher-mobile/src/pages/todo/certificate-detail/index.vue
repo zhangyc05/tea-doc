@@ -9,6 +9,7 @@ import {
   confirmTodoCertificate,
   getTodoById,
   getTodoState,
+  previewTodoCertificateMaterial,
   removeTodoCertificate,
 } from '../../../stores/todoStore'
 
@@ -32,8 +33,13 @@ function goArchiveSuccess() {
 }
 
 function goRemoved() {
-  removeTodoCertificate(certificate.value.id)
+  removeTodoCertificate(certificate.value.id, '证书项目与本人参加培训记录不一致')
   uni.navigateTo({ url: '/pages/todo/certificate-removed/index' })
+}
+
+function previewMaterial() {
+  const material = previewTodoCertificateMaterial()
+  uni.navigateTo({ url: material.previewUrl })
 }
 </script>
 
@@ -76,7 +82,7 @@ function goRemoved() {
       <view class="material-row">
         <view class="material-icon"></view>
         <text class="material-name">{{ certificate.material.name }}</text>
-        <MobileActionButton class="material-link" variant="link" arrow>查看</MobileActionButton>
+        <MobileActionButton class="material-link" variant="link" arrow @tap="previewMaterial">查看</MobileActionButton>
       </view>
     </MobileCard>
 

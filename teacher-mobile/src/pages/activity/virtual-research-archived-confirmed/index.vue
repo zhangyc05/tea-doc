@@ -46,6 +46,14 @@ function goBack() {
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goResearchRecord() {
+  uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting' })
+}
 </script>
 
 <template>
@@ -134,10 +142,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button outline-button" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="action-button outline-button" variant="outline" @tap="goResearchRoom">
         返回教研室
       </MobileActionButton>
-      <MobileActionButton class="action-button primary-button" variant="primary" @tap="showToast('查看教研记录')">
+      <MobileActionButton class="action-button primary-button" variant="primary" @tap="goResearchRecord">
         查看教研记录
       </MobileActionButton>
     </view>

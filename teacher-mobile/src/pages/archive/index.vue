@@ -4,6 +4,7 @@ import MobileCard from '../../components/MobileCard.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 import {
   getArchiveCategorySummary,
+  getArchiveOverviewStats,
   getArchiveRecordStatusLabel,
   getPendingArchiveRecords,
   getRecentArchiveRecords,
@@ -29,6 +30,7 @@ const categories: Array<{
 
 const recentRecords = getRecentArchiveRecords()
 const pendingRecords = getPendingArchiveRecords()
+const stats = getArchiveOverviewStats()
 
 function goArchiveQuery() {
   uni.navigateTo({ url: '/pages/archive/record-query/index' })
@@ -89,14 +91,14 @@ function goArchiveRecord(record: { id: string }) {
         <view class="overview-item">
           <view class="metric-icon metric-icon--folder"></view>
           <view class="metric-copy">
-            <text class="metric-number">42</text>
+            <text class="metric-number">{{ stats.archivedCount }}</text>
             <text class="metric-label">条已入档</text>
           </view>
         </view>
         <view class="overview-item">
           <view class="metric-icon metric-icon--grid"></view>
           <view class="metric-copy">
-            <text class="metric-number">8</text>
+            <text class="metric-number">{{ stats.categoryCount }}</text>
             <text class="metric-label">类档案</text>
           </view>
         </view>
@@ -104,7 +106,7 @@ function goArchiveRecord(record: { id: string }) {
           <view class="metric-icon metric-icon--clock"></view>
           <view class="metric-copy">
             <text class="metric-label">待确认</text>
-            <text class="metric-number metric-number--date">{{ pendingRecords.length }}</text>
+            <text class="metric-number metric-number--date">{{ stats.pendingCount }}</text>
           </view>
         </view>
       </view>

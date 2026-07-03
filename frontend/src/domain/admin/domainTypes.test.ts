@@ -412,6 +412,7 @@ describe('admin domain types', () => {
     const room = {
       id: 'room-1',
       name: '智能制造课程改革虚拟教研室',
+      status: '运行中',
       direction: '智能制造专业课程改革',
       affiliation: '智能制造学院 | 智能制造专业群',
       leader: '周明',

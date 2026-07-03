@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { addReflectionMaterial, selectReflectionEvidence, selectReflectionLesson } from '../../../domain/reflection'
 
 const scopeOptions = [
   { title: '单次课', active: true },
@@ -47,7 +48,33 @@ function goBack() {
 }
 
 function goScopeSelect() {
+  selectReflectionLesson('第 5 次课')
+  selectReflectionEvidence('class-analysis-report')
+  selectReflectionEvidence('class-audio')
   uni.navigateTo({ url: '/pages/activity/reflection-scope/index' })
+}
+
+function switchLesson() {
+  selectReflectionLesson('第 5 次课')
+  uni.showToast({ title: '已选择当前课次', icon: 'none' })
+}
+
+function addEvidence(rowTitle: string) {
+  selectReflectionEvidence(rowTitle.includes('录音') ? 'class-audio' : 'class-analysis-report')
+}
+
+function uploadMaterial() {
+  addReflectionMaterial('补充教学资料', 'material')
+  uni.showToast({ title: '教学资料已加入依据', icon: 'none' })
+}
+
+function recordAudio() {
+  addReflectionMaterial('课堂录音', 'audio')
+  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
+}
+
+function goDirectChat() {
+  uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
 }
 </script>
 
@@ -81,7 +108,7 @@ function goScopeSelect() {
             <text class="lesson-meta">2026-03-18　|　智能制造 2301 班</text>
             <text class="lesson-meta">10:00-11:45　|　课堂巡视与语音已完成解析</text>
           </view>
-          <MobileActionButton class="switch-button" variant="outline">切换课次</MobileActionButton>
+          <MobileActionButton class="switch-button" variant="outline" @tap="switchLesson">切换课次</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -92,7 +119,7 @@ function goScopeSelect() {
         </view>
 
         <view class="evidence-list">
-          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': row.selected }">
+          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': row.selected }" @tap="addEvidence(row.title)">
             <view class="evidence-icon" :class="`evidence-icon--${row.icon}`"></view>
             <view class="evidence-row__body">
               <text class="row-title">{{ row.title }}</text>
@@ -107,15 +134,15 @@ function goScopeSelect() {
       <MobileCard class="supplement-card">
         <text class="section-title">还可以补充</text>
         <view class="supplement-actions">
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="uploadMaterial">
             <view class="supplement-icon supplement-icon--upload"></view>
             <text>上传教学资料</text>
           </view>
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="recordAudio">
             <view class="supplement-icon supplement-icon--mic"></view>
             <text>录制课堂音频</text>
           </view>
-          <view class="supplement-button">
+          <view class="supplement-button" @tap="goDirectChat">
             <view class="supplement-icon supplement-icon--chat"></view>
             <text>直接与 AI 对话</text>
           </view>

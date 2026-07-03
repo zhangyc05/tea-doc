@@ -7,7 +7,7 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveRecordById, getArchiveRecordStatusLabel } from '../../../../domain/archive'
+import { archiveRecords, findArchiveRecordById, getArchiveRecordStatusLabel, submitArchiveCorrection } from '../../../../domain/archive'
 
 type ApplyQuery = {
   recordId?: string
@@ -40,8 +40,9 @@ function selectReason(reason: string) {
 }
 
 function submitCorrection() {
+  const correction = submitArchiveCorrection(record.value.id, selectedReason.value, description.value)
   uni.redirectTo({
-    url: `/pages/archive/correction/submitted/index?recordId=${record.value.id}&reason=${encodeURIComponent(selectedReason.value)}`,
+    url: `/pages/archive/correction/submitted/index?recordId=${record.value.id}&correctionId=${correction.id}`,
   })
 }
 </script>

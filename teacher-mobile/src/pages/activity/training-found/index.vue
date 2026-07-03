@@ -3,6 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { submitTrainingDemand } from '../../../domain/training'
 
 const directions = ['数字化教学应用', '项目化教学实施', '课堂互动设计', '课程资源建设']
 
@@ -11,7 +12,8 @@ function goBack() {
 }
 
 function submitDemand() {
-  uni.navigateTo({ url: '/pages/activity/training-need-result/index' })
+  const demand = submitTrainingDemand('ability-improvement')
+  uni.navigateTo({ url: `/pages/activity/training-need-result/index?demandId=${demand.id}` })
 }
 </script>
 

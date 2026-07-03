@@ -7,10 +7,11 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveRecordById } from '../../../../domain/archive'
+import { archiveRecords, findArchiveCorrectionById, findArchiveRecordById } from '../../../../domain/archive'
 
 type SubmittedQuery = {
   recordId?: string
+  correctionId?: string
   reason?: string
 }
 
@@ -21,7 +22,8 @@ onLoad((options) => {
 })
 
 const record = computed(() => findArchiveRecordById(query.value.recordId) || archiveRecords[0])
-const reason = computed(() => (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
+const correction = computed(() => findArchiveCorrectionById(query.value.correctionId))
+const reason = computed(() => correction.value?.reason || (query.value.reason ? decodeURIComponent(query.value.reason) : '字段信息有误'))
 
 function goBack() {
   uni.navigateBack()
@@ -35,7 +37,7 @@ function goRecordDetail() {
 
 function goCorrectionProgress() {
   uni.navigateTo({
-    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&status=pending-verify&reason=${encodeURIComponent(reason.value)}`,
+    url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}&status=pending-verify`,
   })
 }
 </script>
