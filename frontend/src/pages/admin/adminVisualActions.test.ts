@@ -439,6 +439,19 @@ describe('admin visual action guardrails', () => {
     expect(abilityListExecutionPage).toContain('indicator.abilityKey === selectedAbility.value')
     expect(abilityListExecutionPage).toContain('@select-ability="selectAbility"')
     expect(abilityListExecutionPage).toContain(':indicators="filteredIndicators"')
+    expect(abilityListExecutionPage).toContain('const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey')
+    expect(abilityListExecutionPage).toContain('const selectedAbility = ref(defaultAbilityKey)')
+    expect(abilityListExecutionPage).toContain(':default-expanded-keys="[defaultAbilityGroupKey]"')
+    expect(abilityListExecutionPage).not.toContain("const selectedAbility = ref('teaching-implementation')")
+    expect(abilityListExecutionPage).not.toContain(':default-expanded-keys="[\'teaching\']"')
+  })
+
+  it('defaults the base ability list to the first ability element', () => {
+    expect(abilityListBasePage).toContain('const defaultAbilityKey = abilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey')
+    expect(abilityListBasePage).toContain('const selectedAbility = ref(defaultAbilityKey)')
+    expect(abilityListBasePage).toContain(':default-expanded-keys="[defaultAbilityGroupKey]"')
+    expect(abilityListBasePage).not.toContain("const selectedAbility = ref('teaching-implementation')")
+    expect(abilityListBasePage).not.toContain(':default-expanded-keys="[\'teaching\']"')
   })
 
   it('uses DetailSheet for archive source records while preserving source filters', () => {

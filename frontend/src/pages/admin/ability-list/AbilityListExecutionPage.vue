@@ -33,7 +33,9 @@ const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
 // 编辑抽屉状态
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const showVersionDrawer = ref(false)
-const selectedAbility = ref('teaching-implementation')
+const defaultAbilityGroupKey = normalizedAbilityTree[0]?.key ?? ''
+const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey
+const selectedAbility = ref(defaultAbilityKey)
 
 // 打开编辑抽屉
 function openEditDrawer(indicator: AbilityIndicator) {
@@ -193,7 +195,7 @@ function closeVersionDrawer() {
         :selected-icon="getSelectedAbilityIcon()"
         :indicators="filteredIndicators"
         basis-column-title="计算规则"
-        :default-expanded-keys="['teaching']"
+        :default-expanded-keys="[defaultAbilityGroupKey]"
         @select-ability="selectAbility"
         @edit-indicator="openEditDrawer"
       />

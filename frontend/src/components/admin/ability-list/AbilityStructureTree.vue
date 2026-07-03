@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import type { AbilityTreeNode } from './types'
 import iconAbilityStructure from '@/assets/admin/ability-list-base-assets/icons/icon-ability-structure.svg'
 
@@ -23,29 +23,29 @@ const emit = defineEmits<{
 
 const expandedKeys = ref<Set<string>>(new Set(props.defaultExpandedKeys))
 
-watch(
-  () => props.defaultExpandedKeys,
-  (newKeys) => {
-    expandedKeys.value = new Set(newKeys)
-  },
-)
-
 function isExpanded(key: string) {
   return expandedKeys.value.has(key)
 }
 
-function toggleGroup(key: string) {
-  const next = new Set(expandedKeys.value)
-
-  if (next.has(key)) {
-    next.delete(key)
-    emit('toggle', key, false)
-  } else {
-    next.add(key)
-    emit('toggle', key, true)
+function toggleParentGroup(item: AbilityTreeNode) {
+  if (expandedKeys.value.has(item.key)) {
+    emit('toggle', item.key, false)
+    expandedKeys.value = new Set()
+    return
   }
 
+  expandedKeys.value.forEach((key) => {
+    emit('toggle', key, false)
+  })
+
+  const next = new Set([item.key])
+  emit('toggle', item.key, true)
   expandedKeys.value = next
+
+  const firstChild = item.children?.[0]
+  if (firstChild) {
+    emit('select', firstChild.key)
+  }
 }
 
 function handleNodeClick(key: string) {
@@ -88,7 +88,7 @@ function handleChildClick(key: string) {
               expanded: isExpanded(item.key),
             }"
             type="button"
-            @click="toggleGroup(item.key)"
+            @click="toggleParentGroup(item)"
           >
             <img v-if="item.icon" class="ability-icon" :src="item.icon" alt="" />
             <span>{{ item.label }}</span>

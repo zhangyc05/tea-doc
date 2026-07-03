@@ -33,12 +33,13 @@ const { abilityTree } = getAbilityListBaseMock({
   service: iconAbilityService,
 })
 
-const selectedAbility = ref('teaching-implementation')
+const defaultAbilityGroupKey = abilityTree[0]?.key ?? ''
+const defaultAbilityKey = abilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey
+const selectedAbility = ref(defaultAbilityKey)
 const selectedIndicator = ref<AbilityIndicator | null>(null)
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
-const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
 // 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
 const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.baseTemplateIndicators)
@@ -116,22 +117,6 @@ function saveIndicatorEdit() {
     basisLabel: editingIndicator.value.basisLabel,
   })
   closeEditDrawer()
-}
-
-function isAbilityExpanded(key: string) {
-  return expandedAbilityKeys.value.has(key)
-}
-
-function toggleAbilityGroup(key: string) {
-  const next = new Set(expandedAbilityKeys.value)
-
-  if (next.has(key)) {
-    next.delete(key)
-  } else {
-    next.add(key)
-  }
-
-  expandedAbilityKeys.value = next
 }
 
 function findSelectedAbility() {
@@ -254,7 +239,7 @@ function publishNewBaseTemplateVersion() {
         :selected-icon="getSelectedAbilityIcon()"
         :indicators="filteredIndicators"
         basis-column-title="计算依据"
-        :default-expanded-keys="['teaching']"
+        :default-expanded-keys="[defaultAbilityGroupKey]"
         @select-ability="selectAbility"
         @row-click="selectIndicator"
         @edit-indicator="editIndicator"

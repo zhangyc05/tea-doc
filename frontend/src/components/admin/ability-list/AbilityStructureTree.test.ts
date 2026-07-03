@@ -1,3 +1,4 @@
+/* @vitest-environment jsdom */
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import AbilityStructureTree from './AbilityStructureTree.vue'
@@ -37,5 +38,57 @@ describe('AbilityStructureTree', () => {
 
     expect(wrapper.emitted('select')?.[0]).toEqual(['basic-ethics'])
     expect(wrapper.text()).toContain('师德师风')
+  })
+
+  it('toggles an expanded parent group from the whole parent row', async () => {
+    const wrapper = mount(AbilityStructureTree, {
+      props: {
+        nodes,
+        selectedKey: 'basic-ethics',
+        defaultExpandedKeys: ['basic'],
+      },
+    })
+
+    await wrapper.findAll('button.ability-parent')[0].trigger('click')
+
+    expect(wrapper.emitted('toggle')?.[0]).toEqual(['basic', false])
+    expect(wrapper.text()).not.toContain('师德师风')
+  })
+
+  it('expands the clicked parent group and collapses the previously expanded group', async () => {
+    const wrapper = mount(AbilityStructureTree, {
+      props: {
+        nodes,
+        selectedKey: 'basic-ethics',
+        defaultExpandedKeys: ['basic'],
+      },
+    })
+
+    await wrapper.findAll('button.ability-parent')[1].trigger('click')
+
+    expect(wrapper.emitted('toggle')?.[0]).toEqual(['basic', false])
+    expect(wrapper.emitted('toggle')?.[1]).toEqual(['teaching', true])
+    expect(wrapper.emitted('select')?.[0]).toEqual(['teaching-implementation'])
+    expect(wrapper.text()).not.toContain('师德师风')
+    expect(wrapper.text()).toContain('教学实施')
+  })
+
+  it('keeps the clicked parent expanded after the parent page updates the selected key', async () => {
+    const wrapper = mount(AbilityStructureTree, {
+      props: {
+        nodes,
+        selectedKey: 'basic-ethics',
+        defaultExpandedKeys: ['basic'],
+      },
+    })
+
+    await wrapper.findAll('button.ability-parent')[1].trigger('click')
+    await wrapper.setProps({
+      selectedKey: 'teaching-implementation',
+      defaultExpandedKeys: ['basic'],
+    })
+
+    expect(wrapper.text()).not.toContain('师德师风')
+    expect(wrapper.text()).toContain('教学实施')
   })
 })
