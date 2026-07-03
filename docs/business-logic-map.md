@@ -259,7 +259,7 @@
 | --- | --- | --- | --- |
 | 群体画像 | 查看完整建议 | 跳转 `/admin/ability-profile/teacher?focus=重点支持` | 已闭环到教师画像列表筛选 |
 | 群体画像 | 查看教师画像 | 教师对象跳转 `/admin/ability-profile/teacher/:teacherId` | 已闭环到教师画像详情 |
-| 群体画像 | 查看院系/专业画像 | 当前无独立院系/专业画像页，页面内提示降级 | 已明确降级，不保留空点击 |
+| 群体画像 | 查看院系/专业画像 | 不新增独立画像页，保留在群体画像重点关注对象筛选态内定位当前对象 | 已闭环为页面内筛选态，不再提示降级 |
 | 教师画像列表 | 搜索、学院、职称、类型、关注筛选、分页 | 本页计算 `filteredTeachers`、`paginatedTeachers` 和页码状态 | 页面内闭环 |
 | 教师画像列表 | 进入画像 | `router.push('/admin/ability-profile/teacher/:teacherId')` | 已闭环到详情 |
 | 教师画像详情 | 按档案事实和执行版口径计算画像 | `calculateTeacherAbilityProfile()` 读取 `archiveStore.teacherArchiveFacts` 和 `abilityListStore.executionIndicators`，生成发展指数、雷达分、维度说明和支持方向证据 | 已补第一版真实计算关系 |
@@ -268,7 +268,7 @@
 ### 6.4 后续审计点
 
 1. 教师画像详情已通过 `calculateTeacherAbilityProfile()` 建立第一版计算口径：正式档案事实提供证据，能力清单执行版指标提供维度构成；群体画像仍使用 mock 聚合数据，后续可沿用同一计算函数扩展。
-2. 群体画像的院系/专业独立画像页当前不存在，后续需决定是补页面还是保留为群体画像内筛选态。
+2. 群体画像的院系/专业画像已决定保留为群体画像内筛选态；后续如需独立页，需先补真实院系/专业画像模型，不复用当前提示态。
 
 ## 7. 管理端：教学反思
 
@@ -1198,10 +1198,10 @@
 | 测试入口 | `frontend/package.json` 已增加 `npm run test` 和 `npm run test:stores`，AGENTS 已把管理端验证命令更新为 test/typecheck/build；E17 已建立模块级测试约定：domain 测状态枚举/文案/helper，store 测跨页面业务行为，structure 测 initialData/actions 注入 state，mock service 测稳定数据源，component 测 props/事件，page raw guardrail 测路由、空状态和视觉态按钮；六个已拆分管理端 store 均已覆盖 structure 测试，并由 `adminStoreStructure.test.ts` 防止漏补 | 后续新增 store 行为必须先补 `*Store.test.ts`；拆分为 `initialData.ts` + `actions.ts` 的 store 必须同步补 `*Store.structure.test.ts`；store 层可先跑 `npm run test:stores`，最终管理端代码修改仍跑完整 test/typecheck/build；新增公共组件至少补最小组件测试；页面源码 guardrail 不替代业务行为测试 |
 | mock service | 已建立 `frontend/src/services/mock/ability-list.ts`、`frontend/src/services/mock/ability-profile.ts`、`frontend/src/services/mock/reflection.ts`、`frontend/src/services/mock/archive.ts`、`frontend/src/services/mock/training.ts`、`frontend/src/services/mock/virtual-lab.ts`；D-06 复扫管理端页面内数组，仅保留 4 个 1 行 UI 选项数组，无超过 5 行的大段业务 mock 数组 | 后续稳定展示数据进入 `frontend/src/services/mock/*`；页面内只保留 tabs、steps、tone class 等局部 UI 选项 |
 | 路由与废弃页 | D-03 复扫管理端页面文件 30 个、路由动态导入 30 个，无未挂路由页面、无路由缺失文件；D-04 复扫未发现 `/admin/system`、`AdminPlaceholderPage`、`ResourceLibraryPage.vue` 等占位/废弃路由或页面残留 | 后续新增页面必须同步路由和台账；组件目录不计入页面覆盖 |
-| operationMessage | 已建立 `frontend/src/lib/operationMessage.ts`，并在能力清单优化建议页、要求映射页、档案详情页、能力画像群体页、虚拟教研室列表页、教研室详情页、活动详情页、记录详情页、培训计划页、培训计划详情页、培训记录详情页、分析报告中心统一页面局部消息的 `set` / `clear` / `fromStore` 模式；D-01 复扫管理端页面 `console.log` 命中 0；D-02 复扫 `operationMessage.set/fromStore` 共 46 处，已分类为真实状态动作、页面选择筛选、真实跳转或降级提示 | 后续新增页面按该模式接入；降级提示不能标记为业务完成，真实导出、独立画像页、成员全量列表或复制能力后续按模块补齐 |
+| operationMessage | 已建立 `frontend/src/lib/operationMessage.ts`，并在能力清单优化建议页、要求映射页、档案详情页、能力画像群体页、虚拟教研室列表页、教研室详情页、活动详情页、记录详情页、培训计划页、培训计划详情页、培训记录详情页、分析报告中心统一页面局部消息的 `set` / `clear` / `fromStore` 模式；D-01 复扫管理端页面 `console.log` 命中 0；D-02 复扫 `operationMessage.set/fromStore` 共 46 处，已分类为真实状态动作、页面选择筛选、真实跳转或降级提示 | 后续新增页面按该模式接入；降级提示不能标记为业务完成，真实导出、成员全量列表或复制能力后续按模块补齐 |
 | 视觉态按钮 | E16 已处理管理端已知无动作按钮：只读值改为 `span`，档案查阅搜索接入真实过滤，能力画像“查看更多对象”改为明确降级提示；新增 `frontend/src/pages/admin/adminVisualActions.test.ts` 防止空按钮回归 | 后续新增按钮必须满足三选一：真实状态动作、真实跳转 / 过滤、明确降级提示；纯展示内容不得使用 `button` |
 | 状态枚举和文案映射 | 分析报告状态已从页面本地 `statusMap` 迁入 `domain/admin/report.ts`，由 `getReportStatusClass` 统一返回状态样式类；能力清单执行版状态已在 `domain/admin/ability-list.ts` 统一 `published`、`pending`、`historical` 的显示文案和主徽章样式类；能力清单优化建议状态已统一 `pending`、`adopted`、`deferred`、`rejected`、`applied` 的显示文案和样式类入口；能力指标状态已统一 `enabled`、`disabled`、`draft` 的显示文案和样式类入口；能力清单要求映射状态已统一 `confirmed`、`pending`、`unconfigured` 的显示文案和徽章样式类；成长档案处理状态已在 `domain/admin/archive.ts` 统一 `待确认`、`待检验`、`待补充`、`异常待处理`、`拟退中`、`已入档` 的徽章样式类；成长档案批次整体状态已统一 `recognizing`、`recognized`、`confirmed`、`cancelled` 的显示文案和页面状态类；成长档案批次文件状态已统一 `已接收`、`解析中`、`已解析`、`等待处理`、`已取消` 的文本样式类；培训计划状态已在 `domain/admin/training.ts` 统一 `草稿`、`报名中`、`进行中`、`已完成`、`材料待完善` 的样式类入口；培训申请状态已统一 `待处理`、`已同意`、`未同意`、`已取消` 的样式类入口；培训资源状态已统一 `可用`、`信息待完善`、`已停用` 的样式类入口；培训需求状态已统一 `待匹配`、`已匹配`、`暂不处理` 的样式类入口；培训记录材料总状态已统一 `学习中`、`待总结`、`证书待补`、`记录完整` 的样式类入口；培训材料上传状态已统一 `待补充`、`已上传` 的样式类入口；企业实践申请状态已统一 `待审核`、`已同意`、`退回修改`、`已撤回` 的样式类入口；企业实践年度进展状态已统一 `未启动申请`、`待审核申请`、`实践中`、`已完成` 的样式类入口；企业实践记录状态已统一 `实践中`、`待提交总结`、`待企业评价`、`待归档确认`、`已归档` 的样式类入口；虚拟教研活动记录状态已统一 `已形成记录`、`未形成记录`、`记录异常` 的样式类入口；虚拟教研记录入档状态已统一 `待沉淀`、`已生成待确认档案` 的样式类入口；D-07 复扫管理端页面状态相关命中 20 个文件、46 处，稳定业务状态由 domain helper 或 `<StatusBadge />` 承接，页面剩余局部 `classMap` 等仅用于等级、步骤、分布条等展示型样式 | 后续新增业务状态必须先进入 `domain/admin/*` 或 `StatusBadge`，展示型 UI tone 可留在页面或组件局部 |
-| 状态徽章组件 | `frontend/src/components/common/StatusBadge.vue` 已开始承接管理端业务状态展示；能力清单优化建议、基准模板启用态、执行版主状态、版本记录、发布确认、要求映射、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训管理资源/需求/计划/申请/记录/材料状态、企业实践申请/年度跟踪/实践记录状态、虚拟教研活动记录/参与同步状态、报告中心报告/AI 会话状态已移除页面局部 `badge-status` / `state-pill` / `inline-status` / `file-status` / `status-text` / `status-badge` / `card-status` / `panel-status` 状态样式，改为 `<StatusBadge />`；组件当前以 `status: string`、内置文本 map 和 tone map 承接多模块状态 | 后续进入组件收敛时，再评估是否为 `StatusBadge` 增加强类型状态集合和分模块映射入口 |
+| 状态徽章组件 | `frontend/src/components/common/StatusBadge.vue` 已开始承接管理端业务状态展示；能力清单优化建议、基准模板启用态、执行版主状态、版本记录、发布确认、要求映射、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训管理资源/需求/计划/申请/记录/材料状态、企业实践申请/年度跟踪/实践记录状态、虚拟教研活动记录/参与同步状态、报告中心报告/AI 会话状态已移除页面局部 `badge-status` / `state-pill` / `inline-status` / `file-status` / `status-text` / `status-badge` / `card-status` / `panel-status` 状态样式，改为 `<StatusBadge />`；组件已拆出 `frontend/src/components/common/status-badge.ts` 共享 registry，公共导出 `adminStatusRegistry`、`teacherStatusRegistry` 和 `getStatusBadgeMeta`，并补入 `导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案` 等新增管理端流程状态 | 后续新增业务状态必须先进入 `domain/admin/*` 或 `StatusBadge` 共享 registry；若需要继续收敛，再评估按模块拆分强类型状态集合 |
 
 ## 19. 下一步执行顺序
 

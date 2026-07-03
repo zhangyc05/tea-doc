@@ -503,6 +503,7 @@ F4-44 收尾迁移：
 ### 状态徽章
 
 - 管理端业务状态优先使用 `frontend/src/components/common/StatusBadge.vue`。
+- 状态文案和 tone 统一维护在 `frontend/src/components/common/status-badge.ts`，公共入口导出 `adminStatusRegistry`、`teacherStatusRegistry` 和 `getStatusBadgeMeta`。
 - 页面不应为业务状态新增局部 `.badge-status.status-*` 样式；确需特殊展示时，先判断是否应扩展 `StatusBadge` 的文案和 tone。
 - 业务状态枚举、文案和状态口径仍归属 `frontend/src/domain/admin/*`；`StatusBadge` 只负责稳定展示，不承载业务流转。
 - 已迁移范围：能力清单优化建议状态、基准模板启用态、执行版主状态、版本记录状态、发布确认状态、要求映射状态、成长档案档案处理记录状态、导入批次状态、批次文件状态、培训资源状态、培训需求状态、培训计划状态、培训申请状态、培训记录材料状态、培训材料上传状态、培训参与状态、企业实践申请状态、企业实践年度跟踪状态、企业实践记录状态、虚拟教研活动记录状态、虚拟教研参与同步状态、报告中心报告状态、报告中心 AI 会话状态。
@@ -510,8 +511,10 @@ F4-44 收尾迁移：
 F5-01 当前扫描结论：
 
 - `StatusBadge` 当前支持 `success`、`warning`、`danger`、`info`、`neutral`、`purple` 六类 tone；未命中的管理端状态默认落到 `neutral`。
-- `StatusBadge` 内部维护管理端和教师端两套状态文案映射，管理端默认 `scene="admin"`；手机端或教师端状态必须显式使用教师端场景。
+- `StatusBadge` 通过共享 registry 维护管理端和教师端两套状态文案映射，管理端默认 `scene="admin"`；手机端或教师端状态必须显式使用教师端场景。
+- 已补入本轮新增管理端流程状态：`导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案`。
 - `frontend/src/domain/admin/domainTypes.test.ts` 已对能力清单、成长档案、培训、企业实践、虚拟教研、报告中心等页面做源码 guardrail，要求使用 `<StatusBadge>` 且不回退局部 `.badge-status`。
+- `frontend/src/components/common/StatusBadge.test.ts` 已覆盖新增管理端流程状态必须进入共享 registry，并验证组件按 registry 渲染文案和 tone。
 - 当前仍允许能力清单指标表等专用组件保留非业务流转型的局部徽章样式；后续迁移时需先判断它是否是业务状态，不能机械替换。
 
 状态 tone 口径：

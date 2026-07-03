@@ -29,9 +29,11 @@ const focusObjects = ref('院系')
 
 const focusTabs = groupProfile.focusTabs
 const focusData = groupProfile.focusData
+const focusedGroupObject = ref(focusData[focusObjects.value][0]?.name ?? '')
 
 function switchTab(tabValue: string) {
   focusObjects.value = tabValue
+  focusedGroupObject.value = focusData[tabValue][0]?.name ?? ''
 }
 
 function viewFullAdvice() {
@@ -52,7 +54,12 @@ function viewProfile(name: string) {
     router.push(`/admin/ability-profile/teacher/${teacherId}`)
     return
   }
-  operationMessage.set(`${name} 暂无独立画像页面，已保留为群体画像关注对象。`)
+  const targetTab = focusTabs.find(tab => focusData[tab.value]?.some(item => item.name === name))?.value
+  if (targetTab) {
+    focusObjects.value = targetTab
+    focusedGroupObject.value = name
+    operationMessage.set(`${name} 已在群体画像内定位，继续以${targetTab}筛选态查看。`)
+  }
 }
 
 function viewMoreObjects() {
@@ -246,7 +253,11 @@ function getDistributionTone(index: number) {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in focusData[focusObjects]" :key="item.name">
+              <tr
+                v-for="item in focusData[focusObjects]"
+                :key="item.name"
+                :class="{ 'focused-row': focusedGroupObject === item.name }"
+              >
                 <td>{{ item.name }}</td>
                 <td>
                   <span
@@ -809,6 +820,10 @@ function getDistributionTone(index: number) {
 .focus-table th:nth-child(3) { width: 22%; }
 .focus-table th:nth-child(4) { width: 31%; }
 .focus-table th:nth-child(5) { width: 13%; }
+
+.focused-row td {
+  background: var(--color-admin-bg);
+}
 
 .focus-type {
   display: inline-flex;
