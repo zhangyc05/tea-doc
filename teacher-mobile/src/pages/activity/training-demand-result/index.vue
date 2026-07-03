@@ -5,19 +5,25 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { findTrainingDemandById, submitTrainingDemand } from '../../../domain/training'
+import { findTrainingDemandById, submitTrainingDemand, syncMobileTrainingDemandResult } from '../../../domain/training'
 
 type TrainingDemandResultQuery = {
   demandId?: string
+  result?: 'matched' | 'deferred' | 'application'
 }
 
 const query = ref<TrainingDemandResultQuery>({})
+const pendingStatusLabel = '待匹配'
 
 onLoad((options) => {
   query.value = options as TrainingDemandResultQuery
+  if (query.value.demandId && query.value.result) {
+    syncMobileTrainingDemandResult(query.value.demandId, query.value.result)
+  }
 })
 
 const demand = computed(() => findTrainingDemandById(query.value.demandId) || submitTrainingDemand('found-training'))
+const demandProgressText = computed(() => `${demand.value.nextStep} 当前状态：${demand.value.status}`)
 
 const submitRows = [
   ['需求类型：', '我已找到想参加的培训'],
@@ -57,7 +63,7 @@ function goActivityHome() {
         <view class="success-card__copy">
           <text class="success-card__title">培训需求已提交</text>
           <text class="success-card__desc">你想参加的培训已提交给业务部门确认</text>
-          <text class="status-pill">{{ demand.status }}</text>
+          <text class="status-pill">{{ demand.status || pendingStatusLabel }}</text>
         </view>
       </MobileCard>
 
@@ -92,7 +98,7 @@ function goActivityHome() {
             <view class="timeline-step__dot">2</view>
             <view class="timeline-step__body">
               <text class="timeline-step__title">部门确认中</text>
-              <text class="timeline-step__desc">{{ demand.nextStep }} 当前状态：待匹配</text>
+              <text class="timeline-step__desc">{{ demandProgressText }}</text>
             </view>
           </view>
           <view class="timeline-step">

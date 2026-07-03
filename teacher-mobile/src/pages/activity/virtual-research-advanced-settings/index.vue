@@ -43,6 +43,10 @@ function showToast(title: string) {
 
     <view class="meta-row">
       <view class="draft-status"></view>
+      <text>我的资料</text>
+      <text class="divider">|</text>
+      <text>个人发展报告</text>
+      <text class="divider">|</text>
       <text>AI 已生成草稿</text>
       <text class="divider">|</text>
       <text>基于 38 条已入档记录整理</text>

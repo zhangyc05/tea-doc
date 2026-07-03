@@ -5,17 +5,21 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { findTrainingApplicationById, submitTrainingApplication } from '../../../domain/training'
+import { findTrainingApplicationById, submitTrainingApplication, syncMobileTrainingApplicationResult } from '../../../domain/training'
 
 type TrainingApplicationQuery = {
   applicationId?: string
   mode?: string
+  result?: 'approved' | 'rejected'
 }
 
 const query = ref<TrainingApplicationQuery>({})
 
 onLoad((options) => {
   query.value = options as TrainingApplicationQuery
+  if (query.value.applicationId && query.value.result) {
+    syncMobileTrainingApplicationResult(query.value.applicationId, query.value.result)
+  }
 })
 
 const application = computed(() => findTrainingApplicationById(query.value.applicationId) || submitTrainingApplication())
@@ -23,6 +27,11 @@ const statusText = computed(() => {
   if (application.value.status === '已同意') return '已通过'
   if (application.value.status === '未同意') return '未通过'
   return '等待确认'
+})
+const progressSubText = computed(() => {
+  if (query.value.result === 'approved' || application.value.status === '已同意') return '已同意，已进入我的培训'
+  if (query.value.result === 'rejected' || application.value.status === '未同意') return '未同意，可查看申请详情'
+  return '当前待处理'
 })
 
 const summaryRows = [
@@ -126,7 +135,7 @@ function goApplicationDetail() {
           <view class="step step--current">
             <view class="step__dot"><text>2</text></view>
             <text class="step__title">业务部门确认</text>
-            <text class="step__sub">当前待处理</text>
+            <text class="step__sub">{{ progressSubText }}</text>
           </view>
           <view class="step-line"></view>
           <view class="step">

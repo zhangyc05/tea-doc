@@ -5,19 +5,25 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { findTrainingDemandById, submitTrainingDemand } from '../../../domain/training'
+import { findTrainingDemandById, submitTrainingDemand, syncMobileTrainingDemandResult } from '../../../domain/training'
 
 type TrainingNeedResultQuery = {
   demandId?: string
+  result?: 'matched' | 'deferred' | 'application'
 }
 
 const query = ref<TrainingNeedResultQuery>({})
+const pendingStatusLabel = '待匹配'
 
 onLoad((options) => {
   query.value = options as TrainingNeedResultQuery
+  if (query.value.demandId && query.value.result) {
+    syncMobileTrainingDemandResult(query.value.demandId, query.value.result)
+  }
 })
 
 const demand = computed(() => findTrainingDemandById(query.value.demandId) || submitTrainingDemand('ability-improvement'))
+const demandProgressText = computed(() => `${demand.value.nextStep} 当前状态：${demand.value.status}`)
 
 const submitRows = [
   { icon: 'person', label: '需求类型', value: '我想提升某项能力' },
@@ -68,7 +74,7 @@ function goHome() {
           <text class="success-desc">你的需求已提交给业务部门确认</text>
           <view class="status-pill">
             <view class="clock-icon"></view>
-            <text>{{ demand.status }}</text>
+            <text>{{ demand.status || pendingStatusLabel }}</text>
           </view>
         </view>
       </MobileCard>
@@ -102,7 +108,7 @@ function goHome() {
             <view class="timeline-step__dot"></view>
             <view class="timeline-step__body">
               <text class="timeline-step__title">{{ step.title }}</text>
-              <text class="timeline-step__desc">{{ index === 1 ? `${demand.nextStep} 当前状态：待匹配` : step.desc }}</text>
+              <text class="timeline-step__desc">{{ index === 1 ? demandProgressText : step.desc }}</text>
             </view>
           </view>
         </view>

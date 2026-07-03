@@ -29,6 +29,7 @@ function showToast(title: string) {
 <template>
   <view class="work-contribution-page">
     <MobileNavbar title="贡献详情" size="compact" @back="goBack" />
+    <text class="scope-note">虚拟教研成员资料</text>
 
     <scroll-view class="page-scroll" scroll-y>
       <view class="content">

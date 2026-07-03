@@ -1,11 +1,13 @@
 import { reactive } from 'vue'
-import { findArchiveRecordById, type MobileArchiveRecord } from './archive'
+import { createVirtualResearchArchiveRecord, type MobileArchiveRecord } from './archive'
 
 export type VirtualResearchActivityStatus = '待确认' | '进行中' | '需补充' | '已归档'
 export type VirtualResearchFilter = '全部' | VirtualResearchActivityStatus
 export type VirtualResearchInvitationStatus = '待确认' | '已加入' | '暂不加入'
 export type VirtualResearchContributionStatus = '待确认' | '已确认' | '不是我的' | '需补充' | '已提交'
 export type VirtualResearchMaterialStatus = '草稿' | '已提交' | '需补充'
+export type VirtualResearchMemberProfileScope = '虚拟教研成员资料' | '我的资料'
+export type VirtualResearchContributionPageState = '待确认动作页' | '待确认详情页' | '完整贡献确认页'
 
 export type VirtualResearchActivity = {
   id: string
@@ -28,10 +30,23 @@ export type MobileVirtualResearchState = {
   invitationStatus: VirtualResearchInvitationStatus
   memberStatus: '已加入' | '未加入'
   roomAdminStoreRefs: string[]
+  memberProfileScope: VirtualResearchMemberProfileScope
+  memberProfileScopeNote: string
   materialStatus: VirtualResearchMaterialStatus
   activities: VirtualResearchActivity[]
   contributions: VirtualResearchContribution[]
   operationMessage: string
+}
+
+export type VirtualResearchMaterialPreview = {
+  title: string
+  message: string
+}
+
+export const contributionPageStateMap: Record<string, VirtualResearchContributionPageState> = {
+  'virtual-research-confirm-contribution': '待确认动作页',
+  'virtual-research-contribution-confirm': '待确认详情页',
+  'virtual-research-activity-detail-confirm': '完整贡献确认页',
 }
 
 const defaultActivityId = 'virtual-research-course-resource'
@@ -42,6 +57,8 @@ const state = reactive<MobileVirtualResearchState>({
   invitationStatus: '待确认',
   memberStatus: '未加入',
   roomAdminStoreRefs: ['virtualLabStore.rooms'],
+  memberProfileScope: '虚拟教研成员资料',
+  memberProfileScopeNote: '虚拟教研成员资料只服务教研室成员展示、邀请和贡献确认，不直接写入成长档案正式事实；个人发展报告归属我的资料。',
   materialStatus: '草稿',
   activities: [
     {
@@ -167,7 +184,14 @@ export function submitVirtualResearchArchive(): MobileArchiveRecord {
   activity.adminStoreRefs = ['virtualLabStore.records', 'archiveStore.processingRecords']
   contribution.adminStoreRefs = ['virtualLabStore.records']
   state.operationMessage = '教研记录已形成，等待成长档案确认'
-  return findArchiveRecordById('virtual-research-smart-manufacturing') || findArchiveRecordById('virtual-research-course-resource-coconstruction')!
+  return createVirtualResearchArchiveRecord()
+}
+
+export function previewVirtualResearchMaterial(materialName: string): VirtualResearchMaterialPreview {
+  return {
+    title: '材料预览',
+    message: `${materialName} 已关联到当前虚拟教研记录。当前为前端材料预览降级入口，真实附件服务后续接入。`,
+  }
 }
 
 function ensureActivity(activityId: string): VirtualResearchActivity {

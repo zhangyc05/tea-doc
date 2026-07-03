@@ -39,6 +39,10 @@ if (!storeSource.includes('removeTodoCertificate')) {
   failures.push('todo store does not expose removeTodoCertificate')
 }
 
+if (!storeSource.includes('confirmTodoCertificateArchivedByAdmin')) {
+  failures.push('todo store does not expose admin-side archive confirmation sync action')
+}
+
 if (!storeSource.includes('previewTodoCertificateMaterial')) {
   failures.push('todo store does not expose previewTodoCertificateMaterial')
 }
@@ -79,6 +83,10 @@ if (!storeSource.includes("'removed'")) {
   failures.push('todo store does not represent removed status')
 }
 
+if (!storeSource.includes("'入档确认'")) {
+  failures.push('todo store does not record archive confirmation dynamics')
+}
+
 const confirmTodoCertificateBlock = storeSource.match(/export function confirmTodoCertificate[\s\S]*?export function submitTodoCertificateCorrection/)?.[0] || ''
 if (!confirmTodoCertificateBlock.includes("todo.status = 'pending-verify'")) {
   failures.push('certificate confirmation should move the todo to pending verification instead of direct archive')
@@ -86,6 +94,23 @@ if (!confirmTodoCertificateBlock.includes("todo.status = 'pending-verify'")) {
 
 if (confirmTodoCertificateBlock.includes("todo.status = 'archived'") || confirmTodoCertificateBlock.includes("state.certificate.status = 'archived'")) {
   failures.push('certificate confirmation still marks mobile todo or certificate as archived before admin confirmation')
+}
+
+const adminArchiveConfirmBlock = storeSource.match(/export function confirmTodoCertificateArchivedByAdmin[\s\S]*?function addTodoDynamic/)?.[0] || ''
+if (!adminArchiveConfirmBlock.includes("todo.status = 'archived'")) {
+  failures.push('admin archive confirmation sync should move the todo to archived')
+}
+
+if (!adminArchiveConfirmBlock.includes("state.certificate.status = 'archived'")) {
+  failures.push('admin archive confirmation sync should move certificate to archived')
+}
+
+if (!adminArchiveConfirmBlock.includes("state.certificate.material.status = 'confirmed'")) {
+  failures.push('admin archive confirmation sync should confirm certificate material')
+}
+
+if (!adminArchiveConfirmBlock.includes("type: '入档确认'")) {
+  failures.push('admin archive confirmation sync should generate archive confirmation dynamic')
 }
 
 const pagesThatMustReadStore = [
@@ -175,6 +200,10 @@ if (businessDoc.includes('教师本人确认后直接入档口径') || businessD
   failures.push('business map still documents direct mobile confirmation to archived status')
 }
 
+if (!businessDoc.includes('confirmTodoCertificateArchivedByAdmin()')) {
+  failures.push('business map does not document admin-side archive confirmation sync action')
+}
+
 const ledgerDoc = source(files.docsLedger)
 const completedTaskList = ledgerDoc.split('### 已完成任务编号')[1] || ''
 if (!ledgerDoc.includes('手机端待办闭环已补第一版')) {
@@ -183,6 +212,10 @@ if (!ledgerDoc.includes('手机端待办闭环已补第一版')) {
 
 if (!ledgerDoc.includes('| M-13 | 补待办证书共享状态 | 已补：')) {
   failures.push('coverage ledger does not mark M-13 todo certificate shared state as implemented')
+}
+
+if (!ledgerDoc.includes('管理端确认入档同步动作')) {
+  failures.push('coverage ledger does not record admin archive confirmation sync coverage')
 }
 
 if (!completedTaskList.includes('M-13')) {

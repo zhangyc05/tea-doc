@@ -65,6 +65,7 @@ function showToast(title: string) {
       </template>
     </MobileNavbar>
     <text class="nav-subtitle">等待归档</text>
+    <text class="nav-subtitle">虚拟教研成员资料</text>
 
     <view class="hero-section">
       <view class="hero-copy">

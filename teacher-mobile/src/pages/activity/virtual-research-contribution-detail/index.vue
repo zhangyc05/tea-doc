@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { previewVirtualResearchMaterial } from '../../../domain/virtualResearch'
 
 const evidenceItems = [
   { label: '会议纪要', status: '已归档', icon: 'note' },
@@ -22,6 +23,11 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function previewMaterial(fileName: string) {
+  const preview = previewVirtualResearchMaterial(fileName)
+  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
 }
 </script>
 
@@ -96,7 +102,7 @@ function showToast(title: string) {
           <text class="section-title">关联材料</text>
         </view>
         <view class="file-list">
-          <view v-for="file in files" :key="file.name" class="file-row" @tap="showToast(file.name)">
+          <view v-for="file in files" :key="file.name" class="file-row" @tap="previewMaterial(file.name)">
             <view class="file-icon" :class="`file-icon--${file.type}`">
               <text v-if="file.type === 'pdf'">PDF</text>
             </view>

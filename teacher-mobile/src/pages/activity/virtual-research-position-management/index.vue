@@ -24,6 +24,7 @@ function showToast(title: string) {
   <view class="joined-room-page">
     <MobileNavbar title="已加入教研室" size="compact" @back="goBack" />
     <text class="page-subtitle">你已加入智能制造课程虚拟教研室</text>
+    <text class="page-subtitle">虚拟教研成员资料</text>
 
     <view class="content">
       <MobileCard class="room-card">

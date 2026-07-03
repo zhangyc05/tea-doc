@@ -5,6 +5,24 @@ export type EnterpriseFilter = '全部' | '进行中' | '待归档' | '已归档
 export type EnterprisePlanStatus = '草稿' | '待审核' | '已同意' | '退回修改'
 export type EnterpriseRecordStatus = '进行中' | '待归档' | '归档确认中' | '需补充' | '已归档'
 export type EnterpriseMaterialStatus = '待补充' | '已上传'
+export type EnterpriseMaterialUploadStatus = '待上传' | '已上传' | '待核验' | '已确认'
+export type EnterpriseVerificationStatus = '待核验' | '需补充' | '已确认'
+
+export type MobileEnterpriseMaterial = {
+  id: string
+  name: string
+  meta: string
+  uploadStatus: EnterpriseMaterialUploadStatus
+  verificationStatus: EnterpriseVerificationStatus
+}
+
+export type MobileEnterpriseVerificationHistory = {
+  id: string
+  title: string
+  status: EnterpriseVerificationStatus
+  time: string
+  desc: string
+}
 
 export type MobileEnterpriseRecord = {
   id: string
@@ -15,6 +33,8 @@ export type MobileEnterpriseRecord = {
   note: string
   status: EnterpriseRecordStatus
   materialStatus: EnterpriseMaterialStatus
+  materials: MobileEnterpriseMaterial[]
+  verificationHistory: MobileEnterpriseVerificationHistory[]
   logCount: number
   archiveDraft?: string
   adminStoreRefs: string[]
@@ -50,6 +70,12 @@ const state = reactive<MobileEnterpriseState>({
       note: '已记录 8 天',
       status: '进行中',
       materialStatus: '已上传',
+      materials: [
+        createEnterpriseMaterial('enterprise-smart-equipment-proof', '企业实践单位证明', 'PDF / 2 页', '已上传', '待核验'),
+      ],
+      verificationHistory: [
+        createEnterpriseHistory('enterprise-smart-equipment-start', '实践记录已创建', '待核验', '05-10 09:20', '已同步到 practiceStore.records，等待归档材料完整后核验。'),
+      ],
       logCount: 8,
       adminStoreRefs: ['practiceStore.records'],
     },
@@ -62,6 +88,12 @@ const state = reactive<MobileEnterpriseState>({
       note: '待补充材料',
       status: '需补充',
       materialStatus: '待补充',
+      materials: [
+        createEnterpriseMaterial('enterprise-jinan-training-base-proof', '单位盖章证明', '待补交清晰扫描件', '待上传', '需补充'),
+      ],
+      verificationHistory: [
+        createEnterpriseHistory('enterprise-jinan-training-base-returned', '材料退回补充', '需补充', '03-09 15:30', '单位盖章页不清晰，需重新上传后进入核验。'),
+      ],
       logCount: 0,
       adminStoreRefs: ['practiceStore.records', 'archiveStore.processingRecords'],
     },
@@ -74,6 +106,12 @@ const state = reactive<MobileEnterpriseState>({
       note: '10 天',
       status: '已归档',
       materialStatus: '已上传',
+      materials: [
+        createEnterpriseMaterial('enterprise-qingdao-equipment-proof', '企业实践归档证明', 'PDF / 3 页', '已确认', '已确认'),
+      ],
+      verificationHistory: [
+        createEnterpriseHistory('enterprise-qingdao-equipment-confirmed', '管理端已确认', '已确认', '01-18 11:00', '已由管理端确认后进入 teacherArchiveFacts。'),
+      ],
       logCount: 6,
       adminStoreRefs: ['practiceStore.records', 'teacherArchiveFacts'],
     },
@@ -166,6 +204,22 @@ export function submitEnterpriseSupplement(recordId = 'enterprise-jinan-training
   const record = ensureRecord(recordId)
   record.status = '归档确认中'
   record.materialStatus = '已上传'
+  upsertEnterpriseMaterial(record, {
+    id: `${record.id}-supplement-proof`,
+    name: '补充企业实践证明材料',
+    meta: '已补充上传，等待部门核验',
+    uploadStatus: '待核验',
+    verificationStatus: '待核验',
+  })
+  record.verificationHistory.unshift(
+    createEnterpriseHistory(
+      `${record.id}-supplement-submitted`,
+      '补充材料已提交',
+      '待核验',
+      '当前',
+      '补充材料对象已建立，等待管理端核验后回写结果。',
+    ),
+  )
   record.adminStoreRefs = ['practiceStore.records', 'archiveStore.processingRecords']
   state.operationMessage = '补充材料已提交，等待重新核验'
   return createEnterprisePracticeArchiveRecord()
@@ -212,9 +266,59 @@ function ensureRecord(recordId: string): MobileEnterpriseRecord {
     note: '待开始记录',
     status: '进行中',
     materialStatus: '待补充',
+    materials: [],
+    verificationHistory: [
+      createEnterpriseHistory(`${recordId}-created`, '实践记录已创建', '待核验', '当前', '已创建本地实践记录，后续材料提交后进入核验。'),
+    ],
     logCount: 0,
     adminStoreRefs: ['practiceStore.records'],
   }
   state.records.unshift(record)
   return record
+}
+
+function createEnterpriseMaterial(
+  id: string,
+  name: string,
+  meta: string,
+  uploadStatus: EnterpriseMaterialUploadStatus,
+  verificationStatus: EnterpriseVerificationStatus,
+): MobileEnterpriseMaterial {
+  return {
+    id,
+    name,
+    meta,
+    uploadStatus,
+    verificationStatus,
+  }
+}
+
+function createEnterpriseHistory(
+  id: string,
+  title: string,
+  status: EnterpriseVerificationStatus,
+  time: string,
+  desc: string,
+): MobileEnterpriseVerificationHistory {
+  return {
+    id,
+    title,
+    status,
+    time,
+    desc,
+  }
+}
+
+function upsertEnterpriseMaterial(record: MobileEnterpriseRecord, material: MobileEnterpriseMaterial): MobileEnterpriseMaterial {
+  const existing = record.materials.find((item) => item.id === material.id)
+  if (existing) {
+    existing.name = material.name
+    existing.meta = material.meta
+    existing.uploadStatus = material.uploadStatus
+    existing.verificationStatus = material.verificationStatus
+    return existing
+  }
+
+  record.materials.unshift(material)
+  return material
 }

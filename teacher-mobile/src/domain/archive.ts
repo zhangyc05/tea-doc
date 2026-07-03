@@ -53,6 +53,14 @@ export type ArchiveCategorySummary = {
 
 export type ArchiveCorrectionStatus = 'pending-verify' | 'approved' | 'rejected' | 'need-supplement' | 'supplemented'
 
+export type ArchiveCorrectionMaterialUploadStatus = 'pending-upload' | 'uploaded' | 'pending-verify'
+
+export type ArchiveCorrectionMaterial = {
+  name: string
+  meta: string
+  uploadStatus: ArchiveCorrectionMaterialUploadStatus
+}
+
 export type ArchiveCorrectionRecord = {
   id: string
   recordId: string
@@ -60,7 +68,7 @@ export type ArchiveCorrectionRecord = {
   description: string
   status: ArchiveCorrectionStatus
   submittedAt: string
-  materials: Array<{ name: string; meta: string }>
+  materials: ArchiveCorrectionMaterial[]
   adminStoreRefs: string[]
 }
 
@@ -510,13 +518,21 @@ export function updateArchiveCorrectionStatus(correctionId: string, status: Arch
   return correction
 }
 
-export function submitArchiveCorrectionSupplement(correctionId: string) {
+export function submitArchiveCorrectionSupplement(
+  correctionId: string,
+  materials: ArchiveCorrectionMaterial[] = [
+    { name: '更正补充说明.pdf', meta: 'PDF · 来源于更正补充材料', uploadStatus: 'pending-verify' },
+  ],
+) {
   const correction = findArchiveCorrectionById(correctionId)
   if (!correction) return undefined
   correction.status = 'supplemented'
   correction.materials = [
     ...correction.materials,
-    { name: '更正补充说明.pdf', meta: 'PDF · 来源于更正补充材料' },
+    ...materials.map((material) => ({
+      ...material,
+      uploadStatus: material.uploadStatus === 'pending-upload' ? 'uploaded' : material.uploadStatus,
+    })),
   ]
   const record = findArchiveRecordById(correction.recordId)
   if (record) record.status = 'pending-verify'

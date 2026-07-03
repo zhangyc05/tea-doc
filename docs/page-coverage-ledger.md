@@ -150,7 +150,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 手机端档案真实状态回写缺少统一 domain 动作，首页数量、查询和更正结果仍停留在静态 / 路由参数态 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/*` | 手机端档案真实状态回写已补第一版；扩展 `archived`、`pending-verify`、`need-supplement`、`removed` 状态，新增统计、搜索、更正申请、需补充和补充材料状态回写，并用 `test:archive-business` 守卫 |
 | 2026-07-02 | 手机端培训活动页面已覆盖，但申请、总结、归档和需求未与管理端培训管理、成长档案状态对齐 | `teacher-mobile/src/pages/activity/training*`、`teacher-mobile/src/domain/training.ts` | 手机端培训活动闭环已补第一版；新增培训 domain/store，推荐培训、我的培训、申请、总结草稿、材料上传、归档 trace 和培训需求均对齐 `trainingStore` / `archiveStore.processingRecords` 口径，不直接复用管理端 store |
 | 2026-07-02 | 手机端教学反思页面已覆盖，但开始方式、依据选择、草稿和确认记录缺少统一状态 | `teacher-mobile/src/domain/reflection.ts`、`teacher-mobile/src/pages/activity/reflection*` | 手机端教学反思闭环已补第一版；新增反思 domain/store，开始方式、课程 / 课次、依据材料、AI 会话、草稿和确认反思写入同一记录，确认后对齐 `reflectionStore.records` 并生成 `archiveStore.processingRecords` 待确认记录 |
-| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档；`test:enterprise-business` 和 `test:enterprise-archive` 已补计划确认、补充提交、归档结果不直入档 guardrail |
+| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，补充材料对象、核验状态和处理历史写入同一实践记录，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档；企业实践兼容路由名边界已核对，`enterprise-import-export` 承接计划等待确认，`enterprise-workflow-config` 承接归档日志详情；`test:enterprise-business` 和 `test:enterprise-archive` 已补计划确认、补充提交、归档结果不直入档 guardrail |
 | 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录；`test:virtual-research-business` 已补归档结果页区分“教研活动已归档”和“档案待确认”的 guardrail |
 | 2026-07-03 | 手机端各模块“提交成功 / 归档成功 / 已入档”口径不一致 | `docs/business-logic-map.md` | 已补第 17 节，统一待办、档案、培训、反思、企业实践、虚拟教研到管理端对象映射、材料提交、审批结果和入档结果口径 |
 | 2026-07-03 | 手机端档案首页和待办证书结果页仍有入口停留在 toast 或无动作 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/todo/certificate-*` | 档案首页搜索进入查询页，分类进入分类概览，最近入档和查看全部进入记录详情 / 列表；档案查询页支持本页清空和分类筛选；证书详情确认 / 移出分别进入等待入档确认和已移出结果页；确认结果“查看待核验记录”按 `recordId` 进入详情页 |
@@ -336,7 +336,7 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 
 | 模块 | 效果图数 | 当前页面状态 | 结论 |
 | --- | ---: | --- | --- |
-| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 手机端待办闭环已补第一版；证书确认后进入待核验而非正式入档，修改待核验、材料预览 / 更换、移出原因、提交记录、待办动态和跨模块待办入口均接入共享 store，后续替换真实附件上传和管理端接口 |
+| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 手机端待办闭环已补第一版；证书确认后进入待核验而非正式入档，管理端确认入档同步动作、修改待核验、材料预览 / 更换、移出原因、提交记录、待办动态和跨模块待办入口均接入共享 store，后续替换真实附件上传和管理端接口 |
 | 档案 | 54 | `pages/archive/index`、`pages/archive/record-query` 已注册；部分企业实践、培训证书、虚拟教研入档结果由活动/待办页面承接 | 高风险；已建立第一版逐图缺口判断，档案主体详情页明显不足 |
 | 活动 | 71 | 教学反思、培训进修、企业实践、虚拟教研和活动首页页面数量与效果图分组基本一致 | 已建立第一版逐图分组映射；缺页风险低，下一步重点审计业务流闭环 |
 | 我的 | 6 | 当前仅有 `pages/profile/index` 综合页 | 高风险；我的主页可覆盖，能力画像、用到的记录、发展报告、岗位/聘期对照缺独立页面 |
@@ -365,7 +365,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 教研科研 | 6 | `pages/archive/record-query` 有教研科研搜索结果；虚拟教研活动页有“成长档案 · 教研科研”归档结果，但不属于档案模块路由 | 查询结果和活动归档结果局部承接；档案概览/分类/详情缺页 |
 | 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
 | 成果荣誉 | 4 | `pages/archive/index` 有成果荣誉分类和最近入档；未见成果荣誉概览、列表、教学成果奖详情独立路由 | 缺页 |
-| 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；待办培训证书等待入档确认页提示可查看个人发展 | 待办结果页局部承接；个人发展档案页、最近入档详情缺页 |
+| 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；`pages/archive/category/index?category=personal-development` 承接个人发展分类页和最近记录，并提供发展计划编辑入口；待办培训证书等待入档确认页可进入统一记录详情 | 个人发展分类页已由统一分类页承接；最近入档和培训证书详情进入统一记录详情，真实接口和附件服务后续深化 |
 | 职称聘用 | 8 | 更正申请、提交结果、进度页和结果页已有第一版；补充材料、详情仍未见独立路由 | 高风险缺页 |
 | 社会服务 | 1 | `pages/archive/index` 有社会服务分类卡片 | 仅分类入口，详情缺页 |
 | 考核评价 | 1 | `pages/archive/index` 有考核评价分类卡片 | 仅分类入口，详情缺页 |
@@ -429,7 +429,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 成果荣誉 | `教师端手机｜档案｜成果荣誉记录列表.png` | 补页 | 统一分类记录列表，`category=honor` |
 | 成果荣誉 | `教师端手机｜档案｜教学成果奖记录详情.png` | 补页 | 统一档案记录详情，`type=teaching-award` |
 | 个人发展 | `档案首页.png` | 合并状态 | `pages/archive/index` 或个人发展分类入口 |
-| 个人发展 | `教师端手机｜档案｜个人发展档案页.png` | 补页 | 个人发展分类首页 |
+| 个人发展 | `教师端手机｜档案｜个人发展档案页.png` | 合并状态 | 个人发展分类页已由统一分类页承接，`category=personal-development` |
 | 个人发展 | `最近入档.png` | 合并状态 | 个人发展分类首页的最近入档状态 |
 | 社会服务 | `教师端手机｜档案｜社会服务档案页.png` | 补页 | 社会服务分类首页，可先用统一分类模板 |
 | 考核评价 | `教师端手机｜档案｜考核评价档案页.png` | 补页 | 考核评价分类首页，可先用统一分类模板 |
@@ -543,7 +543,7 @@ M-03 后续实现顺序：
 - `teacher-mobile/src/pages/archive/record-detail/index.vue` 的“申请更正”已按当前档案 `recordId` 跳转更正申请页。
 - 更正申请页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示原档案状态、分类、来源、原材料、原因选项和补充说明；提交后带 `recordId` 和更正原因进入 `correction/submitted`。
 - 提交结果页展示“待核验”口径，可按 `recordId` 回到统一记录详情页，也可进入 `pages/archive/correction/progress/index` 查看进度。
-- 当前仍不生成真实更正记录、不回写档案状态；进度和结果链路见 M-15/M-16，后续仍需补 `correction/supplement` 和真实申请集合。
+- 更正申请已生成 `ArchiveCorrectionRecord`，状态为 `pending-verify`，并按 `correctionId` 串起进度、结果和补充材料链路；后续真实接口替换本地申请集合。
 
 #### M-15 档案更正进度第一版
 
@@ -552,7 +552,7 @@ M-03 后续实现顺序：
 - `teacher-mobile/src/pages/archive/correction/submitted/index.vue` 的“查看进度”已按 `recordId`、`status` 和 `reason` 进入进度页。
 - `teacher-mobile/src/pages/profile/index.vue` 的“信息更正进度”已进入 `pages/archive/correction/progress/index` 第一版，不再只是文案入口。
 - 更正进度页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示申请信息、待核验 / 已补充进度和回原档案入口。
-- 当前仍不生成真实更正记录列表、不回写档案状态；结果链路见 M-16，后续仍需补 `correction/supplement` 和真实申请集合。
+- 更正进度已读取同一更正记录，需补充会回写档案记录状态；结果链路见 M-16，后续真实接口替换本地申请集合。
 
 #### M-16 档案更正结果第一版
 
@@ -560,16 +560,16 @@ M-03 后续实现顺序：
 - `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/result/index`。
 - `teacher-mobile/src/pages/archive/correction/progress/index.vue` 的“查看处理结果”已按 `recordId`、`reason` 和 `result=need-supplement` 进入结果页；当前默认使用“需补充”状态，避免伪造已通过。
 - 更正结果页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，支持 `result=approved|rejected|need-supplement` 三种展示口径，并保留回原档案和回进度页入口。
-- 当前仍不生成真实更正记录、不回写档案状态；补充材料链路见 M-17，后续仍需接真实申请集合。
+- 更正结果已读取同一更正记录，支持通过、未通过、需补充三种结果态；补充材料链路见 M-17，后续真实接口替换审核结果回写。
 
 #### M-17 档案更正补充材料第一版
 
 - 新增 `teacher-mobile/src/pages/archive/correction/supplement/index.vue`，承接更正结果页的“需补充”状态。
 - `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/supplement/index`。
 - `teacher-mobile/src/pages/archive/correction/result/index.vue` 的“补充材料”已按 `recordId` 和 `reason` 进入补充材料页。
-- 补充材料页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示更正原因、补充说明输入、材料占位和原档案入口。
-- “提交补充”进入 `pages/archive/correction/progress/index?status=supplemented`，形成需补充到已补充进度的前端闭环。
-- 当前仍不生成真实更正记录、不回写档案状态、不执行真实附件上传；后续需要接真实申请集合、附件上传状态和管理端审核结果。
+- 补充材料页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示更正原因、补充说明输入、补充材料上传状态和原档案入口。
+- 点选补充材料会将材料状态从待上传改为已上传；“提交补充”调用 `submitArchiveCorrectionSupplement()` 写入更正记录材料 `uploadStatus`，再进入 `pages/archive/correction/progress/index?status=supplemented`。
+- 当前已接入本地材料上传状态和需补充到已补充进度的前端闭环；后续需要接真实附件服务和管理端审核结果。
 
 ### 逐图台账：活动模块
 
@@ -580,14 +580,14 @@ M-03 后续实现顺序：
 | 活动首页 | 2 | `pages/activity/index`、`pages/activity/room-entry-state` | 已有活动首页和教研室入口状态页；后续需审计入口跳转是否指向对应活动流程 |
 | 教学反思 | 9 | `reflection-start`、`reflection-course`、`reflection-evidence`、`reflection-scope`、`reflection-self`、`reflection-guide-chat`、`reflection-ai-chat`、`reflection-draft`、`reflection-success` | 数量和命名均基本对应；覆盖开始方式、课程选择、依据选择、反思范围、自主反思、AI 对话、草稿编辑、确认成功 |
 | 培训进修 | 9 | `training`、`training-list`、`training-application`、`training-summary`、`training-archive-result`、`training-demand`、`training-found`、`training-demand-result`、`training-need-result` | 数量和命名均基本对应；覆盖培训首页/列表、申请、总结、归档结果、培训需求两类提交结果 |
-| 企业实践 | 25 | `enterprise-overview`、`enterprise-list`、`enterprise-plan-submit`、`enterprise-plan-confirm`、`enterprise-plan-approved`、`enterprise-plan-rejected`、`enterprise-plan-edit`、`enterprise-progress-detail`、`enterprise-log-record`、`enterprise-log-list`、`enterprise-archive-success`、`enterprise-proof-upload`、`enterprise-proof-supplement`、`enterprise-supplement-submitted`、`enterprise-resupplement`、`enterprise-supplement-needed`、`enterprise-history-supplement`、`enterprise-history-supplement-needed`、`enterprise-history-confirmed`、`enterprise-archive-result`、`enterprise-archive-edit`、`enterprise-import-export`、`enterprise-workflow-config`、`enterprise-login-history`、`enterprise-advanced-search` | 数量和命名均基本对应；覆盖年度概览/列表、计划提交/确认/通过/退回/修改、进行中详情、日志、证明上传/补充、历史补充、归档和管理类页面 |
-| 虚拟教研 | 26 | `virtual-research-room`、`virtual-research-invitation`、`virtual-research-activity-list`、`virtual-research-activity-detail-ongoing`、`virtual-research-activity-detail-confirm`、`virtual-research-activity-detail-supplement-submitted`、`virtual-research-confirm-contribution`、`virtual-research-contribution-detail`、`virtual-research-contribution-confirm`、`virtual-research-contribution-submitted`、`virtual-research-supplement-material`、`virtual-research-stage-submitted`、`virtual-research-archive-result`、`virtual-research-archive-result-v1`、`virtual-research-archived-confirmed`、`virtual-research-resubmitted`、`virtual-research-profile-complete`、`virtual-research-basic-info-edit`、`virtual-research-profile-intro-edit`、`virtual-research-teacher-archive-detail`、`virtual-research-position-management`、`virtual-research-work-experience-management`、`virtual-research-skill-management`、`virtual-research-award-management`、`virtual-research-role-assignment`、`virtual-research-advanced-settings` | 数量和命名均基本对应；覆盖我的教研室、邀请、活动列表/详情、贡献确认、补充材料、阶段材料、归档结果、个人资料/岗位/经历/技能/获奖/角色/高级设置等状态 |
+| 企业实践 | 25 | `enterprise-overview`、`enterprise-list`、`enterprise-plan-submit`、`enterprise-plan-confirm`、`enterprise-plan-approved`、`enterprise-plan-rejected`、`enterprise-plan-edit`、`enterprise-progress-detail`、`enterprise-log-record`、`enterprise-log-list`、`enterprise-archive-success`、`enterprise-proof-upload`、`enterprise-proof-supplement`、`enterprise-supplement-submitted`、`enterprise-resupplement`、`enterprise-supplement-needed`、`enterprise-history-supplement`、`enterprise-history-supplement-needed`、`enterprise-history-confirmed`、`enterprise-archive-result`、`enterprise-archive-edit`、`enterprise-import-export`、`enterprise-workflow-config`、`enterprise-login-history`、`enterprise-advanced-search` | 数量基本对应；`enterprise-import-export` 和 `enterprise-workflow-config` 为兼容旧路由名，业务边界已核对为计划等待确认页和归档日志详情页；覆盖年度概览/列表、计划提交/确认/通过/退回/修改、进行中详情、日志、证明上传/补充、历史补充、归档和资料页 |
+| 虚拟教研 | 26 | `virtual-research-room`、`virtual-research-invitation`、`virtual-research-activity-list`、`virtual-research-activity-detail-ongoing`、`virtual-research-activity-detail-confirm`、`virtual-research-activity-detail-supplement-submitted`、`virtual-research-confirm-contribution`、`virtual-research-contribution-detail`、`virtual-research-contribution-confirm`、`virtual-research-contribution-submitted`、`virtual-research-supplement-material`、`virtual-research-stage-submitted`、`virtual-research-archive-result`、`virtual-research-archive-result-v1`、`virtual-research-archived-confirmed`、`virtual-research-resubmitted`、`virtual-research-profile-complete`、`virtual-research-basic-info-edit`、`virtual-research-profile-intro-edit`、`virtual-research-teacher-archive-detail`、`virtual-research-position-management`、`virtual-research-work-experience-management`、`virtual-research-skill-management`、`virtual-research-award-management`、`virtual-research-role-assignment`、`virtual-research-advanced-settings` | 数量基本对应；虚拟教研贡献确认页状态机已明确，三张贡献确认效果图分别承接待确认动作页、待确认详情页和完整贡献确认页；虚拟教研成员资料归属已判定，`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告；覆盖我的教研室、邀请、活动列表/详情、贡献确认、补充材料、阶段材料和归档结果 |
 
 第一版结论：
 
 - 活动模块不是当前主要缺页风险点；71 张效果图与 71 个活动页面在数量和命名上高度一致。
 - 后续重点不应再做“是否转成页面”的大规模核查，而应进入 G9-G12 手机端活动业务地图：确认教学反思、培训、企业实践、虚拟教研的提交、审批、归档、入档提示是否能形成闭环。
-- 活动模块中部分页面属于“档案入档结果”或“个人资料管理”状态，后续需和手机端档案业务地图明确边界，避免同一事实在活动页和档案页重复定义。
+- 活动模块中部分页面属于“档案入档结果”或“资料归属”状态；虚拟教研成员资料和我的资料 / 个人发展报告边界已在业务地图明确，后续重命名路由时同步入口、台账和守卫。
 
 ### 逐图台账：待办模块
 
@@ -983,15 +983,15 @@ M-12 验证：
 | G8-08 | 梳理教研科研档案缺页 | 明确活动归档结果与档案详情的边界 |
 | G8-09 | 梳理企业实践档案缺页 | 明确活动流程页和档案记录页的边界 |
 | G8-10 | 梳理成果荣誉档案缺页 | 明确概览、列表、教学成果奖详情承接方式 |
-| G8-11 | 梳理个人发展档案缺页 | 明确培训证书入档结果与个人发展记录关系 |
+| G8-11 | 梳理个人发展档案缺页 | 已补：个人发展分类页已由统一分类页承接，培训证书、发展计划草稿和最近入档记录进入同源档案详情 / 草稿编辑链路 |
 | G8-12 | 梳理职称聘用更正链路 | 已补：更正申请生成 `ArchiveCorrectionRecord`，进度 / 结果 / 补充材料读取同一 `correctionId`，需补充和已补充状态回写本地 domain |
 | G8-13 | 梳理社会服务和考核评价详情缺口 | 明确是否只保留分类入口或补详情页 |
 | G8-14 | 更新档案缺页优先级 | 在本文档风险表中标明先补哪些页面 |
 | G9-01 | 梳理培训活动首页到培训列表入口 | 记录页面、路由和培训对象 |
-| G9-02 | 梳理培训申请提交链路 | 已补：申请培训调用 `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取同一申请并提供详情入口 |
+| G9-02 | 梳理培训申请提交链路 | 已补：申请培训调用 `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取同一申请并提供详情入口；管理端同意 / 未同意回写由 `syncMobileTrainingApplicationResult()` 承接，同意后进入我的培训，未同意后结果页显示未通过 |
 | G9-03 | 梳理培训总结提交链路 | 已补：总结页读取同一培训记录，保存草稿、AI 优化、上传 / 更换材料和提交归档均更新培训记录状态 |
 | G9-04 | 梳理培训归档结果链路 | 已补：提交归档生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
-| G9-05 | 梳理培训需求提交链路 | 已补：两类需求提交均调用 `submitTrainingDemand()` 生成 `待匹配` 需求，结果页按 `demandId` 展示后续匹配状态 |
+| G9-05 | 梳理培训需求提交链路 | 已补：两类需求提交均调用 `submitTrainingDemand()` 生成 `待匹配` 需求，结果页按 `demandId` 展示后续匹配状态；培训需求匹配结果回写由 `syncMobileTrainingDemandResult()` 承接，支持已匹配、暂不处理和已转培训申请 |
 | G9-06 | 梳理培训推荐命中结果链路 | 已补：推荐培训读取 `getMobileTrainingState()`，直接学习进入总结 / 学习记录承接页，需申请培训生成待处理申请 |
 | G10-01 | 梳理教学反思开始方式 | 已补：报告、录音、上传资料、直接对话和最近草稿分别写入开始方式或进入草稿 / 会话 |
 | G10-02 | 梳理课程选择和依据选择 | 已补：课程、课次、依据材料和上传 / 录音材料写入同一反思记录 |
@@ -1001,15 +1001,18 @@ M-12 验证：
 | G11-01 | 梳理企业实践年度概览入口 | 已补：概览 / 列表读取 `getMobileEnterpriseState()`，筛选状态由 `setEnterpriseFilter()` 统一维护 |
 | G11-02 | 梳理企业实践计划提交链路 | 已补：计划保存、提交、确认、退回和重新提交接入 `practiceStore.applications` 对齐口径 |
 | G11-03 | 梳理企业实践进行中记录链路 | 已补：继续记录、日志草稿和保存日志写入 `practiceStore.records` 对齐口径 |
-| G11-04 | 梳理企业实践补充材料链路 | 已补：补充重新提交和历史补录接入实践记录材料状态和档案待确认记录 |
+| G11-04 | 梳理企业实践补充材料链路 | 已补：补充重新提交和历史补录接入实践记录材料状态、补充材料对象、核验状态和处理历史，并生成档案待确认记录 |
 | G11-05 | 梳理企业实践归档链路 | 已补：总结归档和编辑归档调用企业实践 domain，等待确认和补充提交结果生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G11-06 | 对齐管理端企业实践 store | 已补：手机端企业实践闭环对齐 `practiceStore.applications`、`practiceStore.records`、`archiveStore.processingRecords`，管理端确认后才进入正式档案事实 |
+| G11-07 | 核对企业实践兼容路由名边界 | 已补：企业实践兼容路由名边界已核对，`enterprise-import-export` 承接计划等待确认，`enterprise-workflow-config` 承接归档日志详情；后续若重命名需同步 pages、入口、台账和守卫 |
 | G12-01 | 梳理虚拟教研室入口 | 已补：我的教研室进入邀请、贡献确认、教研室状态和活动列表 |
-| G12-02 | 梳理虚拟教研活动详情链路 | 已补：活动列表筛选和详情 / 补充 / 记录入口接入状态 |
-| G12-03 | 梳理贡献确认链路 | 已补：补充遗漏、不是我的、确认贡献和提交结果接入统一贡献对象 |
+| G12-02 | 梳理虚拟教研活动详情链路 | 已补：活动列表筛选和详情 / 补充 / 记录入口接入状态，活动详情材料预览降级入口已接入 |
+| G12-03 | 梳理贡献确认链路 | 已补：补充遗漏、不是我的、确认贡献和提交结果接入统一贡献对象，贡献详情虚拟教研材料预览降级入口已接入 |
 | G12-04 | 梳理阶段材料补充链路 | 已补：阶段材料草稿、提交结果、补充材料草稿和重新提交接入活动材料状态 |
-| G12-05 | 梳理虚拟教研归档链路 | 已补：归档结果调用虚拟教研 domain，先形成教研记录，再生成档案待确认 |
-| G12-06 | 对齐管理端虚拟教研 store | 已补：手机端虚拟教研闭环对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records`、`archiveStore.processingRecords` |
+| G12-05 | 梳理虚拟教研归档链路 | 已补：归档结果调用虚拟教研 domain，先形成教研记录，再生成带 `processingQueueTrace` 的档案待确认 |
+| G12-06 | 对齐管理端虚拟教研 store | 已补：手机端虚拟教研闭环对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records`、带 `processingQueueTrace` 的 `archiveStore.processingRecords` |
+| G12-07 | 判定虚拟教研资料维护页归属 | 已补：虚拟教研成员资料归属已判定，成员资料页不直接写成长档案事实；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告 |
+| G12-08 | 明确多个贡献确认页状态机 | 已补：虚拟教研贡献确认页状态机已明确，`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页 |
 | G13-01 | 建立手机端到管理端对象映射表 | 已补：`docs/business-logic-map.md` 2.1 覆盖待办、档案、培训、反思、企业实践、虚拟教研到 `archiveStore.processingRecords`、`teacherArchiveFacts`、`trainingStore`、`practiceStore`、`virtualLabStore`、`reflectionStore.records` 的映射 |
 | G13-02 | 建立手机端提交材料统一口径 | 已补：手机端提交后先进入待处理、待核验、待确认、需补充或已归档，不因提交成功直接写正式档案事实 |
 | G13-03 | 建立审批结果统一口径 | 已补：待处理、待核验、待确认、需补充、已归档、已入档、已移出状态已在业务地图统一定义 |
@@ -1031,7 +1034,7 @@ M-12 验证：
 | M-10 | 修正 AI 助手 TabBar 入口 | 若确定独立页面，则 `MobileTabBar.vue` 不再指向 `/pages/activity/index` |
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
 | M-12 | 补 AI 助手“补充档案已提交”页面 | 结果页能返回对应档案或待办上下文 |
-| M-13 | 补待办证书共享状态 | 已补：`todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、等待入档确认和移出结果，并由 `test:todo-business` 验证 |
+| M-13 | 补待办证书共享状态 | 已补：`todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、等待入档确认、管理端确认入档同步动作和移出结果，并由 `test:todo-business` 验证 |
 | M-14 | 补 AI 助手补充档案待核验记录 | 已补：`createArchiveSupplementRecord()` 生成 `pending-verify` 并挂载 `processingQueueTrace`，结果页展示 `archiveStore.processingRecords` 队列状态、进入记录详情和档案待确认列表，并由 `test:assistant-archive` 验证 |
 
 ### P1：管理端工程重构任务

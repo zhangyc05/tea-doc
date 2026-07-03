@@ -144,6 +144,10 @@ if (existsSync(archiveDomainFile)) {
     failures.push('archive domain does not define development plan draft records')
   }
 
+  if (!archiveDomainSource.includes('ArchiveCorrectionMaterialUploadStatus')) {
+    failures.push('archive domain does not define correction supplement material upload status')
+  }
+
   if (!archiveDomainSource.includes('getArchiveDraftRecords')) {
     failures.push('archive domain does not expose draft archive records helper')
   }
@@ -154,6 +158,10 @@ if (existsSync(archiveDomainFile)) {
 
   if (!archiveDomainSource.includes('submitArchiveDevelopmentPlanDraft')) {
     failures.push('archive domain does not expose development plan draft submit action')
+  }
+
+  if (!archiveDomainSource.includes('uploadStatus')) {
+    failures.push('archive domain does not write upload status for correction supplement materials')
   }
 
   if (!archiveDomainSource.includes('previewArchiveMaterial')) {
@@ -221,6 +229,14 @@ if (existsSync(categoryPageFile)) {
 
   if (!categorySource.includes('domain/archive')) {
     failures.push('archive category page does not read archive records from shared domain')
+  }
+
+  if (!categorySource.includes('isPersonalDevelopmentCategory')) {
+    failures.push('archive category page does not explicitly handle personal-development category')
+  }
+
+  if (!categorySource.includes('/pages/archive/development-plan-edit/index')) {
+    failures.push('archive personal-development category does not provide development plan edit entry')
   }
 }
 
@@ -437,6 +453,18 @@ if (existsSync(correctionSupplementPageFile)) {
   if (!correctionSupplementSource.includes('recordId=')) {
     failures.push('archive correction supplement page does not preserve recordId in navigation')
   }
+
+  if (!correctionSupplementSource.includes('uploadStatus')) {
+    failures.push('archive correction supplement page does not expose material upload status')
+  }
+
+  if (!correctionSupplementSource.includes('supplementMaterials')) {
+    failures.push('archive correction supplement page does not keep editable supplement material state')
+  }
+
+  if (!correctionSupplementSource.includes('submitArchiveCorrectionSupplement(correction.value.id, supplementMaterials.value')) {
+    failures.push('archive correction supplement page does not submit material upload state to archive domain')
+  }
 }
 
 const profileSource = readFileSync(profileFile, 'utf8')
@@ -496,6 +524,10 @@ if (!ledgerSource.includes('基本信息详情页第一版已落地')) {
 
 if (!ledgerSource.includes('发展计划草稿编辑页第一版已落地')) {
   failures.push('coverage ledger does not mark the development plan draft edit page as implemented')
+}
+
+if (!ledgerSource.includes('个人发展分类页已由统一分类页承接')) {
+  failures.push('coverage ledger does not mark personal-development category as covered by archive category page')
 }
 
 if (!ledgerSource.includes('档案材料预览降级入口已补')) {

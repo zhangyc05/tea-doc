@@ -33,6 +33,7 @@ function showToast(title: string) {
     <view class="page-state">
       <text class="warning-chip">待确认</text>
       <text class="page-subtitle">补充系统未识别到的个人教研贡献</text>
+      <text class="page-subtitle">虚拟教研成员资料</text>
     </view>
 
     <view class="content">

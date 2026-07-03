@@ -50,6 +50,7 @@ function showToast(title: string) {
   <view class="contribution-confirm-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack" />
     <text class="nav-subtitle">确认本次活动中的个人贡献</text>
+    <text class="nav-subtitle">待确认详情页</text>
 
     <view class="content">
       <MobileCard class="hero-card">

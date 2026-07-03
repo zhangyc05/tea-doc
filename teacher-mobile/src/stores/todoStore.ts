@@ -4,7 +4,7 @@ export type MobileTodoTone = 'blue' | 'orange' | 'purple' | 'green'
 export type MobileTodoIcon = 'file' | 'clock' | 'folder' | 'pen' | 'note'
 export type MobileTodoStatus = 'pending-confirm' | 'pending-supplement' | 'improvable' | 'pending-verify' | 'archived' | 'removed'
 export type MobileTodoMaterialStatus = 'recognized' | 'previewed' | 'replaced' | 'pending-verify' | 'confirmed'
-export type MobileTodoDynamicType = '记录确认' | '材料更新' | '草稿保存' | '其他'
+export type MobileTodoDynamicType = '记录确认' | '材料更新' | '草稿保存' | '入档确认' | '其他'
 
 export type MobileTodoItem = {
   id: string
@@ -372,6 +372,31 @@ export function removeTodoCertificate(todoId = certificateTodoId, reason = '系�
     type: '其他',
     tone: 'orange',
     icon: 'file',
+    relatedTodoId: todoId,
+  })
+  return state.certificate
+}
+
+export function confirmTodoCertificateArchivedByAdmin(todoId = certificateTodoId) {
+  const todo = getTodoById(todoId)
+  if (!todo) return null
+
+  todo.tag = '已入档'
+  todo.state = '已入档'
+  todo.action = '查看档案'
+  todo.tone = 'green'
+  todo.status = 'archived'
+  state.certificate.status = 'archived'
+  state.certificate.material.status = 'confirmed'
+  state.certificate.history = ['管理端确认入档，正式写入个人发展档案', ...state.certificate.history]
+  addTodoDynamic({
+    id: 'dynamic-certificate-admin-archived',
+    title: '培训证书已由管理端确认入档',
+    desc: `${state.certificate.title} 已写入个人发展档案`,
+    category: '培训与研修',
+    type: '入档确认',
+    tone: 'green',
+    icon: 'check',
     relatedTodoId: todoId,
   })
   return state.certificate

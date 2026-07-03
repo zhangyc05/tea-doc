@@ -60,6 +60,7 @@ function showToast(title: string) {
         </button>
       </template>
     </MobileNavbar>
+    <text class="state-note">完整贡献确认页</text>
 
     <view class="content">
       <view class="notice-bar">

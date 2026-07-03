@@ -164,6 +164,11 @@ export function rejectMobileTrainingApplication(applicationId: string) {
   return application
 }
 
+export function syncMobileTrainingApplicationResult(applicationId: string, result: 'approved' | 'rejected') {
+  if (result === 'approved') return approveMobileTrainingApplication(applicationId)
+  return rejectMobileTrainingApplication(applicationId)
+}
+
 export function findTrainingApplicationById(applicationId?: string) {
   return applicationId ? state.applications.find(item => item.id === applicationId) : state.applications[0]
 }
@@ -225,6 +230,25 @@ export function submitTrainingDemand(type: MobileTrainingDemand['type'] = 'found
   }
   state.demands.unshift(demand)
   state.operationMessage = '培训需求已提交，当前状态为待匹配。'
+  return demand
+}
+
+export function syncMobileTrainingDemandResult(demandId: string, result: 'matched' | 'deferred' | 'application') {
+  const demand = findTrainingDemandById(demandId)
+  if (!demand) return undefined
+
+  if (result === 'matched') {
+    demand.status = '已匹配'
+    demand.nextStep = '业务部门已匹配培训资源，可在推荐培训中查看后续安排。'
+  } else if (result === 'application') {
+    demand.status = '已转培训申请'
+    demand.nextStep = '业务部门已将需求转为培训申请，请等待申请处理结果。'
+  } else {
+    demand.status = '暂不处理'
+    demand.nextStep = '业务部门暂不处理本次需求，可结合后续培训计划重新提交。'
+  }
+
+  state.operationMessage = `培训需求处理结果：${demand.status}。`
   return demand
 }
 

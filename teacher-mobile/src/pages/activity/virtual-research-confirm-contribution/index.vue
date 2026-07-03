@@ -45,6 +45,7 @@ function submitContribution() {
 <template>
   <view class="confirm-contribution-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack" />
+    <text class="state-note">待确认动作页</text>
 
     <view class="content">
       <MobileCard class="summary-card">

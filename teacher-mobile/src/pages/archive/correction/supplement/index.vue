@@ -7,7 +7,13 @@ import MobileCard from '../../../../components/MobileCard.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
-import { archiveRecords, findArchiveCorrectionById, findArchiveRecordById, submitArchiveCorrectionSupplement } from '../../../../domain/archive'
+import {
+  archiveRecords,
+  findArchiveCorrectionById,
+  findArchiveRecordById,
+  submitArchiveCorrectionSupplement,
+  type ArchiveCorrectionMaterial,
+} from '../../../../domain/archive'
 
 type SupplementQuery = {
   recordId?: string
@@ -18,10 +24,10 @@ type SupplementQuery = {
 const query = ref<SupplementQuery>({})
 const supplementDesc = ref('')
 
-const materialItems = [
-  { name: '补充证明材料.pdf', meta: '待上传 · 用于核验更正事实' },
-  { name: '情况说明.docx', meta: '待上传 · 说明更正依据' },
-]
+const supplementMaterials = ref<ArchiveCorrectionMaterial[]>([
+  { name: '补充证明材料.pdf', meta: '用于核验更正事实', uploadStatus: 'pending-upload' },
+  { name: '情况说明.docx', meta: '说明更正依据', uploadStatus: 'pending-upload' },
+])
 
 onLoad((options) => {
   query.value = options as SupplementQuery
@@ -41,8 +47,21 @@ function goRecordDetail() {
   })
 }
 
+function getUploadStatusLabel(uploadStatus: ArchiveCorrectionMaterial['uploadStatus']) {
+  if (uploadStatus === 'pending-upload') return '待上传'
+  if (uploadStatus === 'uploaded') return '已上传'
+  return '待核验'
+}
+
+function markMaterialUploaded(index: number) {
+  supplementMaterials.value[index] = {
+    ...supplementMaterials.value[index],
+    uploadStatus: 'uploaded',
+  }
+}
+
 function submitSupplement() {
-  if (correction.value) submitArchiveCorrectionSupplement(correction.value.id)
+  if (correction.value) submitArchiveCorrectionSupplement(correction.value.id, supplementMaterials.value)
   uni.redirectTo({
     url: `/pages/archive/correction/progress/index?recordId=${record.value.id}&correctionId=${correction.value?.id || query.value.correctionId}&status=supplemented`,
   })
@@ -80,14 +99,19 @@ function submitSupplement() {
 
     <MobileCard class="section-card">
       <text class="section-title">补充材料</text>
-      <view v-for="material in materialItems" :key="material.name" class="material-row">
+      <view
+        v-for="(material, index) in supplementMaterials"
+        :key="material.name"
+        class="material-row"
+        @tap="markMaterialUploaded(index)"
+      >
         <view class="material-icon"></view>
         <view class="material-body">
           <text class="material-name">{{ material.name }}</text>
-          <text class="material-meta">{{ material.meta }}</text>
+          <text class="material-meta">{{ getUploadStatusLabel(material.uploadStatus) }} · {{ material.meta }}</text>
         </view>
       </view>
-      <text class="material-note">当前为前端材料占位，真实上传和附件状态后续接入。</text>
+      <text class="material-note">点选材料后记录为已上传，提交补充后进入待核验。</text>
     </MobileCard>
 
     <view class="footer-actions">

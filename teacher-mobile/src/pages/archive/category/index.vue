@@ -27,12 +27,18 @@ const current = computed(() => getArchiveCategorySummary(category.value))
 
 const records = computed(() => getArchiveRecordsByCategory(category.value))
 
+const isPersonalDevelopmentCategory = computed(() => category.value === 'personal-development')
+
 function goBack() {
   uni.navigateBack()
 }
 
 function goRecordList() {
   uni.navigateTo({ url: `/pages/archive/record-list/index?category=${category.value}` })
+}
+
+function goDevelopmentPlanEdit() {
+  uni.navigateTo({ url: '/pages/archive/development-plan-edit/index?draftId=development-plan-2026' })
 }
 
 function goRecord(recordId: string) {
@@ -85,6 +91,18 @@ function goRecord(recordId: string) {
       </view>
       <view class="focus-list">
         <view v-for="item in current.focus" :key="item" class="focus-pill">{{ item }}</view>
+      </view>
+    </MobileCard>
+
+    <MobileCard v-if="isPersonalDevelopmentCategory" class="section-card development-card">
+      <view class="section-head">
+        <view class="development-copy">
+          <text class="section-title">发展计划</text>
+          <text class="development-desc">承接个人发展计划草稿，保存后留在草稿列表，提交后生成待核验档案记录。</text>
+        </view>
+        <MobileActionButton class="section-link" variant="link" arrow @tap="goDevelopmentPlanEdit">
+          编辑计划
+        </MobileActionButton>
       </view>
     </MobileCard>
 
@@ -242,6 +260,20 @@ function goRecord(recordId: string) {
 .section-head {
   justify-content: space-between;
   gap: 20rpx;
+}
+
+.development-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.development-desc {
+  color: #66728a;
+  font-size: 24rpx;
+  line-height: 1.42;
 }
 
 .section-title {

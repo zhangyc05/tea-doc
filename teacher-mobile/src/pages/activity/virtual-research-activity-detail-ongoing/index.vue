@@ -2,7 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { submitStageMaterial } from '../../../domain/virtualResearch'
+import { previewVirtualResearchMaterial, submitStageMaterial } from '../../../domain/virtualResearch'
 
 const materialRows = [
   { title: '会议纪要', desc: '会议结束后由系统自动生成', status: '待生成', tone: 'blue', icon: 'doc' },
@@ -17,6 +17,11 @@ function goBack() {
 
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
+}
+
+function previewMaterial(title: string) {
+  const preview = previewVirtualResearchMaterial(title)
+  uni.showToast({ title: preview.message, icon: 'none' })
 }
 
 function goResearchRoom() {
@@ -139,7 +144,7 @@ function goStageMaterial() {
           <text class="section-title">过程材料</text>
         </view>
         <view class="material-list">
-          <view v-for="item in materialRows" :key="item.title" class="material-row">
+          <view v-for="item in materialRows" :key="item.title" class="material-row" @tap="previewMaterial(item.title)">
             <view class="material-icon" :class="[`material-icon--${item.icon}`, `material-icon--${item.tone}`]"></view>
             <view class="material-copy">
               <text class="material-title">{{ item.title }}</text>

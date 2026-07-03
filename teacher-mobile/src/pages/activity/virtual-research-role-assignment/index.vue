@@ -69,6 +69,7 @@ function showToast(title: string) {
     <view class="hero">
       <text class="page-title">我的教研室</text>
       <text class="page-subtitle">查看已加入的教研室、待处理邀请和个人贡献</text>
+      <text class="page-subtitle">虚拟教研成员资料</text>
     </view>
 
     <view class="content">
