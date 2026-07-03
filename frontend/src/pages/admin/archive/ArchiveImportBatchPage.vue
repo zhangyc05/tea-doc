@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { archiveImportBatchPageReview } from './ArchiveImportBatchPage.review'
 import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
 import iconFileImage from '@/assets/admin/archive-processing-assets/icons/icon-file-image.svg'
 import iconFilePdf from '@/assets/admin/archive-processing-assets/icons/icon-file-pdf.svg'
@@ -20,6 +22,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
+const reviewPanelOpen = ref(route.query.review === '1')
 
 const batchId = computed(() => String(route.params.batchId || '20260620-01'))
 const batchInfo = computed(() => ensureArchiveImportBatch(batchId.value))
@@ -137,6 +140,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
     image: '图片',
   }
   return labels[type]
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -336,6 +343,21 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
         <Button v-if="isCompleted && !isCancelled" class="batch-action" variant="outline" @click="viewUploadedFiles">查看上传文件</Button>
         <Button v-if="isCompleted && !isCancelled" class="batch-action batch-action-primary" @click="confirmResult">确认识别结果</Button>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="archiveImportBatchPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -1028,6 +1050,33 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .batch-action-primary {
   margin-left: auto;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1320px) {

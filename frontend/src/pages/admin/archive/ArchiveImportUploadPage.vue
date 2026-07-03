@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { archiveImportUploadPageReview } from './ArchiveImportUploadPage.review'
 import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
 import iconFileImage from '@/assets/admin/archive-processing-assets/icons/icon-file-image.svg'
 import iconFilePdf from '@/assets/admin/archive-processing-assets/icons/icon-file-pdf.svg'
@@ -17,11 +19,13 @@ import {
 } from '@/stores/admin/archiveStore'
 
 const router = useRouter()
+const route = useRoute()
 const archiveState = getArchiveState()
 
 const currentStep = ref(1)
 const isDragging = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+const reviewPanelOpen = ref(route.query.review === '1')
 const uploadedFiles = computed(() => archiveState.uploadedFiles)
 
 const steps = ['上传资料', '系统识别', '确认结果', '生成待处理记录']
@@ -120,6 +124,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
     image: 'IMG',
   }
   return labels[type]
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -227,6 +235,21 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
           开始识别资料
         </Button>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="archiveImportUploadPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -603,6 +626,33 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .bottom-primary-action {
   min-width: 250px;
   box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1440px) {

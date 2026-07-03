@@ -90,7 +90,8 @@
 | 页面 | 动作 | 当前实现 | 闭环判断 |
 | --- | --- | --- | --- |
 | 基准模板 | 进入优化建议 | `router.push('/admin/ability-list/base/optimization')` | 已闭环到页面 |
-| 基准模板 | 编辑指标 | 更新 `abilityListStore.baseTemplateIndicators`，指标状态变为 `draft` | 已完成本地闭环 |
+| 基准模板 | 切换能力节点 | 按 `abilityListStore.baseTemplateIndicators[].abilityKey` 过滤右侧指标表，无匹配指标时显示空态 | 已完成本地闭环 |
+| 基准模板 | 编辑指标 | 编辑抽屉要求指标名称、新手、胜任、骨干、名师、建议依据必填；校验通过后更新 `abilityListStore.baseTemplateIndicators`，指标状态变为 `draft` | 已完成本地闭环 |
 | 基准模板 | 查看版本记录 | 打开版本记录抽屉，展示版本号、状态、发布时间、来源、操作人 | 已完成本地闭环 |
 | 基准模板 | 派生执行版 | 写入 `abilityListStore` 并进入发布确认页 | 已完成本地闭环 |
 | 优化建议 | 采纳、暂缓、弃用 | 修改 `abilityListStore.optimizationSuggestions` | 页面内闭环 |

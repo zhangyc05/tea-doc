@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DetailSheet, StatusBadge } from '@/components/common'
+import { DetailSheet, PageReviewPanel, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListBaseMock } from '@/services/mock/ability-list'
+import { abilityListBasePageReview } from './AbilityListBasePage.review'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -37,11 +38,16 @@ const { abilityTree } = getAbilityListBaseMock({
 const selectedAbility = ref('teaching-design')
 const selectedIndicator = ref<AbilityIndicator | null>(null)
 const editingIndicator = ref<AbilityIndicator | null>(null)
+const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
+const reviewPanelOpen = ref(route.query.review === '1')
 const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
 // 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
 const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.baseTemplateIndicators)
+const filteredIndicators = computed<AbilityIndicator[]>(() => (
+  normalizedIndicators.value.filter(indicator => indicator.abilityKey === selectedAbility.value)
+))
 const versionRows = computed(() => [
   abilityListState.executionVersion,
   ...abilityListState.versionHistory,
@@ -67,14 +73,41 @@ function selectIndicator(indicator: AbilityIndicator) {
 
 function editIndicator(indicator: AbilityIndicator) {
   editingIndicator.value = { ...indicator }
+  editErrors.value = {}
 }
 
 function closeEditDrawer() {
   editingIndicator.value = null
+  editErrors.value = {}
+}
+
+function validateIndicatorEdit() {
+  if (!editingIndicator.value) return false
+
+  const fields: Array<{ key: keyof AbilityIndicator, message: string }> = [
+    { key: 'name', message: '请输入指标名称' },
+    { key: 'novice', message: '请输入新手标准' },
+    { key: 'competent', message: '请输入胜任标准' },
+    { key: 'backbone', message: '请输入骨干标准' },
+    { key: 'expert', message: '请输入名师标准' },
+    { key: 'basisLabel', message: '请输入建议依据' },
+  ]
+  const nextErrors: Record<string, string> = {}
+
+  fields.forEach((field) => {
+    const value = editingIndicator.value?.[field.key]
+    if (typeof value !== 'string' || value.trim() === '') {
+      nextErrors[field.key] = field.message
+    }
+  })
+
+  editErrors.value = nextErrors
+  return Object.keys(nextErrors).length === 0
 }
 
 function saveIndicatorEdit() {
   if (!editingIndicator.value) return
+  if (!validateIndicatorEdit()) return
 
   updateBaseTemplateIndicator(editingIndicator.value.key, {
     name: editingIndicator.value.name,
@@ -140,6 +173,10 @@ function closeVersionDrawer() {
   showVersionDrawer.value = false
 }
 
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
+}
+
 function deriveExecutionVersion() {
   deriveNextExecutionVersion()
   router.push('/admin/ability-list/execution/publish-confirm')
@@ -166,7 +203,6 @@ function deriveExecutionVersion() {
             <div class="hero-title-group">
               <div class="hero-title-row">
                 <h1>教师能力清单基准模板 V1.0</h1>
-                <StatusBadge status="enabled" label="已启用" />
               </div>
               <p class="hero-subtitle">
                 维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。
@@ -192,23 +228,16 @@ function deriveExecutionVersion() {
 
             <div class="hero-actions">
               <Button class="primary-action" @click="goToOptimization">
-                优化基准模板
+                优化基准板
               </Button>
               <Button class="secondary-action" variant="outline" @click="goToVersionHistory">
-                查看版本记录
+                查看优化记录
               </Button>
               <Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">
                 派生执行版
                 <span aria-hidden="true">›</span>
               </Button>
             </div>
-
-            <p class="hero-note">
-              可基于制度文件和运行反馈形成优化建议，确认后再应用到基准模板。
-              <span v-if="abilityListState.operationMessage" class="operation-message">
-                {{ abilityListState.operationMessage }}
-              </span>
-            </p>
           </div>
         </div>
       </section>
@@ -218,7 +247,7 @@ function deriveExecutionVersion() {
         :selected-key="selectedAbility"
         :selected-title="getSelectedAbilityLabel()"
         :selected-icon="getSelectedAbilityIcon()"
-        :indicators="normalizedIndicators"
+        :indicators="filteredIndicators"
         basis-column-title="建议依据"
         :default-expanded-keys="['teaching']"
         @select-ability="selectAbility"
@@ -238,32 +267,38 @@ function deriveExecutionVersion() {
       >
         <div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">
           <div class="form-group">
-            <label class="form-label">指标名称</label>
-            <input v-model="editingIndicator.name" class="form-input" type="text" />
+            <label class="form-label">指标名称 <span class="required-mark">*</span></label>
+            <input v-model="editingIndicator.name" class="form-input" :aria-invalid="Boolean(editErrors.name)" type="text" />
+            <p v-if="editErrors.name" class="form-error">{{ editErrors.name }}</p>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">新手</label>
-              <input v-model="editingIndicator.novice" class="form-input" type="text" />
+              <label class="form-label">新手 <span class="required-mark">*</span></label>
+              <input v-model="editingIndicator.novice" class="form-input" :aria-invalid="Boolean(editErrors.novice)" type="text" />
+              <p v-if="editErrors.novice" class="form-error">{{ editErrors.novice }}</p>
             </div>
             <div class="form-group">
-              <label class="form-label">胜任</label>
-              <input v-model="editingIndicator.competent" class="form-input" type="text" />
+              <label class="form-label">胜任 <span class="required-mark">*</span></label>
+              <input v-model="editingIndicator.competent" class="form-input" :aria-invalid="Boolean(editErrors.competent)" type="text" />
+              <p v-if="editErrors.competent" class="form-error">{{ editErrors.competent }}</p>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">骨干</label>
-              <input v-model="editingIndicator.backbone" class="form-input" type="text" />
+              <label class="form-label">骨干 <span class="required-mark">*</span></label>
+              <input v-model="editingIndicator.backbone" class="form-input" :aria-invalid="Boolean(editErrors.backbone)" type="text" />
+              <p v-if="editErrors.backbone" class="form-error">{{ editErrors.backbone }}</p>
             </div>
             <div class="form-group">
-              <label class="form-label">名师</label>
-              <input v-model="editingIndicator.expert" class="form-input" type="text" />
+              <label class="form-label">名师 <span class="required-mark">*</span></label>
+              <input v-model="editingIndicator.expert" class="form-input" :aria-invalid="Boolean(editErrors.expert)" type="text" />
+              <p v-if="editErrors.expert" class="form-error">{{ editErrors.expert }}</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">建议依据</label>
-            <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
+            <label class="form-label">建议依据 <span class="required-mark">*</span></label>
+            <input v-model="editingIndicator.basisLabel" class="form-input" :aria-invalid="Boolean(editErrors.basisLabel)" type="text" />
+            <p v-if="editErrors.basisLabel" class="form-error">{{ editErrors.basisLabel }}</p>
           </div>
         </div>
 
@@ -306,6 +341,21 @@ function deriveExecutionVersion() {
           </article>
         </div>
       </DetailSheet>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="abilityListBasePageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -544,6 +594,10 @@ function deriveExecutionVersion() {
   font-weight: 850;
 }
 
+.required-mark {
+  color: #ef4444;
+}
+
 .form-input {
   min-height: 38px;
   border: 1px solid var(--color-admin-border);
@@ -559,6 +613,19 @@ function deriveExecutionVersion() {
 .form-input:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.12);
+}
+
+.form-input[aria-invalid='true'] {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.form-error {
+  margin: -4px 0 0;
+  color: #d93030;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .version-list {
@@ -618,6 +685,33 @@ function deriveExecutionVersion() {
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 800;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1280px) {

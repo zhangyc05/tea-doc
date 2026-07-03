@@ -112,6 +112,7 @@ export function importPolicySuggestionInState(state: AbilityListState): Optimiza
     statusLabel: getOptimizationSuggestionStatusLabel('pending'),
     targetIndicator: {
       key: 'base-policy-teaching-resource-scope',
+      abilityKey: 'teaching-resource',
       name: '教学资源建设适用范围',
       novice: '参与课程资源建设',
       competent: '独立建设课程资源',
@@ -140,6 +141,7 @@ export function rerunFeedbackAnalysisInState(state: AbilityListState): Optimizat
     statusLabel: getOptimizationSuggestionStatusLabel('pending'),
     targetIndicator: {
       key: 'base-feedback-enterprise-output',
+      abilityKey: 'practice',
       name: '企业实践成果证据要求',
       novice: '形成实践记录',
       competent: '形成实践总结',

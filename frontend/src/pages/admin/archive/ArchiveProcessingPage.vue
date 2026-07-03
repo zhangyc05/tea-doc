@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { archiveProcessingPageReview } from './ArchiveProcessingPage.review'
 import processingHeroArt from '@/assets/admin/archive-processing-assets/archive-processing-hero-art.png'
 import processingHeroEmblem from '@/assets/admin/archive-processing-assets/archive-processing-hero-emblem.svg'
 import iconStatusArchived from '@/assets/admin/archive-processing-assets/icons/icon-status-archived.svg'
@@ -65,6 +67,7 @@ const statCards = computed(() => [
 // 筛选条件
 const statusFilter = ref('全部待处理')
 const sourceFilter = ref('全部来源')
+const reviewPanelOpen = ref(route.query.review === '1')
 
 const statusOptions = computed(() => [
   { label: '全部待处理', value: '全部待处理', count: archiveState.processingRecords.filter(record => record.status !== '已入档').length },
@@ -144,6 +147,10 @@ function viewSupplement() {
 
 function countByStatus(status: ArchiveProcessingRecord['status']) {
   return archiveState.processingRecords.filter(record => record.status === status).length
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -395,6 +402,21 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
           </div>
         </aside>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="archiveProcessingPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -1360,6 +1382,33 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   padding: 0 12px;
   font-size: 13px;
   font-weight: 950;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1440px) {

@@ -15,6 +15,7 @@ export type AbilityIndicatorStatus = 'enabled' | 'disabled' | 'draft'
 
 export type AbilityIndicator = {
   key: string
+  abilityKey?: string
   name: string
   novice: string
   competent: string

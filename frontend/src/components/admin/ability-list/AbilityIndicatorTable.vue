@@ -74,7 +74,7 @@ function getStatusText(status: AbilityIndicator['status']) {
             <th v-if="showAction">操作</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="rows.length">
           <tr
             v-for="row in rows"
             :key="row.key"
@@ -96,6 +96,13 @@ function getStatusText(status: AbilityIndicator['status']) {
               <button class="btn-link" @click.stop="handleEdit(row)">
                 {{ actionText }}
               </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td class="empty-cell" :colspan="showAction ? 8 : 7">
+              当前能力节点暂无指标，请从优化建议或基准模板维护中补充。
             </td>
           </tr>
         </tbody>
@@ -184,5 +191,13 @@ function getStatusText(status: AbilityIndicator['status']) {
 .admin-table-row.active,
 .admin-table-row:hover {
   background: #f5f8ff;
+}
+
+.empty-cell {
+  height: 160px;
+  color: #7a879b;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
 }
 </style>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { archiveQueryPageReview } from './ArchiveQueryPage.review'
 import queryHeroArt from '@/assets/admin/archive-query-assets/archive-query-hero-art.png'
 import queryHeroEmblem from '@/assets/admin/archive-query-assets/archive-query-hero-emblem.svg'
 import archiveQueryEmpty from '@/assets/admin/archive-query-assets/archive-query-empty.svg'
@@ -26,6 +28,7 @@ import iconViewList from '@/assets/admin/archive-query-assets/icons/icon-view-li
 import { getArchiveQueryMock } from '@/services/mock/archive'
 
 const router = useRouter()
+const route = useRoute()
 
 const { stats, collegeOptions, titleOptions, updateOptions, teacherCards } = getArchiveQueryMock()
 
@@ -35,6 +38,7 @@ const submittedSearchKeyword = ref('')
 const collegeFilter = ref('全部学院')
 const titleFilter = ref('全部职称')
 const updateFilter = ref('全部')
+const reviewPanelOpen = ref(route.query.review === '1')
 
 // 视图切换
 const viewMode = ref('card')
@@ -122,6 +126,10 @@ function switchViewMode(mode: string) {
 
 function getTeacherAvatar(teacherId: string) {
   return teacherAvatarMap[teacherId] ?? avatarMale02
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -310,6 +318,21 @@ function getTeacherAvatar(teacherId: string) {
           </div>
         </div>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="archiveQueryPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -841,6 +864,33 @@ function getTeacherAvatar(teacherId: string) {
 
 .archive-detail-action {
   flex: none;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 /* 响应式 */

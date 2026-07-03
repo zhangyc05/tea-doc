@@ -1,0 +1,42 @@
+export const trainingPlanPageReview = {
+  route: '/admin/training/plans',
+  title: '培训管理 / 培训计划',
+  goal: '管理培训计划列表，支持筛选、查看详情和新建培训计划。',
+  screenshot: '效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜培训计划｜附属流程.png；效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜新建培训计划｜附属流程.png',
+  sections: [
+    '顶部计划统计卡',
+    '计划筛选栏',
+    '培训计划表格',
+    '右侧提醒面板',
+    '新建培训计划抽屉',
+  ],
+  dataRules: [
+    '计划列表来自 trainingStore.plans。',
+    '组织范围、计划状态、培训时间、参与方式和关键字共同作用于 filteredPlans。',
+    '新建计划保存草稿或发布必须调用 createTrainingPlan()。',
+    '新建计划抽屉属于同页说明的一部分，不单独建立页面说明。',
+  ],
+  interactions: [
+    '新建培训计划打开 DetailSheet 抽屉。',
+    '保存草稿创建草稿状态计划。',
+    '保存并发布创建已发布计划。',
+    '重置恢复默认筛选。',
+    '查看详情跳转 /admin/training/plans/:planId。',
+  ],
+  formRules: [
+    { field: '计划名称', required: true, message: '保存前应填写计划名称' },
+    { field: '培训方向', required: true, message: '保存前应填写培训方向' },
+    { field: '关联需求', required: false, message: '可选关联已有培训需求' },
+    { field: '关联资源', required: false, message: '可选关联资源库资源' },
+    { field: '面向对象', required: true, message: '保存前应填写面向对象' },
+    { field: '培训时间', required: true, message: '保存前应填写开始和结束时间' },
+    { field: '计划名额', required: true, message: '未填写时默认 30 人' },
+  ],
+  checklist: [
+    '统计卡、筛选栏、表格和右侧提醒与效果图基本一致',
+    '筛选和搜索能更新计划列表',
+    '新建抽屉结构和字段完整',
+    '保存草稿和发布都写入共享状态',
+    '新建抽屉说明纳入当前页面说明',
+  ],
+}

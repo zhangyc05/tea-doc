@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { PageReviewPanel } from '@/components/common'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingRecordDetailMock } from '@/services/mock/training'
+import { trainingRecordDetailPageReview } from './TrainingRecordDetailPage.review'
 import {
   getTrainingRecordById,
   getTrainingState,
@@ -19,6 +21,7 @@ const route = useRoute()
 const recordId = route.params.recordId as string
 const operationMessage = useOperationMessage()
 const trainingState = getTrainingState()
+const reviewPanelOpen = ref(route.query.review === '1')
 const recordDetail = computed(() => getTrainingRecordById(recordId) ?? trainingState.records[0])
 const { learningRecords, trainingSummary, relatedRecords } = getTrainingRecordDetailMock()
 
@@ -36,6 +39,10 @@ function uploadMaterial() {
 
 function viewRelatedRecord(recordId: string) {
   router.push(`/admin/training/records/${recordId}`)
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 
 </script>
@@ -277,6 +284,21 @@ function viewRelatedRecord(recordId: string) {
           </div>
         </div>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="trainingRecordDetailPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>

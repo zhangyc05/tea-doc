@@ -30,12 +30,17 @@ export const initialExecutionIndicators: AbilityIndicator[] = [
 ]
 
 export const initialBaseTemplateIndicators: AbilityIndicator[] = [
-  { key: 'base-teaching-workload', name: '教学工作量（课时/学期）', novice: '≥64', competent: '≥96', backbone: '≥128', expert: '≥160', basisLabel: '教学工作记录', status: 'enabled' },
-  { key: 'base-teaching-evaluation', name: '课堂教学评价（学生评分）', novice: '≥80分', competent: '≥85分', backbone: '≥90分', expert: '≥95分', basisLabel: '教学质量评价', status: 'enabled' },
-  { key: 'base-listening-hours', name: '听课课时（课时/学期）', novice: '≥8', competent: '≥16', backbone: '≥24', expert: '≥32', basisLabel: '教学活动记录', status: 'enabled' },
-  { key: 'base-teaching-compliance', name: '教学规范执行', novice: '≥80%', competent: '≥90%', backbone: '≥95%', expert: '≥98%', basisLabel: '教学规范检查', status: 'enabled' },
-  { key: 'base-teaching-resource-construction', name: '教学资源建设（门/年）', novice: '≥1', competent: '≥2', backbone: '≥3', expert: '≥5', basisLabel: '课程资源记录', status: 'enabled' },
-  { key: 'base-it-teaching-level', name: '信息化教学应用水平', novice: '≥60分', competent: '≥75分', backbone: '≥85分', expert: '≥95分', basisLabel: '信息化应用评价', status: 'enabled' },
+  { key: 'base-basic-ethics', abilityKey: 'basic', name: '师德师风表现', novice: '无负面记录', competent: '年度考核合格', backbone: '获得校级认可', expert: '形成示范案例', basisLabel: '师德考核记录', status: 'enabled' },
+  { key: 'base-basic-attendance', abilityKey: 'basic', name: '岗位履职出勤', novice: '出勤达标', competent: '稳定履职', backbone: '承担重点任务', expert: '带动团队履职', basisLabel: '岗位履职记录', status: 'enabled' },
+  { key: 'base-teaching-workload', abilityKey: 'teaching-design', name: '教学工作量（课时/学期）', novice: '≥64', competent: '≥96', backbone: '≥128', expert: '≥160', basisLabel: '教学工作记录', status: 'enabled' },
+  { key: 'base-teaching-evaluation', abilityKey: 'teaching-evaluation', name: '课堂教学评价（学生评分）', novice: '≥80分', competent: '≥85分', backbone: '≥90分', expert: '≥95分', basisLabel: '教学质量评价', status: 'enabled' },
+  { key: 'base-listening-hours', abilityKey: 'teaching-design', name: '听课课时（课时/学期）', novice: '≥8', competent: '≥16', backbone: '≥24', expert: '≥32', basisLabel: '教学活动记录', status: 'enabled' },
+  { key: 'base-teaching-compliance', abilityKey: 'teaching-design', name: '教学规范执行', novice: '≥80%', competent: '≥90%', backbone: '≥95%', expert: '≥98%', basisLabel: '教学规范检查', status: 'enabled' },
+  { key: 'base-teaching-resource-construction', abilityKey: 'teaching-resource', name: '教学资源建设（门/年）', novice: '≥1', competent: '≥2', backbone: '≥3', expert: '≥5', basisLabel: '课程资源记录', status: 'enabled' },
+  { key: 'base-it-teaching-level', abilityKey: 'teaching-innovation', name: '信息化教学应用水平', novice: '≥60分', competent: '≥75分', backbone: '≥85分', expert: '≥95分', basisLabel: '信息化应用评价', status: 'enabled' },
+  { key: 'base-research-project', abilityKey: 'research', name: '教研项目参与', novice: '参与校级项目', competent: '承担项目任务', backbone: '主持校级项目', expert: '主持省级以上项目', basisLabel: '教研项目材料', status: 'enabled' },
+  { key: 'base-practice-experience', abilityKey: 'practice', name: '企业实践经历', novice: '形成实践记录', competent: '完成实践总结', backbone: '转化课程案例', expert: '形成推广成果', basisLabel: '企业实践材料', status: 'enabled' },
+  { key: 'base-service-contribution', abilityKey: 'service', name: '社会服务贡献', novice: '参与服务活动', competent: '独立完成服务', backbone: '承担校级服务项目', expert: '形成区域影响', basisLabel: '社会服务记录', status: 'enabled' },
 ]
 
 export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
@@ -49,7 +54,7 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
     basis: '本职群第 26 条成果材料未能给出清晰映射来源',
     status: 'pending',
     statusLabel: '待确认',
-    targetIndicator: { key: 'base-enterprise-practice-output', name: '企业实践成果转化', novice: '形成实践记录', competent: '形成课程案例', backbone: '形成校级成果', expert: '形成可推广成果', basisLabel: '企业实践成果材料', status: 'draft' },
+    targetIndicator: { key: 'base-enterprise-practice-output', abilityKey: 'practice', name: '企业实践成果转化', novice: '形成实践记录', competent: '形成课程案例', backbone: '形成校级成果', expert: '形成可推广成果', basisLabel: '企业实践成果材料', status: 'draft' },
   },
   {
     id: 'suggestion-research-resource',
@@ -61,7 +66,7 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
     basis: '2026年师资培养办法第三章第十二条',
     status: 'pending',
     statusLabel: '待确认',
-    targetIndicator: { key: 'base-research-resource-detail', name: '教研资源建设贡献', novice: '参与资源建设', competent: '承担资源模块', backbone: '主持校级资源', expert: '主持省级以上资源', basisLabel: '教研资源建设材料', status: 'draft' },
+    targetIndicator: { key: 'base-research-resource-detail', abilityKey: 'research', name: '教研资源建设贡献', novice: '参与资源建设', competent: '承担资源模块', backbone: '主持校级资源', expert: '主持省级以上资源', basisLabel: '教研资源建设材料', status: 'draft' },
   },
   {
     id: 'suggestion-teaching-resource-scope',
@@ -73,7 +78,7 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
     basis: '课堂教学创新试点组织、院系反馈材料普遍表述资源',
     status: 'pending',
     statusLabel: '待确认',
-    targetIndicator: { key: 'base-teaching-resource-construction', name: '教学资源建设（门/年）', novice: '≥1 且资源可复用', competent: '≥2 且覆盖核心课程', backbone: '≥3 且覆盖专业核心课程', expert: '≥5 且可跨专业推广', basisLabel: '课程资源记录及复用证明', status: 'draft' },
+    targetIndicator: { key: 'base-teaching-resource-construction', abilityKey: 'teaching-resource', name: '教学资源建设（门/年）', novice: '≥1 且资源可复用', competent: '≥2 且覆盖核心课程', backbone: '≥3 且覆盖专业核心课程', expert: '≥5 且可跨专业推广', basisLabel: '课程资源记录及复用证明', status: 'draft' },
   },
   {
     id: 'suggestion-service-mapping',
@@ -85,7 +90,7 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
     basis: '管理类人工补充建议',
     status: 'pending',
     statusLabel: '待确认',
-    targetIndicator: { key: 'base-service-record-mapping', name: '社会服务记录映射完整度', novice: '有服务记录', competent: '记录可关联岗位要求', backbone: '记录可关联聘期要求', expert: '记录可支持画像和报告', basisLabel: '社会服务记录及要求映射', status: 'draft' },
+    targetIndicator: { key: 'base-service-record-mapping', abilityKey: 'service', name: '社会服务记录映射完整度', novice: '有服务记录', competent: '记录可关联岗位要求', backbone: '记录可关联聘期要求', expert: '记录可支持画像和报告', basisLabel: '社会服务记录及要求映射', status: 'draft' },
   },
 ]
 

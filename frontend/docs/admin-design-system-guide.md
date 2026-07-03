@@ -234,6 +234,7 @@ frontend/src/components/common/StatCard.vue
 frontend/src/components/common/StatusBadge.vue
 frontend/src/components/common/DetailSheet.vue
 frontend/src/components/common/EmptyState.vue
+frontend/src/components/common/PageReviewPanel.vue
 ```
 
 能力清单相关组件：
@@ -245,6 +246,24 @@ frontend/src/components/admin/ability-list/AbilityStructureTree.vue
 ```
 
 不得先凭经验设计通用组件，再用组件拼页面。组件必须从目标效果图和当前基准页中提炼。
+
+`PageReviewPanel` 只用于页面级开发 / 审核说明，不属于正式业务控件。所有管理端页面审核说明入口统一使用页面右上角浮动按钮，按钮文案在“页面说明 / 关闭说明”之间切换；追加 `?review=1` 时默认展开说明面板。说明内容放在页面同目录的 `*.review.ts` 中，避免 md 文档和页面实现分离。
+
+`*.review.ts` 字段规范：
+
+| 字段 | 说明 |
+| --- | --- |
+| `route` | 页面路由，动态路由保留参数写法 |
+| `title` | 页面说明标题 |
+| `goal` | 页面目标，说明本页解决的业务问题 |
+| `screenshot` | 对应效果图路径或页面资源说明 |
+| `sections` | 页面区域清单 |
+| `dataRules` | 数据来源、筛选、状态共享和空态规则 |
+| `interactions` | 点击、跳转、抽屉、状态流转等交互规则 |
+| `formRules` | 表单字段、必填和校验提示；无表单时为空数组 |
+| `checklist` | 页面验收清单 |
+
+能力清单基准模板、优化建议、执行版、发布确认和要求映射页面已接入该模板，并由 `frontend/src/pages/admin/adminVisualActions.test.ts` 约束说明入口不回退。
 
 ### 按钮等级
 

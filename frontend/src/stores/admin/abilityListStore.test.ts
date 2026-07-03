@@ -54,6 +54,17 @@ describe('ability list business state', () => {
     expect(target?.status).toBe('draft')
   })
 
+  it('keeps base template indicators mapped to ability tree nodes', () => {
+    const indicators = getAbilityListState().baseTemplateIndicators
+
+    expect(indicators.some(indicator => indicator.abilityKey === 'basic')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'teaching-design')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'teaching-resource')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'research')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'practice')).toBe(true)
+    expect(indicators.some(indicator => indicator.abilityKey === 'service')).toBe(true)
+  })
+
   it('derives the next execution version as a pending version', () => {
     const nextVersion = deriveNextExecutionVersion()
 

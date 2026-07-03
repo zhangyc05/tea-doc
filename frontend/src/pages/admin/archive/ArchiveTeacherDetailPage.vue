@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import DetailSheet from '@/components/common/DetailSheet.vue'
+import { DetailSheet, PageReviewPanel } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
+import { archiveTeacherDetailPageReview } from './ArchiveTeacherDetailPage.review'
 import {
   getArchiveDefaultSourceRecords,
   getArchiveTeacherName,
@@ -31,6 +32,7 @@ const drawerOpen = ref(false)
 const drawerTitle = ref('')
 const drawerType = ref('')
 const selectedFactId = ref('')
+const reviewPanelOpen = ref(route.query.review === '1')
 const operationMessage = useOperationMessage()
 
 // 来源记录数据
@@ -170,6 +172,10 @@ function isFactInDrawerType(dimension: string, type: string) {
   if (type === '教学工作' && dimension === '教师培训') return true
   if (type === '个人发展' && dimension === '教师培训') return true
   return false
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -577,6 +583,21 @@ function isFactInDrawerType(dimension: string, type: string) {
         <p class="footer-tip">仅已确认入档的记录会写入档案正文。</p>
       </div>
     </DetailSheet>
+
+    <PageReviewPanel
+      :open="reviewPanelOpen"
+      :review="archiveTeacherDetailPageReview"
+    />
+
+    <button
+      class="review-floating-button"
+      :class="{ shifted: reviewPanelOpen }"
+      type="button"
+      :aria-pressed="reviewPanelOpen"
+      @click="toggleReviewPanel"
+    >
+      {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+    </button>
   </AdminLayout>
 </template>
 
@@ -1323,6 +1344,33 @@ function isFactInDrawerType(dimension: string, type: string) {
   margin: 0;
   color: var(--color-admin-text-subtle);
   font-size: 13px;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1320px) {

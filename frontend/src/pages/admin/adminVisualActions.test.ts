@@ -7,6 +7,7 @@ import abilityListBaseOptimizationPage from '@/pages/admin/ability-list/AbilityL
 import abilityListPublishConfirmPage from '@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue?raw'
 import abilityListRequirementMappingPage from '@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
 import abilityProfileGroupPage from '@/pages/admin/ability-profile/AbilityProfileGroupPage.vue?raw'
+import abilityProfileTeacherDetailPage from '@/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue?raw'
 import abilityProfileTeacherPage from '@/pages/admin/ability-profile/AbilityProfileTeacherPage.vue?raw'
 import archiveImportBatchPage from '@/pages/admin/archive/ArchiveImportBatchPage.vue?raw'
 import archiveImportUploadPage from '@/pages/admin/archive/ArchiveImportUploadPage.vue?raw'
@@ -33,6 +34,7 @@ import virtualLabRoomPage from '@/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 import abilityIndicatorTable from '@/components/admin/ability-list/AbilityIndicatorTable.vue?raw'
 import abilityStructureTree from '@/components/admin/ability-list/AbilityStructureTree.vue?raw'
 import detailSheet from '@/components/common/DetailSheet.vue?raw'
+import pageReviewPanel from '@/components/common/PageReviewPanel.vue?raw'
 import pageHeader from '@/components/common/PageHeader.vue?raw'
 import adminSidebar from '@/components/layout/AdminSidebar.vue?raw'
 import adminTopbar from '@/components/layout/AdminTopbar.vue?raw'
@@ -53,6 +55,7 @@ const adminVisualSources = [
   ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage],
   ['AbilityListRequirementMappingPage.vue', abilityListRequirementMappingPage],
   ['AbilityProfileGroupPage.vue', abilityProfileGroupPage],
+  ['AbilityProfileTeacherDetailPage.vue', abilityProfileTeacherDetailPage],
   ['AbilityProfileTeacherPage.vue', abilityProfileTeacherPage],
   ['ArchiveImportBatchPage.vue', archiveImportBatchPage],
   ['ArchiveImportUploadPage.vue', archiveImportUploadPage],
@@ -79,6 +82,7 @@ const adminVisualSources = [
   ['AbilityIndicatorTable.vue', abilityIndicatorTable],
   ['AbilityStructureTree.vue', abilityStructureTree],
   ['DetailSheet.vue', detailSheet],
+  ['PageReviewPanel.vue', pageReviewPanel],
   ['PageHeader.vue', pageHeader],
   ['AdminSidebar.vue', adminSidebar],
   ['AdminTopbar.vue', adminTopbar],
@@ -367,6 +371,15 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBaseOptimizationPage).not.toContain('class="btn-secondary"')
   })
 
+  it('keeps the ability list base optimization page aligned to the target admin shell', () => {
+    expect(abilityListBaseOptimizationPage).toContain('ability-list-base-assets/ability-list-base-hero-art.png')
+    expect(abilityListBaseOptimizationPage).toContain('ability-list-base-assets/ability-list-base-hero-emblem.svg')
+    expect(abilityListBaseOptimizationPage).toContain(':style="{ backgroundImage: `url(${baseHeroArt})` }"')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="page-breadcrumb"')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="page-description"')
+    expect(abilityListBaseOptimizationPage).not.toMatch(/<div class="hero-art" aria-hidden="true">\s*<span><\/span>/)
+  })
+
   it('uses the shared Button component for ability profile group actions', () => {
     expect(abilityProfileGroupPage).toContain('import { Button } from \'@/components/ui\'')
     expect(abilityProfileGroupPage).toContain('<Button variant="outline" @click="viewFullAdvice">')
@@ -407,6 +420,131 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).toContain('version.source')
     expect(abilityListBasePage).toContain('version.operator')
     expect(abilityListBasePage).not.toContain('<div v-if="showVersionDrawer" class="edit-drawer-overlay"')
+  })
+
+  it('exposes in-page review criteria for the ability list base page', () => {
+    expect(abilityListBasePage).toContain('PageReviewPanel')
+    expect(abilityListBasePage).toContain('abilityListBasePageReview')
+    expect(abilityListBasePage).toContain(':review="abilityListBasePageReview"')
+    expect(abilityListBasePage).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+    expect(abilityListBasePage).toContain('function toggleReviewPanel()')
+    expect(abilityListBasePage).toContain('class="review-floating-button"')
+    expect(abilityListBasePage).toContain('@click="toggleReviewPanel"')
+    expect(abilityListBasePage).toContain(':open="reviewPanelOpen"')
+    expect(abilityListBasePage).toContain('top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));')
+    expect(abilityListBasePage).not.toContain('bottom: var(--space-admin-2xl);')
+    expect(pageReviewPanel).toContain('页面说明 / 验收')
+    expect(pageReviewPanel).toContain('验收清单')
+  })
+
+  it('exposes in-page review criteria for all P1 ability list pages', () => {
+    const reviewPages = [
+      ['AbilityListBaseOptimizationPage.vue', abilityListBaseOptimizationPage, 'abilityListBaseOptimizationPageReview'],
+      ['AbilityListExecutionPage.vue', abilityListExecutionPage, 'abilityListExecutionPageReview'],
+      ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage, 'abilityListPublishConfirmPageReview'],
+      ['AbilityListRequirementMappingPage.vue', abilityListRequirementMappingPage, 'abilityListRequirementMappingPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('exposes in-page review criteria for all P2 archive pages', () => {
+    const reviewPages = [
+      ['ArchiveProcessingPage.vue', archiveProcessingPage, 'archiveProcessingPageReview'],
+      ['ArchiveImportUploadPage.vue', archiveImportUploadPage, 'archiveImportUploadPageReview'],
+      ['ArchiveImportBatchPage.vue', archiveImportBatchPage, 'archiveImportBatchPageReview'],
+      ['ArchiveQueryPage.vue', archiveQueryPage, 'archiveQueryPageReview'],
+      ['ArchiveTeacherDetailPage.vue', archiveTeacherDetailPage, 'archiveTeacherDetailPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('exposes in-page review criteria for the first P3 training pages', () => {
+    const reviewPages = [
+      ['TrainingResourcePage.vue', trainingResourcePage, 'trainingResourcePageReview'],
+      ['TrainingDemandPage.vue', trainingDemandPage, 'trainingDemandPageReview'],
+      ['TrainingApplicationPage.vue', trainingApplicationPage, 'trainingApplicationPageReview'],
+      ['TrainingRecordPage.vue', trainingRecordPage, 'trainingRecordPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('exposes in-page review criteria for the remaining P3 training pages', () => {
+    const reviewPages = [
+      ['TrainingRecordDetailPage.vue', trainingRecordDetailPage, 'trainingRecordDetailPageReview'],
+      ['TrainingPlanPage.vue', trainingPlanPage, 'trainingPlanPageReview'],
+      ['TrainingPlanDetailPage.vue', trainingPlanDetailPage, 'trainingPlanDetailPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('exposes in-page review criteria for all P4 ability profile pages', () => {
+    const reviewPages = [
+      ['AbilityProfileGroupPage.vue', abilityProfileGroupPage, 'abilityProfileGroupPageReview'],
+      ['AbilityProfileTeacherPage.vue', abilityProfileTeacherPage, 'abilityProfileTeacherPageReview'],
+      ['AbilityProfileTeacherDetailPage.vue', abilityProfileTeacherDetailPage, 'abilityProfileTeacherDetailPageReview'],
+    ] as const
+
+    reviewPages.forEach(([filename, source, reviewName]) => {
+      expect(source, filename).toContain('PageReviewPanel')
+      expect(source, filename).toContain(reviewName)
+      expect(source, filename).toContain(`:review="${reviewName}"`)
+      expect(source, filename).toContain('const reviewPanelOpen = ref(route.query.review === \'1\')')
+      expect(source, filename).toContain('function toggleReviewPanel()')
+      expect(source, filename).toContain('class="review-floating-button"')
+      expect(source, filename).toContain('@click="toggleReviewPanel"')
+      expect(source, filename).toContain(':open="reviewPanelOpen"')
+    })
+  })
+
+  it('guards ability list base indicator filtering and required edit validation', () => {
+    expect(abilityListBasePage).toContain('filteredIndicators')
+    expect(abilityListBasePage).toContain('indicator.abilityKey === selectedAbility.value')
+    expect(abilityListBasePage).toContain('validateIndicatorEdit')
+    expect(abilityListBasePage).toContain('editErrors')
+    expect(abilityListBasePage).toContain('aria-invalid')
+    expect(abilityListBasePage).toContain('required-mark')
+    expect(abilityListBasePage).toContain('请输入指标名称')
+    expect(abilityListBasePage).toContain('请输入建议依据')
   })
 
   it('uses DetailSheet for archive source records while preserving source filters', () => {

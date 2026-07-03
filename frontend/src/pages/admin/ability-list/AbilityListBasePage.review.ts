@@ -1,0 +1,41 @@
+export const abilityListBasePageReview = {
+  route: '/admin/ability-list/base',
+  title: '能力清单 / 基准模板',
+  goal: '维护学校长期使用的教师能力标准，用于派生年度、聘期或建设周期执行版。',
+  screenshot: '效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png',
+  sections: [
+    '顶部基准模板信息区',
+    '能力结构树',
+    '指标表格',
+    '编辑指标抽屉',
+    '版本记录抽屉',
+  ],
+  dataRules: [
+    '左侧能力节点切换后，右侧表格必须展示对应能力维度指标。',
+    '没有指标时必须显示空态，不能保留上一组数据。',
+    '基准模板指标来自 abilityListStore.baseTemplateIndicators。',
+  ],
+  interactions: [
+    '点击能力节点切换右侧指标列表。',
+    '点击编辑打开指标编辑抽屉。',
+    '保存后更新当前指标行，并将状态标记为草稿调整。',
+    '查看版本记录打开版本记录抽屉。',
+    '派生执行版进入发布确认页。',
+  ],
+  formRules: [
+    { field: '指标名称', required: true, message: '请输入指标名称' },
+    { field: '新手', required: true, message: '请输入新手标准' },
+    { field: '胜任', required: true, message: '请输入胜任标准' },
+    { field: '骨干', required: true, message: '请输入骨干标准' },
+    { field: '名师', required: true, message: '请输入名师标准' },
+    { field: '建议依据', required: true, message: '请输入建议依据' },
+  ],
+  checklist: [
+    '页面结构与效果图基本一致',
+    '左侧所有节点都有正确数据或空态',
+    '所有按钮都有真实动作或明确反馈',
+    '编辑抽屉有必填校验',
+    '保存后页面状态可见变化',
+    '台账结论与实现一致',
+  ],
+}

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { EmptyState, StatusBadge } from '@/components/common'
+import { useRoute, useRouter } from 'vue-router'
+import { EmptyState, PageReviewPanel, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
+import { abilityListBaseOptimizationPageReview } from './AbilityListBaseOptimizationPage.review'
+import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
+import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
 import {
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
@@ -17,12 +20,14 @@ import {
 } from '@/stores/admin/abilityListStore'
 
 const router = useRouter()
+const route = useRoute()
 const abilityListState = getAbilityListState()
 const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
+const reviewPanelOpen = ref(route.query.review === '1')
 const operationMessage = useOperationMessage()
 
 const suggestions = computed(() => abilityListState.optimizationSuggestions)
@@ -129,82 +134,82 @@ function viewVersionHistory() {
     query: { versionHistory: '1' },
   })
 }
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
+}
 </script>
 
 <template>
   <AdminLayout active-key="ability-list-base">
     <div class="page-root">
-      <div class="page-breadcrumb">
-        <span>能力清单</span>
-        <i>/</i>
-        <span>基准模板</span>
-        <i>/</i>
-        <strong>优化基准模板</strong>
-      </div>
-      <div class="page-description">
-        基于制度文件和运行反馈形成优化建议，人工确认后再应用到基准模板。
-        <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
-      </div>
-
       <section class="admin-hero">
-        <div class="hero-icon">▤</div>
         <div class="hero-content">
-          <h1 class="hero-title">优化基准模板</h1>
-          <div class="hero-stats">
-            <div class="stat-item">
-              <span>优化建议共</span>
-              <strong class="blue">{{ stats.total }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>制度文件</span>
-              <strong>{{ stats.policy }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>运行反馈</span>
-              <strong>{{ stats.feedback }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>人工补充</span>
-              <strong>{{ stats.manual }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>待确认</span>
-              <strong class="orange">{{ stats.pending }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>已采纳</span>
-              <strong class="green">{{ stats.adopted }}</strong>
-              <b>条</b>
-            </div>
-            <div class="stat-item">
-              <span>已弃用</span>
-              <strong>{{ stats.rejected }}</strong>
-              <b>条</b>
-            </div>
+          <div class="hero-emblem">
+            <img class="hero-emblem-img" :src="baseHeroEmblem" alt="" />
           </div>
-          <div class="hero-actions">
-            <Button @click="uploadPolicy">⇧ 上传制度文件</Button>
-            <Button variant="secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</Button>
-            <Button
-              variant="secondary"
-              :disabled="pendingApplicationCount === 0"
-              @click="applyToBaseTemplate"
-            >
-              应用到基准模板（{{ pendingApplicationCount }}）
-            </Button>
-            <Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>
+          <div class="hero-main">
+
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span>优化建议共</span>
+                <strong class="blue">{{ stats.total }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>制度文件</span>
+                <strong>{{ stats.policy }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>运行反馈</span>
+                <strong>{{ stats.feedback }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>人工补充</span>
+                <strong>{{ stats.manual }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>待确认</span>
+                <strong class="orange">{{ stats.pending }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>已采纳</span>
+                <strong class="green">{{ stats.adopted }}</strong>
+                <b>条</b>
+              </div>
+              <div class="stat-item">
+                <span>已弃用</span>
+                <strong>{{ stats.rejected }}</strong>
+                <b>条</b>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <Button @click="uploadPolicy">⇧ 上传制度文件</Button>
+              <Button variant="secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</Button>
+              <Button
+                variant="secondary"
+                :disabled="pendingApplicationCount === 0"
+                @click="applyToBaseTemplate"
+              >
+                应用到基准模板（{{ pendingApplicationCount }}）
+              </Button>
+              <Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>
+            </div>
+            <p class="hero-note">
+              基于制度文件和运行反馈形成优化建议，人工确认后再应用到基准模板。
+              <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
+            </p>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <span></span>
-          <b></b>
-          <i></i>
-        </div>
+        <div
+          class="hero-art"
+          :style="{ backgroundImage: `url(${baseHeroArt})` }"
+          aria-hidden="true"
+        />
       </section>
 
       <div class="main-workspace">
@@ -347,18 +352,31 @@ function viewVersionHistory() {
           </div>
         </aside>
       </div>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="abilityListBaseOptimizationPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
 
 <style scoped>
 .page-root {
-  min-height: 100vh;
-  padding: 26px 24px 34px;
+  min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
   display: flex;
   flex-direction: column;
-  gap: var(--space-admin-xl);
-  background: var(--color-admin-bg);
+  gap: clamp(14px, 1vw, 18px);
   color: var(--color-admin-text-strong);
 }
 
@@ -368,29 +386,9 @@ function viewVersionHistory() {
   box-sizing: border-box;
 }
 
-.page-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-md);
-  color: var(--color-admin-text-muted);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.page-breadcrumb strong {
-  color: var(--color-admin-text-strong);
-}
-
-.page-description {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-lg);
-  color: #263b63;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
 .operation-message {
+  display: inline-flex;
+  margin-left: var(--space-admin-sm);
   color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 800;
@@ -398,40 +396,82 @@ function viewVersionHistory() {
 
 .admin-hero {
   position: relative;
-  min-height: 268px;
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr) 350px;
-  gap: var(--space-admin-2xl);
-  padding: 44px 42px;
+  min-height: clamp(230px, 15.5vw, 270px);
   overflow: hidden;
   border: 1px solid var(--color-admin-border);
-  border-radius: 18px;
-  background: linear-gradient(135deg, var(--color-admin-bg-soft) 0%, #eef7ff 100%);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #ffffff 0%, #eef7ff 100%);
 }
 
-.hero-icon {
-  width: 72px;
-  height: 72px;
+.admin-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.995) 34%,
+    rgba(255, 255, 255, 0.96) 50%,
+    rgba(255, 255, 255, 0.76) 66%,
+    rgba(255, 255, 255, 0.24) 86%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  content: '';
+}
+
+.hero-art {
+  position: absolute;
+  top: clamp(8px, 0.8vw, 14px);
+  right: clamp(12px, 1vw, 22px);
+  bottom: clamp(8px, 0.8vw, 14px);
+  z-index: 0;
+  width: min(52%, 720px);
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+  opacity: 0.9;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
   display: flex;
+  min-height: clamp(230px, 15.5vw, 270px);
+  max-width: min(900px, 66%);
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--color-admin-primary);
-  color: #fff;
-  box-shadow: 0 14px 24px rgba(18, 104, 246, 0.24);
-  font-size: 38px;
+  gap: clamp(18px, 1.2vw, 26px);
+  padding: 0 0 0 clamp(24px, 1.75vw, 34px);
+}
+
+.hero-emblem {
+  flex: none;
+  transform: translateY(-36px);
+}
+
+.hero-emblem-img {
+  display: block;
+  width: clamp(66px, 4vw, 78px);
+  height: clamp(66px, 4vw, 78px);
+  filter: drop-shadow(0 16px 26px rgba(11, 99, 246, 0.18));
+}
+
+.hero-main {
+  min-width: 0;
+  flex: 1;
 }
 
 .hero-title {
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   color: var(--color-admin-text-strong);
-  font-size: 28px;
-  font-weight: 900;
+  font-size: clamp(24px, 1.55vw, 30px);
+  line-height: 1.16;
+  font-weight: 950;
 }
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(7, minmax(76px, 1fr));
+  grid-template-columns: repeat(7, minmax(72px, max-content));
   gap: 0;
 }
 
@@ -440,7 +480,7 @@ function viewVersionHistory() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 22px;
+  padding: 0 clamp(14px, 1vw, 22px);
   border-left: 1px solid #d7e2f2;
 }
 
@@ -481,10 +521,11 @@ function viewVersionHistory() {
 }
 
 .hero-actions {
-  margin-top: 28px;
+  margin-top: var(--space-admin-2xl);
   display: flex;
   align-items: center;
-  gap: var(--space-admin-card-gap);
+  gap: var(--space-admin-md-lg);
+  flex-wrap: wrap;
 }
 
 .hero-actions button:disabled {
@@ -492,48 +533,18 @@ function viewVersionHistory() {
   opacity: 0.55;
 }
 
-.hero-art {
-  position: relative;
-  min-height: 170px;
-}
-
-.hero-art span,
-.hero-art b,
-.hero-art i {
-  position: absolute;
-  display: block;
-  border-radius: 18px;
-  transform: rotate(45deg);
-}
-
-.hero-art span {
-  right: 116px;
-  bottom: 28px;
-  width: 72px;
-  height: 138px;
-  background: linear-gradient(180deg, var(--color-admin-primary), #78b8ff);
-}
-
-.hero-art b {
-  right: 34px;
-  bottom: 18px;
-  width: 78px;
-  height: 172px;
-  background: linear-gradient(180deg, #46d8d3, #9deee9);
-}
-
-.hero-art i {
-  right: 210px;
-  bottom: 26px;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: rgba(18, 104, 246, 0.08);
+.hero-note {
+  margin: 12px 0 0;
+  max-width: 760px;
+  color: var(--color-admin-text-subtle);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 .main-workspace {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 440px;
+  grid-template-columns: 186px minmax(520px, 1fr) 386px;
   gap: var(--space-admin-lg);
   align-items: start;
 }
@@ -626,18 +637,18 @@ function viewVersionHistory() {
 
 .admin-table {
   width: 100%;
-  min-width: 890px;
+  min-width: 720px;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
 .admin-table th,
 .admin-table td {
-  padding: 15px 14px;
+  padding: 12px 10px;
   border-top: 1px solid #e8eef7;
   color: var(--color-admin-text-strong);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.45;
   text-align: left;
   vertical-align: middle;
 }
@@ -646,6 +657,41 @@ function viewVersionHistory() {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 900;
+}
+
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1) {
+  width: 11%;
+}
+
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+  width: 12%;
+}
+
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) {
+  width: 16%;
+}
+
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) {
+  width: 20%;
+}
+
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
+  width: 16%;
+}
+
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
+  width: 9%;
+}
+
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) {
+  width: 16%;
 }
 
 .admin-table-row {
@@ -691,8 +737,26 @@ function viewVersionHistory() {
 
 .action-buttons {
   display: flex;
-  gap: var(--space-admin-xs);
+  gap: 4px;
   flex-wrap: wrap;
+}
+
+.action-buttons :deep(button) {
+  min-height: 0;
+  height: auto;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-admin-primary);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+.action-buttons :deep(button:hover) {
+  background: transparent;
+  color: var(--color-admin-primary-hover);
 }
 
 .detail-panel {
@@ -733,6 +797,33 @@ function viewVersionHistory() {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-admin-card-gap);
   padding: 22px 26px 26px;
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 

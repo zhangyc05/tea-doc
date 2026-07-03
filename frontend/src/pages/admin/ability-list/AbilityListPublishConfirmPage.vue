@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { StatusBadge } from '@/components/common'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { PageReviewPanel, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListPublishConfirmMock } from '@/services/mock/ability-list'
+import { abilityListPublishConfirmPageReview } from './AbilityListPublishConfirmPage.review'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -13,10 +14,12 @@ import {
 } from '@/stores/admin/abilityListStore'
 
 const router = useRouter()
+const route = useRoute()
 const abilityListState = getAbilityListState()
 const publishStatus = computed(() => abilityListState.executionVersion.status)
 const publishStatusLabel = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
 const operationMessage = computed(() => abilityListState.operationMessage)
+const reviewPanelOpen = ref(route.query.review === '1')
 
 if (
   abilityListState.executionVersion.status === 'published'
@@ -33,6 +36,10 @@ function handlePublish() {
 
 function goBack() {
   router.push('/admin/ability-list/execution')
+}
+
+function toggleReviewPanel() {
+  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -111,6 +118,21 @@ function goBack() {
           {{ publishStatus === 'published' ? '已确认发布' : '确认发布' }}
         </Button>
       </section>
+
+      <PageReviewPanel
+        :open="reviewPanelOpen"
+        :review="abilityListPublishConfirmPageReview"
+      />
+
+      <button
+        class="review-floating-button"
+        :class="{ shifted: reviewPanelOpen }"
+        type="button"
+        :aria-pressed="reviewPanelOpen"
+        @click="toggleReviewPanel"
+      >
+        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
+      </button>
     </div>
   </AdminLayout>
 </template>
@@ -397,6 +419,33 @@ function goBack() {
   background: #fff;
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
+}
+
+.review-floating-button {
+  position: fixed;
+  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
+  right: var(--space-admin-2xl);
+  z-index: 31;
+  min-width: 104px;
+  min-height: 42px;
+  border: 1px solid var(--color-admin-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-admin-primary);
+  box-shadow: var(--shadow-admin-primary-action);
+  color: var(--color-card-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 var(--space-admin-lg);
+}
+
+.review-floating-button:hover {
+  background: var(--color-admin-primary-hover);
+}
+
+.review-floating-button.shifted {
+  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1360px) {

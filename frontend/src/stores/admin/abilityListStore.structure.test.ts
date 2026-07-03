@@ -14,7 +14,7 @@ describe('ability list store structure', () => {
     first.baseTemplateIndicators[0].name = '测试指标'
     first.requirementMappings[0].confirmStatus = 'pending'
 
-    expect(second.baseTemplateIndicators[0].name).toBe('教学工作量（课时/学期）')
+    expect(second.baseTemplateIndicators[0].name).toBe('师德师风表现')
     expect(second.requirementMappings[0].confirmStatus).toBe('confirmed')
   })
 
