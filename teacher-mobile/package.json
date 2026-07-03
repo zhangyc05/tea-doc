@@ -17,6 +17,7 @@
     "test:virtual-research-business": "node scripts/verify-virtual-research-business.mjs",
     "test:reflection-business": "node scripts/verify-reflection-business.mjs",
     "test:mobile-admin-map": "node scripts/verify-mobile-admin-map.mjs",
+    "test:profile-business": "node scripts/verify-profile-business.mjs",
     "build:h5": "uni build -p h5",
     "build:mp-weixin": "uni build -p mp-weixin",
     "typecheck": "vue-tsc --noEmit"

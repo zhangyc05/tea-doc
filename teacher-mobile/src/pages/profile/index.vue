@@ -32,6 +32,14 @@ const serviceMenus = [
 function goArchiveMenu(route: string) {
   uni.navigateTo({ url: route })
 }
+
+function goAbilityProfile() {
+  uni.navigateTo({ url: '/pages/profile/ability-profile/index' })
+}
+
+function goDevelopmentReport() {
+  uni.navigateTo({ url: '/pages/profile/development-report/index' })
+}
 </script>
 
 <template>
@@ -93,7 +101,7 @@ function goArchiveMenu(route: string) {
           </view>
         </view>
       </view>
-      <MobileActionButton class="card-link" variant="link" arrow>查看画像</MobileActionButton>
+      <MobileActionButton class="card-link" variant="link" arrow @tap="goAbilityProfile">查看画像</MobileActionButton>
     </MobileCard>
 
     <MobileCard class="report-card">
@@ -108,7 +116,7 @@ function goArchiveMenu(route: string) {
           <text class="report-desc">基于已入档记录整理，可查看后确认</text>
         </view>
       </view>
-      <MobileActionButton class="card-link" variant="link" arrow>查看报告</MobileActionButton>
+      <MobileActionButton class="card-link" variant="link" arrow @tap="goDevelopmentReport">查看报告</MobileActionButton>
     </MobileCard>
 
     <MobileCard class="menu-card">

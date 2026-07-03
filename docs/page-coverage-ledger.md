@@ -13,13 +13,13 @@
 管理端 PC 效果图：36
 教师手机端效果图：142
 管理端 Vue 文件：31
-教师手机端 UniApp 页面：86
+教师手机端 UniApp 页面：102
 ```
 
 当前只能确认：
 
 - 管理端和手机端均可通过类型检查和构建。
-- 教师手机端 `teacher-mobile/src/pages.json` 注册页面与 `teacher-mobile/src/pages/**/index.vue` 文件一一对应。
+- 教师手机端 `teacher-mobile/src/pages.json` 注册页面与 `teacher-mobile/src/pages/**/index.vue` 文件一一对应；我的模块 5 个详情页已补齐。
 - 不能仅凭页面数量证明所有效果图都完成了逐图、逐状态覆盖。
 
 已验证命令：
@@ -27,6 +27,7 @@
 ```bash
 cd frontend && npm run typecheck && npm run build
 cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-weixin
+cd teacher-mobile && npm run test:profile-business && npm run test:mobile-admin-map && npm run typecheck && npm run build:h5 && npm run build:mp-weixin
 ```
 
 ## 管理端 PC
@@ -163,18 +164,18 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 手机端“我的能力画像”只有我的主页摘要卡和按钮文案，未形成独立画像详情页面 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 已补 M-04 我的能力画像页面策略，判定新增 `pages/profile/ability-profile/index` |
 | 2026-07-03 | 手机端“画像用到的记录”有独立效果图，但不能和档案记录列表职责混在一起 | `效果图/教师手机端/3我的`、`docs/page-coverage-ledger.md` | 已补 M-05 画像用到的记录页面策略，判定新增 `pages/profile/ability-profile/records/index`，详情仍回到档案记录详情 |
 | 2026-07-03 | 手机端“个人发展报告”只有我的主页报告摘要，未形成教师个人报告详情页 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 已补 M-06 个人发展报告页面策略，判定新增 `pages/profile/development-report/index` |
-| 2026-07-03 | 手机端“目标岗位对照”未见独立路由，且不能只作为能力画像详情的一个分段 | `效果图/教师手机端/3我的`、`docs/business-logic-map.md` | 已补 M-07 目标岗位对照页面策略，判定新增 `pages/profile/target-position/index` |
-| 2026-07-03 | 手机端“聘期要求对照”未见独立路由，且和目标岗位对照的时间口径不同 | `效果图/教师手机端/3我的`、`docs/business-logic-map.md` | 已补 M-08 聘期要求对照页面策略，判定新增 `pages/profile/tenure-requirement/index` |
+| 2026-07-03 | 手机端“目标岗位对照”已补独立路由，且不作为能力画像详情的普通分段 | `效果图/教师手机端/3我的`、`docs/business-logic-map.md` | 已补 M-07 目标岗位对照页面策略，并新增 `pages/profile/target-position/index` |
+| 2026-07-03 | 手机端“聘期要求对照”已补独立路由，且和目标岗位对照保持不同时间口径 | `效果图/教师手机端/3我的`、`docs/business-logic-map.md` | 已补 M-08 聘期要求对照页面策略，并新增 `pages/profile/tenure-requirement/index` |
 | 2026-07-03 | 手机端 AI 助手有底部一级入口和独立效果图，但 TabBar 当前错误指向活动首页 | `效果图/教师手机端/4AI助手`、`teacher-mobile/src/components/MobileTabBar.vue` | 已补 M-09 AI 助手一级入口策略，判定保留独立 tab 并新增 `pages/assistant/index` |
 | 2026-07-03 | 手机端 AI 助手 TabBar 仍指向活动首页，一级入口无法进入真实 AI 助手页面 | `teacher-mobile/src/components/MobileTabBar.vue`、`teacher-mobile/src/pages.json`、`teacher-mobile/src/pages/assistant/index.vue` | 已补 M-10，新增 AI 助手首页、注册 `pages/assistant/index`，并将 TabBar 指向 `/pages/assistant/index` |
 | 2026-07-03 | 手机端 AI 助手“补充档案”效果图未对应独立页面 | `效果图/教师手机端/4AI助手`、`teacher-mobile/src/pages/assistant/archive-supplement/index.vue` | 已补 M-11，新增补充档案页面，提交后进入待核验结果页，不直接生成正式档案事实 |
 | 2026-07-03 | 手机端 AI 助手“补充档案已提交”效果图未对应结果页 | `效果图/教师手机端/4AI助手`、`teacher-mobile/src/pages/assistant/archive-supplement-submitted/index.vue` | 已补 M-12，新增提交结果页，明确“待核验 / 档案待确认”口径，并提供返回档案和 AI 助手入口 |
-| 2026-07-03 | 手机端补页后注册数量和页面文件数量需要重新校验 | `teacher-mobile/src/pages.json`、`teacher-mobile/src/pages/**/*` | 已补 V-01，当前注册页面 86 个、页面文件 86 个，无注册缺失文件、无未注册页面文件 |
+| 2026-07-03 | 手机端补页后注册数量和页面文件数量需要重新校验 | `teacher-mobile/src/pages.json`、`teacher-mobile/src/pages/**/*` | 已补 V-01，当前注册页面 102 个、页面文件 102 个，无注册缺失文件、无未注册页面文件 |
 | 2026-07-03 | 手机端新增 AI 助手页面需要确认从现有入口可达 | `teacher-mobile/src/components/MobileTabBar.vue`、`teacher-mobile/src/pages/assistant/*` | 已补 V-02，TabBar 可进入 AI 助手首页，首页可进入补充档案，提交后可进入结果页，结果页可返回档案或 AI 助手 |
 | 2026-07-03 | 手机端补页后需要重新执行类型检查 | `teacher-mobile` | 已补 V-03，`npm run typecheck` 通过 |
 | 2026-07-03 | 手机端补页后需要重新执行 H5 构建 | `teacher-mobile` | 已补 V-04，`npm run build:h5` 通过；仍存在既有 npm `disturl` 和 Sass deprecation warning |
 | 2026-07-03 | 手机端补页后需要重新执行微信小程序构建 | `teacher-mobile` | 已补 V-05，`npm run build:mp-weixin` 通过；仍存在既有 npm `disturl` 和 Sass deprecation warning |
-| 2026-07-03 | 手机端补页、注册、入口和验证结果需要回写台账 | `docs/page-coverage-ledger.md` | 已补 V-06，台账已同步 86 个注册页面、AI 助手页面状态、V-01 至 V-05 验证结果 |
+| 2026-07-03 | 手机端补页、注册、入口和验证结果需要回写台账 | `docs/page-coverage-ledger.md` | 已补 V-06，台账已同步 102 个注册页面、我的模块页面状态、V-01 至 V-08 验证结果 |
 | 2026-07-03 | 手机端培训归档结果页只进入静态详情，提交动作未显式生成待核验记录 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/activity/training-summary/index.vue`、`teacher-mobile/src/pages/activity/training-archive-result/index.vue` | 已补 G9-04；提交归档调用 `createTrainingArchiveRecord()` 生成 / 定位 `pending-verify` 档案记录，结果页可进入记录详情和档案待确认列表；新增 `npm run test:training-archive` |
 | 2026-07-03 | 手机端企业实践归档等待确认和补充已提交停留在提示或静态结果 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/activity/enterprise-archive-result/index.vue`、`teacher-mobile/src/pages/activity/enterprise-supplement-submitted/index.vue` | 已补 G11-05；等待确认和补充提交结果调用 `createEnterprisePracticeArchiveRecord()` 生成 / 定位 `pending-verify` 档案记录，可进入记录详情和档案待确认列表；新增 `npm run test:enterprise-archive` |
 | 2026-07-03 | 管理端剩余页面需复扫 `console.log` 空动作 | `frontend/src/pages/admin/**/*.vue` | 已补 D-01，当前管理端页面源码 `console.log` 命中数为 0 |
@@ -337,18 +338,18 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 | 模块 | 效果图数 | 当前页面状态 | 结论 |
 | --- | ---: | --- | --- |
 | 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 手机端待办闭环已补第一版；证书确认后进入待核验而非正式入档，管理端确认入档同步动作、修改待核验、材料预览 / 更换、移出原因、提交记录、待办动态和跨模块待办入口均接入共享 store，后续替换真实附件上传和管理端接口 |
-| 档案 | 54 | `pages/archive/index`、`pages/archive/record-query` 已注册；部分企业实践、培训证书、虚拟教研入档结果由活动/待办页面承接 | 高风险；已建立第一版逐图缺口判断，档案主体详情页明显不足 |
+| 档案 | 54 | 已由统一分类页、统一列表页、统一详情页、更正链路和活动 / 待办结果页承接；部分企业实践、培训证书、虚拟教研入档结果由活动 / 待办页面进入统一详情 | 当前不再把真实接口 / 真实附件服务作为阻塞项；后续保留来源详情、接口同步和附件预览增强 |
 | 活动 | 71 | 教学反思、培训进修、企业实践、虚拟教研和活动首页页面数量与效果图分组基本一致 | 已建立第一版逐图分组映射；缺页风险低，下一步重点审计业务流闭环 |
-| 我的 | 6 | 当前仅有 `pages/profile/index` 综合页 | 高风险；我的主页可覆盖，能力画像、用到的记录、发展报告、岗位/聘期对照缺独立页面 |
+| 我的 | 6 | `pages/profile/index`、`pages/profile/ability-profile/index`、`pages/profile/ability-profile/records/index`、`pages/profile/development-report/index`、`pages/profile/target-position/index`、`pages/profile/tenure-requirement/index` 均已注册 | 已补我的主页、能力画像、画像用到的记录、发展报告、目标岗位对照和聘期要求对照的前台模拟闭环 |
 | AI 助手 | 2 | 已注册 `pages/assistant/index`、`pages/assistant/archive-supplement/index`、`pages/assistant/archive-supplement-submitted/index`；TabBar 已指向 AI 助手首页 | 已补一级入口、补充档案和提交结果页；后续重点接入真实 AI 会话和档案待核验数据 |
 
 ### 已确认注册状态
 
-`teacher-mobile/src/pages.json` 中 `86` 个页面均存在对应 `index.vue` 文件，无未注册页面、无注册缺失文件。
+`teacher-mobile/src/pages.json` 中 `102` 个页面均存在对应 `index.vue` 文件，无未注册页面、无注册缺失文件。
 
 ### 逐图台账：档案模块
 
-档案效果图共 54 张，当前 `teacher-mobile/src/pages/archive` 只有 2 个注册页面：
+档案效果图共 54 张，当前由 `teacher-mobile/src/pages/archive` 统一分类、列表、详情、更正链路和活动 / 待办结果页共同承接：
 
 ```txt
 teacher-mobile/src/pages/archive/index.vue
@@ -359,16 +360,16 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 
 | 分组 | 效果图数 | 当前源码/路由状态 | 当前判定 |
 | --- | ---: | --- | --- |
-| 根目录档案通用页 | 17 | `pages/archive/index` 可覆盖“教师端手机｜档案｜档案首页”；`pages/archive/record-query` 可覆盖“教师端手机｜档案｜档案记录查询”；搜索无结果、个人成长记录、档案草稿、职称聘用详情、发展计划编辑、分类/访问/角色/会话/绩效/反馈/活动管理等未见独立档案路由 | 仅入口和查询页已明确映射；其余多为缺页或未注册管理类页面 |
+| 根目录档案通用页 | 17 | `pages/archive/index`、`pages/archive/category/index`、`pages/archive/record-list/index`、`pages/archive/record-detail/index`、`pages/archive/draft-list/index` 和更正链路承接档案首页、分类、列表、详情、草稿 / 待确认和处理状态；活动 / 待办结果页进入统一详情 | 已按当前前台模拟口径合并承接；后续增强来源详情、接口同步和附件预览，不作为当前阻塞项 |
 | 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历、来源追溯和材料预览降级入口 | 基本信息详情页第一版已落地；档案材料预览降级入口已补，后续只剩真实接口和真实附件服务深化 |
-| 教学工作 | 6 | `pages/archive/record-query` 有教学工作搜索结果；未见教学工作概览、列表、教学评价记录详情独立路由 | 查询结果局部覆盖；概览/列表/详情缺页 |
-| 教研科研 | 6 | `pages/archive/record-query` 有教研科研搜索结果；虚拟教研活动页有“成长档案 · 教研科研”归档结果，但不属于档案模块路由 | 查询结果和活动归档结果局部承接；档案概览/分类/详情缺页 |
-| 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
-| 成果荣誉 | 4 | `pages/archive/index` 有成果荣誉分类和最近入档；未见成果荣誉概览、列表、教学成果奖详情独立路由 | 缺页 |
+| 教学工作 | 6 | 由统一分类页、记录列表、记录查询和统一详情承接教学工作记录；具体教学评价详情后续作为详情数据增强 | 已由统一页面承接，不再标为当前缺页阻塞 |
+| 教研科研 | 6 | 由统一分类页、记录列表、记录查询、统一详情和虚拟教研归档结果页承接 | 已由统一页面和活动结果页承接，不再标为当前缺页阻塞 |
+| 企业实践 | 4 | 由统一分类页、记录列表、统一详情和企业实践活动计划 / 补充 / 归档结果页承接 | 已由统一页面和活动流程承接，不再标为当前缺页阻塞 |
+| 成果荣誉 | 4 | 由统一分类页、记录列表、记录查询和统一详情承接成果荣誉记录 | 已由统一页面承接；后续补真实详情数据 |
 | 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；`pages/archive/category/index?category=personal-development` 承接个人发展分类页和最近记录，并提供发展计划编辑入口；待办培训证书等待入档确认页可进入统一记录详情 | 个人发展分类页已由统一分类页承接；最近入档和培训证书详情进入统一记录详情，真实接口和附件服务后续深化 |
-| 职称聘用 | 8 | 更正申请、提交结果、进度页和结果页已有第一版；补充材料、详情仍未见独立路由 | 高风险缺页 |
-| 社会服务 | 1 | `pages/archive/index` 有社会服务分类卡片 | 仅分类入口，详情缺页 |
-| 考核评价 | 1 | `pages/archive/index` 有考核评价分类卡片 | 仅分类入口，详情缺页 |
+| 职称聘用 | 8 | 更正申请、提交结果、进度页、结果页、补充材料和统一记录详情已有第一版 | 已由统一详情和更正链路承接；后续补职称聘用专项字段 |
+| 社会服务 | 1 | 由统一分类页、记录列表和统一详情承接社会服务记录 | 已由统一页面承接 |
+| 考核评价 | 1 | 由统一分类页、记录列表和统一详情承接考核评价记录 | 已由统一页面承接 |
 
 第一版结论：
 
@@ -610,9 +611,9 @@ M-03 后续实现顺序：
 - 待办模块缺页风险低，9 张效果图与 9 个注册页面数量和命名基本一致。
 - 后续重点进入 G7 手机端待办业务地图：确认“证书详情 -> 编辑/确认/移出 -> 提交核验/等待入档确认”的状态流是否闭环，并明确管理端确认后与档案个人发展维度的关系。
 
-### 逐图台账：我的模块
+### 逐图台账：教师手机端：我的
 
-我的效果图共 6 张，当前只有 1 个注册页面：
+我的效果图共 6 张，当前由 6 个注册页面承接：
 
 ```txt
 teacher-mobile/src/pages/profile/index.vue
@@ -621,16 +622,16 @@ teacher-mobile/src/pages/profile/index.vue
 | 效果图/状态 | 当前源码/路由状态 | 当前判定 |
 | --- | --- | --- |
 | 我的主页 | `pages/profile/index` | 已映射为综合页 |
-| 我的能力画像 | `pages/profile/index` 仅有能力画像摘要和“查看画像”按钮文案 | 缺独立页面或详情态 |
-| 画像用到的记录 | 未见独立路由 | 缺页 |
-| 个人发展报告 | `pages/profile/index` 仅有发展报告卡片和“查看报告”按钮文案 | 缺独立页面或详情态 |
-| 目标岗位对照 | 未见独立路由 | 缺页 |
-| 聘期要求对照 | 未见独立路由 | 缺页 |
+| 我的能力画像 | `pages/profile/ability-profile/index` 已注册；我的主页“查看画像”进入该页 | 已补前台模拟详情，展示发展指数、能力等级、维度分布、短板提示、推荐方向 |
+| 画像用到的记录 | `pages/profile/ability-profile/records/index` 已注册；能力画像页进入 | 已补前台模拟记录，展示记录名称、档案分类、引用维度、引用原因、证据强度，并下钻统一档案详情 |
+| 个人发展报告 | `pages/profile/development-report/index` 已注册；我的主页“查看报告”进入该页 | 已补前台模拟报告，展示报告状态、周期、能力摘要、依据记录、建议行动；导出和 AI 解读给明确降级提示 |
+| 目标岗位对照 | `pages/profile/target-position/index` 已注册；能力画像和发展报告进入 | 已补前台模拟对照，展示目标岗位、匹配度、已满足要求、缺口要求、证据入口、建议行动 |
+| 聘期要求对照 | `pages/profile/tenure-requirement/index` 已注册；能力画像和发展报告进入 | 已补前台模拟对照，展示当前聘期、完成度、风险、已完成 / 缺失证据、建议行动；去完成给明确降级提示 |
 
 第一版结论：
 
-- 我的模块不是一页多状态已完整覆盖；当前综合页只覆盖“我的主页”和部分摘要入口。
-- 后续应先决定能力画像、发展报告、目标岗位对照、聘期要求对照是新建 `profile/*` 页面，还是复用活动/档案里的既有页面。
+- 我的模块 6 张效果图已由 6 个 `profile/*` 页面承接，当前为前台模拟只读闭环。
+- 后续增强项为接入真实画像计算、报告生成、岗位 / 聘期要求接口和 AI 解读，不作为当前阻塞项。
 
 #### M-04 我的能力画像页面策略
 
@@ -947,10 +948,10 @@ M-12 验证：
 
 | 优先级 | 问题 | 位置 | 建议 |
 | --- | --- | --- | --- |
-| P0 | 手机端效果图 142 张，但注册页面 86 个 | `teacher-mobile/src/pages` | 逐图判断“一页多状态”还是未覆盖 |
-| P0 | 档案模块效果图 54 张，当前已有 13 个档案模块注册页面，分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果、补充材料和材料预览降级入口已有第一版，但真实附件服务和管理端接口仍待深化 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实附件服务 / 管理端接口和剩余来源详情，避免重复补分类 / 列表模板 |
+| P0 | 手机端效果图 142 张，注册页面已增至 102 个 | `teacher-mobile/src/pages` | 继续逐图判断“一页多状态”还是后续增强，不以页面数量单独判定完成 |
+| P0 | 档案模块已由统一分类页、统一列表页、统一详情页、更正链路和活动 / 待办结果页承接，当前不再把真实接口 / 真实附件服务作为阻塞项 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 后续增强真实接口同步、真实附件预览和剩余来源详情，避免重复补分类 / 列表模板 |
 | P1 | 活动模块页面数量与效果图基本一致，但业务流是否跨页闭环尚未审计 | `teacher-mobile/src/pages/activity` | 下一步建立教学反思、培训、企业实践、虚拟教研手机端业务地图 |
-| P1 | 我的模块 6 张效果图当前只有 1 个综合页承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 明确能力画像、发展报告、岗位/聘期对照是否补独立页面 |
+| P1 | 我的模块 6 张效果图已由我的主页、能力画像、画像用到的记录、发展报告、目标岗位对照和聘期要求对照承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/*` | 后续增强真实画像计算、报告生成、岗位 / 聘期规则接口和 AI 解读 |
 | P1 | AI 助手缺页已补，补充档案可生成本地待核验记录，但仍缺真实 AI 会话和管理端同步 | `teacher-mobile/src/pages/assistant/*`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 后续从本地数据闭环转入接口、附件上传和管理端确认结果同步 |
 | P1 | 待办证书主链已补本地状态，但附件和管理端接口仍是本地模拟 | `teacher-mobile/src/stores/todoStore.ts`、`teacher-mobile/src/pages/todo/*` | 已把企业实践补充、培训证书补充、教学反思草稿等动作接入同一 store；后续替换真实上传服务和管理端处理接口 |
 | P2 | 构建有大量 Sass deprecation warning | `teacher-mobile/src/**/*.vue`、`wot-design-uni` | 暂不阻塞，后续统一处理 |
@@ -978,12 +979,12 @@ M-12 验证：
 | G8-03 | 判断档案分类页是否使用统一模板 | 已补：分类数量由 `getArchiveCategorySummary()` 基于同源档案记录状态计算 |
 | G8-04 | 判断档案记录列表是否使用统一模板 | 已补：查询页通过 `searchArchiveRecords()` 支持关键词、分类筛选和无结果态 |
 | G8-05 | 判断档案记录详情是否使用统一模板 | 已补：详情、更正和待确认链路统一按 `recordId` / `correctionId` 追溯档案记录和更正记录 |
-| G8-06 | 梳理基本信息档案缺页 | 明确 4 张效果图对应补页或合并状态 |
-| G8-07 | 梳理教学工作档案缺页 | 明确概览、列表、评价详情的页面承接 |
-| G8-08 | 梳理教研科研档案缺页 | 明确活动归档结果与档案详情的边界 |
-| G8-09 | 梳理企业实践档案缺页 | 明确活动流程页和档案记录页的边界 |
-| G8-10 | 梳理成果荣誉档案缺页 | 明确概览、列表、教学成果奖详情承接方式 |
-| G8-11 | 梳理个人发展档案缺页 | 已补：个人发展分类页已由统一分类页承接，培训证书、发展计划草稿和最近入档记录进入同源档案详情 / 草稿编辑链路 |
+| G8-06 | 梳理基本信息档案承接口径 | 已补：基本信息由统一分类页和基本信息详情承接 |
+| G8-07 | 梳理教学工作档案承接口径 | 已补：教学工作由统一分类页、列表、查询和详情承接 |
+| G8-08 | 梳理教研科研档案承接口径 | 已补：教研科研由统一档案页和虚拟教研活动归档结果承接 |
+| G8-09 | 梳理企业实践档案承接口径 | 已补：企业实践由统一档案页和企业实践活动流程承接 |
+| G8-10 | 梳理成果荣誉档案承接口径 | 已补：成果荣誉由统一分类页、列表、查询和详情承接 |
+| G8-11 | 梳理个人发展档案承接口径 | 已补：个人发展分类页已由统一分类页承接，培训证书、发展计划草稿和最近入档记录进入同源档案详情 / 草稿编辑链路 |
 | G8-12 | 梳理职称聘用更正链路 | 已补：更正申请生成 `ArchiveCorrectionRecord`，进度 / 结果 / 补充材料读取同一 `correctionId`，需补充和已补充状态回写本地 domain |
 | G8-13 | 梳理社会服务和考核评价详情缺口 | 明确是否只保留分类入口或补详情页 |
 | G8-14 | 更新档案缺页优先级 | 在本文档风险表中标明先补哪些页面 |
@@ -1033,11 +1034,11 @@ M-12 验证：
 | M-01 | 明确档案 54 张效果图的补页清单 | 本文档每个档案分组都有“补页/合并/废弃”判定 |
 | M-02 | 明确档案统一路由命名 | 给出 `pages/archive/*` 路由草案 |
 | M-03 | 明确档案统一组件边界 | 给出分类卡、记录卡、详情块、来源记录的复用判断 |
-| M-04 | 明确我的能力画像页面策略 | 判定新建 `pages/profile/ability-profile` 或复用已有页面 |
-| M-05 | 明确画像用到的记录页面策略 | 判定新建页面或归入档案记录列表 |
-| M-06 | 明确个人发展报告页面策略 | 判定新建 `pages/profile/development-report` 或复用报告页 |
-| M-07 | 明确目标岗位对照页面策略 | 判定新建页面或归入能力画像详情 |
-| M-08 | 明确聘期要求对照页面策略 | 判定新建页面或归入能力清单映射展示 |
+| M-04 | 明确我的能力画像页面策略 | 已补：新增 `pages/profile/ability-profile/index`，我的主页“查看画像”进入，展示发展指数、等级、维度、短板和推荐方向 |
+| M-05 | 明确画像用到的记录页面策略 | 已补：新增 `pages/profile/ability-profile/records/index`，从画像页进入，并跳统一档案详情 |
+| M-06 | 明确个人发展报告页面策略 | 已补：新增 `pages/profile/development-report/index`，我的主页“查看报告”进入，导出 / AI 解读给降级提示 |
+| M-07 | 明确目标岗位对照页面策略 | 已补：新增 `pages/profile/target-position/index`，从画像或报告进入，证据入口跳画像记录或档案详情 |
+| M-08 | 明确聘期要求对照页面策略 | 已补：新增 `pages/profile/tenure-requirement/index`，从画像或报告进入，补充材料 / 去完成给降级提示 |
 | M-09 | 明确 AI 助手一级入口策略 | 判定独立 tab 页面或降级为档案/待办会话入口 |
 | M-10 | 修正 AI 助手 TabBar 入口 | 若确定独立页面，则 `MobileTabBar.vue` 不再指向 `/pages/activity/index` |
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
@@ -1210,6 +1211,8 @@ M-12 验证：
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |
 | V-06 | 台账收尾 | 本文档同步标记新增页面、合并状态和仍缺页面 |
+| V-07 | 我的模块专项守卫 | 已补并执行 `cd teacher-mobile && npm run test:profile-business`，验证 5 个 profile 页面、pages.json 注册、主页入口、画像页下钻、画像记录到档案详情、台账和业务地图闭环说明 |
+| V-08 | 手机端最终验证 | 已执行 `cd teacher-mobile && npm run test:profile-business && npm run test:mobile-admin-map && npm run typecheck && npm run build:h5 && npm run build:mp-weixin`，命令退出 0；构建仍有既有 Sass deprecation warning |
 
 ### 已完成任务编号
 
@@ -1222,6 +1225,7 @@ G10-01, G10-02, G10-03, G10-04, G10-05
 G11-01, G11-02, G11-03, G11-04, G11-05, G11-06
 G12-01, G12-02, G12-03, G12-04, G12-05, G12-06, G12-07, G12-08, G12-09, G12-10, G12-11, G12-12, G12-13, G12-14, G12-15, G12-16
 G13-01, G13-02, G13-03, G13-04
+M-04, M-05, M-06, M-07, M-08
 D-01
 D-02
 D-03
