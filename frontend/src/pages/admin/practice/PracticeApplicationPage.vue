@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approvePracticeApplication,
@@ -175,8 +176,8 @@ function applyFilters() {
               />
             </div>
             <div class="search-row">
-              <button class="btn-reset" @click="resetFilters">重置</button>
-              <button class="btn-primary" @click="applyFilters">查询</button>
+              <Button variant="outline" @click="resetFilters">重置</Button>
+              <Button @click="applyFilters">查询</Button>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
@@ -228,9 +229,9 @@ function applyFilters() {
                         v-if="app.status === '待审核'"
                         class="btn-action-group"
                       >
-                        <button class="btn-view" @click="viewApplication(app.id)">
+                        <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
                           查看申请
-                        </button>
+                        </Button>
                         <button
                           class="btn-approve"
                           @click="approveApplication(app.id)"
@@ -245,24 +246,22 @@ function applyFilters() {
                         </button>
                       </div>
                       <div v-else class="btn-action-group">
-                        <button
-                          class="btn-view"
-                          @click="viewApplication(app.id)"
-                        >
+                        <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
                           查看申请
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           v-if="app.status === '已同意'"
-                          class="btn-view"
+                          variant="ghost"
+                          size="sm"
                           @click="viewApplication(app.id)"
                         >
                           查看记录
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
                   <tr v-if="filteredApplications.length === 0">
-                    <td colspan="7" class="empty-cell">暂无符合条件的实践申请</td>
+                    <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的实践申请" />
                   </tr>
                 </tbody>
               </table>
@@ -298,8 +297,8 @@ function applyFilters() {
 <style scoped>
 .practice-application-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .practice-application-page *,
@@ -328,7 +327,7 @@ function applyFilters() {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   margin-bottom: 12px;
 }
 
@@ -337,7 +336,7 @@ function applyFilters() {
 }
 
 .breadcrumb .current {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 600;
 }
 
@@ -350,7 +349,7 @@ function applyFilters() {
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -368,9 +367,9 @@ function applyFilters() {
   gap: 18px;
   padding: 22px 30px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -385,7 +384,7 @@ function applyFilters() {
 }
 
 .icon-pending {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -414,11 +413,11 @@ function applyFilters() {
 .stat-value span {
   font-size: 15px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.green {
@@ -435,7 +434,7 @@ function applyFilters() {
 
 .stat-label {
   font-size: 15px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
 }
 
@@ -452,14 +451,14 @@ function applyFilters() {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .filter-section {
   padding: 16px 20px 12px;
-  border-bottom: 1px solid #dce6f5;
+  border-bottom: 1px solid var(--color-admin-border);
 }
 
 .filter-row {
@@ -515,34 +514,11 @@ function applyFilters() {
 }
 
 .search-input:focus {
-  border-color: #1268f6;
-}
-
-.btn-reset,
-.btn-primary {
-  height: 40px;
-  padding: 0 22px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-reset {
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  color: #44536c;
-}
-
-.btn-primary {
-  background: #1268f6;
-  border: 1px solid #1268f6;
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
+  border-color: var(--color-admin-primary);
 }
 
 .operation-message {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -560,7 +536,7 @@ function applyFilters() {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .application-table th {
@@ -568,10 +544,10 @@ function applyFilters() {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .application-table td {
@@ -637,7 +613,7 @@ function applyFilters() {
 
 .teacher-name,
 .company-name {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
@@ -647,7 +623,7 @@ function applyFilters() {
 }
 
 .remaining-days {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 700;
 }
 
@@ -659,13 +635,12 @@ function applyFilters() {
   flex-wrap: wrap;
 }
 
-.btn-view,
 .btn-approve,
 .btn-return {
   padding: 0;
   background: transparent;
   border: none;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -673,12 +648,6 @@ function applyFilters() {
 
 .btn-return {
   color: #f26a16;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
 }
 
 .pagination-section {
@@ -708,7 +677,7 @@ function applyFilters() {
   border: 1px solid #d7e2f1;
   border-radius: 6px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .page-button {
@@ -717,8 +686,8 @@ function applyFilters() {
 }
 
 .page-button.active {
-  background: #1268f6;
-  border-color: #1268f6;
+  background: var(--color-admin-primary);
+  border-color: var(--color-admin-primary);
   color: #fff;
 }
 
@@ -733,7 +702,7 @@ function applyFilters() {
 
 .selected-summary {
   padding: 0 20px 20px;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }

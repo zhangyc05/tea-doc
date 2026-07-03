@@ -8,7 +8,7 @@ const props = defineProps<{
 const tabs: Array<{ key: TabKey; text: string; path: string }> = [
   { key: 'todo', text: '待办', path: '/pages/todo/index' },
   { key: 'archive', text: '档案', path: '/pages/archive/index' },
-  { key: 'assistant', text: 'AI 助手', path: '/pages/activity/index' },
+  { key: 'assistant', text: 'AI 助手', path: '/pages/assistant/index' },
   { key: 'activity', text: '活动', path: '/pages/activity/index' },
   { key: 'profile', text: '我的', path: '/pages/profile/index' },
 ]
@@ -187,4 +187,3 @@ function handleTab(path: string) {
   box-shadow: 19rpx 0 0 #09b85a;
 }
 </style>
-

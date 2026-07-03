@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { CompactFilterBar, EmptyState } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { createVirtualLabRoom, getVirtualLabState } from '@/stores/admin/virtualLabStore'
@@ -129,15 +131,8 @@ function viewDetail(roomId: string) {
             </div>
           </div>
 
-          <div class="filter-section">
-            <div class="filter-row">
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="搜索教研室名称、负责人、教研方向"
-                class="search-input"
-                @keyup.enter="applyFilters"
-              />
+          <CompactFilterBar>
+            <template #fields>
               <label class="filter-item">
                 <span class="filter-label">院系：</span>
                 <select v-model="selectedDepartment" class="filter-select">
@@ -168,13 +163,24 @@ function viewDetail(roomId: string) {
                   <option>已形成记录</option>
                 </select>
               </label>
-            </div>
-            <div class="search-row">
-              <button class="btn-reset" @click="resetFilters">重置</button>
-              <button class="btn-secondary" @click="applyFilters">查询</button>
+            </template>
+            <template #search>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="搜索教研室名称、负责人、教研方向"
+                class="search-input"
+                @keyup.enter="applyFilters"
+              />
+          </template>
+          <template #actions>
+            <Button variant="outline" @click="resetFilters">重置</Button>
+            <Button variant="secondary" @click="applyFilters">查询</Button>
+          </template>
+            <template #message>
               <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
-            </div>
-          </div>
+            </template>
+          </CompactFilterBar>
 
           <div class="rooms-section">
             <div v-if="viewMode === 'card'" class="rooms-grid">
@@ -214,10 +220,14 @@ function viewDetail(roomId: string) {
                   <b>{{ room.recentTime }}</b>
                 </div>
                 <div class="card-footer">
-                  <button class="btn-detail" @click="viewDetail(room.id)">查看详情</button>
+                  <Button @click="viewDetail(room.id)">查看详情</Button>
                 </div>
               </article>
-              <div v-if="filteredRooms.length === 0" class="empty-panel">暂无符合条件的教研室</div>
+              <EmptyState
+                v-if="filteredRooms.length === 0"
+                class="room-empty-state"
+                title="暂无符合条件的教研室"
+              />
             </div>
 
             <div v-else class="table-container">
@@ -255,11 +265,11 @@ function viewDetail(roomId: string) {
                       <div class="sub-text">{{ room.recentTime }}</div>
                     </td>
                     <td>
-                      <button class="btn-view" @click="viewDetail(room.id)">查看详情</button>
+                      <Button variant="ghost" size="sm" @click="viewDetail(room.id)">查看详情</Button>
                     </td>
                   </tr>
                   <tr v-if="filteredRooms.length === 0">
-                    <td colspan="6" class="empty-cell">暂无符合条件的教研室</td>
+                    <EmptyState as="td" variant="cell" :colspan="6" title="暂无符合条件的教研室" />
                   </tr>
                 </tbody>
               </table>
@@ -274,8 +284,8 @@ function viewDetail(roomId: string) {
 <style scoped>
 .virtual-lab-room-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .virtual-lab-room-page *,
@@ -308,7 +318,7 @@ function viewDetail(roomId: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .breadcrumb .separator {
@@ -316,7 +326,7 @@ function viewDetail(roomId: string) {
 }
 
 .breadcrumb .current {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 600;
 }
 
@@ -324,14 +334,9 @@ function viewDetail(roomId: string) {
   margin: 10px 0 0;
   font-size: 14px;
   line-height: 1.6;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-reset,
-.btn-detail,
-.btn-view,
 .view-btn {
   height: 34px;
   border-radius: 6px;
@@ -342,23 +347,8 @@ function viewDetail(roomId: string) {
   white-space: nowrap;
 }
 
-.btn-primary {
-  padding: 0 16px;
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
-}
-
-.btn-primary:hover,
-.btn-detail:hover,
-.btn-view:hover,
-.btn-secondary:hover {
-  background: #0d55d8;
-  border-color: #0d55d8;
-}
-
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -376,9 +366,9 @@ function viewDetail(roomId: string) {
   gap: 16px;
   padding: 20px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -393,7 +383,7 @@ function viewDetail(roomId: string) {
 }
 
 .icon-room {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -415,7 +405,7 @@ function viewDetail(roomId: string) {
 .stat-label {
   font-size: 14px;
   font-weight: 600;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .stat-value {
@@ -427,11 +417,11 @@ function viewDetail(roomId: string) {
 
 .stat-value span {
   font-size: 14px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.green {
@@ -459,10 +449,10 @@ function viewDetail(roomId: string) {
 
 .content-card {
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .card-header {
@@ -479,7 +469,7 @@ function viewDetail(roomId: string) {
   margin: 0;
   font-size: 17px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .view-mode-switch {
@@ -491,26 +481,13 @@ function viewDetail(roomId: string) {
   padding: 0 14px;
   border: 1px solid #d7e2f2;
   background: #fff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .view-btn.active {
-  border-color: #1268f6;
-  background: #1268f6;
+  border-color: var(--color-admin-primary);
+  background: var(--color-admin-primary);
   color: #fff;
-}
-
-.filter-section {
-  padding: 18px 20px;
-  border-bottom: 1px solid #e4ebf5;
-  background: #fbfdff;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.4fr) repeat(3, minmax(180px, 0.72fr));
-  gap: 12px;
-  align-items: center;
 }
 
 .filter-item {
@@ -528,7 +505,7 @@ function viewDetail(roomId: string) {
   flex: 0 0 auto;
   font-size: 13px;
   font-weight: 600;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .filter-select {
@@ -537,7 +514,7 @@ function viewDetail(roomId: string) {
   border: 0;
   outline: none;
   background: transparent;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
 }
 
@@ -548,46 +525,20 @@ function viewDetail(roomId: string) {
   border: 1px solid #d7e2f2;
   border-radius: 6px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   outline: none;
 }
 
 .search-input:focus,
 .filter-item:focus-within {
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
-}
-
-.search-row {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-reset {
-  padding: 0 14px;
-  border: 1px solid #d7e2f2;
-  background: #fff;
-  color: #66758f;
-}
-
-.btn-reset:hover {
-  border-color: #1268f6;
-  color: #1268f6;
-}
-
-.btn-secondary {
-  padding: 0 16px;
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
 }
 
 .operation-message {
   font-size: 13px;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .rooms-section {
@@ -605,7 +556,7 @@ function viewDetail(roomId: string) {
   display: flex;
   flex-direction: column;
   padding: 18px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fff;
 }
@@ -624,7 +575,7 @@ function viewDetail(roomId: string) {
 .room-name,
 .room-title {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 16px;
   line-height: 1.35;
   font-weight: 700;
@@ -633,9 +584,9 @@ function viewDetail(roomId: string) {
 .room-tag {
   flex: 0 0 auto;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 12px;
   font-weight: 600;
 }
@@ -661,7 +612,7 @@ function viewDetail(roomId: string) {
 .room-meta strong {
   display: block;
   overflow: hidden;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -680,7 +631,7 @@ function viewDetail(roomId: string) {
   align-items: center;
   min-height: 24px;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 600;
 }
@@ -692,7 +643,7 @@ function viewDetail(roomId: string) {
 
 .metric-pill.record {
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .recent-row {
@@ -701,7 +652,7 @@ function viewDetail(roomId: string) {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 13px;
 }
 
@@ -714,21 +665,13 @@ function viewDetail(roomId: string) {
 
 .recent-row b {
   flex: 0 0 auto;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .card-footer {
   margin-top: auto;
   padding-top: 14px;
   text-align: right;
-}
-
-.btn-detail,
-.btn-view {
-  padding: 0 14px;
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
 }
 
 .table-container {
@@ -755,7 +698,7 @@ function viewDetail(roomId: string) {
 
 .room-table th {
   background: #f7faff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
@@ -781,19 +724,8 @@ function viewDetail(roomId: string) {
   font-size: 12px;
 }
 
-.empty-panel,
-.empty-cell {
-  padding: 28px;
-  text-align: center;
-  color: #8a98ad;
-  font-size: 13px;
-}
-
-.empty-panel {
+.room-empty-state {
   grid-column: 1 / -1;
-  border: 1px dashed #d7e2f2;
-  border-radius: 8px;
-  background: #fbfdff;
 }
 
 @media (max-width: 1360px) {
@@ -801,9 +733,6 @@ function viewDetail(roomId: string) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 1024px) {
@@ -817,8 +746,7 @@ function viewDetail(roomId: string) {
 }
 
 @media (max-width: 760px) {
-  .stats-container,
-  .filter-row {
+  .stats-container {
     grid-template-columns: 1fr;
   }
 

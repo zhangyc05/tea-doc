@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionDetailMock } from '@/services/mock/reflection'
 
@@ -128,17 +129,17 @@ function viewMoreRelated() {
                       <td>{{ related.trigger }}</td>
                       <td>{{ related.submitTime }}</td>
                       <td>
-                        <button class="btn-view" @click="viewRelatedDetail(related.id)">
+                        <Button variant="ghost" size="sm" @click="viewRelatedDetail(related.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
                 <div class="card-footer">
-                  <button class="btn-link" @click="viewMoreRelated">
+                  <Button variant="ghost" @click="viewMoreRelated">
                     查看更多相关记录
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -238,12 +239,12 @@ function viewMoreRelated() {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 700;
 }
 
 .breadcrumb a {
-  color: #172b55;
+  color: var(--color-admin-text-title);
   text-decoration: none;
   transition: color 0.16s ease;
 }
@@ -288,8 +289,8 @@ function viewMoreRelated() {
   background: #fff;
   border-radius: 8px;
   padding: 24px 32px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .title-icon {
@@ -351,7 +352,7 @@ function viewMoreRelated() {
 
 .info-value {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 700;
 }
 
@@ -382,9 +383,9 @@ function viewMoreRelated() {
 .content-card {
   background: white;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .card-header {
@@ -424,7 +425,7 @@ function viewMoreRelated() {
   margin: 0;
   font-size: 14px;
   line-height: 1.85;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 /* 相关反思记录表格 */
@@ -433,7 +434,7 @@ function viewMoreRelated() {
   border-collapse: collapse;
   margin-bottom: 0;
   table-layout: fixed;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -445,8 +446,8 @@ function viewMoreRelated() {
   font-size: 13px;
   font-weight: 800;
   color: #31466f;
-  border-bottom: 1px solid #d9e5f7;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-border-muted);
+  border-right: 1px solid var(--color-admin-divider);
   background: #f4f7fc;
 }
 
@@ -454,9 +455,9 @@ function viewMoreRelated() {
   height: 42px;
   padding: 0 14px;
   font-size: 13px;
-  color: #172b55;
-  border-bottom: 1px solid #e5edf8;
-  border-right: 1px solid #e5edf8;
+  color: var(--color-admin-text-title);
+  border-bottom: 1px solid var(--color-admin-divider);
+  border-right: 1px solid var(--color-admin-divider);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -483,36 +484,6 @@ function viewMoreRelated() {
   justify-content: center;
 }
 
-.btn-link {
-  padding: 0;
-  background: transparent;
-  border: 0;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-link:hover {
-  color: #0c4fd0;
-}
-
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
-}
-
 /* 侧边栏 */
 .sidebar {
   display: flex;
@@ -524,9 +495,9 @@ function viewMoreRelated() {
 .sidebar-card {
   background: white;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 26px 28px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .sidebar-title {
@@ -570,7 +541,7 @@ function viewMoreRelated() {
 
 .related-data-item {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   padding-left: 8px;
   line-height: 1.7;
 }
@@ -579,7 +550,7 @@ function viewMoreRelated() {
   margin: 0 0 14px;
   font-size: 14px;
   line-height: 1.8;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .destination-text:last-child {

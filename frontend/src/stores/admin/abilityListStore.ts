@@ -10,7 +10,9 @@ import {
   confirmRequirementMappingInState,
   deleteRequirementMappingInState,
   deriveNextExecutionVersionInState,
+  importPolicySuggestionInState,
   publishExecutionVersionInState,
+  rerunFeedbackAnalysisInState,
   saveRequirementMappingInState,
   updateIndicatorInState,
   updateOptimizationSuggestionStatusInState,
@@ -80,6 +82,14 @@ export function adoptOptimizationSuggestion(suggestionId: string) {
 
 export function applyAdoptedSuggestionsToBaseTemplate() {
   return applyAdoptedSuggestionsToBaseTemplateInState(state)
+}
+
+export function importPolicySuggestion() {
+  return importPolicySuggestionInState(state)
+}
+
+export function rerunFeedbackAnalysis() {
+  return rerunFeedbackAnalysisInState(state)
 }
 
 export function saveRequirementMapping(mapping: RequirementMapping) {

@@ -5,8 +5,10 @@ import {
   confirmRequirementMapping,
   deleteRequirementMapping,
   deriveNextExecutionVersion,
+  importPolicySuggestion,
   getAbilityListState,
   publishExecutionVersion,
+  rerunFeedbackAnalysis,
   resetAbilityListState,
   saveRequirementMapping,
   updateBaseTemplateIndicator,
@@ -114,6 +116,26 @@ describe('ability list business state', () => {
     expect(appliedIndicator?.status).toBe('draft')
     expect(appliedSuggestion?.status).toBe('applied')
     expect(state.pendingTemplateApplications).toHaveLength(0)
+  })
+
+  it('imports a policy file as a pending optimization suggestion', () => {
+    const suggestion = importPolicySuggestion()
+    const state = getAbilityListState()
+
+    expect(suggestion.source).toBe('policy')
+    expect(suggestion.status).toBe('pending')
+    expect(state.optimizationSuggestions[0]?.id).toBe(suggestion.id)
+    expect(state.operationMessage).toContain('制度文件')
+  })
+
+  it('reruns feedback analysis and creates a pending feedback suggestion', () => {
+    const suggestion = rerunFeedbackAnalysis()
+    const state = getAbilityListState()
+
+    expect(suggestion.source).toBe('feedback')
+    expect(suggestion.status).toBe('pending')
+    expect(state.optimizationSuggestions[0]?.id).toBe(suggestion.id)
+    expect(state.operationMessage).toContain('运行反馈')
   })
 
   it('adds a new requirement mapping as a pending item', () => {

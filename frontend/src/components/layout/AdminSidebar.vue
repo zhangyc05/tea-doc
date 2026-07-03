@@ -604,7 +604,7 @@ function handleParentAction(item: AdminNavItem) {
   top: 50%;
   width: 7px;
   height: 7px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #aeb8c8;
   box-shadow: 0 0 0 4px rgba(246, 249, 255, 0.96);
   transform: translateY(-50%);

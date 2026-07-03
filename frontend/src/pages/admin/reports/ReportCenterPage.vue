@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import {
@@ -136,8 +137,8 @@ function openAiAssistant() {
               class="search-input"
               @keyup.enter="applyFilters"
             />
-            <button class="icon-button" title="查询" @click="applyFilters">⌕</button>
-            <button class="btn-reset" @click="resetFilters">重置</button>
+            <Button variant="outline" size="icon" title="查询" @click="applyFilters">⌕</Button>
+            <Button variant="outline" @click="resetFilters">重置</Button>
           </div>
         </div>
 
@@ -172,7 +173,11 @@ function openAiAssistant() {
               </button>
             </div>
           </article>
-          <div v-if="filteredReports.length === 0" class="empty-panel">暂无符合条件的分析报告</div>
+          <EmptyState
+            v-if="filteredReports.length === 0"
+            class="report-empty-state"
+            title="暂无符合条件的分析报告"
+          />
         </div>
 
         <div v-if="selectedReport || reportState.aiSession.active" class="detail-grid">
@@ -220,8 +225,8 @@ function openAiAssistant() {
 <style scoped>
 .report-center-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .report-center-page *,
@@ -246,7 +251,7 @@ function openAiAssistant() {
 
 .header-content h1 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 22px;
   font-weight: 800;
 }
@@ -278,7 +283,7 @@ function openAiAssistant() {
 
 .operation-message {
   margin-left: auto;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 700;
 }
@@ -310,7 +315,7 @@ function openAiAssistant() {
 }
 
 .tab-btn.active {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .tab-btn.active::after {
@@ -321,7 +326,7 @@ function openAiAssistant() {
   bottom: -8px;
   height: 3px;
   border-radius: 3px;
-  background: #1268f6;
+  background: var(--color-admin-primary);
 }
 
 .filters {
@@ -348,7 +353,7 @@ function openAiAssistant() {
 }
 
 .filter-item span {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
@@ -360,7 +365,7 @@ function openAiAssistant() {
   border: 0;
   outline: none;
   background: transparent;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   font-weight: 600;
 }
@@ -368,19 +373,17 @@ function openAiAssistant() {
 .search-input {
   width: 250px;
   padding: 0 12px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   outline: none;
 }
 
 .search-input:focus,
 .filter-item:focus-within {
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
 }
 
-.icon-button,
-.btn-reset,
 .btn-action,
 .ai-assistant {
   border-radius: 6px;
@@ -389,23 +392,6 @@ function openAiAssistant() {
   cursor: pointer;
   transition: all 0.16s ease;
   white-space: nowrap;
-}
-
-.icon-button {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #d7e2f2;
-  background: #fff;
-  color: #1268f6;
-  font-size: 22px;
-}
-
-.btn-reset {
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #d7e2f2;
-  background: #fff;
-  color: #66758f;
 }
 
 .reports-grid {
@@ -422,10 +408,10 @@ function openAiAssistant() {
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 0 18px;
   padding: 28px 24px 24px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .report-card:hover {
@@ -444,7 +430,7 @@ function openAiAssistant() {
 }
 
 .report-icon.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -469,14 +455,14 @@ function openAiAssistant() {
 }
 
 .report-icon.chat {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
   font-size: 20px;
 }
 
 .report-body h2 {
   margin: 0 0 16px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   line-height: 1.4;
   font-weight: 800;
@@ -508,27 +494,19 @@ function openAiAssistant() {
   min-width: 92px;
   height: 40px;
   padding: 0 18px;
-  border: 1px solid #1268f6;
+  border: 1px solid var(--color-admin-primary);
   background: #fff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
-.btn-action:hover,
-.icon-button:hover,
-.btn-reset:hover {
-  border-color: #1268f6;
-  background: #1268f6;
+.btn-action:hover {
+  border-color: var(--color-admin-primary);
+  background: var(--color-admin-primary);
   color: #fff;
 }
 
-.empty-panel {
+.report-empty-state {
   grid-column: 1 / -1;
-  padding: 34px;
-  border: 1px dashed #d7e2f2;
-  border-radius: 8px;
-  background: #fff;
-  color: #8a98ad;
-  text-align: center;
 }
 
 .detail-grid {
@@ -540,10 +518,10 @@ function openAiAssistant() {
 
 .detail-panel {
   min-height: 210px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
   overflow: hidden;
 }
 
@@ -559,7 +537,7 @@ function openAiAssistant() {
 
 .panel-header h2 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 17px;
   font-weight: 800;
 }
@@ -574,7 +552,7 @@ function openAiAssistant() {
 }
 
 .detail-content strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 16px;
 }
 
@@ -592,7 +570,7 @@ function openAiAssistant() {
   padding: 5px 8px;
   border-radius: 6px;
   background: #f1f6ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 12px;
   font-weight: 700;
 }
@@ -610,7 +588,7 @@ function openAiAssistant() {
   padding: 0 28px;
   border: 0;
   border-radius: 28px;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
   box-shadow: 0 12px 24px rgba(18, 104, 246, 0.24);
   font-size: 16px;

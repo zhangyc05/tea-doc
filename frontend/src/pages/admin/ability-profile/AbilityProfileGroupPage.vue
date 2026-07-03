@@ -54,6 +54,10 @@ function viewProfile(name: string) {
   operationMessage.set(`${name} 暂无独立画像页面，已保留为群体画像关注对象。`)
 }
 
+function viewMoreObjects() {
+  operationMessage.set('更多关注对象暂未拆独立列表，当前保留为群体画像表格内展示。')
+}
+
 function getDimensionMeta(dimension: string) {
   return dimensionMeta[dimension] || { icon: 'book', tone: 'blue' }
 }
@@ -261,7 +265,7 @@ function getDistributionTone(index: number) {
               </tr>
             </tbody>
           </table>
-          <button class="more-btn">查看更多对象 ↓</button>
+          <button class="more-btn" @click="viewMoreObjects">查看更多对象 ↓</button>
         </article>
       </section>
     </div>
@@ -666,7 +670,7 @@ function getDistributionTone(index: number) {
   display: flex;
   height: 8px;
   overflow: hidden;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #eef3fb;
   gap: 4px;
 }
@@ -674,7 +678,7 @@ function getDistributionTone(index: number) {
 .distribution-track span {
   display: block;
   min-width: 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 
 .novice { background: #9aa9c0; }

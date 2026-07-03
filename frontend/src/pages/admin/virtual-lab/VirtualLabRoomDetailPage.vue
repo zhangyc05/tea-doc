@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import {
@@ -77,9 +78,9 @@ function viewRecord(id: string) {
             <div class="room-title-row">
               <h1>{{ roomInfo.name }}</h1>
               <div class="header-actions">
-                <button class="btn-secondary" @click="editInfo">编辑信息</button>
-                <button class="btn-primary" @click="inviteTeacher">邀请教师</button>
-                <button class="btn-secondary" @click="createActivity">新建教研活动</button>
+                <Button variant="outline" @click="editInfo">编辑信息</Button>
+                <Button @click="inviteTeacher">邀请教师</Button>
+                <Button variant="secondary" @click="createActivity">新建教研活动</Button>
               </div>
             </div>
             <div class="room-info-grid">
@@ -130,7 +131,7 @@ function viewRecord(id: string) {
           <div class="content-card">
             <div class="card-header">
               <h2>成员</h2>
-              <button class="btn-small" @click="inviteTeacher">邀请教师</button>
+              <Button size="sm" @click="inviteTeacher">邀请教师</Button>
             </div>
             <div class="table-container">
               <table class="data-table member-table">
@@ -155,14 +156,15 @@ function viewRecord(id: string) {
                     <td>{{ member.recordsFormed }}</td>
                     <td>{{ member.recentParticipation }}</td>
                     <td>
-                      <button class="btn-link" @click="viewTeacher(member.id)">查看教师</button>
-                      <button
+                      <Button variant="ghost" size="sm" @click="viewTeacher(member.id)">查看教师</Button>
+                      <Button
                         v-if="member.role !== '负责人'"
-                        class="btn-link danger"
+                        variant="danger"
+                        size="sm"
                         @click="removeMember(member.id)"
                       >
                         移出
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 </tbody>
@@ -202,7 +204,7 @@ function viewRecord(id: string) {
                     </td>
                     <td>{{ activity.recentUpdate }}</td>
                     <td>
-                      <button class="btn-link" @click="viewActivity(activity.id)">查看活动</button>
+                      <Button variant="ghost" size="sm" @click="viewActivity(activity.id)">查看活动</Button>
                     </td>
                   </tr>
                 </tbody>
@@ -242,7 +244,7 @@ function viewRecord(id: string) {
                   <strong>{{ record.dimension }}</strong>
                 </div>
               </div>
-              <button class="btn-secondary" @click="viewRecord(record.id)">查看记录</button>
+              <Button variant="outline" @click="viewRecord(record.id)">查看记录</Button>
             </article>
           </div>
           <div class="table-footer">
@@ -258,8 +260,8 @@ function viewRecord(id: string) {
 <style scoped>
 .virtual-lab-room-detail-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .virtual-lab-room-detail-page *,
@@ -289,7 +291,7 @@ function viewRecord(id: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .breadcrumb .separator {
@@ -297,7 +299,7 @@ function viewRecord(id: string) {
 }
 
 .breadcrumb .current {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 600;
 }
 
@@ -309,9 +311,9 @@ function viewRecord(id: string) {
 .content-card,
 .stat-card {
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .room-profile-card {
@@ -330,7 +332,7 @@ function viewRecord(id: string) {
   justify-content: center;
   border-radius: 50%;
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 28px;
 }
 
@@ -343,7 +345,7 @@ function viewRecord(id: string) {
 
 .room-title-row h1 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 24px;
   line-height: 1.35;
   font-weight: 700;
@@ -371,48 +373,12 @@ function viewRecord(id: string) {
 }
 
 .operation-message {
-  color: #1268f6 !important;
+  color: var(--color-admin-primary) !important;
   font-weight: 600;
 }
 
 .room-id {
   display: none;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-small,
-.btn-link {
-  height: 34px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  padding: 0 16px;
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
-}
-
-.btn-secondary,
-.btn-small {
-  padding: 0 16px;
-  border: 1px solid #cfdcf0;
-  background: #fff;
-  color: #1268f6;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover,
-.btn-small:hover {
-  border-color: #0d55d8;
-  background: #0d55d8;
-  color: #fff;
 }
 
 .stats-container {
@@ -443,7 +409,7 @@ function viewRecord(id: string) {
 }
 
 .icon-members {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -463,7 +429,7 @@ function viewRecord(id: string) {
 }
 
 .stat-label {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
@@ -476,12 +442,12 @@ function viewRecord(id: string) {
 }
 
 .stat-value span {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.green {
@@ -519,7 +485,7 @@ function viewRecord(id: string) {
 
 .card-header h2 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 17px;
   font-weight: 700;
 }
@@ -555,12 +521,12 @@ function viewRecord(id: string) {
 
 .data-table th {
   background: #f7faff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
 .data-table td {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .primary-text {
@@ -571,22 +537,6 @@ function viewRecord(id: string) {
   color: #8a98ad;
   font-size: 12px;
   line-height: 1.5;
-}
-
-.btn-link {
-  height: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #1268f6;
-}
-
-.btn-link + .btn-link {
-  margin-left: 10px;
-}
-
-.btn-link.danger {
-  color: #d92d20;
 }
 
 .table-footer {
@@ -620,8 +570,8 @@ function viewRecord(id: string) {
 }
 
 .pager b {
-  border-color: #1268f6;
-  background: #1268f6;
+  border-color: var(--color-admin-primary);
+  background: var(--color-admin-primary);
   color: #fff;
 }
 
@@ -666,7 +616,7 @@ function viewRecord(id: string) {
   align-items: center;
   justify-content: center;
   border-radius: 6px;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
   font-size: 20px;
 }
@@ -678,7 +628,7 @@ function viewRecord(id: string) {
 }
 
 .record-grid strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
 }
 

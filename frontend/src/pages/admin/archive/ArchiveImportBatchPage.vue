@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getArchiveBatchStatusClass, getArchiveBatchStatusLabel } from '@/domain/admin/archive'
 import {
@@ -313,11 +314,11 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
       <!-- 底部操作按钮 -->
       <section class="actions-section">
-        <button class="btn-secondary" @click="returnToProcessing">返回档案处理</button>
-        <button v-if="!isCompleted && !isCancelled" class="btn-outline" @click="cancelTask">取消本次任务</button>
-        <button v-if="!isCompleted && !isCancelled" class="btn-primary" @click="refreshStatus">刷新状态</button>
-        <button v-if="isCompleted && !isCancelled" class="btn-outline" @click="viewUploadedFiles">查看上传文件</button>
-        <button v-if="isCompleted && !isCancelled" class="btn-primary" @click="confirmResult">确认识别结果</button>
+        <Button class="batch-action" variant="secondary" @click="returnToProcessing">返回档案处理</Button>
+        <Button v-if="!isCompleted && !isCancelled" class="batch-action" variant="outline" @click="cancelTask">取消本次任务</Button>
+        <Button v-if="!isCompleted && !isCancelled" class="batch-action batch-action-primary" @click="refreshStatus">刷新状态</Button>
+        <Button v-if="isCompleted && !isCancelled" class="batch-action" variant="outline" @click="viewUploadedFiles">查看上传文件</Button>
+        <Button v-if="isCompleted && !isCancelled" class="batch-action batch-action-primary" @click="confirmResult">确认识别结果</Button>
       </section>
     </div>
   </AdminLayout>
@@ -362,7 +363,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .hero-card {
   overflow: hidden;
   background: #fff;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 10px;
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.04);
 }
@@ -394,7 +395,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   margin: 0 24px;
   min-height: 96px;
   padding: 14px 330px 12px 18px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px 8px 0 0;
   background: linear-gradient(100deg, #fff 0%, #fff 72%, #eaf3ff 100%);
 }
@@ -449,7 +450,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .hero-illustration::after {
   content: '';
   position: absolute;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #cfe0ff;
   opacity: 0.8;
 }
@@ -523,7 +524,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   bottom: -14px;
   width: 32px;
   height: 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #0f5eef;
   transform: rotate(42deg);
 }
@@ -628,9 +629,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .progress-content {
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .section-title {
@@ -770,14 +771,14 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .files-content {
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 13px 22px 9px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .files-table {
   overflow: hidden;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
 }
 
@@ -788,7 +789,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   gap: 10px;
   min-height: 38px;
   padding: 0 12px;
-  border-top: 1px solid #e5edf8;
+  border-top: 1px solid var(--color-admin-divider);
   color: #10254f;
   font-size: 13px;
 }
@@ -826,9 +827,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   overflow: hidden;
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .result-placeholder {
@@ -872,7 +873,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .result-list {
   overflow: hidden;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
 }
 
@@ -883,7 +884,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   gap: 10px;
   min-height: 37px;
   padding: 0 14px;
-  border-top: 1px solid #e5edf8;
+  border-top: 1px solid var(--color-admin-divider);
   color: #10254f;
   font-size: 14px;
 }
@@ -935,9 +936,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .instructions-content {
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .instructions-card {
@@ -989,50 +990,16 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   gap: 16px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-outline {
+.batch-action {
   min-width: 154px;
   height: 42px;
   padding: 0 22px;
-  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  outline: none;
 }
 
-.btn-primary {
+.batch-action-primary {
   margin-left: auto;
-  border: 1px solid #0f5eef;
-  background: #0f5eef;
-  color: white;
-  box-shadow: 0 10px 20px rgba(15, 94, 239, 0.18);
-}
-
-.btn-primary:hover {
-  background: #0c4fd0;
-}
-
-.btn-secondary {
-  border: 1px solid #d0def0;
-  background: #fff;
-  color: #23436f;
-}
-
-.btn-secondary:hover {
-  background: #f5f8fd;
-}
-
-.btn-outline {
-  background: white;
-  color: #23436f;
-  border: 1px solid #d0def0;
-}
-
-.btn-outline:hover {
-  background: #f8fafc;
 }
 
 @media (max-width: 1320px) {
@@ -1092,7 +1059,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
     flex-wrap: wrap;
   }
 
-  .btn-primary {
+  .batch-action-primary {
     margin-left: 0;
   }
 }

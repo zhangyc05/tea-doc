@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addArchiveUploadedFiles,
@@ -167,8 +168,12 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
               <p>可一次上传台账、名单、证书扫描件、项目材料、评审结果、通知文件等资料。</p>
             </div>
             <div class="upload-actions">
-              <button type="button" class="ghost-button" @click="selectFiles">▣ 选择文件</button>
-              <button type="button" class="ghost-button" @click="importFromFolder">▣ 从本地文件夹导入</button>
+              <Button class="upload-action-button" type="button" variant="outline" size="lg" @click="selectFiles">
+                ▣ 选择文件
+              </Button>
+              <Button class="upload-action-button" type="button" variant="outline" size="lg" @click="importFromFolder">
+                ▣ 从本地文件夹导入
+              </Button>
             </div>
           </div>
 
@@ -182,7 +187,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
                 <strong>{{ file.name }}</strong>
                 <span>{{ file.size }}</span>
                 <em>{{ file.status }}</em>
-                <button type="button" @click="removeFile(file.id)">删除</button>
+                <Button class="file-remove-action" type="button" variant="ghost" size="sm" @click="removeFile(file.id)">删除</Button>
               </div>
             </div>
             <footer>已上传 {{ uploadedFiles.length }} 个文件，共 {{ totalSize }}MB</footer>
@@ -201,10 +206,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
       </section>
 
       <section class="bottom-actions">
-        <button type="button" class="cancel-button" @click="cancelUpload">取消</button>
-        <button type="button" class="primary-button" :disabled="uploadedFiles.length === 0" @click="startRecognition">
+        <Button class="bottom-cancel-action" type="button" variant="outline" size="lg" @click="cancelUpload">取消</Button>
+        <Button class="bottom-primary-action" type="button" size="lg" :disabled="uploadedFiles.length === 0" @click="startRecognition">
           开始识别资料
-        </button>
+        </Button>
       </section>
     </div>
   </AdminLayout>
@@ -428,21 +433,8 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   margin-top: 10px;
 }
 
-.ghost-button,
-.cancel-button,
-.primary-button {
-  height: 42px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.ghost-button {
+.upload-action-button {
   min-width: 196px;
-  border: 1px solid #cfdaea;
-  background: #ffffff;
-  color: #10213d;
 }
 
 .file-card {
@@ -496,11 +488,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   font-weight: 700;
 }
 
-.file-row button {
-  border: 0;
-  background: transparent;
+.file-remove-action {
+  justify-self: start;
   color: #1677ff;
-  cursor: pointer;
   font-size: 15px;
   font-weight: 600;
 }
@@ -583,24 +573,13 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   border-radius: 0;
 }
 
-.cancel-button {
+.bottom-cancel-action {
   min-width: 166px;
-  border: 1px solid #d4dfef;
-  background: #ffffff;
-  color: #10213d;
 }
 
-.primary-button {
+.bottom-primary-action {
   min-width: 250px;
-  border: 0;
-  background: #1677ff;
-  color: #ffffff;
   box-shadow: 0 8px 18px rgba(22, 119, 255, 0.22);
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
 }
 
 @media (max-width: 1440px) {

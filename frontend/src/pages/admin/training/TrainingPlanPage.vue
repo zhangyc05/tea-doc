@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { StatusBadge } from '@/components/common'
+import { CompactFilterBar, DetailSheet, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingPlanPageMock } from '@/services/mock/training'
@@ -177,10 +178,10 @@ function createPlanFromForm(mode: 'draft' | 'published') {
               <!-- 筛选和操作区 -->
               <div class="card-header">
                 <h2 class="card-title">培训计划</h2>
-                <button class="btn-primary btn-create" @click="openDrawer">新建培训计划 ＋</button>
+                <Button class="btn-create" @click="openDrawer">新建培训计划 ＋</Button>
               </div>
-              <div class="filter-section">
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
                     <select v-model="selectedOrganization" class="filter-select">
@@ -213,18 +214,22 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                       </option>
                     </select>
                   </div>
-                  <button class="btn-reset" @click="resetFilters">重置</button>
-                </div>
-                <div class="search-row">
+                </template>
+                <template #search>
                   <input
                     v-model="searchQuery"
                     type="text"
                     placeholder="搜索计划名称、培训方向、培训资源"
                     class="search-input"
                   />
-                </div>
-                <p v-if="operationMessage.text.value" class="plan-notice">{{ operationMessage.text.value }}</p>
-              </div>
+                </template>
+                <template #actions>
+                  <Button variant="outline" @click="resetFilters">重置</Button>
+                </template>
+                <template #message>
+                  <p v-if="operationMessage.text.value" class="plan-notice">{{ operationMessage.text.value }}</p>
+                </template>
+              </CompactFilterBar>
 
               <!-- 数据表格 -->
               <div class="table-container">
@@ -258,13 +263,13 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                         </div>
                       </td>
                       <td>
-                        <button class="btn-view" @click="viewDetail(plan.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(plan.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     <tr v-if="filteredPlans.length === 0">
-                      <td colspan="8" class="empty-cell">暂无符合条件的培训计划</td>
+                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训计划" />
                     </tr>
                   </tbody>
                 </table>
@@ -278,36 +283,39 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
           <!-- 右侧：执行提醒 -->
           <div class="sidebar">
-            <div class="sidebar-card">
-              <h3 class="sidebar-title">执行提醒</h3>
-              <div class="reminders-list">
-                <div
-                  v-for="(reminder, index) in reminders"
-                  :key="index"
-                  class="reminder-item"
-                >
-                  <span class="reminder-icon"></span>
-                  <span class="reminder-text">{{ reminder }}</span>
+            <InsightSidebar title="执行提醒">
+              <template #items>
+                <div class="reminders-list">
+                  <div
+                    v-for="(reminder, index) in reminders"
+                    :key="index"
+                    class="reminder-item"
+                  >
+                    <span class="reminder-icon"></span>
+                    <span class="reminder-text">{{ reminder }}</span>
+                  </div>
                 </div>
-              </div>
-              <button class="btn-outline" @click="selectedStatus = '报名中'">
-                查看相关计划
-              </button>
-            </div>
+              </template>
+              <template #action>
+                <Button class="full-width" variant="outline" @click="selectedStatus = '报名中'">
+                  查看相关计划
+                </Button>
+              </template>
+            </InsightSidebar>
           </div>
         </div>
       </section>
 
-      <!-- 新建培训计划抽屉 -->
-      <div v-if="showDrawer" class="drawer-overlay" @click="closeDrawer">
-        <div class="drawer" @click.stop>
-          <div class="drawer-header">
-            <h2 class="drawer-title">新建培训计划</h2>
-            <button class="btn-close" @click="closeDrawer">✕</button>
-          </div>
-          <div class="drawer-body">
-            <div class="form-section">
-              <div class="form-item">
+      <DetailSheet
+        :open="showDrawer"
+        title="新建培训计划"
+        width="md"
+        mode="edit"
+        @update:open="showDrawer = $event"
+        @cancel="closeDrawer"
+      >
+        <div class="form-section">
+          <div class="form-item">
                 <label class="form-label">计划名称</label>
                 <input v-model="newPlan.name" type="text" class="form-input" placeholder="请输入计划名称" />
               </div>
@@ -370,15 +378,13 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                 <label class="form-label">计划说明</label>
                 <textarea v-model="newPlan.description" class="form-textarea" placeholder="请输入计划说明" rows="4"></textarea>
               </div>
-            </div>
-          </div>
-          <div class="drawer-footer">
-            <button class="btn-secondary" @click="closeDrawer">取消</button>
-            <button class="btn-secondary" @click="saveDraft">保存草稿</button>
-            <button class="btn-primary" @click="saveAndPublish">保存并发布</button>
-          </div>
         </div>
-      </div>
+        <template #footer>
+          <Button class="flex-1" variant="outline" @click="closeDrawer">取消</Button>
+          <Button class="flex-1" variant="secondary" @click="saveDraft">保存草稿</Button>
+          <Button class="flex-1" @click="saveAndPublish">保存并发布</Button>
+        </template>
+      </DetailSheet>
     </div>
   </AdminLayout>
 </template>
@@ -386,7 +392,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 <style scoped>
 .training-plan-page {
   min-height: 100vh;
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .training-plan-page *,
@@ -411,7 +417,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   margin-bottom: 20px;
   font-size: 14px;
   font-weight: 800;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .breadcrumb i {
@@ -471,8 +477,8 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   padding: 26px 28px;
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .stat-icon {
@@ -524,7 +530,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .stat-label {
   font-size: 16px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
   margin-bottom: 8px;
 }
@@ -572,15 +578,11 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   min-width: 0;
 }
 
-.content-card,
-.sidebar-card {
+.content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
-}
-
-.content-card {
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
   overflow: hidden;
 }
 
@@ -597,19 +599,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   line-height: 1.3;
   font-weight: 800;
   color: #07183d;
-}
-
-/* 筛选区 */
-.filter-section {
-  padding: 16px 24px 20px;
-}
-
-.filter-row {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
 }
 
 .filter-item {
@@ -632,25 +621,20 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   border: 1px solid #d6e2f3;
   border-radius: 6px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   background: #fff;
   cursor: pointer;
   outline: none;
 }
 
-.search-row {
-  display: flex;
-  max-width: 520px;
-}
-
 .search-input {
-  flex: 1;
+  width: 100%;
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d6e2f3;
   border-radius: 6px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   outline: none;
   transition: border-color 0.16s ease;
 }
@@ -658,57 +642,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .search-input:focus,
 .filter-select:focus {
   border-color: #0f5eef;
-}
-
-.btn-reset {
-  height: 38px;
-  padding: 0 12px;
-  background: transparent;
-  border: 0;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: color 0.16s ease;
-}
-
-.btn-reset:hover {
-  color: #0c4fd0;
-}
-
-.btn-primary {
-  height: 38px;
-  padding: 0 18px;
-  background: #0f5eef;
-  color: white;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #0c4fd0;
-}
-
-.btn-secondary {
-  height: 38px;
-  padding: 0 18px;
-  background: #fff;
-  color: #405985;
-  border: 1px solid #d6e2f3;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-secondary:hover {
-  border-color: #0f5eef;
-  color: #0f5eef;
 }
 
 .plan-notice {
@@ -728,7 +661,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   width: 100%;
   min-width: 780px;
   border-collapse: collapse;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
   overflow: hidden;
   table-layout: fixed;
@@ -741,8 +674,8 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   font-size: 13px;
   font-weight: 800;
   color: #31466f;
-  border-bottom: 1px solid #d9e5f7;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-border-muted);
+  border-right: 1px solid var(--color-admin-divider);
   background: #f4f7fc;
 }
 
@@ -751,9 +684,9 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   padding: 0 14px;
   font-size: 13px;
   line-height: 1.65;
-  color: #172b55;
-  border-bottom: 1px solid #e5edf8;
-  border-right: 1px solid #e5edf8;
+  color: var(--color-admin-text-title);
+  border-bottom: 1px solid var(--color-admin-divider);
+  border-right: 1px solid var(--color-admin-divider);
   vertical-align: middle;
 }
 
@@ -791,27 +724,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   font-size: 12px;
 }
 
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: color 0.16s ease;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
-}
-
-.empty-cell {
-  height: 96px;
-  text-align: center;
-  color: #7586a6;
-}
-
 .table-footer {
   display: flex;
   justify-content: center;
@@ -826,24 +738,20 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   min-width: 0;
 }
 
-.sidebar-card {
-  padding: 24px 18px;
-  position: sticky;
-  top: 24px;
+.full-width {
+  width: 100%;
 }
 
-.sidebar-title {
-  margin: 0 0 20px;
-  font-size: 20px;
-  font-weight: 800;
-  color: #07183d;
+.sidebar :deep(.insight-sidebar) {
+  position: sticky;
+  top: 24px;
 }
 
 .reminders-list {
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -853,7 +761,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   gap: 16px;
   align-items: flex-start;
   padding: 22px 18px;
-  border-bottom: 1px solid #d9e5f7;
+  border-bottom: 1px solid var(--color-admin-border-muted);
 }
 
 .reminder-item:last-child {
@@ -896,87 +804,9 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .reminder-text {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   line-height: 1.8;
   font-weight: 700;
-}
-
-.btn-outline {
-  width: 100%;
-  height: 44px;
-  margin-top: 26px;
-  background: #fff;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-outline:hover {
-  background: #f4f8ff;
-}
-
-/* 抽屉 */
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(7, 24, 61, 0.28);
-  z-index: 1000;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.drawer {
-  width: min(100%, 484px);
-  background: white;
-  display: flex;
-  flex-direction: column;
-  max-height: 100vh;
-  box-shadow: -16px 0 40px rgba(27, 55, 96, 0.14);
-}
-
-.drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #d9e5f7;
-}
-
-.drawer-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 800;
-  color: #07183d;
-}
-
-.btn-close {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  color: #7586a6;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-close:hover {
-  background: #f3f4f6;
-  color: #172b55;
-}
-
-.drawer-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 22px 24px;
 }
 
 .form-section {
@@ -1000,7 +830,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .form-label {
   font-size: 13px;
   font-weight: 800;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .form-input,
@@ -1036,20 +866,8 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   cursor: pointer;
-}
-
-.drawer-footer {
-  display: flex;
-  gap: 12px;
-  padding: 20px 24px;
-  border-top: 1px solid #d9e5f7;
-}
-
-.drawer-footer .btn-secondary,
-.drawer-footer .btn-primary {
-  flex: 1;
 }
 
 @media (max-width: 1300px) {
@@ -1088,8 +906,5 @@ function createPlanFromForm(mode: 'draft' | 'published') {
     grid-template-columns: 1fr;
   }
 
-  .drawer {
-    width: 100%;
-  }
 }
 </style>

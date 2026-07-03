@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getVirtualLabRecordDetailMock } from '@/services/mock/virtual-lab'
@@ -65,9 +66,9 @@ function sendToArchive() {
               <span class="record-id">当前记录 ID：{{ recordId }}</span>
             </div>
             <div class="header-actions">
-              <button class="btn-secondary" @click="viewSourceActivity">查看来源活动</button>
-              <button class="btn-primary" @click="viewSourceMaterials">查看来源资料</button>
-              <button class="btn-primary" @click="sendToArchive">生成档案待确认</button>
+              <Button variant="outline" @click="viewSourceActivity">查看来源活动</Button>
+              <Button @click="viewSourceMaterials">查看来源资料</Button>
+              <Button @click="sendToArchive">生成档案待确认</Button>
             </div>
           </div>
         </div>
@@ -135,7 +136,7 @@ function sendToArchive() {
             </div>
             <div class="participation-footer">
               <span>共 18 位教师参与记录</span>
-              <button class="btn-link" @click="operationMessage.set('已展示全部参与教师入口。')">查看全部 ›</button>
+              <Button variant="ghost" @click="operationMessage.set('已展示全部参与教师入口。')">查看全部 ›</Button>
             </div>
           </div>
         </div>
@@ -167,7 +168,7 @@ function sendToArchive() {
                   <td>{{ material.time }}</td>
                   <td>{{ material.description }}</td>
                   <td>
-                    <button class="btn-link" @click="viewMaterial(material.id)">查看</button>
+                    <Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button>
                   </td>
                 </tr>
               </tbody>
@@ -182,8 +183,8 @@ function sendToArchive() {
 <style scoped>
 .virtual-lab-record-detail-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .virtual-lab-record-detail-page *,
@@ -208,7 +209,7 @@ function sendToArchive() {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   flex-wrap: wrap;
 }
@@ -218,7 +219,7 @@ function sendToArchive() {
 }
 
 .breadcrumb .current {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
@@ -229,9 +230,9 @@ function sendToArchive() {
 .record-profile-card,
 .content-card {
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .record-profile-card {
@@ -248,7 +249,7 @@ function sendToArchive() {
 
 .record-title-row h1 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 28px;
   line-height: 1.35;
   font-weight: 800;
@@ -265,7 +266,7 @@ function sendToArchive() {
 
 .operation-message {
   margin: 18px 0 0;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 14px;
   font-weight: 700;
 }
@@ -277,42 +278,6 @@ function sendToArchive() {
 .header-actions {
   display: flex;
   gap: 18px;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-link {
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  white-space: nowrap;
-}
-
-.btn-primary,
-.btn-secondary {
-  height: 44px;
-  padding: 0 24px;
-}
-
-.btn-primary {
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
-}
-
-.btn-secondary {
-  border: 1px solid #cfdcf0;
-  background: #fff;
-  color: #17233d;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  border-color: #0d55d8;
-  background: #0d55d8;
-  color: #fff;
 }
 
 .two-column-layout {
@@ -340,7 +305,7 @@ function sendToArchive() {
   position: relative;
   margin: 0;
   padding-left: 16px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 17px;
   font-weight: 800;
 }
@@ -353,7 +318,7 @@ function sendToArchive() {
   width: 4px;
   height: 22px;
   border-radius: 2px;
-  background: #1268f6;
+  background: var(--color-admin-primary);
 }
 
 .record-content {
@@ -366,14 +331,14 @@ function sendToArchive() {
 
 .content-section h3 {
   margin: 0 0 14px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 15px;
   font-weight: 800;
 }
 
 .content-section p {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   line-height: 1.8;
 }
@@ -390,7 +355,7 @@ function sendToArchive() {
   margin: 0;
   padding: 0;
   list-style: none;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   line-height: 1.8;
 }
@@ -415,7 +380,7 @@ function sendToArchive() {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
   font-size: 11px;
   font-weight: 800;
@@ -429,7 +394,7 @@ function sendToArchive() {
 .result-list {
   margin: 0;
   padding-left: 18px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   line-height: 1.8;
 }
@@ -462,7 +427,7 @@ function sendToArchive() {
   border-bottom: 1px solid #e8eef7;
   text-align: left;
   vertical-align: middle;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -470,7 +435,7 @@ function sendToArchive() {
 .participation-table th,
 .data-table th {
   background: #f7faff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 800;
 }
 
@@ -483,7 +448,7 @@ function sendToArchive() {
   justify-content: center;
   border-radius: 50%;
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 800;
 }
 
@@ -495,12 +460,6 @@ function sendToArchive() {
   justify-content: space-between;
   color: #4d5d75;
   font-size: 14px;
-}
-
-.btn-link {
-  border: 0;
-  background: transparent;
-  color: #1268f6;
 }
 
 .materials-card {

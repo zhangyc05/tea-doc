@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
@@ -112,20 +113,20 @@ function closeVersionDrawer() {
               </div>
 
               <div class="hero-actions">
-                <button class="primary-action btn-primary" @click="deriveNextVersion">
+                <Button class="primary-action" @click="deriveNextVersion">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
-                </button>
-                <button class="secondary-action btn-secondary" @click="openVersionDrawer">历史版本</button>
+                </Button>
+                <Button class="secondary-action" variant="outline" @click="openVersionDrawer">历史版本</Button>
               </div>
             </div>
 
             <div class="hero-summary-strip admin-summary-strip">
               <div class="summary-item admin-summary-item source-item">
                 <span class="admin-summary-label">基准版</span>
-                <button class="admin-summary-link template-link">
+                <span class="admin-summary-link template-link">
                   {{ abilityListState.executionVersion.templateTitle }}
-                </button>
+                </span>
               </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">适用范围</span>
@@ -213,8 +214,8 @@ function closeVersionDrawer() {
           </div>
 
           <div class="drawer-actions">
-            <button class="btn-secondary" @click="closeEditDrawer">取消</button>
-            <button class="btn-primary" @click="saveEdit">保存</button>
+            <Button variant="outline" @click="closeEditDrawer">取消</Button>
+            <Button @click="saveEdit">保存</Button>
           </div>
         </div>
       </div>
@@ -491,7 +492,7 @@ function closeVersionDrawer() {
   color: #7d899b;
   font-size: 13px;
   line-height: 1.6;
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
   border-bottom: 1px solid var(--color-card-border);
 }
 

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getVirtualLabActivityDetailMock } from '@/services/mock/virtual-lab'
@@ -112,8 +113,8 @@ function goBack() {
               <span class="activity-id">当前活动 ID：{{ activityId }}</span>
             </div>
             <div class="header-actions">
-              <button class="btn-secondary" @click="editActivity">编辑活动</button>
-              <button class="btn-primary" @click="viewMeetingRecord">查看会议记录</button>
+              <Button variant="outline" @click="editActivity">编辑活动</Button>
+              <Button @click="viewMeetingRecord">查看会议记录</Button>
             </div>
           </div>
         </div>
@@ -161,7 +162,7 @@ function goBack() {
           <div class="content-card participants-card">
             <div class="card-header">
               <h2>会议与参与情况</h2>
-              <button class="btn-link" @click="operationMessage.set('已展示全部 18 位参与教师。')">查看全部(18) ›</button>
+              <Button variant="ghost" @click="operationMessage.set('已展示全部 18 位参与教师。')">查看全部(18) ›</Button>
             </div>
             <div class="participants-content">
               <div class="meeting-info">
@@ -223,7 +224,7 @@ function goBack() {
                     <td>{{ material.source }}</td>
                     <td>{{ material.type }}</td>
                     <td>{{ material.time }}</td>
-                    <td><button class="btn-link" @click="viewMaterial(material.id)">查看</button></td>
+                    <td><Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button></td>
                   </tr>
                 </tbody>
               </table>
@@ -250,7 +251,7 @@ function goBack() {
                   <span>关联维度：{{ formedRecord.dimension }}</span>
                 </div>
               </div>
-              <button class="btn-primary" @click="viewRecord">查看记录 →</button>
+              <Button @click="viewRecord">查看记录 →</Button>
             </div>
             <div v-else class="record-detail">
               <div class="record-icon">▤</div>
@@ -266,7 +267,7 @@ function goBack() {
                   <span>关联维度：成长档案 / 教研科研</span>
                 </div>
               </div>
-              <button class="btn-primary" @click="viewRecord">形成并查看记录 →</button>
+              <Button @click="viewRecord">形成并查看记录 →</Button>
             </div>
           </div>
 
@@ -296,8 +297,8 @@ function goBack() {
 <style scoped>
 .virtual-lab-activity-detail-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .virtual-lab-activity-detail-page *,
@@ -327,10 +328,10 @@ function goBack() {
 .back-button {
   width: 34px;
   height: 34px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 28px;
   line-height: 1;
   cursor: pointer;
@@ -340,7 +341,7 @@ function goBack() {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   flex-wrap: wrap;
 }
@@ -350,7 +351,7 @@ function goBack() {
 }
 
 .breadcrumb .current {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
@@ -362,9 +363,9 @@ function goBack() {
 .status-card,
 .content-card {
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .activity-profile-card {
@@ -387,7 +388,7 @@ function goBack() {
 
 .title-with-status h1 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 26px;
   line-height: 1.35;
   font-weight: 800;
@@ -398,14 +399,14 @@ function goBack() {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 13px 80px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 15px;
   line-height: 1.45;
 }
 
 .operation-message {
   margin: 14px 0 0;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 14px;
   font-weight: 700;
 }
@@ -419,9 +420,6 @@ function goBack() {
   gap: 18px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-link,
 .copy-button {
   border-radius: 6px;
   font-size: 13px;
@@ -429,31 +427,6 @@ function goBack() {
   cursor: pointer;
   transition: all 0.16s ease;
   white-space: nowrap;
-}
-
-.btn-primary,
-.btn-secondary {
-  height: 44px;
-  padding: 0 24px;
-}
-
-.btn-primary {
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
-}
-
-.btn-secondary {
-  border: 1px solid #cfdcf0;
-  background: #fff;
-  color: #17233d;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  border-color: #0d55d8;
-  background: #0d55d8;
-  color: #fff;
 }
 
 .status-card {
@@ -469,7 +442,7 @@ function goBack() {
 .status-divider {
   width: 1px;
   height: 70px;
-  background: #dce6f5;
+  background: var(--color-admin-border);
 }
 
 .status-item {
@@ -497,7 +470,7 @@ function goBack() {
 
 .icon-minutes,
 .icon-record {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -525,7 +498,7 @@ function goBack() {
 }
 
 .blue {
-  color: #1268f6 !important;
+  color: var(--color-admin-primary) !important;
 }
 
 .purple {
@@ -568,7 +541,7 @@ function goBack() {
   position: relative;
   margin: 0;
   padding-left: 16px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 17px;
   font-weight: 800;
 }
@@ -581,13 +554,7 @@ function goBack() {
   width: 4px;
   height: 22px;
   border-radius: 2px;
-  background: #1268f6;
-}
-
-.btn-link {
-  border: 0;
-  background: transparent;
-  color: #1268f6;
+  background: var(--color-admin-primary);
 }
 
 .participants-content {
@@ -614,7 +581,7 @@ function goBack() {
 }
 
 .meeting-info strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
 }
 
@@ -651,14 +618,14 @@ function goBack() {
   border-bottom: 1px solid #e8eef7;
   text-align: left;
   vertical-align: middle;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   line-height: 1.45;
 }
 
 .data-table th {
   background: #f7faff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
@@ -671,7 +638,7 @@ function goBack() {
   justify-content: center;
   border-radius: 50%;
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 700;
 }
 
@@ -681,7 +648,7 @@ function goBack() {
   align-items: center;
   min-height: 24px;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #eef3fb;
   color: #4d5d75;
   font-size: 12px;
@@ -724,7 +691,7 @@ function goBack() {
   gap: 22px;
   margin: 20px;
   padding: 26px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fbfdff;
 }
@@ -736,7 +703,7 @@ function goBack() {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: linear-gradient(135deg, #6da2ff, #1268f6);
+  background: linear-gradient(135deg, #6da2ff, var(--color-admin-primary));
   color: #fff;
   font-size: 34px;
 }
@@ -749,7 +716,7 @@ function goBack() {
 
 .record-title-line h3 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   font-weight: 800;
 }
@@ -796,12 +763,12 @@ function goBack() {
   height: 10px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   box-shadow: 0 0 0 2px #cfe0ff;
 }
 
 .timeline-item strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .timeline-item time {

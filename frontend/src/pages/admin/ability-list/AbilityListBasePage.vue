@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { StatusBadge } from '@/components/common'
+import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { DetailSheet, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
@@ -22,6 +23,7 @@ import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/i
 import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
 const router = useRouter()
+const route = useRoute()
 const abilityListState = getAbilityListState()
 
 const { abilityTree } = getAbilityListBaseMock({
@@ -44,6 +46,16 @@ const versionRows = computed(() => [
   abilityListState.executionVersion,
   ...abilityListState.versionHistory,
 ])
+
+watch(
+  () => route.query.versionHistory,
+  (value) => {
+    if (value === '1') {
+      showVersionDrawer.value = true
+    }
+  },
+  { immediate: true },
+)
 
 function selectAbility(key: string) {
   selectedAbility.value = key
@@ -179,16 +191,16 @@ function deriveExecutionVersion() {
             </div>
 
             <div class="hero-actions">
-              <button class="primary-action btn-primary" @click="goToOptimization">
+              <Button class="primary-action" @click="goToOptimization">
                 优化基准模板
-              </button>
-              <button class="secondary-action btn-secondary" @click="goToVersionHistory">
+              </Button>
+              <Button class="secondary-action" variant="outline" @click="goToVersionHistory">
                 查看版本记录
-              </button>
-              <button class="derive-action" @click="deriveExecutionVersion">
+              </Button>
+              <Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">
                 派生执行版
                 <span aria-hidden="true">›</span>
-              </button>
+              </Button>
             </div>
 
             <p class="hero-note">
@@ -214,99 +226,86 @@ function deriveExecutionVersion() {
         @edit-indicator="editIndicator"
       />
 
-      <div v-if="editingIndicator" class="edit-drawer-overlay" @click="closeEditDrawer">
-        <div class="edit-drawer" @click.stop>
-          <div class="drawer-header">
-            <h3 class="drawer-title">编辑基准模板指标</h3>
-            <button class="drawer-close" @click="closeEditDrawer">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </button>
+      <DetailSheet
+        :open="Boolean(editingIndicator)"
+        title="编辑基准模板指标"
+        description="保存后会形成待确认调整，后续可派生到执行版。"
+        width="form"
+        mode="edit"
+        @update:open="value => { if (!value) closeEditDrawer() }"
+        @cancel="closeEditDrawer"
+        @confirm="saveIndicatorEdit"
+      >
+        <div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">
+          <div class="form-group">
+            <label class="form-label">指标名称</label>
+            <input v-model="editingIndicator.name" class="form-input" type="text" />
           </div>
-
-          <div class="drawer-tip">
-            保存后会形成待确认调整，后续可派生到执行版。
-          </div>
-
-          <div class="drawer-form">
+          <div class="form-row">
             <div class="form-group">
-              <label class="form-label">指标名称</label>
-              <input v-model="editingIndicator.name" class="form-input" type="text" />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">新手</label>
-                <input v-model="editingIndicator.novice" class="form-input" type="text" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">胜任</label>
-                <input v-model="editingIndicator.competent" class="form-input" type="text" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">骨干</label>
-                <input v-model="editingIndicator.backbone" class="form-input" type="text" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">名师</label>
-                <input v-model="editingIndicator.expert" class="form-input" type="text" />
-              </div>
+              <label class="form-label">新手</label>
+              <input v-model="editingIndicator.novice" class="form-input" type="text" />
             </div>
             <div class="form-group">
-              <label class="form-label">建议依据</label>
-              <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
+              <label class="form-label">胜任</label>
+              <input v-model="editingIndicator.competent" class="form-input" type="text" />
             </div>
           </div>
-
-          <div class="drawer-actions">
-            <button class="btn-secondary" @click="closeEditDrawer">取消</button>
-            <button class="btn-primary" @click="saveIndicatorEdit">保存调整</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">骨干</label>
+              <input v-model="editingIndicator.backbone" class="form-input" type="text" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">名师</label>
+              <input v-model="editingIndicator.expert" class="form-input" type="text" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">建议依据</label>
+            <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
           </div>
         </div>
-      </div>
 
-      <div v-if="showVersionDrawer" class="edit-drawer-overlay" @click="closeVersionDrawer">
-        <div class="edit-drawer version-drawer" @click.stop>
-          <div class="drawer-header">
-            <h3 class="drawer-title">能力清单版本记录</h3>
-            <button class="drawer-close" @click="closeVersionDrawer">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </button>
-          </div>
+        <template #footer>
+          <Button variant="outline" @click="closeEditDrawer">取消</Button>
+          <Button @click="saveIndicatorEdit">保存调整</Button>
+        </template>
+      </DetailSheet>
 
-          <div class="drawer-tip">
-            展示当前执行版和已归档历史版，后续用于版本追溯和派生依据确认。
-          </div>
-
-          <div class="version-list">
-            <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
-              <div class="version-card-head">
-                <strong>{{ version.versionNo }}</strong>
-                <StatusBadge :status="version.status" :label="getExecutionVersionStatusLabel(version.status)" />
+      <DetailSheet
+        :open="showVersionDrawer"
+        title="能力清单版本记录"
+        description="展示当前执行版和已归档历史版，后续用于版本追溯和派生依据确认。"
+        width="history"
+        :show-footer="false"
+        @update:open="value => { if (!value) closeVersionDrawer() }"
+        @cancel="closeVersionDrawer"
+      >
+        <div class="version-list version-list-in-sheet">
+          <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
+            <div class="version-card-head">
+              <strong>{{ version.versionNo }}</strong>
+              <StatusBadge :status="version.status" :label="getExecutionVersionStatusLabel(version.status)" />
+            </div>
+            <h4>{{ version.title }}</h4>
+            <dl>
+              <div>
+                <dt>发布时间</dt>
+                <dd>{{ version.publishedAt }}</dd>
               </div>
-              <h4>{{ version.title }}</h4>
-              <dl>
-                <div>
-                  <dt>发布时间</dt>
-                  <dd>{{ version.publishedAt }}</dd>
-                </div>
-                <div>
-                  <dt>来源</dt>
-                  <dd>{{ version.source }}</dd>
-                </div>
-                <div>
-                  <dt>操作人</dt>
-                  <dd>{{ version.operator }}</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
+              <div>
+                <dt>来源</dt>
+                <dd>{{ version.source }}</dd>
+              </div>
+              <div>
+                <dt>操作人</dt>
+                <dd>{{ version.operator }}</dd>
+              </div>
+            </dl>
+          </article>
         </div>
-      </div>
+      </DetailSheet>
     </div>
   </AdminLayout>
 </template>
@@ -489,13 +488,7 @@ function deriveExecutionVersion() {
 }
 
 .derive-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 0;
-  background: transparent;
   color: var(--color-primary);
-  cursor: pointer;
   font-size: 14px;
   font-weight: 900;
 }
@@ -520,68 +513,6 @@ function deriveExecutionVersion() {
   font-weight: 850;
 }
 
-.edit-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: flex-end;
-  background: rgba(15, 23, 42, 0.28);
-}
-
-.edit-drawer {
-  display: flex;
-  width: 540px;
-  max-width: calc(100vw - 72px);
-  height: 100%;
-  flex-direction: column;
-  background: #fff;
-  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.18);
-}
-
-.drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px;
-  border-bottom: 1px solid var(--color-card-border);
-}
-
-.drawer-title {
-  margin: 0;
-  color: var(--color-text-primary);
-  font-size: 18px;
-  font-weight: 850;
-}
-
-.drawer-close {
-  display: flex;
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 8px;
-  background: #f5f8ff;
-  color: #7d899b;
-  cursor: pointer;
-}
-
-.drawer-close:hover {
-  background: #eaf2ff;
-  color: var(--color-primary);
-}
-
-.drawer-tip {
-  padding: 16px 24px;
-  border-bottom: 1px solid #edf2f7;
-  background: #f8fbff;
-  color: #60708a;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.6;
-}
-
 .drawer-form {
   display: flex;
   flex: 1;
@@ -589,6 +520,10 @@ function deriveExecutionVersion() {
   gap: 18px;
   overflow-y: auto;
   padding: 24px;
+}
+
+.drawer-form-in-sheet {
+  padding: 0;
 }
 
 .form-row {
@@ -611,7 +546,7 @@ function deriveExecutionVersion() {
 
 .form-input {
   min-height: 38px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   padding: 0 12px;
   background: #fff;
@@ -626,24 +561,16 @@ function deriveExecutionVersion() {
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.12);
 }
 
-.drawer-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 18px 24px;
-  border-top: 1px solid var(--color-card-border);
-}
-
-.version-drawer {
-  width: 620px;
-}
-
 .version-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
   padding: 24px;
+}
+
+.version-list-in-sheet {
+  padding: 0;
 }
 
 .version-card {

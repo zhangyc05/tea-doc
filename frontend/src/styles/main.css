@@ -61,7 +61,7 @@
   overflow: hidden;
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 42%, #eaf5ff 100%);
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-admin-bg-soft) 42%, #eaf5ff 100%);
   box-shadow: var(--shadow-card);
 }
 

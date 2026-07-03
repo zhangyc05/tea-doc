@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
-	import { StatusBadge } from '@/components/common'
+	import { EmptyState, StatusBadge } from '@/components/common'
+	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
 	import { useOperationMessage } from '@/lib/operationMessage'
@@ -287,7 +288,7 @@
 									</td>
 								</tr>
 								<tr v-if="mappings.length === 0">
-									<td colspan="6" class="empty-cell">暂无要求项映射</td>
+									<EmptyState as="td" variant="cell" :colspan="6" title="暂无要求项映射" />
 								</tr>
 							</tbody>
 						</table>
@@ -493,10 +494,10 @@
 				</div>
 
 				<div class="drawer-actions">
-					<button class="btn-danger" @click="deleteMapping">删除要求项</button>
+					<Button variant="danger" @click="deleteMapping">删除要求项</Button>
 					<div class="drawer-actions-right">
-						<button class="btn-secondary" @click="closeEditDrawer">取消</button>
-						<button class="btn-primary" @click="saveMapping">保存映射</button>
+						<Button variant="outline" @click="closeEditDrawer">取消</Button>
+						<Button @click="saveMapping">保存映射</Button>
 					</div>
 				</div>
 			</div>
@@ -512,8 +513,8 @@
 		min-height: 100vh;
 		gap: 18px;
 		padding: 24px;
-		background: #f6f9ff;
-		color: #17233d;
+		background: var(--color-admin-bg);
+		color: var(--color-admin-text-strong);
 	}
 
 	.page-root *,
@@ -530,7 +531,7 @@
 	}
 
 	.operation-message {
-		color: #1268f6;
+		color: var(--color-admin-primary);
 		font-size: 13px;
 		font-weight: 800;
 	}
@@ -540,10 +541,10 @@
 		position: relative;
 		min-height: 250px;
 		padding: 30px 38px;
-		background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+		background: linear-gradient(135deg, var(--color-admin-bg-soft) 0%, #f0f7ff 100%);
 		border-radius: 14px;
-		border: 1px solid #dce6f5;
-		box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+		border: 1px solid var(--color-admin-border);
+		box-shadow: var(--shadow-admin-card-faint);
 	}
 
 	.hero-content {
@@ -556,7 +557,7 @@
 		margin: 0;
 		font-size: 30px;
 		font-weight: 900;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 		line-height: 1.3;
 		display: flex;
 		align-items: center;
@@ -597,7 +598,7 @@
 		gap: 0;
 		padding: 16px 22px;
 		background: #fff;
-		border: 1px solid #dce6f5;
+		border: 1px solid var(--color-admin-border);
 		border-radius: 8px;
 	}
 
@@ -758,9 +759,9 @@
 
 	.admin-card {
 		background: #fff;
-		border: 1px solid #dce6f5;
+		border: 1px solid var(--color-admin-border);
 		border-radius: 8px;
-		box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+		box-shadow: var(--shadow-admin-card-faint);
 		overflow: hidden;
 	}
 
@@ -775,7 +776,7 @@
 
 	.admin-card-title {
 		margin: 0;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 		font-size: 18px;
 		font-weight: 900;
 	}
@@ -795,14 +796,14 @@
 		border-bottom: 1px solid #e8eef7;
 		text-align: left;
 		vertical-align: middle;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 		font-size: 13px;
 		line-height: 1.55;
 	}
 
 	.admin-table th {
 		background: #f7faff;
-		color: #66758f;
+		color: var(--color-admin-text-muted);
 		font-weight: 900;
 	}
 
@@ -816,9 +817,9 @@
 		font-weight: 900;
 	}
 
-	.level-core { background: #e8f0ff; color: #1268f6; }
+	.level-core { background: #e8f0ff; color: var(--color-admin-primary); }
 	.level-qualified { background: #dff8ec; color: #18a663; }
-	.level-new { background: #eef3fb; color: #66758f; }
+	.level-new { background: #eef3fb; color: var(--color-admin-text-muted); }
 	.level-master { background: #efe7ff; color: #8848e8; }
 
 	.row-actions {
@@ -829,7 +830,7 @@
 	.btn-link {
 		border: 0;
 		background: transparent;
-		color: #1268f6;
+		color: var(--color-admin-primary);
 		font-size: 13px;
 		font-weight: 800;
 		cursor: pointer;
@@ -837,12 +838,6 @@
 
 	.btn-link.danger {
 		color: #d92d20;
-	}
-
-	.empty-cell {
-		padding: 26px;
-		color: #8a98ad;
-		text-align: center;
 	}
 
 	/* 编辑抽屉样式 */
@@ -872,14 +867,14 @@
 		justify-content: space-between;
 		min-height: 76px;
 		padding: 0 28px;
-		border-bottom: 1px solid #dce6f5;
+		border-bottom: 1px solid var(--color-admin-border);
 	}
 
 	.drawer-title {
 		margin: 0;
 		font-size: 20px;
 		font-weight: 900;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 	}
 
 	.drawer-close {
@@ -914,7 +909,7 @@
 
 	.form-section {
 		padding: 26px 0;
-		border-bottom: 1px solid #dce6f5;
+		border-bottom: 1px solid var(--color-admin-border);
 		margin-bottom: 0;
 	}
 
@@ -925,7 +920,7 @@
 		gap: 12px;
 		font-size: 17px;
 		font-weight: 900;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 	}
 
 	.form-section-title span {
@@ -935,7 +930,7 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 6px;
-		background: #1268f6;
+		background: var(--color-admin-primary);
 		color: #fff;
 		font-size: 13px;
 		font-weight: 900;
@@ -969,7 +964,7 @@
 		border: 1px solid #d7e2f2;
 		border-radius: 6px;
 		font-size: 14px;
-		color: #17233d;
+		color: var(--color-admin-text-strong);
 		background: white;
 		transition: all 0.16s ease;
 		font-family: inherit;
@@ -979,7 +974,7 @@
 	.form-select:focus,
 	.form-textarea:focus {
 		outline: none;
-		border-color: #1268f6;
+		border-color: var(--color-admin-primary);
 		box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
 	}
 
@@ -1013,7 +1008,7 @@
 		justify-content: space-between;
 		gap: 12px;
 		padding: 20px 28px;
-		border-top: 1px solid #dce6f5;
+		border-top: 1px solid var(--color-admin-border);
 		background: #fff;
 	}
 

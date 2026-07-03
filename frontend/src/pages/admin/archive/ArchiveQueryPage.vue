@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getArchiveQueryMock } from '@/services/mock/archive'
 
@@ -13,6 +14,7 @@ const { stats, collegeOptions, titleOptions, updateOptions, teacherCards } = get
 
 // 筛选条件
 const searchKeyword = ref('')
+const submittedSearchKeyword = ref('')
 const collegeFilter = ref('全部学院')
 const titleFilter = ref('全部职称')
 const updateFilter = ref('全部')
@@ -22,9 +24,31 @@ const viewMode = ref('card')
 
 function resetFilters() {
   searchKeyword.value = ''
+  submittedSearchKeyword.value = ''
   collegeFilter.value = '全部学院'
   titleFilter.value = '全部职称'
   updateFilter.value = '全部'
+}
+
+const filteredTeacherCards = computed(() => {
+  const keyword = submittedSearchKeyword.value.trim().toLowerCase()
+  return teacherCards.filter((teacher) => {
+    const matchesKeyword = !keyword
+      || [teacher.name, teacher.college, teacher.title, teacher.description, ...teacher.tags]
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+    const matchesCollege = collegeFilter.value === '全部学院' || teacher.college === collegeFilter.value
+    const matchesTitle = titleFilter.value === '全部职称' || teacher.title === titleFilter.value
+    const matchesUpdate = updateFilter.value === '全部'
+      || teacher.tags.includes(updateFilter.value)
+      || teacher.description.includes(updateFilter.value)
+    return matchesKeyword && matchesCollege && matchesTitle && matchesUpdate
+  })
+})
+
+function applySearch() {
+  submittedSearchKeyword.value = searchKeyword.value
 }
 
 function viewTeacherDetail(teacherId: string) {
@@ -131,7 +155,7 @@ function switchViewMode(mode: string) {
                 class="search-input"
                 placeholder="搜索教师姓名 / 工号 / 所属部门"
               />
-              <button class="search-btn">搜索</button>
+              <Button class="search-action" @click="applySearch">搜索</Button>
             </div>
 
             <div class="filter-controls">
@@ -162,7 +186,7 @@ function switchViewMode(mode: string) {
                 </select>
               </div>
 
-              <button class="reset-btn" @click="resetFilters">重置</button>
+              <Button variant="outline" @click="resetFilters">重置</Button>
             </div>
           </div>
         </div>
@@ -196,7 +220,7 @@ function switchViewMode(mode: string) {
         <!-- 教师卡片网格 -->
         <div class="teachers-grid">
           <div
-            v-for="teacher in teacherCards"
+            v-for="teacher in filteredTeacherCards"
             :key="teacher.id"
             class="teacher-card"
           >
@@ -226,9 +250,9 @@ function switchViewMode(mode: string) {
 
             <div class="card-footer">
               <span class="update-time">最近更新：{{ teacher.lastUpdate }}</span>
-              <button class="btn-primary" @click="viewTeacherDetail(teacher.id)">
+              <Button class="archive-detail-action" size="sm" @click="viewTeacherDetail(teacher.id)">
                 查看成长档案
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -517,21 +541,10 @@ function switchViewMode(mode: string) {
   border-color: var(--color-primary);
 }
 
-.search-btn {
+.search-action {
+  height: auto;
   padding: 10px 20px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
   white-space: nowrap;
-  transition: background 0.16s ease;
-}
-
-.search-btn:hover {
-  background: #28a38a;
 }
 
 .filter-controls {
@@ -564,22 +577,6 @@ function switchViewMode(mode: string) {
   outline: none;
   cursor: pointer;
   min-width: 140px;
-}
-
-.reset-btn {
-  padding: 8px 16px;
-  border: 1px solid var(--color-card-border);
-  background: white;
-  border-radius: 6px;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.reset-btn:hover {
-  background: #f8fafc;
-  border-color: var(--color-primary);
 }
 
 /* 教师档案摘要区域 */
@@ -838,20 +835,8 @@ function switchViewMode(mode: string) {
   color: var(--color-text-hint);
 }
 
-.btn-primary {
-  padding: 8px 16px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #28a38a;
+.archive-detail-action {
+  flex: none;
 }
 
 /* 响应式 */

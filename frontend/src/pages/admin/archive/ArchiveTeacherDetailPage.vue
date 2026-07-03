@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import DetailSheet from '@/components/common/DetailSheet.vue'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import {
@@ -140,10 +142,10 @@ function isFactInDrawerType(dimension: string, type: string) {
       <!-- 顶部栏 -->
       <section class="top-bar">
         <div class="top-bar-content">
-          <button class="btn-back" @click="goBack">
+          <Button class="btn-back" variant="ghost" @click="goBack">
             <span>←</span>
             <span>返回档案查询</span>
-          </button>
+          </Button>
 
           <div class="top-bar-center">
             <h1 class="page-title">林老师成长档案</h1>
@@ -151,9 +153,9 @@ function isFactInDrawerType(dimension: string, type: string) {
           </div>
 
           <div class="top-bar-actions">
-            <button class="btn-action" @click="printArchive">打印</button>
-            <button class="btn-action" @click="exportPdf">导出 PDF</button>
-            <button class="btn-action" @click="goBack">关闭</button>
+            <Button class="btn-action" variant="outline" @click="printArchive">打印</Button>
+            <Button class="btn-action" variant="outline" @click="exportPdf">导出 PDF</Button>
+            <Button class="btn-action" variant="outline" @click="goBack">关闭</Button>
           </div>
         </div>
       </section>
@@ -241,9 +243,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                       <span class="info-value">2024-07-01</span>
                     </div>
                   </div>
-                  <button class="btn-source" @click="openDrawer('基本信息')">
+                  <Button class="btn-source" variant="ghost" @click="openDrawer('基本信息')">
                     查看来源记录
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -297,9 +299,9 @@ function isFactInDrawerType(dimension: string, type: string) {
               </div>
 
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('教学工作')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('教学工作')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -322,9 +324,9 @@ function isFactInDrawerType(dimension: string, type: string) {
               </div>
 
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('教研科研')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('教研科研')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -339,9 +341,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('企业实践')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('企业实践')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -356,9 +358,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('社会服务')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('社会服务')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -373,9 +375,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('成果荣誉')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('成果荣誉')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -390,9 +392,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('个人发展')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('个人发展')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -407,9 +409,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('考核评价')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('考核评价')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -433,9 +435,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </div>
               </div>
               <div class="info-sidebar">
-                <button class="btn-source" @click="openDrawer('教学工作')">
+                <Button class="btn-source" variant="ghost" @click="openDrawer('教学工作')">
                   查看来源记录
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -480,62 +482,58 @@ function isFactInDrawerType(dimension: string, type: string) {
       </section>
     </div>
 
-    <!-- 来源记录抽屉 -->
-    <transition name="drawer">
-      <div v-if="drawerOpen" class="drawer-overlay" @click="closeDrawer">
-        <div class="drawer" @click.stop>
-          <div class="drawer-header">
-            <h2 class="drawer-title">{{ drawerTitle }}</h2>
-            <p class="drawer-description">
-              用于查看{{ drawerType }}正文对应的已确认入档记录。正在补充、正在更正或来源异常的内容，不直接写入正文。
-            </p>
-            <button class="btn-close" @click="closeDrawer">× 关闭</button>
-          </div>
+    <DetailSheet
+      :open="drawerOpen"
+      :title="drawerTitle"
+      :description="`用于查看${drawerType}正文对应的已确认入档记录。正在补充、正在更正或来源异常的内容，不直接写入正文。`"
+      width="source"
+      placement="reader"
+      :show-footer="false"
+      @update:open="value => { if (!value) closeDrawer() }"
+      @cancel="closeDrawer"
+    >
+      <div class="drawer-tabs">
+        <button
+          v-for="tab in tabs"
+          :key="tab.value"
+          class="tab-btn"
+          :class="tabClass(tab.value)"
+          @click="switchTab(tab.value)"
+        >
+          {{ tab.label }} {{ tab.count }}
+        </button>
+      </div>
 
-          <div class="drawer-tabs">
-            <button
-              v-for="tab in tabs"
-              :key="tab.value"
-              class="tab-btn"
-              :class="tabClass(tab.value)"
-              @click="switchTab(tab.value)"
-            >
-              {{ tab.label }} {{ tab.count }}
-            </button>
+      <div class="drawer-content">
+        <div
+          v-for="record in filteredRecords()"
+          :key="record.id"
+          class="record-item"
+          :class="{ pending: record.status === '待说明' }"
+        >
+          <div class="record-header">
+            <span class="record-index">{{ record.id }}</span>
+            <h4 class="record-title">{{ record.title }}</h4>
           </div>
-
-          <div class="drawer-content">
-            <div
-              v-for="record in filteredRecords()"
-              :key="record.id"
-              class="record-item"
-              :class="{ pending: record.status === '待说明' }"
-            >
-              <div class="record-header">
-                <span class="record-index">{{ record.id }}</span>
-                <h4 class="record-title">{{ record.title }}</h4>
-              </div>
-              <div class="record-meta">
-                <span class="meta-item">来源：{{ record.source }}</span>
-                <span class="record-status" :class="statusBadgeClass(record.status)">
-                  {{ record.status }}
-                </span>
-                <span class="meta-item">入档时间：{{ record.archiveTime }}</span>
-              </div>
-              <p class="record-content"><strong>对应正文：</strong>{{ record.content }}</p>
-              <button class="btn-detail" @click="viewRecordDetail(record)">
-                {{ record.buttonText }}
-                <span>›</span>
-              </button>
-            </div>
+          <div class="record-meta">
+            <span class="meta-item">来源：{{ record.source }}</span>
+            <span class="record-status" :class="statusBadgeClass(record.status)">
+              {{ record.status }}
+            </span>
+            <span class="meta-item">入档时间：{{ record.archiveTime }}</span>
           </div>
-
-          <div class="drawer-footer">
-            <p class="footer-tip">仅已确认入档的记录会写入档案正文。</p>
-          </div>
+          <p class="record-content"><strong>对应正文：</strong>{{ record.content }}</p>
+          <Button class="btn-detail" variant="outline" size="sm" @click="viewRecordDetail(record)">
+            {{ record.buttonText }}
+            <span>›</span>
+          </Button>
         </div>
       </div>
-    </transition>
+
+      <div class="drawer-footer">
+        <p class="footer-tip">仅已确认入档的记录会写入档案正文。</p>
+      </div>
+    </DetailSheet>
   </AdminLayout>
 </template>
 
@@ -576,24 +574,9 @@ function isFactInDrawerType(dimension: string, type: string) {
   gap: 16px;
 }
 
-.btn-back,
-.btn-action,
-.btn-source,
-.btn-close,
-.tab-btn,
-.btn-detail {
-  font: inherit;
-  cursor: pointer;
-}
-
 .btn-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   width: fit-content;
   padding: 8px 0;
-  background: transparent;
-  border: 0;
   color: #12346c;
   font-size: 14px;
   font-weight: 600;
@@ -632,20 +615,13 @@ function isFactInDrawerType(dimension: string, type: string) {
   height: 38px;
   min-width: 88px;
   padding: 0 16px;
-  background: #fff;
-  border: 1px solid #d2def0;
-  border-radius: 7px;
-  color: #12346c;
   font-size: 14px;
   font-weight: 600;
 }
 
-.btn-action:hover,
 .btn-source:hover,
 .btn-detail:hover {
-  border-color: #0f5eef;
   color: #0f5eef;
-  background: #f4f8ff;
 }
 
 .archive-header {
@@ -676,7 +652,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   border-radius: 50%;
   background: radial-gradient(circle at 48% 42%, #ffe2d3 0 22%, transparent 23%),
     linear-gradient(150deg, #eef4ff, #c7d9ff);
-  box-shadow: inset 0 0 0 1px #d9e5f7;
+  box-shadow: inset 0 0 0 1px var(--color-admin-border-muted);
 }
 
 .avatar-face {
@@ -770,7 +746,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   height: 190px;
   overflow: hidden;
   border-radius: 8px;
-  background: linear-gradient(90deg, #f8fbff 0%, rgba(248, 251, 255, 0.2) 30%, transparent 58%),
+  background: linear-gradient(90deg, var(--color-admin-bg-soft) 0%, rgba(248, 251, 255, 0.2) 30%, transparent 58%),
     linear-gradient(180deg, #b8d9ff 0%, #eef7ff 52%, #dfeacb 53%, #8fc36f 100%);
 }
 
@@ -844,7 +820,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   margin: 0;
   padding: 10px 18px;
   border: 1px solid #cfe0fa;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #fff;
   color: #12346c;
   box-shadow: 0 12px 24px rgba(21, 48, 93, 0.18);
@@ -869,7 +845,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .content-section {
   padding: 24px 0;
-  border-top: 1px solid #dce6f5;
+  border-top: 1px solid var(--color-admin-border);
   scroll-margin-top: 88px;
 }
 
@@ -958,16 +934,10 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .btn-source {
   align-self: flex-end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   min-width: 132px;
   height: 34px;
   margin-top: 16px;
   padding: 0 10px;
-  border: 0;
-  background: transparent;
   color: #0f5eef;
   font-size: 14px;
   font-weight: 700;
@@ -1014,7 +984,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   padding: 14px;
   border: 1px solid #d8e4f5;
   border-radius: 7px;
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
 }
 
 .card-title {
@@ -1158,63 +1128,10 @@ function isFactInDrawerType(dimension: string, type: string) {
   color: #0f5eef;
 }
 
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(16, 29, 52, 0.62);
-}
-
-.drawer {
-  position: absolute;
-  top: 54px;
-  right: 14px;
-  bottom: 0;
-  width: min(540px, calc(100vw - 28px));
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px 12px 0 0;
-  background: #fff;
-  box-shadow: -16px 0 34px rgba(15, 32, 61, 0.18);
-}
-
-.drawer-header {
-  position: relative;
-  padding: 26px 26px 16px;
-}
-
-.drawer-title {
-  margin: 0 0 10px;
-  color: #07183d;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.drawer-description {
-  margin: 0;
-  max-width: 390px;
-  color: #405985;
-  font-size: 14px;
-  line-height: 1.65;
-}
-
-.btn-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  height: 36px;
-  padding: 0 13px;
-  border: 1px solid #d2def0;
-  border-radius: 7px;
-  background: #fff;
-  color: #12346c;
-  font-weight: 700;
-}
-
 .drawer-tabs {
   display: flex;
   gap: 10px;
-  padding: 0 26px 16px;
+  padding: 0 0 16px;
 }
 
 .tab-btn {
@@ -1237,7 +1154,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .drawer-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 26px 16px;
+  padding: 0 0 16px;
 }
 
 .record-item {
@@ -1334,23 +1251,16 @@ function isFactInDrawerType(dimension: string, type: string) {
 }
 
 .btn-detail {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   margin-left: auto;
   min-width: 126px;
   height: 32px;
-  border: 1px solid #d2def0;
-  border-radius: 6px;
-  background: #fff;
-  color: #17315f;
   font-size: 13px;
   font-weight: 700;
 }
 
 .drawer-footer {
-  padding: 12px 26px;
+  margin: 0 -24px -20px;
+  padding: 12px 24px;
   background: #f3f7ff;
 }
 
@@ -1358,21 +1268,6 @@ function isFactInDrawerType(dimension: string, type: string) {
   margin: 0;
   color: #405985;
   font-size: 13px;
-}
-
-.drawer-enter-active,
-.drawer-leave-active {
-  transition: all 0.22s ease;
-}
-
-.drawer-enter-from,
-.drawer-leave-to {
-  opacity: 0;
-}
-
-.drawer-enter-from .drawer,
-.drawer-leave-to .drawer {
-  transform: translateX(100%);
 }
 
 @media (max-width: 1320px) {

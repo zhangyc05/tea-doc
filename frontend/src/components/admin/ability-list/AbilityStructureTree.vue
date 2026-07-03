@@ -248,7 +248,7 @@ function handleChildClick(key: string) {
   top: 12px;
   bottom: 12px;
   width: 2px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #c8d1e1;
   content: '';
 }
@@ -264,7 +264,7 @@ function handleChildClick(key: string) {
   left: -17px;
   width: 8px;
   height: 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #aeb8c8;
   box-shadow: 0 0 0 4px #fff;
   content: '';

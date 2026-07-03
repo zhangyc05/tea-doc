@@ -78,7 +78,7 @@ describe('admin domain types', () => {
   })
 
   it('renders ability optimization suggestion statuses through the shared status badge', () => {
-    expect(abilityBaseOptimizationPageSource).toContain('import { StatusBadge }')
+    expect(abilityBaseOptimizationPageSource).toContain('StatusBadge')
     expect(abilityBaseOptimizationPageSource).toContain('<StatusBadge')
     expect(abilityBaseOptimizationPageSource).not.toContain('class="badge-status"')
     expect(abilityBaseOptimizationPageSource).not.toContain('.badge-status.status-pending')
@@ -90,7 +90,7 @@ describe('admin domain types', () => {
       abilityExecutionPageSource,
       abilityPublishConfirmPageSource,
     ]) {
-      expect(pageSource).toContain('import { StatusBadge }')
+      expect(pageSource).toMatch(/import \{[^}]*StatusBadge[^}]*\} from '@\/components\/common'/)
       expect(pageSource).toContain('<StatusBadge')
       expect(pageSource).not.toContain('class="badge-status"')
       expect(pageSource).not.toContain('.badge-status.version-published')
@@ -99,7 +99,7 @@ describe('admin domain types', () => {
   })
 
   it('renders ability requirement mapping statuses through the shared status badge', () => {
-    expect(abilityRequirementMappingPageSource).toContain('import { StatusBadge }')
+    expect(abilityRequirementMappingPageSource).toContain('StatusBadge')
     expect(abilityRequirementMappingPageSource).toContain('<StatusBadge')
     expect(abilityRequirementMappingPageSource).not.toContain('class="badge-status"')
     expect(abilityRequirementMappingPageSource).not.toContain('getStatusBadgeClass')
@@ -122,35 +122,35 @@ describe('admin domain types', () => {
   })
 
   it('renders training resource statuses through the shared status badge', () => {
-    expect(trainingResourcePageSource).toContain('import { StatusBadge }')
+    expect(trainingResourcePageSource).toContain('StatusBadge')
     expect(trainingResourcePageSource).toContain('<StatusBadge')
     expect(trainingResourcePageSource).not.toContain('class="status-badge"')
     expect(trainingResourcePageSource).not.toContain('resourceStatusClass')
   })
 
   it('renders training demand statuses through the shared status badge', () => {
-    expect(trainingDemandPageSource).toContain('import { StatusBadge }')
+    expect(trainingDemandPageSource).toContain('StatusBadge')
     expect(trainingDemandPageSource).toContain('<StatusBadge')
     expect(trainingDemandPageSource).not.toContain('class="status-badge"')
     expect(trainingDemandPageSource).not.toContain('demandStatusClass')
   })
 
   it('renders training application statuses through the shared status badge', () => {
-    expect(trainingApplicationPageSource).toContain('import { StatusBadge }')
+    expect(trainingApplicationPageSource).toContain('StatusBadge')
     expect(trainingApplicationPageSource).toContain('<StatusBadge')
     expect(trainingApplicationPageSource).not.toContain('class="status-badge"')
     expect(trainingApplicationPageSource).not.toContain('applicationStatusClass')
   })
 
   it('renders training plan statuses through the shared status badge', () => {
-    expect(trainingPlanPageSource).toContain('import { StatusBadge }')
+    expect(trainingPlanPageSource).toContain('StatusBadge')
     expect(trainingPlanPageSource).toContain('<StatusBadge')
     expect(trainingPlanPageSource).not.toContain('class="status-badge"')
     expect(trainingPlanPageSource).not.toContain('planStatusClass')
   })
 
   it('renders training record statuses through the shared status badge', () => {
-    expect(trainingRecordPageSource).toContain('import { StatusBadge }')
+    expect(trainingRecordPageSource).toContain('StatusBadge')
     expect(trainingRecordPageSource).toContain('<StatusBadge')
     expect(trainingRecordPageSource).not.toContain('class="status-badge"')
     expect(trainingRecordPageSource).not.toContain('recordMaterialStatusClass')
@@ -173,21 +173,21 @@ describe('admin domain types', () => {
   })
 
   it('renders practice application statuses through the shared status badge', () => {
-    expect(practiceApplicationPageSource).toContain('import { StatusBadge }')
+    expect(practiceApplicationPageSource).toContain('StatusBadge')
     expect(practiceApplicationPageSource).toContain('<StatusBadge')
     expect(practiceApplicationPageSource).not.toContain('class="status-badge"')
     expect(practiceApplicationPageSource).not.toContain('applicationStatusClass')
   })
 
   it('renders practice tracking statuses through the shared status badge', () => {
-    expect(practiceTrackingPageSource).toContain('import { StatusBadge }')
+    expect(practiceTrackingPageSource).toContain('StatusBadge')
     expect(practiceTrackingPageSource).toContain('<StatusBadge')
     expect(practiceTrackingPageSource).not.toContain('class="status-badge"')
     expect(practiceTrackingPageSource).not.toContain('progressStatusClass')
   })
 
   it('renders practice record statuses through the shared status badge', () => {
-    expect(practiceRecordPageSource).toContain('import { StatusBadge }')
+    expect(practiceRecordPageSource).toContain('StatusBadge')
     expect(practiceRecordPageSource).toContain('<StatusBadge')
     expect(practiceRecordPageSource).not.toContain('class="status-badge"')
     expect(practiceRecordPageSource).not.toContain('recordStatusClass')
@@ -207,7 +207,7 @@ describe('admin domain types', () => {
   })
 
   it('renders report center statuses through the shared status badge', () => {
-    expect(reportCenterPageSource).toContain('import { StatusBadge }')
+    expect(reportCenterPageSource).toContain('StatusBadge')
     expect(reportCenterPageSource).toContain('<StatusBadge')
     expect(reportCenterPageSource).not.toContain('class="card-status"')
     expect(reportCenterPageSource).not.toContain('class="panel-status"')

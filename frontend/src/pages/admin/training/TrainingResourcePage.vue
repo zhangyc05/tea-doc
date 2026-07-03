@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingResourceDraft,
@@ -160,8 +161,8 @@ function showIncompleteResources() {
           <div class="main-content">
             <div class="content-card">
               <!-- 筛选区 -->
-              <div class="filter-section">
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">资源状态</label>
                     <select v-model="selectedStatus" class="filter-select">
@@ -202,9 +203,8 @@ function showIncompleteResources() {
                       <option>公开课程</option>
                     </select>
                   </div>
-                </div>
-                <div class="search-row">
-                  <label class="filter-label">搜索：</label>
+                </template>
+                <template #search>
                   <input
                     v-model="searchQuery"
                     type="text"
@@ -212,12 +212,16 @@ function showIncompleteResources() {
                     class="search-input"
                     @keyup.enter="applyFilters"
                   />
-                  <button class="btn-reset" @click="resetFilters">重置</button>
-                  <button class="btn-secondary" @click="applyFilters">查询</button>
-                  <button class="btn-primary" @click="addResource">＋ 新增资源</button>
-                </div>
-                <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
-              </div>
+                </template>
+                <template #actions>
+                  <Button variant="outline" @click="resetFilters">重置</Button>
+                  <Button variant="secondary" @click="applyFilters">查询</Button>
+                  <Button class="resource-create-action" @click="addResource">＋ 新增资源</Button>
+                </template>
+                <template #message>
+                  <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
+                </template>
+              </CompactFilterBar>
 
               <!-- 数据表格 -->
               <div class="table-container">
@@ -250,13 +254,13 @@ function showIncompleteResources() {
                         <StatusBadge :status="resource.status" />
                       </td>
                       <td>
-                        <button class="btn-view" @click="viewDetail(resource.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(resource.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     <tr v-if="filteredResources.length === 0">
-                      <td colspan="8" class="empty-cell">暂无符合条件的培训资源</td>
+                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训资源" />
                     </tr>
                   </tbody>
                 </table>
@@ -284,9 +288,8 @@ function showIncompleteResources() {
 
           <!-- 右侧：资源概览 -->
           <div class="sidebar">
-            <div class="sidebar-card">
-              <h3 class="sidebar-title">资源概览</h3>
-
+            <InsightSidebar title="资源概览">
+              <template #items>
               <div class="overview-section">
                 <h4 class="section-title">资源来源分布</h4>
                 <div class="distribution-list">
@@ -331,7 +334,9 @@ function showIncompleteResources() {
                   </div>
                 </div>
               </div>
+              </template>
 
+              <template #selected>
               <div class="selected-resource" v-if="activeResource">
                 <h4 class="section-title">当前查看资源</h4>
                 <div class="selected-name">{{ activeResource.name }}</div>
@@ -339,11 +344,14 @@ function showIncompleteResources() {
                   {{ activeResource.level }} · {{ activeResource.hours }} · {{ activeResource.source }}
                 </div>
               </div>
+              </template>
 
-              <button class="outline-action" type="button" @click="showIncompleteResources">
+              <template #action>
+              <Button class="full-width" variant="outline" @click="showIncompleteResources">
                 查看待完善资源
-              </button>
-            </div>
+              </Button>
+              </template>
+            </InsightSidebar>
           </div>
         </div>
       </section>
@@ -354,8 +362,8 @@ function showIncompleteResources() {
 <style scoped>
 .training-resource-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .training-resource-page *,
@@ -366,7 +374,7 @@ function showIncompleteResources() {
 
 .page-header {
   padding: 24px 0 12px;
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .header-content {
@@ -376,13 +384,13 @@ function showIncompleteResources() {
 }
 
 .breadcrumb {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
 
 .breadcrumb strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .page-title {
@@ -393,7 +401,7 @@ function showIncompleteResources() {
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -413,9 +421,9 @@ function showIncompleteResources() {
   min-height: 132px;
   padding: 22px 30px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -464,7 +472,7 @@ function showIncompleteResources() {
 
 .stat-label {
   font-size: 15px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
 }
 
@@ -494,22 +502,9 @@ function showIncompleteResources() {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
-}
-
-.filter-section {
-  padding: 16px 16px 14px;
-  border-bottom: 1px solid #dce6f5;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(148px, 1fr));
-  gap: 20px;
-  align-items: flex-end;
-  margin-bottom: 18px;
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .filter-item {
@@ -539,14 +534,8 @@ function showIncompleteResources() {
   outline: none;
 }
 
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
 .search-input {
-  flex: 0 1 420px;
+  width: 100%;
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d7e2f1;
@@ -560,57 +549,8 @@ function showIncompleteResources() {
   border-color: #1d6df2;
 }
 
-.btn-reset {
-  height: 40px;
-  padding: 0 20px;
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  border-radius: 6px;
-  color: #44536c;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-reset:hover {
-  border-color: #1d6df2;
-  color: #1d6df2;
-}
-
-.btn-secondary {
-  height: 40px;
-  padding: 0 22px;
-  background: #1268f6;
-  color: #fff;
-  border: 1px solid #1268f6;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-secondary:hover {
-  background: #0d57d4;
-}
-
-.btn-primary {
-  height: 40px;
+.resource-create-action {
   margin-left: auto;
-  padding: 0 22px;
-  background: #1268f6;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #0d57d4;
 }
 
 .operation-message {
@@ -629,7 +569,7 @@ function showIncompleteResources() {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .resource-table th {
@@ -638,10 +578,10 @@ function showIncompleteResources() {
   font-size: 13px;
   line-height: 1.35;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .resource-table td {
@@ -712,26 +652,6 @@ function showIncompleteResources() {
   border-bottom: none;
 }
 
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #1268f6;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-view:hover {
-  color: #0d57d4;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
-}
-
 .pagination-row {
   display: flex;
   align-items: center;
@@ -747,7 +667,7 @@ function showIncompleteResources() {
   border: 1px solid #d7e2f1;
   border-radius: 6px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .page-size {
@@ -766,13 +686,13 @@ function showIncompleteResources() {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
 .page-button.active {
   background: #eef5ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .sidebar {
@@ -782,9 +702,9 @@ function showIncompleteResources() {
 .sidebar-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .sidebar-title {
@@ -792,25 +712,25 @@ function showIncompleteResources() {
   padding: 16px 24px;
   font-size: 16px;
   font-weight: 700;
-  color: #17233d;
-  border-bottom: 1px solid #dce6f5;
+  color: var(--color-admin-text-strong);
+  border-bottom: 1px solid var(--color-admin-border);
 }
 
 .overview-section {
   margin: 0 16px;
   padding: 18px 8px;
-  border-bottom: 1px solid #dce6f5;
+  border-bottom: 1px solid var(--color-admin-border);
 }
 
 .overview-section:last-child {
-  border-bottom: 1px solid #dce6f5;
+  border-bottom: 1px solid var(--color-admin-border);
 }
 
 .section-title {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .distribution-list {
@@ -830,7 +750,7 @@ function showIncompleteResources() {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1268f6;
+  background: var(--color-admin-primary);
 }
 
 .distribution-item:nth-child(2) .item-dot {
@@ -863,11 +783,11 @@ function showIncompleteResources() {
 .selected-resource {
   margin: 0 16px;
   padding: 18px 8px;
-  border-bottom: 1px solid #dce6f5;
+  border-bottom: 1px solid var(--color-admin-border);
 }
 
 .selected-name {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.6;
@@ -875,26 +795,13 @@ function showIncompleteResources() {
 
 .selected-meta {
   margin-top: 8px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 13px;
   line-height: 1.6;
 }
 
-.outline-action {
-  width: calc(100% - 32px);
-  height: 48px;
-  margin: 18px 16px 20px;
-  border: 1px solid #1268f6;
-  border-radius: 6px;
-  background: #fff;
-  color: #1268f6;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.outline-action:hover {
-  background: #f2f7ff;
+.full-width {
+  width: 100%;
 }
 
 @media (max-width: 1320px) {
@@ -906,10 +813,6 @@ function showIncompleteResources() {
     grid-template-columns: 1fr;
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
-
   .sidebar-card {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -919,7 +822,7 @@ function showIncompleteResources() {
     grid-column: 1 / -1;
   }
 
-  .outline-action {
+  .full-width {
     align-self: end;
   }
 }
@@ -939,17 +842,15 @@ function showIncompleteResources() {
     height: 58px;
   }
 
-  .filter-row,
   .sidebar-card {
     grid-template-columns: 1fr;
   }
 
-  .search-row,
   .pagination-row {
     flex-wrap: wrap;
   }
 
-  .btn-primary {
+  .resource-create-action {
     margin-left: 0;
   }
 }

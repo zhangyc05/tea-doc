@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   confirmPracticeArchive,
@@ -184,8 +185,8 @@ function applyFilters() {
               />
             </div>
             <div class="search-row">
-              <button class="btn-reset" @click="resetFilters">重置</button>
-              <button class="btn-secondary" @click="applyFilters">查询</button>
+              <Button variant="outline" @click="resetFilters">重置</Button>
+              <Button variant="secondary" @click="applyFilters">查询</Button>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
@@ -229,9 +230,9 @@ function applyFilters() {
                     <td>{{ record.recentAction }}</td>
                     <td>
                       <div class="btn-action-group">
-                        <button class="btn-view" @click="viewDetail(record.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(record.id)">
                           查看详情
-                        </button>
+                        </Button>
                         <button
                           v-if="record.currentStatus === '待提交总结' || record.currentStatus === '待企业评价' || record.currentStatus === '实践中'"
                           class="btn-remind"
@@ -246,18 +247,19 @@ function applyFilters() {
                         >
                           确认归档
                         </button>
-                        <button
+                        <Button
                           v-if="record.currentStatus === '已归档'"
-                          class="btn-archive"
+                          variant="ghost"
+                          size="sm"
                           @click="viewArchive(record.id)"
                         >
                           查看档案
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
                   <tr v-if="filteredRecords.length === 0">
-                    <td colspan="8" class="empty-cell">暂无符合条件的实践记录</td>
+                    <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的实践记录" />
                   </tr>
                 </tbody>
               </table>
@@ -276,8 +278,8 @@ function applyFilters() {
 <style scoped>
 .practice-record-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .practice-record-page *,
@@ -306,7 +308,7 @@ function applyFilters() {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
 }
 
 .breadcrumb .separator {
@@ -314,12 +316,12 @@ function applyFilters() {
 }
 
 .breadcrumb .current {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-weight: 600;
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -338,8 +340,8 @@ function applyFilters() {
   padding: 22px;
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  border: 1px solid var(--color-admin-border);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -354,7 +356,7 @@ function applyFilters() {
 }
 
 .icon-progress {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -387,11 +389,11 @@ function applyFilters() {
 
 .stat-value span {
   font-size: 14px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.orange {
@@ -412,7 +414,7 @@ function applyFilters() {
 
 .stat-label {
   font-size: 15px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -431,9 +433,9 @@ function applyFilters() {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .card-header {
@@ -448,7 +450,7 @@ function applyFilters() {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .filter-section {
@@ -508,11 +510,9 @@ function applyFilters() {
 }
 
 .search-input:focus {
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
 }
 
-.btn-reset,
-.btn-secondary,
 .btn-primary {
   height: 40px;
   padding: 0 20px;
@@ -522,23 +522,16 @@ function applyFilters() {
   cursor: pointer;
 }
 
-.btn-reset {
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  color: #44536c;
-}
-
-.btn-secondary,
 .btn-primary {
-  background: #1268f6;
-  border: 1px solid #1268f6;
+  background: var(--color-admin-primary);
+  border: 1px solid var(--color-admin-primary);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
+  box-shadow: var(--shadow-admin-primary-action);
 }
 
 .operation-message,
 .selected-summary {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -555,7 +548,7 @@ function applyFilters() {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .record-table th {
@@ -563,10 +556,10 @@ function applyFilters() {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .record-table td {
@@ -639,7 +632,7 @@ function applyFilters() {
 .teacher-name,
 .company-name {
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .sub-text {
@@ -654,14 +647,12 @@ function applyFilters() {
   flex-wrap: wrap;
 }
 
-.btn-view,
 .btn-remind,
-.btn-confirm,
-.btn-archive {
+.btn-confirm {
   padding: 0;
   background: transparent;
   border: none;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -669,17 +660,7 @@ function applyFilters() {
 
 .btn-remind,
 .btn-confirm {
-  color: #1268f6;
-}
-
-.btn-archive {
-  color: #18a663;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
+  color: var(--color-admin-primary);
 }
 
 .selected-summary {

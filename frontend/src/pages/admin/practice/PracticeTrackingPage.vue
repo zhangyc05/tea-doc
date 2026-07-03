@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   getPracticeState,
@@ -214,8 +215,8 @@ function applyFilters() {
                 class="search-input"
                 @keyup.enter="applyFilters"
               />
-              <button class="btn-reset" @click="resetFilters">重置</button>
-              <button class="btn-secondary" @click="applyFilters">查询</button>
+              <Button variant="outline" @click="resetFilters">重置</Button>
+              <Button variant="secondary" @click="applyFilters">查询</Button>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
             </div>
           </div>
@@ -265,31 +266,34 @@ function applyFilters() {
                       >
                         提醒申请
                       </button>
-                      <button
+                      <Button
                         v-else-if="tracking.currentProgress === '待审核申请'"
-                        class="btn-view"
+                        variant="ghost"
+                        size="sm"
                         @click="viewRecord(tracking.id)"
                       >
                         查看申请
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         v-else-if="tracking.currentProgress === '实践中'"
-                        class="btn-view"
+                        variant="ghost"
+                        size="sm"
                         @click="viewRecord(tracking.id)"
                       >
                         查看申请
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         v-else-if="tracking.currentProgress === '已完成'"
-                        class="btn-view"
+                        variant="ghost"
+                        size="sm"
                         @click="viewRecord(tracking.id)"
                       >
                         查看记录
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                   <tr v-if="filteredTrackings.length === 0">
-                    <td colspan="6" class="empty-cell">暂无符合条件的教师实践记录</td>
+                    <EmptyState as="td" variant="cell" :colspan="6" title="暂无符合条件的教师实践记录" />
                   </tr>
                 </tbody>
               </table>
@@ -307,8 +311,8 @@ function applyFilters() {
 <style scoped>
 .practice-tracking-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .practice-tracking-page *,
@@ -333,13 +337,13 @@ function applyFilters() {
 }
 
 .breadcrumb {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
 
 .breadcrumb strong {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .page-desc {
@@ -350,7 +354,7 @@ function applyFilters() {
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -363,16 +367,16 @@ function applyFilters() {
 .stats-group {
   padding: 22px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stats-group-title {
   margin: 0 0 26px 0;
   font-size: 20px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stats-cards {
@@ -390,7 +394,7 @@ function applyFilters() {
   padding: 14px 12px;
   background: #fff;
   border-radius: 6px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .stat-icon {
@@ -406,7 +410,7 @@ function applyFilters() {
 
 .icon-people,
 .icon-briefcase {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -440,11 +444,11 @@ function applyFilters() {
 .stat-value span {
   font-size: 14px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.green {
@@ -465,7 +469,7 @@ function applyFilters() {
 
 .stat-label {
   font-size: 13px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -477,9 +481,9 @@ function applyFilters() {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .card-header {
@@ -494,7 +498,7 @@ function applyFilters() {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .filter-section {
@@ -555,11 +559,9 @@ function applyFilters() {
 }
 
 .search-input:focus {
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
 }
 
-.btn-reset,
-.btn-secondary,
 .btn-primary {
   height: 40px;
   padding: 0 20px;
@@ -569,18 +571,11 @@ function applyFilters() {
   cursor: pointer;
 }
 
-.btn-reset {
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  color: #44536c;
-}
-
-.btn-secondary,
 .btn-primary {
-  background: #1268f6;
-  border: 1px solid #1268f6;
+  background: var(--color-admin-primary);
+  border: 1px solid var(--color-admin-primary);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
+  box-shadow: var(--shadow-admin-primary-action);
 }
 
 .btn-primary:hover {
@@ -589,7 +584,7 @@ function applyFilters() {
 
 .operation-message,
 .selected-summary {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -606,7 +601,7 @@ function applyFilters() {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .tracking-table th {
@@ -614,10 +609,10 @@ function applyFilters() {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .tracking-table td {
@@ -679,7 +674,7 @@ function applyFilters() {
 }
 
 .practice-org {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
@@ -709,21 +704,14 @@ function applyFilters() {
   border: 1px solid #bdeed7;
 }
 
-.btn-remind,
-.btn-view {
+.btn-remind {
   padding: 0 8px;
   background: transparent;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   border: none;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
 }
 
 .selected-summary {

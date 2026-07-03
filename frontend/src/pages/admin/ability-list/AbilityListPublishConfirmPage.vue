@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListPublishConfirmMock } from '@/services/mock/ability-list'
@@ -114,14 +115,13 @@ function goBack() {
       </section>
 
       <section class="action-section">
-        <button class="btn-secondary" @click="goBack">返回修改</button>
-        <button
-          class="btn-primary"
+        <Button variant="outline" @click="goBack">返回修改</Button>
+        <Button
           :disabled="publishStatus === 'published'"
           @click="handlePublish"
         >
           {{ publishStatus === 'published' ? '已确认发布' : '确认发布' }}
-        </button>
+        </Button>
       </section>
     </div>
   </AdminLayout>
@@ -134,8 +134,8 @@ function goBack() {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .page-root *,
@@ -148,13 +148,13 @@ function goBack() {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 700;
 }
 
 .page-breadcrumb strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .page-description {
@@ -167,7 +167,7 @@ function goBack() {
 }
 
 .operation-message {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 800;
 }
@@ -180,10 +180,10 @@ function goBack() {
   gap: 24px;
   padding: 48px 42px;
   overflow: hidden;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 16px;
-  background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%);
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  background: linear-gradient(135deg, var(--color-admin-bg-soft) 0%, #eef7ff 100%);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .hero-icon {
@@ -193,7 +193,7 @@ function goBack() {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
   box-shadow: 0 14px 24px rgba(18, 104, 246, 0.24);
   font-size: 38px;
@@ -246,7 +246,7 @@ function goBack() {
 .summary-value {
   display: block;
   margin-top: 8px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 15px;
   line-height: 1.45;
   font-weight: 700;
@@ -270,7 +270,7 @@ function goBack() {
   width: 82px;
   height: 156px;
   border-radius: 18px;
-  background: linear-gradient(180deg, #1268f6, #78b8ff);
+  background: linear-gradient(180deg, var(--color-admin-primary), #78b8ff);
   transform: rotate(45deg);
 }
 
@@ -295,7 +295,7 @@ function goBack() {
 
 .section-title {
   margin: 8px 0 18px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 22px;
   font-weight: 900;
 }
@@ -310,9 +310,9 @@ function goBack() {
   min-height: 220px;
   padding: 26px 24px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .impact-icon {
@@ -327,7 +327,7 @@ function goBack() {
 }
 
 .impact-icon.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -348,7 +348,7 @@ function goBack() {
 
 .impact-title {
   margin: 18px 0 14px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   font-weight: 900;
 }
@@ -368,7 +368,7 @@ function goBack() {
   gap: 18px;
   padding: 22px 28px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
 }
 
@@ -380,14 +380,14 @@ function goBack() {
   justify-content: center;
   border-radius: 50%;
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 24px;
   font-weight: 900;
 }
 
 .notice-title {
   margin: 0 0 8px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   font-weight: 900;
 }
@@ -407,44 +407,8 @@ function goBack() {
   gap: 24px;
   padding: 0 38px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-}
-
-.btn-primary,
-.btn-secondary {
-  height: 46px;
-  min-width: 168px;
-  padding: 0 28px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-primary {
-  border: 1px solid #1268f6;
-  background: #1268f6;
-  color: #fff;
-}
-
-.btn-primary:disabled {
-  cursor: default;
-  opacity: 0.72;
-}
-
-.btn-secondary {
-  border: 1px solid #cfdcf0;
-  background: #fff;
-  color: #263b63;
-}
-
-.btn-primary:not(:disabled):hover,
-.btn-secondary:hover {
-  border-color: #0d55d8;
-  background: #0d55d8;
-  color: #fff;
 }
 
 @media (max-width: 1360px) {

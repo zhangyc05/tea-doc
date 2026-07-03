@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { EmptyState } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionOverviewMock } from '@/services/mock/reflection'
 
@@ -177,7 +179,7 @@ function viewRelatedRecords() {
                       class="search-input"
                     />
                   </div>
-                  <button class="btn-reset" @click="resetFilters">重置</button>
+                  <Button class="reflection-reset-action" variant="outline" @click="resetFilters">重置</Button>
                 </div>
               </div>
 
@@ -206,16 +208,14 @@ function viewRelatedRecords() {
                       </td>
                       <td>{{ reflection.submitTime }}</td>
                       <td>
-                        <button class="btn-view" @click="viewDetail(reflection.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(reflection.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <div v-if="filteredReflections.length === 0" class="empty-state">
-                  未找到符合条件的反思记录
-                </div>
+                <EmptyState v-if="filteredReflections.length === 0" title="未找到符合条件的反思记录" />
               </div>
             </div>
           </div>
@@ -240,9 +240,9 @@ function viewRelatedRecords() {
                   </div>
                 </div>
               </div>
-              <button class="btn-view-related" @click="viewRelatedRecords">
+              <Button class="related-records-action" variant="outline" size="lg" @click="viewRelatedRecords">
                 查看相关记录
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -278,7 +278,7 @@ function viewRelatedRecords() {
 }
 
 .breadcrumb span:first-child {
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .breadcrumb i {
@@ -305,8 +305,8 @@ function viewRelatedRecords() {
   padding: 24px 30px;
   background: #fff;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .stat-icon {
@@ -392,9 +392,9 @@ function viewRelatedRecords() {
 .content-card {
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .card-header {
@@ -443,7 +443,7 @@ function viewRelatedRecords() {
 .filter-label {
   font-size: 14px;
   font-weight: 700;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   white-space: nowrap;
 }
 
@@ -453,28 +453,15 @@ function viewRelatedRecords() {
   border: 1px solid #d2def0;
   border-radius: 6px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   background: white;
   cursor: pointer;
   outline: none;
   min-width: 0;
 }
 
-.btn-reset {
+.reflection-reset-action {
   display: none;
-  padding: 0 16px;
-  background: transparent;
-  border: 1px solid #d2def0;
-  border-radius: 6px;
-  color: #405985;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-reset:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
 }
 
 .search-row {
@@ -501,7 +488,7 @@ function viewRelatedRecords() {
 .table-container {
   margin: 0 18px 14px;
   overflow: hidden;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
 }
 
@@ -518,8 +505,8 @@ function viewRelatedRecords() {
   font-size: 13px;
   font-weight: 800;
   color: #31466f;
-  border-bottom: 1px solid #d9e5f7;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-border-muted);
+  border-right: 1px solid var(--color-admin-divider);
   background: #f4f7fc;
   white-space: nowrap;
 }
@@ -541,9 +528,9 @@ function viewRelatedRecords() {
   height: 50px;
   padding: 0 12px;
   font-size: 13px;
-  color: #172b55;
-  border-bottom: 1px solid #e5edf8;
-  border-right: 1px solid #e5edf8;
+  color: var(--color-admin-text-title);
+  border-bottom: 1px solid var(--color-admin-divider);
+  border-right: 1px solid var(--color-admin-divider);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -565,28 +552,6 @@ function viewRelatedRecords() {
   font-weight: 700;
 }
 
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
-}
-
-.empty-state {
-  padding: 36px;
-  text-align: center;
-  color: #60708b;
-  font-size: 14px;
-}
-
 /* 侧边栏 */
 .sidebar {
   min-width: 0;
@@ -595,12 +560,12 @@ function viewRelatedRecords() {
 .sidebar-card {
   background: white;
   border-radius: 10px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 28px 22px 22px;
   position: sticky;
   top: 24px;
   min-height: 574px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .sidebar-title {
@@ -613,7 +578,7 @@ function viewRelatedRecords() {
 .sidebar-description {
   margin: 0 0 34px;
   font-size: 15px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   line-height: 1.5;
 }
 
@@ -630,7 +595,7 @@ function viewRelatedRecords() {
   align-items: flex-start;
   padding: 0 0 30px;
   margin-bottom: 30px;
-  border-bottom: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-divider);
 }
 
 .issue-item:last-child {
@@ -680,25 +645,9 @@ function viewRelatedRecords() {
   color: #405985;
 }
 
-.btn-view-related {
-  display: block;
+.related-records-action {
   width: 176px;
-  height: 44px;
   margin: 0 auto;
-  padding: 0 16px;
-  background: white;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-view-related:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
 }
 
 @media (max-width: 1300px) {

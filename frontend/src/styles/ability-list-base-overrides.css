@@ -41,7 +41,7 @@
   width: 5px !important;
   height: 5px !important;
   margin-right: 10px !important;
-  border-radius: 999px !important;
+  border-radius: var(--radius-full) !important;
   background: #a3aec0 !important;
   content: '' !important;
 }

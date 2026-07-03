@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approveTrainingApplication,
@@ -135,8 +136,8 @@ function rejectCurrentApplication() {
               <div class="card-header">
                 <h2>培训申请</h2>
               </div>
-              <div class="filter-section">
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <label class="filter-field">
                     <span>组织范围：</span>
                     <select v-model="selectedOrganization" class="filter-select">
@@ -174,19 +175,23 @@ function rejectCurrentApplication() {
                       <option>2025 年度</option>
                     </select>
                   </label>
-                </div>
-                <div class="action-row">
+                </template>
+                <template #search>
                   <input
                     v-model="searchQuery"
                     class="search-input"
                     placeholder="搜索教师、培训名称、院系"
                     @keyup.enter="applyFilters"
                   />
-                  <button class="btn-reset" type="button" @click="resetFilters">重置</button>
-                  <button class="btn-primary" type="button" @click="applyFilters">查询</button>
+                </template>
+                <template #actions>
+                  <Button variant="outline" type="button" @click="resetFilters">重置</Button>
+                  <Button variant="secondary" type="button" @click="applyFilters">查询</Button>
+                </template>
+                <template #message>
                   <span v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</span>
-                </div>
-              </div>
+                </template>
+              </CompactFilterBar>
               <!-- 数据表格 -->
               <div class="table-container">
                 <table class="application-table">
@@ -218,24 +223,26 @@ function rejectCurrentApplication() {
                         <StatusBadge :status="app.status" />
                       </td>
                       <td>
-                        <button
+                        <Button
                           v-if="app.status === '待处理'"
-                          class="btn-handle"
+                          variant="secondary"
+                          size="sm"
                           @click="handleApplication(app.id)"
                         >
                           处理
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           v-else
-                          class="btn-view"
+                          variant="ghost"
+                          size="sm"
                           @click="viewDetail(app.id)"
                         >
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     <tr v-if="filteredApplications.length === 0">
-                      <td colspan="8" class="empty-cell">暂无符合条件的培训申请</td>
+                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训申请" />
                     </tr>
                   </tbody>
                 </table>
@@ -254,8 +261,8 @@ function rejectCurrentApplication() {
 
           <!-- 右侧：处理提醒 -->
           <div class="sidebar">
-            <div class="sidebar-card">
-              <h3 class="sidebar-title">处理提醒</h3>
+            <InsightSidebar title="处理提醒">
+              <template #items>
               <div class="reminders-list">
                 <div class="reminder-item">
                   <span class="reminder-icon blue">▤</span>
@@ -279,23 +286,28 @@ function rejectCurrentApplication() {
                   </div>
                 </div>
               </div>
+              </template>
+              <template #selected>
               <div class="selected-application" v-if="activeApplication">
                 <div class="reminder-title">当前查看申请</div>
                 <div class="selected-name">{{ activeApplication.applicant }} · {{ activeApplication.trainingName }}</div>
                 <div class="reminder-desc">{{ activeApplication.department }} / {{ activeApplication.major }}</div>
-                <button
+                <Button
                   v-if="activeApplication.status === '待处理'"
-                  class="outline-action"
-                  type="button"
+                  class="full-width"
+                  variant="danger"
                   @click="rejectCurrentApplication"
                 >
                   退回申请
-                </button>
+                </Button>
               </div>
-              <button class="outline-action" type="button" @click="showPendingApplications">
+              </template>
+              <template #action>
+              <Button class="full-width" variant="outline" @click="showPendingApplications">
                 查看待处理申请
-              </button>
-            </div>
+              </Button>
+              </template>
+            </InsightSidebar>
           </div>
         </div>
       </section>
@@ -306,8 +318,8 @@ function rejectCurrentApplication() {
 <style scoped>
 .training-application-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .training-application-page *,
@@ -332,17 +344,17 @@ function rejectCurrentApplication() {
 }
 
 .breadcrumb {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
 
 .breadcrumb strong {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -360,9 +372,9 @@ function rejectCurrentApplication() {
   gap: 18px;
   padding: 22px 30px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -377,7 +389,7 @@ function rejectCurrentApplication() {
 }
 
 .icon-pending {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -404,7 +416,7 @@ function rejectCurrentApplication() {
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.green {
@@ -421,7 +433,7 @@ function rejectCurrentApplication() {
 
 .stat-label {
   font-size: 15px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
 }
 
@@ -449,9 +461,9 @@ function rejectCurrentApplication() {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .card-header {
@@ -463,20 +475,9 @@ function rejectCurrentApplication() {
 
 .card-header h2 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   font-weight: 700;
-}
-
-.filter-section {
-  padding: 0 20px 18px;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(142px, 1fr));
-  gap: 10px;
-  align-items: center;
 }
 
 .filter-field {
@@ -512,49 +513,11 @@ function rejectCurrentApplication() {
 
 .search-input:focus,
 .filter-select:focus {
-  border-color: #1268f6;
-}
-
-.action-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.action-row .search-input {
-  flex: 1 1 420px;
-}
-
-.btn-reset,
-.btn-primary {
-  height: 40px;
-  padding: 0 22px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-reset {
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  color: #44536c;
-}
-
-.btn-primary {
-  background: #1268f6;
-  border: 1px solid #1268f6;
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
-}
-
-.btn-primary:hover {
-  background: #0d57d4;
+  border-color: var(--color-admin-primary);
 }
 
 .operation-message {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -568,7 +531,7 @@ function rejectCurrentApplication() {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .application-table th {
@@ -576,10 +539,10 @@ function rejectCurrentApplication() {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .application-table td {
@@ -647,23 +610,6 @@ function rejectCurrentApplication() {
   border-bottom: none;
 }
 
-.btn-handle,
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #1268f6;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
-}
-
 .pagination-row {
   display: flex;
   align-items: center;
@@ -680,14 +626,14 @@ function rejectCurrentApplication() {
   border: 1px solid #d7e2f1;
   border-radius: 6px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 700;
 }
 
 .page-button.active {
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
 }
 
 .page-size {
@@ -696,7 +642,7 @@ function rejectCurrentApplication() {
   border: 1px solid #d7e2f1;
   border-radius: 6px;
   background: #fff;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .sidebar {
@@ -706,16 +652,16 @@ function rejectCurrentApplication() {
 .sidebar-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   padding: 20px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .sidebar-title {
   margin: 0 0 22px;
   font-size: 18px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .reminders-list {
@@ -731,7 +677,7 @@ function rejectCurrentApplication() {
   align-items: center;
   min-height: 118px;
   padding: 18px 16px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
   background: #fff;
 }
@@ -748,7 +694,7 @@ function rejectCurrentApplication() {
 }
 
 .reminder-icon.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -769,7 +715,7 @@ function rejectCurrentApplication() {
 .reminder-title {
   font-size: 14px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   margin-bottom: 8px;
 }
 
@@ -782,30 +728,22 @@ function rejectCurrentApplication() {
 .selected-application {
   margin-top: 14px;
   padding: 16px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
 }
 
 .selected-name {
   margin-bottom: 6px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.6;
 }
 
-.outline-action {
+.full-width {
   width: 100%;
-  height: 48px;
   margin-top: 16px;
-  border: 1px solid #1268f6;
-  border-radius: 6px;
-  background: #1268f6;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 @media (max-width: 1320px) {
@@ -817,10 +755,6 @@ function rejectCurrentApplication() {
     grid-template-columns: 1fr;
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
-
   .sidebar-card {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -829,7 +763,7 @@ function rejectCurrentApplication() {
 
   .sidebar-title,
   .reminders-list,
-  .outline-action {
+  .full-width {
     grid-column: 1 / -1;
   }
 
@@ -856,14 +790,9 @@ function rejectCurrentApplication() {
     height: 58px;
   }
 
-  .filter-row,
   .sidebar-card,
   .reminders-list {
     grid-template-columns: 1fr;
-  }
-
-  .action-row {
-    flex-wrap: wrap;
   }
 }
 </style>

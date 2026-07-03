@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingPlanDetailMock } from '@/services/mock/training'
@@ -275,19 +276,21 @@ function handleApplication(teacherId: string) {
                       </td>
                       <td>{{ participant.materialStatus }}</td>
                       <td>
-                        <button
-                          class="btn-view"
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           @click="viewTeacherDetail(participant.id)"
                         >
                           查看
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           v-if="participant.applicationStatus === '待处理'"
-                          class="btn-handle"
+                          variant="secondary"
+                          size="sm"
                           @click="handleApplication(participant.id)"
                         >
                           处理
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   </tbody>
@@ -373,7 +376,7 @@ function handleApplication(teacherId: string) {
 <style scoped>
 .training-plan-detail-page {
   min-height: 100vh;
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .training-plan-detail-page *,
@@ -403,12 +406,12 @@ function handleApplication(teacherId: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
 }
 
 .breadcrumb a {
-  color: #172b55;
+  color: var(--color-admin-text-title);
   text-decoration: none;
   transition: color 0.16s ease;
 }
@@ -454,8 +457,8 @@ function handleApplication(teacherId: string) {
   background: #fff;
   border-radius: 8px;
   padding: 24px 28px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .main-title {
@@ -487,7 +490,7 @@ function handleApplication(teacherId: string) {
 
 .info-value {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 700;
   min-width: 0;
 }
@@ -501,7 +504,7 @@ function handleApplication(teacherId: string) {
 .title-stat-card {
   min-height: 86px;
   padding: 18px 22px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
   background: #fff;
 }
@@ -556,9 +559,9 @@ function handleApplication(teacherId: string) {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .card-header {
@@ -594,14 +597,14 @@ function handleApplication(teacherId: string) {
   margin: 0 0 12px;
   font-size: 14px;
   line-height: 1.75;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .demand-table,
 .participants-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 6px;
   overflow: hidden;
   table-layout: fixed;
@@ -615,8 +618,8 @@ function handleApplication(teacherId: string) {
   font-size: 13px;
   font-weight: 800;
   color: #31466f;
-  border-right: 1px solid #e5edf8;
-  border-bottom: 1px solid #d9e5f7;
+  border-right: 1px solid var(--color-admin-divider);
+  border-bottom: 1px solid var(--color-admin-border-muted);
   background: #f4f7fc;
 }
 
@@ -626,9 +629,9 @@ function handleApplication(teacherId: string) {
   padding: 0 12px;
   font-size: 13px;
   line-height: 1.55;
-  color: #172b55;
-  border-right: 1px solid #e5edf8;
-  border-bottom: 1px solid #e5edf8;
+  color: var(--color-admin-text-title);
+  border-right: 1px solid var(--color-admin-divider);
+  border-bottom: 1px solid var(--color-admin-divider);
   text-align: center;
 }
 
@@ -690,7 +693,7 @@ function handleApplication(teacherId: string) {
 
 .timeline-node strong {
   font-size: 13px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
 }
 
@@ -702,39 +705,8 @@ function handleApplication(teacherId: string) {
 .progress-note {
   margin: 14px 0 0;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   line-height: 1.7;
-}
-
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: color 0.16s ease;
-  margin-right: 10px;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
-}
-
-.btn-handle {
-  padding: 0;
-  background: transparent;
-  color: #f97316;
-  border: 0;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-handle:hover {
-  color: #c75a0b;
 }
 
 .action-message {
@@ -757,9 +729,9 @@ function handleApplication(teacherId: string) {
 .sidebar-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 22px 20px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .sidebar-title {
@@ -805,7 +777,7 @@ function handleApplication(teacherId: string) {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #e5edf8;
+  background: var(--color-admin-divider);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -831,7 +803,7 @@ function handleApplication(teacherId: string) {
 
 .material-item {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   padding-left: 8px;
 }
 
@@ -839,7 +811,7 @@ function handleApplication(teacherId: string) {
   margin: 0 0 8px;
   font-size: 14px;
   line-height: 1.75;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .destination-text:last-child {

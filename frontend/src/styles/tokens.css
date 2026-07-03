@@ -23,6 +23,19 @@
   /* 分割线 */
   --color-divider: #E8EEF8;
 
+  /* 管理端 F1 高频色值：先保留精确别名，后续分批替换硬编码 */
+  --color-admin-primary: #1268F6;
+  --color-admin-primary-hover: #0F5EEF;
+  --color-admin-text-strong: #17233D;
+  --color-admin-text-title: #172B55;
+  --color-admin-text-muted: #66758F;
+  --color-admin-text-subtle: #405985;
+  --color-admin-border: #DCE6F5;
+  --color-admin-border-muted: #D9E5F7;
+  --color-admin-divider: #E5EDF8;
+  --color-admin-bg: #F6F9FF;
+  --color-admin-bg-soft: #F8FBFF;
+
   /* 状态色 */
   --color-success: #2FBF71;
   --color-success-bg: #EAF8F0;
@@ -65,6 +78,18 @@
   --shadow-card: 0 10px 30px rgba(15, 35, 80, 0.06);
   --shadow-card-hover: 0 16px 36px rgba(15, 35, 80, 0.1);
   --shadow-floating: 0 14px 36px rgba(15, 35, 80, 0.18);
+  --shadow-admin-card-soft: 0 8px 22px rgba(40, 88, 150, 0.035);
+  --shadow-admin-card-subtle: 0 8px 24px rgba(35, 64, 110, 0.05);
+  --shadow-admin-card-faint: 0 8px 24px rgba(35, 64, 110, 0.04);
+  --shadow-admin-primary-action: 0 8px 18px rgba(18, 104, 246, 0.18);
+
+  /* 管理端 F2 高频间距 */
+  --space-admin-xs: 8px;
+  --space-admin-sm: 10px;
+  --space-admin-md: 12px;
+  --space-admin-lg: 16px;
+  --space-admin-xl: 20px;
+  --space-admin-2xl: 24px;
 
   /* 管理端响应式尺寸：1920 是视觉参考，14 寸笔记本是主力办公口径 */
   --admin-sidebar-width: clamp(248px, 15vw, 300px);

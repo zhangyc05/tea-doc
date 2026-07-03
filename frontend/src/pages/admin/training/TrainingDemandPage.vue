@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingDemand,
@@ -145,11 +146,10 @@ function matchDemand(id: string) {
             <div class="content-card">
               <div class="card-header">
                 <h2>需求管理</h2>
-                <button class="btn-primary" type="button" @click="addDemand">＋ 新增需求</button>
+                <Button type="button" @click="addDemand">＋ 新增需求</Button>
               </div>
-              <!-- 筛选区 -->
-              <div class="filter-section">
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
                     <select v-model="selectedOrganization" class="filter-select">
@@ -186,6 +186,9 @@ function matchDemand(id: string) {
                       <option>暂不处理</option>
                     </select>
                   </div>
+                </template>
+
+                <template #search>
                   <input
                     v-model="searchQuery"
                     type="text"
@@ -193,13 +196,17 @@ function matchDemand(id: string) {
                     class="search-input"
                     @keyup.enter="applyFilters"
                   />
-                </div>
-                <div class="search-row">
-                  <button class="btn-reset" @click="resetFilters">重置</button>
-                  <button class="btn-secondary" @click="applyFilters">查询</button>
+                </template>
+
+                <template #actions>
+                  <Button variant="outline" @click="resetFilters">重置</Button>
+                  <Button variant="secondary" @click="applyFilters">查询</Button>
+                </template>
+
+                <template #message>
                   <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
-                </div>
-              </div>
+                </template>
+              </CompactFilterBar>
 
               <!-- 数据表格 -->
               <div class="table-container">
@@ -230,20 +237,21 @@ function matchDemand(id: string) {
                       </td>
                       <td>{{ demand.suggestedResource }}</td>
                       <td>
-                        <button class="btn-view" @click="viewDetail(demand.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(demand.id)">
                           查看
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           v-if="demand.matchStatus === '待匹配'"
-                          class="btn-view"
+                          variant="secondary"
+                          size="sm"
                           @click="matchDemand(demand.id)"
                         >
                           匹配资源
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     <tr v-if="filteredDemands.length === 0">
-                      <td colspan="7" class="empty-cell">暂无符合条件的培训需求</td>
+                      <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的培训需求" />
                     </tr>
                   </tbody>
                 </table>
@@ -251,43 +259,47 @@ function matchDemand(id: string) {
             </div>
           </div>
 
-          <!-- 右侧：资源匹配建议 -->
-          <div class="sidebar">
-            <div class="sidebar-card">
-              <h3 class="sidebar-title">资源匹配建议</h3>
+          <InsightSidebar title="资源匹配建议">
+            <template #items>
               <div class="suggestions-list">
                 <div class="suggestion-item">
                   <div class="suggestion-icon green">◔</div>
                   <div>
-                  <div class="suggestion-title">画像观察需求集中</div>
-                  <div class="suggestion-desc">当前 52 条需求来源于能力画像观察，主要集中在数字化教学和实训课程组织。</div>
+                    <div class="suggestion-title">画像观察需求集中</div>
+                    <div class="suggestion-desc">当前 52 条需求来源于能力画像观察，主要集中在数字化教学和实训课程组织。</div>
                   </div>
                 </div>
                 <div class="suggestion-item">
                   <div class="suggestion-icon blue">↗</div>
                   <div>
-                  <div class="suggestion-title">教师主动需求上升</div>
-                  <div class="suggestion-desc">本月教师主动提出 28 条培训需求，AI 赋能课程建设方向增长明显。</div>
+                    <div class="suggestion-title">教师主动需求上升</div>
+                    <div class="suggestion-desc">本月教师主动提出 28 条培训需求，AI 赋能课程建设方向增长明显。</div>
                   </div>
                 </div>
                 <div class="suggestion-item">
                   <div class="suggestion-icon orange">!</div>
                   <div>
-                  <div class="suggestion-title">待匹配资源</div>
-                  <div class="suggestion-desc">30 条需求暂无合适资源承接，建议优先补充资源库。</div>
+                    <div class="suggestion-title">待匹配资源</div>
+                    <div class="suggestion-desc">30 条需求暂无合适资源承接，建议优先补充资源库。</div>
                   </div>
                 </div>
               </div>
+            </template>
+
+            <template #selected>
               <div class="selected-demand" v-if="activeDemand">
                 <div class="suggestion-title">当前查看需求</div>
                 <div class="selected-name">{{ activeDemand.teacher }} · {{ activeDemand.direction }}</div>
                 <div class="suggestion-desc">{{ activeDemand.department }} / {{ activeDemand.major }}</div>
               </div>
-              <button class="outline-action" type="button" @click="showPendingDemands">
+            </template>
+
+            <template #action>
+              <Button class="full-width" variant="outline" @click="showPendingDemands">
                 查看待匹配需求
-              </button>
-            </div>
-          </div>
+              </Button>
+            </template>
+          </InsightSidebar>
         </div>
       </section>
     </div>
@@ -297,8 +309,8 @@ function matchDemand(id: string) {
 <style scoped>
 .training-demand-page {
   min-height: 100vh;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .training-demand-page *,
@@ -323,17 +335,17 @@ function matchDemand(id: string) {
 }
 
 .breadcrumb {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
 
 .breadcrumb strong {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stats-section {
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .stats-container {
@@ -351,9 +363,9 @@ function matchDemand(id: string) {
   gap: 18px;
   padding: 22px 30px;
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .stat-icon {
@@ -396,7 +408,7 @@ function matchDemand(id: string) {
 }
 
 .stat-value.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-value.purple {
@@ -410,12 +422,12 @@ function matchDemand(id: string) {
 .stat-value span {
   font-size: 15px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .stat-label {
   font-size: 15px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-weight: 600;
 }
 
@@ -443,9 +455,9 @@ function matchDemand(id: string) {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
+  box-shadow: var(--shadow-admin-card-subtle);
 }
 
 .card-header {
@@ -458,21 +470,9 @@ function matchDemand(id: string) {
 
 .card-header h2 {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 18px;
   font-weight: 700;
-}
-
-.filter-section {
-  padding: 0 20px 20px;
-  border-bottom: 1px solid #dce6f5;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(132px, 1fr)) minmax(220px, 1.25fr);
-  gap: 10px;
-  align-items: center;
 }
 
 .filter-item {
@@ -496,13 +496,6 @@ function matchDemand(id: string) {
   outline: none;
 }
 
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-
 .search-input {
   width: 100%;
   height: 40px;
@@ -515,48 +508,11 @@ function matchDemand(id: string) {
 }
 
 .search-input:focus {
-  border-color: #1268f6;
-}
-
-.btn-reset {
-  height: 40px;
-  padding: 0 20px;
-  background: #fff;
-  border: 1px solid #d7e2f1;
-  border-radius: 6px;
-  color: #44536c;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-reset:hover {
-  border-color: #1268f6;
-  color: #1268f6;
-}
-
-.btn-secondary,
-.btn-primary {
-  height: 40px;
-  padding: 0 22px;
-  border: none;
-  border-radius: 6px;
-  background: #1268f6;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.18);
-}
-
-.btn-secondary:hover,
-.btn-primary:hover {
-  background: #0d57d4;
+  border-color: var(--color-admin-primary);
 }
 
 .operation-message {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -570,7 +526,7 @@ function matchDemand(id: string) {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .demand-table th {
@@ -578,10 +534,10 @@ function matchDemand(id: string) {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #dce6f5;
-  background: #f8fbff;
+  border-bottom: 1px solid var(--color-admin-border);
+  background: var(--color-admin-bg-soft);
 }
 
 .demand-table td {
@@ -643,45 +599,6 @@ function matchDemand(id: string) {
   border-bottom: none;
 }
 
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #1268f6;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-view:hover {
-  color: #0d57d4;
-}
-
-.empty-cell {
-  height: 120px;
-  text-align: center;
-  color: #66758f;
-}
-
-.sidebar {
-  min-width: 0;
-}
-
-.sidebar-card {
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #dce6f5;
-  padding: 18px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.05);
-}
-
-.sidebar-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: #17233d;
-}
-
 .suggestions-list {
   display: flex;
   flex-direction: column;
@@ -697,7 +614,7 @@ function matchDemand(id: string) {
   padding: 18px 16px;
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
 }
 
 .suggestion-icon {
@@ -717,7 +634,7 @@ function matchDemand(id: string) {
 }
 
 .suggestion-icon.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   background: #e8f0ff;
 }
 
@@ -729,7 +646,7 @@ function matchDemand(id: string) {
 .suggestion-title {
   font-size: 14px;
   font-weight: 700;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   margin-bottom: 8px;
 }
 
@@ -742,32 +659,19 @@ function matchDemand(id: string) {
 .selected-demand {
   margin: 14px 0 0;
   padding: 16px;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
 }
 
 .selected-name {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 14px;
   font-weight: 700;
 }
 
-.outline-action {
+.full-width {
   width: 100%;
-  height: 48px;
-  margin-top: 16px;
-  border: 1px solid #1268f6;
-  border-radius: 6px;
-  background: #fff;
-  color: #1268f6;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.outline-action:hover {
-  background: #f2f7ff;
 }
 
 @media (max-width: 1320px) {
@@ -779,26 +683,6 @@ function matchDemand(id: string) {
     grid-template-columns: 1fr;
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
-
-  .sidebar-card {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .sidebar-title,
-  .suggestions-list,
-  .outline-action {
-    grid-column: 1 / -1;
-  }
-
-  .suggestions-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
@@ -818,14 +702,8 @@ function matchDemand(id: string) {
     height: 58px;
   }
 
-  .filter-row,
-  .sidebar-card,
   .suggestions-list {
     grid-template-columns: 1fr;
-  }
-
-  .search-row {
-    flex-wrap: wrap;
   }
 }
 </style>

@@ -1,6 +1,7 @@
 import type {
   AbilityIndicator,
   AbilityListState,
+  OptimizationSuggestion,
   OptimizationSuggestionStatus,
   RequirementMapping,
 } from '@/domain/admin/ability-list'
@@ -96,6 +97,62 @@ export function applyAdoptedSuggestionsToBaseTemplateInState(state: AbilityListS
     : '暂无待应用的优化建议。'
 
   return applications.length
+}
+
+export function importPolicySuggestionInState(state: AbilityListState): OptimizationSuggestion {
+  const suggestion: OptimizationSuggestion = {
+    id: `policy-import-${state.optimizationSuggestions.length + 1}`,
+    source: 'policy',
+    sourceLabel: '制度文件',
+    issueType: '标准补充',
+    keyLocation: '教学能力 / 教学资源建设',
+    content: '根据新上传制度文件补充教学资源建设指标的适用说明',
+    basis: '新上传制度文件解析结果',
+    status: 'pending',
+    statusLabel: getOptimizationSuggestionStatusLabel('pending'),
+    targetIndicator: {
+      key: 'base-policy-teaching-resource-scope',
+      name: '教学资源建设适用范围',
+      novice: '参与课程资源建设',
+      competent: '独立建设课程资源',
+      backbone: '建设专业核心课程资源',
+      expert: '形成可推广资源体系',
+      basisLabel: '制度文件与课程资源记录',
+      status: 'draft',
+    },
+  }
+
+  state.optimizationSuggestions.unshift(suggestion)
+  state.operationMessage = '制度文件已解析，并生成 1 条待确认优化建议。'
+  return suggestion
+}
+
+export function rerunFeedbackAnalysisInState(state: AbilityListState): OptimizationSuggestion {
+  const suggestion: OptimizationSuggestion = {
+    id: `feedback-analysis-${state.optimizationSuggestions.length + 1}`,
+    source: 'feedback',
+    sourceLabel: '运行反馈',
+    issueType: '标准过宽',
+    keyLocation: '实践能力 / 企业实践成果转化',
+    content: '根据最新运行反馈收紧企业实践成果转化的证据要求',
+    basis: '运行反馈重新分析结果',
+    status: 'pending',
+    statusLabel: getOptimizationSuggestionStatusLabel('pending'),
+    targetIndicator: {
+      key: 'base-feedback-enterprise-output',
+      name: '企业实践成果证据要求',
+      novice: '形成实践记录',
+      competent: '形成实践总结',
+      backbone: '形成课程或项目案例',
+      expert: '形成可复用成果材料',
+      basisLabel: '运行反馈与企业实践成果材料',
+      status: 'draft',
+    },
+  }
+
+  state.optimizationSuggestions.unshift(suggestion)
+  state.operationMessage = '已重新分析运行反馈，并生成 1 条待确认优化建议。'
+  return suggestion
 }
 
 export function saveRequirementMappingInState(state: AbilityListState, mapping: RequirementMapping) {

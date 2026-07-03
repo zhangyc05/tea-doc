@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import heroArt from '@/images/hero-art.png'
 import {
@@ -242,9 +243,9 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 
           <div class="filter-summary">
             <span class="filter-text">当前筛选：</span>
-            <button class="filter-link">{{ statusFilter }}</button>
+            <span class="filter-link">{{ statusFilter }}</span>
             <span class="filter-separator">|</span>
-            <button class="filter-link">{{ sourceFilter }}</button>
+            <span class="filter-link">{{ sourceFilter }}</span>
             <span class="filter-separator">|</span>
             <span class="filter-text">共 {{ processingRecords.length }} 条</span>
           </div>
@@ -375,10 +376,10 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 
           <!-- 操作按钮 -->
           <div class="detail-actions">
-            <button class="btn-primary" @click="confirmArchive">确认入档</button>
-            <button class="btn-secondary" @click="returnRecord">再次退回</button>
-            <button class="btn-outline" @click="markException">标记异常</button>
-            <button class="btn-link" @click="viewSupplement">查看补充说明</button>
+            <Button class="detail-action-button" @click="confirmArchive">确认入档</Button>
+            <Button class="detail-action-button" variant="secondary" @click="returnRecord">再次退回</Button>
+            <Button class="detail-action-button" variant="danger" @click="markException">标记异常</Button>
+            <Button class="detail-action-button" variant="outline" @click="viewSupplement">查看补充说明</Button>
           </div>
         </aside>
       </section>
@@ -798,60 +799,6 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   gap: 12px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-outline,
-.btn-link {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  border: none;
-  outline: none;
-}
-
-.btn-primary {
-  background: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #28a38a;
-}
-
-.btn-secondary {
-  background: #f1f5f9;
-  color: var(--color-text-primary);
-}
-
-.btn-secondary:hover {
-  background: #e2e8f0;
-}
-
-.btn-outline {
-  background: white;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-card-border);
-}
-
-.btn-outline:hover {
-  background: #f8fafc;
-}
-
-.btn-link {
-  background: transparent;
-  color: var(--color-primary);
-  border: none;
-  text-decoration: none;
-}
-
-.btn-link:hover {
-  text-decoration: underline;
-}
-
 /* 精修版：对齐“档案处理”目标图 */
 .archive-processing-page {
   display: flex;
@@ -1196,7 +1143,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   gap: 8px;
   margin-bottom: 14px;
   padding: 10px 12px;
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
 }
 
 .filter-text {
@@ -1400,22 +1347,13 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   padding-top: 11px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-outline,
-.btn-link {
+.detail-action-button {
   width: 100%;
   min-width: 0;
   height: 38px;
   padding: 0 12px;
   font-size: 13px;
   font-weight: 950;
-}
-
-.record-detail .btn-link {
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-sm);
-  background: #fff;
 }
 
 @media (max-width: 1440px) {

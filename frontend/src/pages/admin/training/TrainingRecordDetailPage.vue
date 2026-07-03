@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getTrainingRecordDetailMock } from '@/services/mock/training'
@@ -158,9 +159,9 @@ function viewRelatedRecord(recordId: string) {
             <div class="content-card">
               <div class="card-header">
                 <h2 class="card-title">证书材料</h2>
-                <button class="btn-upload" @click="uploadMaterial">
+                <Button size="sm" @click="uploadMaterial">
                   上传材料
-                </button>
+                </Button>
               </div>
               <div class="card-body">
                 <p v-if="operationMessage.text.value" class="material-message">{{ operationMessage.text.value }}</p>
@@ -210,12 +211,9 @@ function viewRelatedRecord(recordId: string) {
                         <StatusBadge :status="related.materialStatus" />
                       </td>
                       <td>
-                        <button
-                          class="btn-view"
-                          @click="viewRelatedRecord(related.id)"
-                        >
+                        <Button variant="ghost" size="sm" @click="viewRelatedRecord(related.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   </tbody>
@@ -286,7 +284,7 @@ function viewRelatedRecord(recordId: string) {
 <style scoped>
 .training-record-detail-page {
   min-height: 100vh;
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .training-record-detail-page *,
@@ -316,12 +314,12 @@ function viewRelatedRecord(recordId: string) {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
 }
 
 .breadcrumb a {
-  color: #172b55;
+  color: var(--color-admin-text-title);
   text-decoration: none;
   transition: color 0.16s ease;
 }
@@ -362,8 +360,8 @@ function viewRelatedRecord(recordId: string) {
   background: #fff;
   border-radius: 8px;
   padding: 24px 28px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .title-icon {
@@ -427,7 +425,7 @@ function viewRelatedRecord(recordId: string) {
 
 .info-value {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 700;
 }
 
@@ -462,9 +460,9 @@ function viewRelatedRecord(recordId: string) {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .card-header {
@@ -479,23 +477,6 @@ function viewRelatedRecord(recordId: string) {
   font-size: 20px;
   font-weight: 900;
   color: #07183d;
-}
-
-.btn-upload {
-  height: 36px;
-  padding: 0 14px;
-  background: #0f5eef;
-  color: white;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-upload:hover {
-  background: #0c4fd0;
 }
 
 .card-body {
@@ -518,13 +499,13 @@ function viewRelatedRecord(recordId: string) {
   margin: 0;
   font-size: 14px;
   line-height: 1.8;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .submit-info {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid #e5edf8;
+  border-top: 1px solid var(--color-admin-divider);
   font-size: 13px;
   color: #405985;
 }
@@ -534,7 +515,7 @@ function viewRelatedRecord(recordId: string) {
 }
 
 .submit-time {
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .learning-list {
@@ -554,12 +535,12 @@ function viewRelatedRecord(recordId: string) {
 .learning-date {
   font-size: 13px;
   font-weight: 800;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .learning-content {
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   line-height: 1.7;
 }
 
@@ -581,7 +562,7 @@ function viewRelatedRecord(recordId: string) {
 .related-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 6px;
   overflow: hidden;
   table-layout: fixed;
@@ -595,8 +576,8 @@ function viewRelatedRecord(recordId: string) {
   font-size: 13px;
   font-weight: 900;
   color: #31466f;
-  border-bottom: 1px solid #d9e5f7;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-border-muted);
+  border-right: 1px solid var(--color-admin-divider);
   background: #f4f7fc;
 }
 
@@ -605,10 +586,10 @@ function viewRelatedRecord(recordId: string) {
   height: 38px;
   padding: 0 12px;
   font-size: 13px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   text-align: center;
-  border-bottom: 1px solid #e5edf8;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-divider);
+  border-right: 1px solid var(--color-admin-divider);
 }
 
 .material-table th:last-child,
@@ -621,21 +602,6 @@ function viewRelatedRecord(recordId: string) {
 .material-table tr:last-child td,
 .related-table tr:last-child td {
   border-bottom: none;
-}
-
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: color 0.16s ease;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
 }
 
 .material-message {
@@ -655,9 +621,9 @@ function viewRelatedRecord(recordId: string) {
 .sidebar-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 24px 22px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .sidebar-title {
@@ -685,7 +651,7 @@ function viewRelatedRecord(recordId: string) {
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-divider);
 }
 
 .material-label {
@@ -710,7 +676,7 @@ function viewRelatedRecord(recordId: string) {
   margin: 0 0 10px;
   font-size: 14px;
   line-height: 1.75;
-  color: #172b55;
+  color: var(--color-admin-text-title);
 }
 
 .destination-text:last-child {

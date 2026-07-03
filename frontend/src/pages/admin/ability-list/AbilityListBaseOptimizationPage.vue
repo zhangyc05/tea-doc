@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { StatusBadge } from '@/components/common'
+import { useRouter } from 'vue-router'
+import { EmptyState, StatusBadge } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
@@ -8,10 +9,13 @@ import {
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
   getAbilityListState,
+  importPolicySuggestion,
+  rerunFeedbackAnalysis,
   updateOptimizationSuggestionStatus,
   type OptimizationSuggestion,
 } from '@/stores/admin/abilityListStore'
 
+const router = useRouter()
 const abilityListState = getAbilityListState()
 const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 
@@ -105,15 +109,24 @@ function applyToBaseTemplate() {
 }
 
 function uploadPolicy() {
-  operationMessage.set('已准备上传制度文件，用于补充优化建议来源。')
+  importPolicySuggestion()
+  selectedSource.value = 'policy'
+  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  operationMessage.fromStore(abilityListState)
 }
 
 function rerunAnalysis() {
-  operationMessage.set('已重新分析运行反馈，并刷新待确认建议。')
+  rerunFeedbackAnalysis()
+  selectedSource.value = 'feedback'
+  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  operationMessage.fromStore(abilityListState)
 }
 
 function viewVersionHistory() {
-  operationMessage.set('已打开基准模板版本记录入口。')
+  router.push({
+    path: '/admin/ability-list/base',
+    query: { versionHistory: '1' },
+  })
 }
 </script>
 
@@ -268,7 +281,7 @@ function viewVersionHistory() {
                   </td>
                 </tr>
                 <tr v-if="filteredSuggestions.length === 0">
-                  <td colspan="7" class="empty-cell">暂无符合条件的优化建议</td>
+                  <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的优化建议" />
                 </tr>
               </tbody>
             </table>
@@ -346,8 +359,8 @@ function viewVersionHistory() {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: #f6f9ff;
-  color: #17233d;
+  background: var(--color-admin-bg);
+  color: var(--color-admin-text-strong);
 }
 
 .page-root *,
@@ -360,13 +373,13 @@ function viewVersionHistory() {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 700;
 }
 
 .page-breadcrumb strong {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
 }
 
 .page-description {
@@ -379,7 +392,7 @@ function viewVersionHistory() {
 }
 
 .operation-message {
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 800;
 }
@@ -392,9 +405,9 @@ function viewVersionHistory() {
   gap: 24px;
   padding: 44px 42px;
   overflow: hidden;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 18px;
-  background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%);
+  background: linear-gradient(135deg, var(--color-admin-bg-soft) 0%, #eef7ff 100%);
 }
 
 .hero-icon {
@@ -404,7 +417,7 @@ function viewVersionHistory() {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #1268f6;
+  background: var(--color-admin-primary);
   color: #fff;
   box-shadow: 0 14px 24px rgba(18, 104, 246, 0.24);
   font-size: 38px;
@@ -412,7 +425,7 @@ function viewVersionHistory() {
 
 .hero-title {
   margin: 0 0 28px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 28px;
   font-weight: 900;
 }
@@ -445,14 +458,14 @@ function viewVersionHistory() {
 
 .stat-item strong {
   margin-top: 8px;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 30px;
   line-height: 1;
   font-weight: 900;
 }
 
 .stat-item strong.blue {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .stat-item strong.orange {
@@ -464,7 +477,7 @@ function viewVersionHistory() {
 }
 
 .stat-item b {
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
 }
 
@@ -499,7 +512,7 @@ function viewVersionHistory() {
   bottom: 28px;
   width: 72px;
   height: 138px;
-  background: linear-gradient(180deg, #1268f6, #78b8ff);
+  background: linear-gradient(180deg, var(--color-admin-primary), #78b8ff);
 }
 
 .hero-art b {
@@ -528,9 +541,9 @@ function viewVersionHistory() {
 
 .admin-card {
   background: #fff;
-  border: 1px solid #dce6f5;
+  border: 1px solid var(--color-admin-border);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 64, 110, 0.04);
+  box-shadow: var(--shadow-admin-card-faint);
   overflow: hidden;
 }
 
@@ -544,7 +557,7 @@ function viewVersionHistory() {
 
 .admin-card-title {
   margin: 0;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 17px;
   font-weight: 900;
 }
@@ -576,12 +589,12 @@ function viewVersionHistory() {
 }
 
 .source-item span {
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .source-item.active {
   background: #eaf2ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .filter-tags {
@@ -603,9 +616,9 @@ function viewVersionHistory() {
 }
 
 .filter-tag.active {
-  border-color: #1268f6;
+  border-color: var(--color-admin-primary);
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .admin-table-container {
@@ -623,7 +636,7 @@ function viewVersionHistory() {
 .admin-table td {
   padding: 15px 14px;
   border-top: 1px solid #e8eef7;
-  color: #17233d;
+  color: var(--color-admin-text-strong);
   font-size: 13px;
   line-height: 1.55;
   text-align: left;
@@ -632,7 +645,7 @@ function viewVersionHistory() {
 
 .admin-table th {
   background: #f7faff;
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 900;
 }
 
@@ -641,7 +654,7 @@ function viewVersionHistory() {
 }
 
 .admin-table-row.active {
-  outline: 2px solid #1268f6;
+  outline: 2px solid var(--color-admin-primary);
   outline-offset: -2px;
   background: #fbfdff;
 }
@@ -659,7 +672,7 @@ function viewVersionHistory() {
 
 .source-badge.feedback {
   background: #e8f0ff;
-  color: #1268f6;
+  color: var(--color-admin-primary);
 }
 
 .source-badge.policy {
@@ -686,7 +699,7 @@ function viewVersionHistory() {
 .btn-link {
   border: 0;
   background: transparent;
-  color: #1268f6;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
@@ -697,7 +710,7 @@ function viewVersionHistory() {
 }
 
 .detail-header {
-  border-bottom: 2px solid #1268f6;
+  border-bottom: 2px solid var(--color-admin-primary);
 }
 
 .suggestion-detail {
@@ -716,7 +729,7 @@ function viewVersionHistory() {
 }
 
 .detail-item span {
-  color: #66758f;
+  color: var(--color-admin-text-muted);
   font-weight: 800;
 }
 
@@ -746,8 +759,8 @@ function viewVersionHistory() {
 
 .btn-primary {
   padding: 0 24px;
-  border: 1px solid #1268f6;
-  background: #1268f6;
+  border: 1px solid var(--color-admin-primary);
+  background: var(--color-admin-primary);
   color: #fff;
 }
 
@@ -768,13 +781,7 @@ function viewVersionHistory() {
 .btn-link-large {
   border: 0;
   background: transparent;
-  color: #1268f6;
-}
-
-.empty-cell {
-  padding: 28px;
-  color: #8a98ad;
-  text-align: center;
+  color: var(--color-admin-primary);
 }
 
 @media (max-width: 1360px) {

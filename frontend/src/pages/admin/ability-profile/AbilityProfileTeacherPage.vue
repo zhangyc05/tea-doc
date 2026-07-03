@@ -225,7 +225,7 @@ function getAvatarTone(index: number): string {
   min-height: 100vh;
   padding: 0 0 24px;
   background: var(--color-page-bg, #f5f7fb);
-  color: var(--color-text-primary, #17233d);
+  color: var(--color-text-primary, var(--color-admin-text-strong));
 }
 
 .breadcrumb-line {
@@ -481,7 +481,7 @@ function getAvatarTone(index: number): string {
   justify-content: center;
   height: 28px;
   padding: 0 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
@@ -573,7 +573,7 @@ function getAvatarTone(index: number): string {
   align-items: center;
   min-height: 26px;
   padding: 0 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: #f3f7fc;
   color: #516178;
   font-size: 12px;

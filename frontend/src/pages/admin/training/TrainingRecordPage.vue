@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { StatusBadge } from '@/components/common'
+import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getTrainingState } from '@/stores/admin/trainingStore'
 
@@ -116,8 +117,8 @@ const filteredRecords = computed(() => {
                 <h2 class="card-title">培训记录</h2>
               </div>
               <!-- 筛选区 -->
-              <div class="filter-section">
-                <div class="filter-row">
+              <CompactFilterBar>
+                <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
                     <select v-model="selectedOrganization" class="filter-select">
@@ -135,37 +136,41 @@ const filteredRecords = computed(() => {
                     </select>
                   </div>
                   <div class="filter-item">
-	                    <label class="filter-label">培训方向</label>
+                    <label class="filter-label">培训方向</label>
                     <select v-model="selectedDirection" class="filter-select">
-	                      <option>全部</option>
-	                      <option>数字化教学</option>
-	                      <option>实践教学</option>
-	                      <option>AI 赋能课程建设</option>
-	                      <option>课程思政</option>
-	                    </select>
+                      <option>全部</option>
+                      <option>数字化教学</option>
+                      <option>实践教学</option>
+                      <option>AI 赋能课程建设</option>
+                      <option>课程思政</option>
+                    </select>
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">材料情况</label>
                     <select v-model="selectedMaterialStatus" class="filter-select">
                       <option>全部</option>
                       <option>记录完整</option>
-	                      <option>待总结</option>
-	                      <option>证书待补</option>
-	                      <option>学习中</option>
-	                    </select>
+                      <option>待总结</option>
+                      <option>证书待补</option>
+                      <option>学习中</option>
+                    </select>
                   </div>
-                  <button class="btn-reset" @click="resetFilters">重置</button>
-                </div>
-                <div class="search-row">
+                </template>
+                <template #search>
                   <input
                     v-model="searchQuery"
                     type="text"
                     placeholder="搜索教师、培训名称"
                     class="search-input"
                   />
-                </div>
-                <p v-if="reminderMessage" class="filter-message">{{ reminderMessage }}</p>
-              </div>
+                </template>
+                <template #actions>
+                  <Button variant="outline" @click="resetFilters">重置</Button>
+                </template>
+                <template #message>
+                  <p v-if="reminderMessage" class="filter-message">{{ reminderMessage }}</p>
+                </template>
+              </CompactFilterBar>
 
               <!-- 数据表格 -->
               <div class="table-container">
@@ -192,13 +197,13 @@ const filteredRecords = computed(() => {
                         <StatusBadge :status="record.materialStatus" />
                       </td>
                       <td>
-                        <button class="btn-view" @click="viewDetail(record.id)">
+                        <Button variant="ghost" size="sm" @click="viewDetail(record.id)">
                           查看
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     <tr v-if="filteredRecords.length === 0">
-                      <td colspan="7" class="empty-cell">暂无符合条件的培训记录</td>
+                      <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的培训记录" />
                     </tr>
                   </tbody>
                 </table>
@@ -230,9 +235,9 @@ const filteredRecords = computed(() => {
                     <div class="reminder-desc">18 位教师需要补充培训证书</div>
 	                </div>
 	              </div>
-	              <button class="btn-primary full-width" @click="viewIncompleteMaterials">
+	              <Button class="full-width" @click="viewIncompleteMaterials">
 	                查看材料待完善记录
-	              </button>
+	              </Button>
             </div>
             </div>
           </div>
@@ -245,7 +250,7 @@ const filteredRecords = computed(() => {
 <style scoped>
 .training-record-page {
   min-height: 100vh;
-  background: #f6f9ff;
+  background: var(--color-admin-bg);
 }
 
 .training-record-page *,
@@ -269,7 +274,7 @@ const filteredRecords = computed(() => {
   gap: 12px;
   margin-bottom: 20px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
 }
 
@@ -311,8 +316,8 @@ const filteredRecords = computed(() => {
   padding: 26px 28px;
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  border: 1px solid var(--color-admin-border-muted);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .stat-icon {
@@ -369,7 +374,7 @@ const filteredRecords = computed(() => {
 
 .stat-value span {
   font-size: 16px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 800;
 }
 
@@ -387,7 +392,7 @@ const filteredRecords = computed(() => {
 
 .stat-label {
   font-size: 16px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   font-weight: 900;
   margin-bottom: 8px;
 }
@@ -417,9 +422,9 @@ const filteredRecords = computed(() => {
 .content-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .card-header {
@@ -431,18 +436,6 @@ const filteredRecords = computed(() => {
   font-size: 20px;
   font-weight: 900;
   color: #07183d;
-}
-
-.filter-section {
-  padding: 16px 24px 18px;
-}
-
-.filter-row {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
 }
 
 .filter-item {
@@ -465,25 +458,20 @@ const filteredRecords = computed(() => {
   border: 1px solid #d6e2f3;
   border-radius: 6px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   background: #fff;
   cursor: pointer;
   outline: none;
 }
 
-.search-row {
-  display: flex;
-  max-width: 380px;
-}
-
 .search-input {
-  flex: 1;
+  width: 100%;
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d6e2f3;
   border-radius: 6px;
   font-size: 14px;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   outline: none;
   transition: border-color 0.16s ease;
 }
@@ -491,22 +479,6 @@ const filteredRecords = computed(() => {
 .search-input:focus,
 .filter-select:focus {
   border-color: #0f5eef;
-}
-
-.btn-reset {
-  height: 40px;
-  padding: 0 8px;
-  background: transparent;
-  border: 0;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-reset:hover {
-  color: #0c4fd0;
 }
 
 .filter-message {
@@ -524,7 +496,7 @@ const filteredRecords = computed(() => {
 .record-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   border-radius: 8px;
   overflow: hidden;
   table-layout: fixed;
@@ -537,8 +509,8 @@ const filteredRecords = computed(() => {
   font-size: 13px;
   font-weight: 900;
   color: #31466f;
-  border-bottom: 1px solid #d9e5f7;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-border-muted);
+  border-right: 1px solid var(--color-admin-divider);
   background: #f4f7fc;
 }
 
@@ -547,10 +519,10 @@ const filteredRecords = computed(() => {
   padding: 0 14px;
   font-size: 13px;
   line-height: 1.65;
-  color: #172b55;
+  color: var(--color-admin-text-title);
   text-align: center;
-  border-bottom: 1px solid #e5edf8;
-  border-right: 1px solid #e5edf8;
+  border-bottom: 1px solid var(--color-admin-divider);
+  border-right: 1px solid var(--color-admin-divider);
   vertical-align: middle;
 }
 
@@ -573,27 +545,7 @@ const filteredRecords = computed(() => {
 
 .record-table td:first-child {
   font-weight: 800;
-  color: #172b55;
-}
-
-.btn-view {
-  padding: 0;
-  background: transparent;
-  color: #0f5eef;
-  border: none;
-  font-size: 13px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: color 0.16s ease;
-}
-
-.btn-view:hover {
-  color: #0c4fd0;
-}
-
-.empty-cell {
-  height: 96px;
-  color: #7586a6;
+  color: var(--color-admin-text-title);
 }
 
 .table-footer {
@@ -623,9 +575,9 @@ const filteredRecords = computed(() => {
 .sidebar-card {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #d9e5f7;
+  border: 1px solid var(--color-admin-border-muted);
   padding: 24px;
-  box-shadow: 0 8px 22px rgba(40, 88, 150, 0.035);
+  box-shadow: var(--shadow-admin-card-soft);
 }
 
 .sidebar-title {
@@ -688,23 +640,6 @@ const filteredRecords = computed(() => {
   font-size: 14px;
   line-height: 1.75;
   color: #405985;
-}
-
-.btn-primary {
-  height: 46px;
-  padding: 0 18px;
-  background: #0f5eef;
-  color: white;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-.btn-primary:hover {
-  background: #0c4fd0;
 }
 
 .full-width {

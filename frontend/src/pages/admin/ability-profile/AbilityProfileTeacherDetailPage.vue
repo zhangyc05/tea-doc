@@ -578,7 +578,7 @@ td {
 }
 
 th {
-  background: #f8fbff;
+  background: var(--color-admin-bg-soft);
   color: #10213d;
   font-weight: 800;
 }
