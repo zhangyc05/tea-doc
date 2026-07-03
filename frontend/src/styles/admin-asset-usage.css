@@ -1,1 +1,475 @@
-/* 管理端页面资源包接入：补齐已入库但尚未被页面消费的 SVG/PNG 资产。 */
+/* 管理端页面资源包接入：补齐已入库但尚未被页面消费的 SVG/PNG 资产。
+   这些规则仅做资产映射，不改动业务数据和交互逻辑。 */
+
+/* ==================== 能力画像：群体画像资源包 ==================== */
+
+.ability-profile-group-page .score-card::after {
+  position: absolute;
+  right: clamp(18px, 1.5vw, 30px);
+  top: clamp(18px, 1.4vw, 28px);
+  width: clamp(48px, 3.4vw, 66px);
+  height: clamp(48px, 3.4vw, 66px);
+  pointer-events: none;
+  background: url('../assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-emblem.svg') center / contain no-repeat;
+  opacity: 0.16;
+  content: '';
+}
+
+.ability-profile-group-page .score-illustration {
+  background: url('../assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-art.png') center / contain no-repeat !important;
+}
+
+.ability-profile-group-page .score-illustration .folder-shape,
+.ability-profile-group-page .score-illustration .chart-shape {
+  display: none !important;
+}
+
+.ability-profile-group-page .score-card .section-heading::before,
+.ability-profile-group-page .analysis-card .radar-panel .section-heading::before,
+.ability-profile-group-page .baseline-card .section-heading::before,
+.ability-profile-group-page .support-card .section-heading::before {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: '';
+}
+
+.ability-profile-group-page .score-card .section-heading::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-index-development.svg');
+}
+
+.ability-profile-group-page .analysis-card .radar-panel .section-heading::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-radar-analysis.svg');
+}
+
+.ability-profile-group-page .baseline-card .section-heading::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-baseline-year.svg');
+}
+
+.ability-profile-group-page .support-card .section-heading::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-support-service-unified.svg');
+}
+
+.ability-profile-group-page .info-dot {
+  border: 0 !important;
+  background: url('../assets/admin/ability-group-portrait-assets/icons/icon-info.svg') center / contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.ability-profile-group-page .status-line .check-dot {
+  background: url('../assets/admin/ability-group-portrait-assets/icons/icon-basic-qualified.svg') center / contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.ability-profile-group-page .dimension-icon {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 17px 17px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.ability-profile-group-page .dimension-name.blue .dimension-icon {
+  background-color: #0b63f6 !important;
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-ability-teaching.svg') !important;
+}
+
+.ability-profile-group-page .dimension-name.green .dimension-icon {
+  background-color: #16b569 !important;
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-ability-research.svg') !important;
+}
+
+.ability-profile-group-page .dimension-name.orange .dimension-icon {
+  background-color: #ff7a00 !important;
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-ability-practice.svg') !important;
+}
+
+.ability-profile-group-page .dimension-name.purple .dimension-icon {
+  background-color: #7657ff !important;
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-ability-service.svg') !important;
+}
+
+.ability-profile-group-page .direction-icon {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 18px 18px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.ability-profile-group-page .direction-card:nth-child(1) .direction-icon {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-support-course-resource.svg') !important;
+}
+
+.ability-profile-group-page .direction-card:nth-child(2) .direction-icon {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-support-practice-transform.svg') !important;
+}
+
+.ability-profile-group-page .direction-card:nth-child(3) .direction-icon {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-support-research-team.svg') !important;
+}
+
+.ability-profile-group-page .direction-card:nth-child(4) .direction-icon {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-support-service-unified.svg') !important;
+}
+
+.ability-profile-group-page .focus-tabs .tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ability-profile-group-page .focus-tabs .tab-btn::before {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: '';
+}
+
+.ability-profile-group-page .focus-tabs .tab-btn:nth-child(1)::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-tab-college.svg');
+}
+
+.ability-profile-group-page .focus-tabs .tab-btn:nth-child(2)::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-tab-major.svg');
+}
+
+.ability-profile-group-page .focus-tabs .tab-btn:nth-child(3)::before {
+  background-image: url('../assets/admin/ability-group-portrait-assets/icons/icon-tab-teacher.svg');
+}
+
+.ability-profile-group-page .focus-table td:last-child button::before {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  background: url('../assets/admin/ability-group-portrait-assets/icons/icon-action-view-portrait.svg') center / contain no-repeat;
+  vertical-align: -2px;
+  content: '';
+}
+
+/* ==================== 成长档案：档案处理资源包 ==================== */
+
+.archive-processing-page .hero-art {
+  background-image: url('../assets/admin/archive-processing-assets/archive-processing-hero-art.png') !important;
+}
+
+.archive-processing-page .hero-emblem {
+  background: linear-gradient(145deg, #eaf3ff 0%, #cfe3ff 100%) !important;
+}
+
+.archive-processing-page .hero-emblem svg {
+  display: none !important;
+}
+
+.archive-processing-page .hero-emblem::before {
+  width: 62%;
+  height: 62%;
+  background: url('../assets/admin/archive-processing-assets/archive-processing-hero-emblem.svg') center / contain no-repeat;
+  content: '';
+}
+
+.archive-processing-page .stat-icon {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 27px 27px !important;
+}
+
+.archive-processing-page .stat-icon svg {
+  display: none !important;
+}
+
+.archive-processing-page .stat-card.confirm .stat-icon {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-confirm.svg') !important;
+}
+
+.archive-processing-page .stat-card.verify .stat-icon {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-verify.svg') !important;
+}
+
+.archive-processing-page .stat-card.supplement .stat-icon {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-complete.svg') !important;
+}
+
+.archive-processing-page .stat-card.exception .stat-icon {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-exception.svg') !important;
+}
+
+.archive-processing-page .stat-card.returning .stat-icon {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-withdrawing.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-dot {
+  width: 16px !important;
+  height: 16px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(1) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-confirm.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(2) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-confirm.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(3) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-verify.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(4) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-pending-complete.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(5) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-exception.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(6) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-withdrawing.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:first-of-type .filter-item:nth-child(7) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-status-archived.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(1) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-all.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(2) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-development.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(3) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-department-upload.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(4) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-teaching-research.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(5) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-public-collection.svg') !important;
+}
+
+.archive-processing-page .filter-sidebar .filter-group:nth-of-type(2) .filter-item:nth-child(6) .filter-dot {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-source-research-report.svg') !important;
+}
+
+.archive-import-upload-page .file-type {
+  min-width: 58px;
+  padding-left: 28px !important;
+  background-position: 8px center !important;
+  background-repeat: no-repeat !important;
+  background-size: 15px 15px !important;
+}
+
+.archive-import-upload-page .file-type.excel {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-file-excel.svg') !important;
+}
+
+.archive-import-upload-page .file-type.pdf {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-file-pdf.svg') !important;
+}
+
+.archive-import-upload-page .file-type.word {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-file-word.svg') !important;
+}
+
+.archive-import-upload-page .file-type.image {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-file-image.svg') !important;
+}
+
+.archive-import-upload-page .file-type.zip {
+  background-image: url('../assets/admin/archive-processing-assets/icons/icon-file-unknown.svg') !important;
+}
+
+/* ==================== 成长档案：档案查阅资源包 ==================== */
+
+.archive-query-page .hero-art {
+  background-image: url('../assets/admin/archive-query-assets/archive-query-hero-art.png') !important;
+}
+
+.archive-query-page .hero-icon svg {
+  display: none !important;
+}
+
+.archive-query-page .hero-icon::before {
+  width: 58%;
+  height: 58%;
+  background: url('../assets/admin/archive-query-assets/archive-query-hero-emblem.svg') center / contain no-repeat;
+  content: '';
+}
+
+.archive-query-page .hero-stat-icon {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 50% 50% !important;
+}
+
+.archive-query-page .hero-stat-icon svg {
+  display: none !important;
+}
+
+.archive-query-page .hero-stat-card.primary .hero-stat-icon {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-stat-queryable-teacher.svg') !important;
+}
+
+.archive-query-page .hero-stat-card.success .hero-stat-icon {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-stat-recent-update.svg') !important;
+}
+
+.archive-query-page .hero-stat-card.warning .hero-stat-icon {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-stat-content-complete.svg') !important;
+}
+
+.archive-query-page .hero-stat-card.info .hero-stat-icon {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-stat-correction.svg') !important;
+}
+
+.archive-query-page .filter-controls .filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.archive-query-page .filter-controls .filter-label::before {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: '';
+}
+
+.archive-query-page .filter-controls .filter-group:nth-of-type(1) .filter-label::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-filter-college.svg');
+}
+
+.archive-query-page .filter-controls .filter-group:nth-of-type(2) .filter-label::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-filter-title.svg');
+}
+
+.archive-query-page .filter-controls .filter-group:nth-of-type(3) .filter-label::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-filter-update.svg');
+}
+
+.archive-query-page .search-action::before,
+.archive-query-page .filter-controls > button::before {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: -2px;
+  content: '';
+}
+
+.archive-query-page .search-action::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-action-search.svg');
+}
+
+.archive-query-page .filter-controls > button::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-action-reset.svg');
+}
+
+.archive-query-page .view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.archive-query-page .view-btn::before {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: '';
+}
+
+.archive-query-page .view-btn:nth-child(1)::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-view-grid.svg');
+}
+
+.archive-query-page .view-btn:nth-child(2)::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-view-list.svg');
+}
+
+.archive-query-page .avatar-circle {
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  box-shadow: 0 4px 12px rgba(14, 93, 190, 0.12) !important;
+}
+
+.archive-query-page .avatar-circle::before,
+.archive-query-page .avatar-circle::after {
+  display: none !important;
+}
+
+.archive-query-page .avatar-lin {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-female-01.svg') !important;
+}
+
+.archive-query-page .avatar-chen {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-male-01.svg') !important;
+}
+
+.archive-query-page .avatar-wang {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-male-02.svg') !important;
+}
+
+.archive-query-page .avatar-liu {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-female-02.svg') !important;
+}
+
+.archive-query-page .avatar-zhao {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-female-03.svg') !important;
+}
+
+.archive-query-page .avatar-zhou {
+  background-image: url('../assets/admin/archive-query-assets/avatars/avatar-teacher-male-03.svg') !important;
+}
+
+.archive-query-page .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.archive-query-page .tag::before {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  background: url('../assets/admin/archive-query-assets/icons/icon-tag-complete.svg') center / contain no-repeat;
+  content: '';
+}
+
+.archive-query-page .tag:nth-child(2)::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-tag-teaching.svg');
+}
+
+.archive-query-page .tag:nth-child(3)::before {
+  background-image: url('../assets/admin/archive-query-assets/icons/icon-tag-practice.svg');
+}
