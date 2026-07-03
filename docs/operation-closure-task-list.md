@@ -76,11 +76,12 @@
 | OC-P2-01 | 已补代码并通过目标验证 | 管理端教师成长档案导出新增 `archiveStore.exportRecords` 本地导出记录，记录教师、周期、事实数量、文件名、状态和操作人；教师档案详情页导出 PDF 调用 `createTeacherArchiveExportRecord()` 并显示最近导出记录，同时保留 mock 文本文件下载；`test:stores -- archiveStore.test.ts` 和 `typecheck` 已通过 |
 | OC-P2-02 | 已补代码并通过目标验证 | 管理端实践导出新增 `practiceStore.exportTasks` 本地模拟导出任务，年度实践跟踪“导出名单”和实践记录“导出记录”按当前筛选结果写入导出中、已完成或失败状态，并展示最近任务文件名、条数和失败原因；`test:stores -- practiceStore.test.ts` 已通过 |
 | OC-P2-03 | 已补代码并通过目标验证 | 管理端群体画像新增 `calculateAbilityProfileGroup()`，基于教师画像、正式档案事实和执行版指标聚合综合指数、雷达分、维度分布、发展支持方向和关注对象；群体画像页读取 `archiveStore.teacherArchiveFacts` 与 `abilityListStore.executionIndicators`，不再只依赖固定静态 mock；`test -- ability-profile.test.ts` 已通过 |
+| OC-P2-04 | 已完成复扫并通过目标验证 | 已复扫本轮改造相关管理端页面的原生 `button`、公共 `Button`、`operationMessage`、`console.log`、旧导出纯提示和无效锚点；`adminVisualActions.test.ts` 65 个用例通过，未发现空动作按钮回归 |
 
 ## 7. 建议执行顺序
 
-1. 继续执行 `OC-P2-04` 管理端新增页面按钮防回归复扫。
-2. 完成复扫后统一跑管理端全量 `test`、`typecheck` 和 `build`。
+1. 当前清单中的 `OC-P0-01` 至 `OC-P2-04` 已完成。
+2. 后续如新增页面或按钮，继续按本文档完成标准复扫并同步业务地图 / 页面台账。
 
 ## 8. 暂不纳入当前闭环的事项
 

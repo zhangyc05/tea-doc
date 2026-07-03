@@ -645,7 +645,7 @@ function applyFilters() {
 }
 
 .export-task {
-  margin-top: 12px;
+  margin-top: var(--space-admin-sm);
   padding: 10px 12px;
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-sm);
