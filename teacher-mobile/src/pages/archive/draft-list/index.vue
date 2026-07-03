@@ -5,11 +5,14 @@ import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
 import {
+  getArchiveDraftRecords,
   getArchiveRecordStatusLabel,
   getPendingArchiveRecords,
+  type ArchiveDevelopmentPlanDraft,
   type MobileArchiveRecord,
 } from '../../../domain/archive'
 
+const draftRecords = getArchiveDraftRecords()
 const pendingRecords = getPendingArchiveRecords()
 
 function goBack() {
@@ -18,6 +21,12 @@ function goBack() {
 
 function goArchiveQuery() {
   uni.navigateTo({ url: '/pages/archive/record-query/index' })
+}
+
+function goDraft(draft: ArchiveDevelopmentPlanDraft) {
+  uni.navigateTo({
+    url: `/pages/archive/development-plan-edit/index?draftId=${draft.id}`,
+  })
 }
 
 function goRecord(record: MobileArchiveRecord) {
@@ -37,16 +46,44 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
 
     <MobileCard class="summary-card">
       <view class="summary-copy">
-        <text class="summary-title">待确认 / 待核验</text>
-        <text class="summary-desc">这些记录已经由待办或活动流程提交，确认通过后才会成为正式档案事实。</text>
+        <text class="summary-title">草稿 / 待确认</text>
+        <text class="summary-desc">草稿可继续编辑；已提交记录确认通过后才会成为正式档案事实。</text>
       </view>
       <view class="summary-count">
-        <text class="summary-number">{{ pendingRecords.length }}</text>
+        <text class="summary-number">{{ draftRecords.length + pendingRecords.length }}</text>
         <text class="summary-label">条</text>
       </view>
     </MobileCard>
 
     <view class="record-list">
+      <MobileCard
+        v-for="draft in draftRecords"
+        :key="draft.id"
+        class="record-card"
+        @tap="goDraft(draft)"
+      >
+        <view class="record-head">
+          <MobileStatusTag tone="blue">草稿</MobileStatusTag>
+          <text class="record-date">{{ draft.updatedAt }}</text>
+        </view>
+        <text class="record-title">{{ draft.title }}</text>
+        <text class="record-summary">{{ draft.target }}</text>
+        <view class="record-meta-grid">
+          <view class="record-meta">
+            <text class="record-meta-label">分类</text>
+            <text class="record-meta-value">{{ draft.categoryName }}</text>
+          </view>
+          <view class="record-meta">
+            <text class="record-meta-label">状态</text>
+            <text class="record-meta-value">可继续编辑</text>
+          </view>
+        </view>
+        <view class="record-foot">
+          <text class="record-foot-text">继续编辑草稿</text>
+          <view class="record-arrow"></view>
+        </view>
+      </MobileCard>
+
       <MobileCard
         v-for="record in pendingRecords"
         :key="record.id"
@@ -75,7 +112,7 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
         </view>
       </MobileCard>
 
-      <MobileCard v-if="pendingRecords.length === 0" class="empty-card">
+      <MobileCard v-if="draftRecords.length + pendingRecords.length === 0" class="empty-card">
         <text class="empty-title">暂无待确认记录</text>
         <text class="empty-desc">提交培训、企业实践或教研材料后，可在这里查看归档确认进度。</text>
         <MobileActionButton class="empty-button" variant="outline" @tap="goArchiveQuery">

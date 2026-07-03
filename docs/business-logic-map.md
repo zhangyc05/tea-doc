@@ -579,6 +579,7 @@
 | 档案分类 | 基本信息、教学工作、教研科研、企业实践、社会服务、成果荣誉、个人发展、考核评价等维度 | `teacher-mobile/src/pages/archive/category/index.vue`，由 `archive/index.vue` 分类卡片进入 |
 | 档案记录 | 某一维度下已经入档或可查询的个人成长记录 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/record-list/index.vue`、`teacher-mobile/src/pages/archive/record-query/index.vue` |
 | 档案记录详情 | 单条档案事实的详情、来源、材料、用途和更正入口 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/record-detail/index.vue` |
+| 档案草稿 | 教师尚未提交核验的个人发展计划等草稿记录 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/draft-list/index.vue`、`teacher-mobile/src/pages/archive/development-plan-edit/index.vue` |
 | 档案来源 | 待办确认、培训归档、企业实践核验、虚拟教研归档等形成档案事实的来源 | `teacher-mobile/src/pages/todo/*`、`teacher-mobile/src/pages/activity/*` |
 | 档案更正 | 教师发现入档事实有误后发起更正、补充材料并查看处理进度 | `teacher-mobile/src/pages/archive/correction/apply/index.vue`、`teacher-mobile/src/pages/archive/correction/submitted/index.vue`、`teacher-mobile/src/pages/archive/correction/progress/index.vue`、`teacher-mobile/src/pages/archive/correction/result/index.vue` 和 `teacher-mobile/src/pages/archive/correction/supplement/index.vue` 已接入；`profile/index.vue` 的“信息更正进度”已进入进度页 |
 | 入档结果 | 业务流程完成后提示等待归档确认、待核验或管理端确认后的已入档结果态 | `certificate-archive-success`、`training-archive-result`、`enterprise-archive-success`、`virtual-research-archive-result` 等 |
@@ -591,7 +592,8 @@
 | 档案分类 | 有记录、无记录、最近更新、需补充 | 分类卡片、分类概览页和记录列表页已从 `domain/archive.ts` 读取分类摘要和记录；首页统计由 `getArchiveOverviewStats()` 计算 | 已有分类到列表到详情的本地同源闭环，分类数量随记录状态计算 |
 | 档案查询 | 有结果、无结果、按分类筛选、关键词搜索 | 查询页调用 `searchArchiveRecords(queryText, selectedFilter)`，支持关键词、分类和无结果态 | 已接入真实搜索参数的本地实现 |
 | 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写 |
-| 入档结果 | 等待确认、待核验、已入档、归档失败、需补充 | 培训和待办证书均为“归档确认中 / 待核验”，虚拟教研为“已归档”，企业实践旧成功页仍需继续统一到待确认口径 | 待办证书已不直接入档；企业实践遗留结果页后续继续收敛 |
+| 档案草稿 | 草稿、已提交核验 | `ArchiveDevelopmentPlanDraft` 由 `getArchiveDraftRecords()`、`saveArchiveDevelopmentPlanDraft()` 和 `submitArchiveDevelopmentPlanDraft()` 维护 | 已补发展计划草稿编辑第一版；提交后生成 `pending-verify` 档案记录，不直接入档 |
+| 入档结果 | 等待确认、待核验、已入档、归档失败、需补充 | 培训、待办证书和企业实践均为“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实 | 手机端归档结果已统一为先进入 `archiveStore.processingRecords`，管理端确认后才产生正式已入档 |
 | 档案更正 | 更正申请中、需补充、已通过、未通过 | 更正申请调用 `submitArchiveCorrection()` 生成真实更正记录；进度和结果页按 `correctionId` 读取，需补充会回写档案记录状态，补充材料调用 `submitArchiveCorrectionSupplement()` | 已接入更正记录、补充材料状态和待核验状态；仍待真实附件上传 |
 
 ### 12.3 主流程
@@ -633,14 +635,21 @@
 | 档案首页 | 查看全部最近入档 | `uni.navigateTo('/pages/archive/record-list/index?category=all')` | 已闭环到记录列表页第一版 |
 | 档案首页 | 点击最近入档记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
 | 档案分类 | 查看列表 / 查看全部记录 | `uni.navigateTo('/pages/archive/record-list/index?category=...')` | 已闭环到记录列表页第一版 |
-| 档案分类 | 点击近期记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
+| 档案分类 | 点击基本信息近期记录 | `uni.navigateTo('/pages/archive/basic-info-detail/index?recordId=...')` | 已闭环到基本信息详情页第一版，读取 `basic-info-teacher-profile` 并追溯 `teacherArchiveFacts` |
+| 档案分类 | 点击其他分类近期记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
 | 档案记录列表 | 搜索 | `uni.navigateTo('/pages/archive/record-query/index')` | 已闭环到查询页 |
 | 档案记录列表 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
-| 待确认列表 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并展示归档确认进度 |
+| 待确认 / 草稿列表 | 点击草稿 | `uni.navigateTo('/pages/archive/development-plan-edit/index?draftId=...')` | 已闭环到发展计划草稿编辑页第一版，按 `draftId` 读取同源草稿 |
+| 待确认 / 草稿列表 | 点击待核验记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并展示归档确认进度 |
 | 档案查询 | 返回 | `uni.navigateBack()` | 已闭环到上一页 |
 | 档案查询 | 清除关键词 | 清空本页关键词展示并重置筛选，调用 `searchArchiveRecords()` 重新计算 | 已形成本页搜索状态闭环 |
 | 档案查询 | 分类筛选 | 本页按 `selectedFilter` 调用 `searchArchiveRecords(queryText, selectedFilter)` | 已形成本页筛选闭环 |
 | 档案查询 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
+| 基本信息详情 | 查看来源记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=basic-info-teacher-profile')` | 已闭环到统一记录详情页，可查看同一档案事实的来源、材料和引用用途 |
+| 基本信息详情 | 申请更正 | `uni.navigateTo('/pages/archive/correction/apply/index?recordId=basic-info-teacher-profile')` | 已闭环到更正申请页第一版，后续生成待核验更正记录 |
+| 发展计划编辑 | 保存草稿 | 调用 `saveArchiveDevelopmentPlanDraft()` | 已写回本地草稿状态，不生成正式档案事实 |
+| 发展计划编辑 | 提交核验 | 调用 `submitArchiveDevelopmentPlanDraft()` 后进入 `/pages/archive/record-detail/index?recordId=...` | 已生成个人发展维度 `pending-verify` 档案记录，追溯 `archiveStore.processingRecords` |
+| 发展计划编辑 | 返回草稿 | `uni.navigateTo('/pages/archive/draft-list/index')` | 已闭环回草稿 / 待确认列表 |
 | 档案详情 | 申请更正 | `uni.navigateTo('/pages/archive/correction/apply/index?recordId=...')` | 已闭环到更正申请页第一版 |
 | 更正申请 | 查看原档案 / 返回详情 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已保留原档案上下文 |
 | 更正申请 | 提交申请 | 调用 `submitArchiveCorrection()` 后进入提交结果页并携带 `correctionId` | 已生成本地真实更正记录，状态为待核验 |
@@ -654,8 +663,8 @@
 | 培训归档提交结果 | 返回培训进修 | `uni.navigateTo('/pages/activity/training/index')` | 已闭环到活动页 |
 | 培训归档提交结果 | 查看提交内容 | 培训总结页调用 `createTrainingArchiveRecord()` 后传入 `recordId`，结果页进入 `/pages/archive/record-detail/index?recordId=...` | 已生成 / 定位本地待核验档案记录，并保持“归档确认中”口径 |
 | 培训归档提交结果 | 查看档案待确认 | `uni.navigateTo('/pages/archive/draft-list/index')` | 已闭环到待确认 / 待核验列表 |
-| 企业实践已入档 | 查看档案详情 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=enterprise-practice-shandong-software')` | 已闭环到统一记录详情页第一版 |
-| 企业实践已入档 | 返回首页 | `uni.navigateTo('/pages/activity/index')` | 已闭环到活动首页 |
+| 企业实践等待确认 | 查看提交内容 | `enterprise-archive-success` 调用 `createEnterprisePracticeArchiveRecord()` 后进入 `/pages/archive/record-detail/index?recordId=...` | 已生成 / 定位本地待核验档案记录，不直接写正式档案事实 |
+| 企业实践等待确认 | 查看档案待确认 / 返回首页 | 分别进入 `/pages/archive/draft-list/index` 和 `/pages/activity/index` | 已闭环到待确认列表和活动首页 |
 | 虚拟教研归档结果 | 目标“成长档案 · 教研科研维度” | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，两个归档结果页分别定位对应教研记录 |
 | 我的主页 | 信息更正进度 | `uni.navigateTo('/pages/archive/correction/progress/index?recordId=certificate-digital-literacy&status=pending-verify')` | 已闭环到更正进度页第一版；仍缺真实个人更正申请列表 |
 
@@ -665,9 +674,11 @@
 | --- | --- | --- |
 | 档案首页 | `pages/archive/index` | 保留概览、分类入口、最近入档 |
 | 分类概览 | `pages/archive/category/index` | 已新增第一版，用 `category` 参数承接基本信息、教学工作、教研科研、企业实践、社会服务、成果荣誉、个人发展、考核评价，并读取 `domain/archive.ts` |
+| 基本信息详情 | `pages/archive/basic-info-detail/index` | 已新增第一版，读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历、来源追溯和管理端 `teacherArchiveFacts` 引用 |
 | 分类记录列表 | `pages/archive/record-list/index` | 已新增第一版，承接分类下记录、空状态、搜索入口和详情跳转，并读取 `domain/archive.ts` |
 | 档案记录查询 | `pages/archive/record-query/index` | 保留关键词搜索和跨分类结果列表，并读取 `domain/archive.ts` |
-| 待确认列表 | `pages/archive/draft-list/index` | 已新增第一版，承接 `pending-verify` 记录、空状态和确认进度下钻 |
+| 待确认 / 草稿列表 | `pages/archive/draft-list/index` | 已新增第一版，承接本地草稿、`pending-verify` 记录、空状态和确认进度下钻 |
+| 发展计划编辑 | `pages/archive/development-plan-edit/index` | 已新增第一版，承接个人发展计划草稿编辑、保存草稿和提交核验 |
 | 记录详情 | `pages/archive/record-detail/index` | 已新增第一版，统一承接教学评价详情、企业实践详情、培训证书详情、教研记录详情等 |
 | 更正申请 | `pages/archive/correction/apply/index` | 已新增第一版，从记录详情按 `recordId` 发起更正，支持选择原因、补充说明和查看原材料 |
 | 更正已提交 | `pages/archive/correction/submitted/index` | 已新增第一版，承接申请提交后的待核验结果，可回原档案或进入更正进度页 |
@@ -677,11 +688,11 @@
 
 ### 12.6 后续审计点
 
-1. 档案 54 张效果图不是当前 11 个档案页面能覆盖的“一页多状态”；分类概览、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，基础信息详情、草稿编辑等仍需独立补齐。
+1. 档案 54 张效果图不是当前 13 个档案页面能覆盖的“一页多状态”；分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，后续重点转为真实附件预览、真实接口和剩余来源详情。
 2. 当前档案首页的 8 个分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档直达统一记录详情；首页、分类、列表、待确认和详情已读取 `teacher-mobile/src/domain/archive.ts` 同源记录，后续重点转为接管理端 `archiveStore` 或真实接口。
 3. 当前档案查询页已读取 `domain/archive.ts`，支持本页筛选、清空关键词、无结果态和按 `recordId` 进入统一记录详情页第一版；搜索参数由 `searchArchiveRecords()` 承接。
 4. 待办证书、培训、企业实践、虚拟教研和 AI 助手补充档案的结果页已按 `recordId` 接入统一记录详情页第一版；AI 助手补充档案和培训归档会先生成 / 定位本地 `pending-verify` 记录，首页数量和分类统计已按本地状态计算，后续仍需写回真实管理端 `archiveStore.processingRecords`。
-5. 入档口径继续收敛：培训和待办证书已保持“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实；企业实践旧成功页仍需统一到待确认口径。
+5. 入档口径继续收敛：培训、待办证书和企业实践已保持“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实；正式已入档仍只能来自管理端确认。
 6. “个人发展”证书、“教研科研”“企业实践”等结果页已可查看统一详情，分类记录列表已有第一版；仍缺真实详情数据和跨来源状态同步。
 7. 统一记录详情页已展示引用用途和来源追溯第一版，并可进入更正申请、待核验结果页、进度页、处理结果页和补充材料页；更正提交记录和状态回写已接入本地 domain，后续需接真实附件上传、来源记录和管理端 `archiveStore.processingRecords` / `teacherArchiveFacts`。
 
@@ -906,7 +917,7 @@
 | 实践日志 | 实践过程中的日志记录和归档后的日志详情 | `enterprise-log-record/index.vue`、`enterprise-log-list/index.vue`、`enterprise-workflow-config/index.vue` |
 | 证明材料 | 企业实践证明、单位盖章材料、过程照片、成果材料等佐证 | `enterprise-proof-upload/index.vue`、`enterprise-proof-supplement/index.vue`、`enterprise-advanced-search/index.vue` |
 | 总结与归档材料 | 实践总结、日志、附件确认后形成的归档提交材料 | `enterprise-login-history/index.vue`、`enterprise-archive-edit/index.vue` |
-| 归档结果 | 提交归档后的等待确认或已入档结果 | `enterprise-archive-result/index.vue`、`enterprise-archive-success/index.vue` |
+| 归档结果 | 提交归档后的等待确认结果 | `enterprise-archive-result/index.vue`、`enterprise-archive-success/index.vue` |
 | 补充材料记录 | 归档或历史实践被退回后重新补充并提交核验的记录 | `enterprise-supplement-needed/index.vue`、`enterprise-resupplement/index.vue`、`enterprise-supplement-submitted/index.vue`、`enterprise-history-supplement-needed/index.vue` |
 | 历史实践补录 | 已完成但平台暂未记录的企业实践补充确认流程 | `enterprise-history-supplement/index.vue`、`enterprise-history-confirmed/index.vue` |
 
@@ -969,7 +980,7 @@
 | 日志记录 | 保存草稿、保存日志 | 调用 `saveEnterpriseLogDraft()`、`saveEnterpriseLog()` | 已补日志状态写入 |
 | 总结与材料确认 | 查看日志、修改草稿、重新整理、补充资料、保存草稿、提交归档 | 保存草稿 / 提交归档调用 `saveEnterpriseArchiveDraft()`、`submitEnterpriseArchive()` | 主归档动作已补 |
 | 归档提交结果 | 返回实践列表、查看档案待确认、查看提交内容 | `enterprise-archive-result` 生成 / 定位 `pending-verify` 档案记录，可进入档案记录详情和档案待确认列表 | 已补本地档案待确认闭环，并由企业实践 domain 同步实践记录状态 |
-| 已入档结果 | 返回首页、查看档案详情 | 返回活动首页；查看档案详情进入 `pages/archive/record-detail/index` | 已闭环到活动首页和统一记录详情页第一版，缺真实实践档案事实 |
+| 等待入档确认结果 | 返回首页、查看档案待确认、查看提交内容 | 返回活动首页；查看档案待确认进入 `pages/archive/draft-list/index`；查看提交内容进入 `pages/archive/record-detail/index` | 已闭环到活动首页、档案待确认列表和统一记录详情页第一版，不直接写真实实践档案事实 |
 | 需补充材料 | 去补充材料、重新提交 | 重新提交调用 `submitEnterpriseSupplement()`，结果页可进入档案记录详情和档案待确认列表 | 已补材料补充状态写入 |
 | 历史实践补录 | 保存草稿、提交确认 | 调用 `saveEnterpriseArchiveDraft()`、`submitEnterpriseHistory()` | 已补本地提交状态 |
 | 历史实践已确认 | 返回实践列表、查看企业实践档案 | 分别进入企业实践列表和统一档案详情页 | 已补真实入口 |

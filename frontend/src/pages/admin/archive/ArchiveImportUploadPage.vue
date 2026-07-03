@@ -3,6 +3,11 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
+import iconFileImage from '@/assets/admin/archive-processing-assets/icons/icon-file-image.svg'
+import iconFilePdf from '@/assets/admin/archive-processing-assets/icons/icon-file-pdf.svg'
+import iconFileUnknown from '@/assets/admin/archive-processing-assets/icons/icon-file-unknown.svg'
+import iconFileWord from '@/assets/admin/archive-processing-assets/icons/icon-file-word.svg'
 import {
   addArchiveUploadedFiles,
   createArchiveImportBatch,
@@ -20,6 +25,14 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const uploadedFiles = computed(() => archiveState.uploadedFiles)
 
 const steps = ['上传资料', '系统识别', '确认结果', '生成待处理记录']
+
+const fileTypeIconMap: Record<ArchiveUploadedFile['type'], string> = {
+  excel: iconFileExcel,
+  pdf: iconFilePdf,
+  word: iconFileWord,
+  image: iconFileImage,
+  zip: iconFileUnknown,
+}
 
 const totalSize = computed(() => {
   return uploadedFiles.value.reduce((total, file) => {
@@ -183,7 +196,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
             </header>
             <div class="file-list">
               <div v-for="file in uploadedFiles" :key="file.id" class="file-row">
-                <span class="file-type" :class="file.type">{{ fileTypeLabel(file.type) }}</span>
+                <span class="file-type" :class="file.type">
+                  <img class="file-type-icon" :src="fileTypeIconMap[file.type]" alt="" />
+                  {{ fileTypeLabel(file.type) }}
+                </span>
                 <strong>{{ file.name }}</strong>
                 <span>{{ file.size }}</span>
                 <em>{{ file.status }}</em>
@@ -461,7 +477,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .file-row {
   display: grid;
-  grid-template-columns: 32px minmax(260px, 1fr) 92px 82px 54px;
+  grid-template-columns: 72px minmax(260px, 1fr) 92px 82px 54px;
   align-items: center;
   min-height: 36px;
   padding: 0 12px;
@@ -499,12 +515,19 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
+  gap: 4px;
+  width: 58px;
   height: 24px;
   border-radius: 4px;
   color: #ffffff !important;
   font-size: 9px;
   font-weight: 800;
+}
+
+.file-type-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
 }
 
 .file-type.excel {

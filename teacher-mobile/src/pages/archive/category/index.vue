@@ -36,6 +36,13 @@ function goRecordList() {
 }
 
 function goRecord(recordId: string) {
+  if (category.value === 'basic-info') {
+    uni.navigateTo({
+      url: `/pages/archive/basic-info-detail/index?recordId=${recordId}`,
+    })
+    return
+  }
+
   uni.navigateTo({
     url: `/pages/archive/record-detail/index?recordId=${recordId}`,
   })

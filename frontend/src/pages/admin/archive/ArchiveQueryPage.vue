@@ -3,12 +3,29 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import queryHeroArt from '@/assets/admin/archive-query-assets/archive-query-hero-art.png'
+import queryHeroEmblem from '@/assets/admin/archive-query-assets/archive-query-hero-emblem.svg'
+import archiveQueryEmpty from '@/assets/admin/archive-query-assets/archive-query-empty.svg'
+import avatarFemale01 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-01.svg'
+import avatarFemale02 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-02.svg'
+import avatarFemale03 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-03.svg'
+import avatarMale01 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-01.svg'
+import avatarMale02 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-02.svg'
+import avatarMale03 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-03.svg'
+import iconActionReset from '@/assets/admin/archive-query-assets/icons/icon-action-reset.svg'
+import iconActionSearch from '@/assets/admin/archive-query-assets/icons/icon-action-search.svg'
+import iconFilterCollege from '@/assets/admin/archive-query-assets/icons/icon-filter-college.svg'
+import iconFilterTitle from '@/assets/admin/archive-query-assets/icons/icon-filter-title.svg'
+import iconFilterUpdate from '@/assets/admin/archive-query-assets/icons/icon-filter-update.svg'
+import iconStatContentComplete from '@/assets/admin/archive-query-assets/icons/icon-stat-content-complete.svg'
+import iconStatCorrection from '@/assets/admin/archive-query-assets/icons/icon-stat-correction.svg'
+import iconStatQueryableTeacher from '@/assets/admin/archive-query-assets/icons/icon-stat-queryable-teacher.svg'
+import iconStatRecentUpdate from '@/assets/admin/archive-query-assets/icons/icon-stat-recent-update.svg'
+import iconViewGrid from '@/assets/admin/archive-query-assets/icons/icon-view-grid.svg'
+import iconViewList from '@/assets/admin/archive-query-assets/icons/icon-view-list.svg'
 import { getArchiveQueryMock } from '@/services/mock/archive'
 
 const router = useRouter()
-
-// Hero 区域背景图
-const heroArtImage = new URL('@/images/hero-art.png', import.meta.url).href
 
 const { stats, collegeOptions, titleOptions, updateOptions, teacherCards } = getArchiveQueryMock()
 
@@ -21,6 +38,50 @@ const updateFilter = ref('全部')
 
 // 视图切换
 const viewMode = ref('card')
+
+const heroStatCards = computed(() => [
+  {
+    key: 'total',
+    tone: 'primary',
+    iconSrc: iconStatQueryableTeacher,
+    value: stats.totalTeachers,
+    label: '可查询教师',
+    desc: '已建立成长档案',
+  },
+  {
+    key: 'recent',
+    tone: 'success',
+    iconSrc: iconStatRecentUpdate,
+    value: stats.recentUpdate,
+    label: '近期有更新',
+    desc: '近30日档案有新增',
+  },
+  {
+    key: 'complete',
+    tone: 'warning',
+    iconSrc: iconStatContentComplete,
+    value: stats.needsImprovement,
+    label: '内容待完善',
+    desc: '存在待补充内容',
+  },
+  {
+    key: 'correction',
+    tone: 'info',
+    iconSrc: iconStatCorrection,
+    value: stats.hasCorrection,
+    label: '有更正记录',
+    desc: '可查看更正前后',
+  },
+])
+
+const teacherAvatarMap: Record<string, string> = {
+  lin: avatarFemale01,
+  chen: avatarMale01,
+  wang: avatarMale02,
+  liu: avatarFemale02,
+  zhao: avatarFemale03,
+  zhou: avatarMale03,
+}
 
 function resetFilters() {
   searchKeyword.value = ''
@@ -58,6 +119,10 @@ function viewTeacherDetail(teacherId: string) {
 function switchViewMode(mode: string) {
   viewMode.value = mode
 }
+
+function getTeacherAvatar(teacherId: string) {
+  return teacherAvatarMap[teacherId] ?? avatarMale02
+}
 </script>
 
 <template>
@@ -67,18 +132,14 @@ function switchViewMode(mode: string) {
       <section class="query-hero admin-hero">
         <div
           class="hero-art"
-          :style="{ backgroundImage: `url(${heroArtImage})` }"
+          :style="{ backgroundImage: `url(${queryHeroArt})` }"
           aria-hidden="true"
         />
 
         <div class="hero-content">
-          <div class="hero-emblem">
+          <div class="hero-emblem" aria-hidden="true">
             <div class="hero-icon">
-              <svg viewBox="0 0 40 40" aria-hidden="true">
-                <path d="M11 8h16l4 4v20H11z" />
-                <path d="M27 8v6h6M16 17h10M16 22h10M16 27h6" />
-                <circle cx="29" cy="29" r="4" />
-              </svg>
+              <img class="hero-emblem-img" :src="queryHeroEmblem" alt="" />
             </div>
           </div>
 
@@ -94,50 +155,20 @@ function switchViewMode(mode: string) {
 
             <!-- Hero 统计卡区域 -->
             <div class="hero-stats-cards">
-              <div class="hero-stat-card primary">
+              <div
+                v-for="card in heroStatCards"
+                :key="card.key"
+                class="hero-stat-card"
+                :class="card.tone"
+              >
                 <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 6v6l4 2"/>
-                  </svg>
+                  <img class="hero-stat-img" :src="card.iconSrc" alt="" />
                 </div>
-                <div class="hero-stat-number">{{ stats.totalTeachers }}</div>
-                <div class="hero-stat-label">可查询教师</div>
-                <div class="hero-stat-desc">已建立成长档案</div>
-              </div>
-              <div class="hero-stat-card success">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
+                <div>
+                  <div class="hero-stat-number">{{ card.value }}</div>
+                  <div class="hero-stat-label">{{ card.label }}</div>
+                  <div class="hero-stat-desc">{{ card.desc }}</div>
                 </div>
-                <div class="hero-stat-number">{{ stats.recentUpdate }}</div>
-                <div class="hero-stat-label">近期有更新</div>
-                <div class="hero-stat-desc">近30日档案有新增</div>
-              </div>
-              <div class="hero-stat-card warning">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                  </svg>
-                </div>
-                <div class="hero-stat-number">{{ stats.needsImprovement }}</div>
-                <div class="hero-stat-label">内容待完善</div>
-                <div class="hero-stat-desc">存在待补充内容</div>
-              </div>
-              <div class="hero-stat-card info">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="16" x2="12" y2="12"/>
-                    <line x1="12" y1="8" x2="12.01" y2="8"/>
-                  </svg>
-                </div>
-                <div class="hero-stat-number">{{ stats.hasCorrection }}</div>
-                <div class="hero-stat-label">有更正记录</div>
-                <div class="hero-stat-desc">可查看更正前后</div>
               </div>
             </div>
           </div>
@@ -155,12 +186,18 @@ function switchViewMode(mode: string) {
                 class="search-input"
                 placeholder="搜索教师姓名 / 工号 / 所属部门"
               />
-              <Button class="search-action" @click="applySearch">搜索</Button>
+              <Button class="search-action" @click="applySearch">
+                <img class="action-icon" :src="iconActionSearch" alt="" />
+                搜索
+              </Button>
             </div>
 
             <div class="filter-controls">
               <div class="filter-group">
-                <label class="filter-label">学院</label>
+                <label class="filter-label">
+                  <img class="filter-icon" :src="iconFilterCollege" alt="" />
+                  学院
+                </label>
                 <select v-model="collegeFilter" class="filter-select">
                   <option v-for="option in collegeOptions" :key="option" :value="option">
                     {{ option }}
@@ -169,7 +206,10 @@ function switchViewMode(mode: string) {
               </div>
 
               <div class="filter-group">
-                <label class="filter-label">职称</label>
+                <label class="filter-label">
+                  <img class="filter-icon" :src="iconFilterTitle" alt="" />
+                  职称
+                </label>
                 <select v-model="titleFilter" class="filter-select">
                   <option v-for="option in titleOptions" :key="option" :value="option">
                     {{ option }}
@@ -178,7 +218,10 @@ function switchViewMode(mode: string) {
               </div>
 
               <div class="filter-group">
-                <label class="filter-label">更新情况</label>
+                <label class="filter-label">
+                  <img class="filter-icon" :src="iconFilterUpdate" alt="" />
+                  更新情况
+                </label>
                 <select v-model="updateFilter" class="filter-select">
                   <option v-for="option in updateOptions" :key="option" :value="option">
                     {{ option }}
@@ -186,7 +229,10 @@ function switchViewMode(mode: string) {
                 </select>
               </div>
 
-              <Button variant="outline" @click="resetFilters">重置</Button>
+              <Button variant="outline" @click="resetFilters">
+                <img class="action-icon" :src="iconActionReset" alt="" />
+                重置
+              </Button>
             </div>
           </div>
         </div>
@@ -205,6 +251,7 @@ function switchViewMode(mode: string) {
               :class="{ active: viewMode === 'card' }"
               @click="switchViewMode('card')"
             >
+              <img class="view-icon" :src="iconViewGrid" alt="" />
               卡片视图
             </button>
             <button
@@ -212,13 +259,19 @@ function switchViewMode(mode: string) {
               :class="{ active: viewMode === 'list' }"
               @click="switchViewMode('list')"
             >
+              <img class="view-icon" :src="iconViewList" alt="" />
               列表视图
             </button>
           </div>
         </div>
 
         <!-- 教师卡片网格 -->
-        <div class="teachers-grid">
+        <div v-if="filteredTeacherCards.length === 0" class="archive-query-empty">
+          <img :src="archiveQueryEmpty" alt="" />
+          <h3>暂无匹配教师档案</h3>
+          <p>请调整搜索关键词、学院、职称或更新条件后重试。</p>
+        </div>
+        <div v-else class="teachers-grid">
           <div
             v-for="teacher in filteredTeacherCards"
             :key="teacher.id"
@@ -226,7 +279,7 @@ function switchViewMode(mode: string) {
           >
             <div class="card-header">
               <div class="teacher-avatar">
-                <div class="avatar-circle" :class="`avatar-${teacher.id}`"></div>
+                <img class="avatar-img" :src="getTeacherAvatar(teacher.id)" alt="" />
               </div>
               <div class="teacher-info">
                 <h3 class="teacher-name">{{ teacher.name }}</h3>
@@ -350,14 +403,10 @@ function switchViewMode(mode: string) {
   box-shadow: 0 14px 28px rgba(11, 99, 246, 0.24);
 }
 
-.hero-icon svg {
-  width: clamp(24px, 1.6vw, 28px);
-  height: clamp(24px, 1.6vw, 28px);
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.hero-emblem-img {
+  width: clamp(28px, 1.8vw, 34px);
+  height: clamp(28px, 1.8vw, 34px);
+  object-fit: contain;
 }
 
 .hero-main {
@@ -471,9 +520,10 @@ function switchViewMode(mode: string) {
   color: #3b82f6;
 }
 
-.hero-stat-icon svg {
-  width: 100%;
-  height: 100%;
+.hero-stat-img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
 }
 
 .hero-stat-number {
@@ -547,6 +597,15 @@ function switchViewMode(mode: string) {
   white-space: nowrap;
 }
 
+.action-icon,
+.filter-icon,
+.view-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  object-fit: contain;
+}
+
 .filter-controls {
   display: flex;
   gap: var(--space-admin-lg);
@@ -562,6 +621,9 @@ function switchViewMode(mode: string) {
 }
 
 .filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   color: var(--color-text-secondary);
   white-space: nowrap;
@@ -616,6 +678,9 @@ function switchViewMode(mode: string) {
 }
 
 .view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 16px;
   border: 1px solid var(--color-card-border);
   background: white;
@@ -644,6 +709,34 @@ function switchViewMode(mode: string) {
   gap: var(--space-admin-xl);
 }
 
+.archive-query-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-admin-xs);
+  padding: 42px 20px;
+  border: 1px dashed var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.archive-query-empty img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.archive-query-empty h3,
+.archive-query-empty p {
+  margin: 0;
+}
+
+.archive-query-empty h3 {
+  color: var(--color-text-primary);
+  font-size: 16px;
+}
+
 .teacher-card {
   background: white;
   border-radius: var(--radius-lg);
@@ -670,101 +763,12 @@ function switchViewMode(mode: string) {
   flex-shrink: 0;
 }
 
-.avatar-circle {
+.avatar-img {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #e0f2fe;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
-}
-
-/* 头部 */
-.avatar-circle::before {
-  content: '';
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #0ea5e9;
-}
-
-/* 身体/肩部 */
-.avatar-circle::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 28px;
-  border-radius: 16px 16px 0 0;
-  background: #0ea5e9;
-}
-
-/* 不同头像的颜色变化 */
-.avatar-lin {
-  background: #e0f2fe;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
-}
-
-.avatar-lin::before,
-.avatar-lin::after {
-  background: #0ea5e9;
-}
-
-.avatar-chen {
-  background: #fef3c7;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-}
-
-.avatar-chen::before,
-.avatar-chen::after {
-  background: #f59e0b;
-}
-
-.avatar-wang {
-  background: #dcfce7;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
-}
-
-.avatar-wang::before,
-.avatar-wang::after {
-  background: #22c55e;
-}
-
-.avatar-liu {
-  background: #fce7f3;
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
-}
-
-.avatar-liu::before,
-.avatar-liu::after {
-  background: #ec4899;
-}
-
-.avatar-zhao {
-  background: #ede9fe;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
-}
-
-.avatar-zhao::before,
-.avatar-zhao::after {
-  background: #8b5cf6;
-}
-
-.avatar-zhou {
-  background: #ffedd5;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
-}
-
-.avatar-zhou::before,
-.avatar-zhou::after {
-  background: #f97316;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.16);
 }
 
 .teacher-info {

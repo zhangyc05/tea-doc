@@ -2,6 +2,9 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { createEnterprisePracticeArchiveRecord } from '../../../domain/archive'
+
+const archiveRecord = createEnterprisePracticeArchiveRecord()
 
 const infoRows = [
   { label: '实践单位', value: '山东某软件科技有限公司' },
@@ -11,9 +14,9 @@ const infoRows = [
 ]
 
 const usageItems = [
-  { title: '个人成长档案', type: 'folder' },
-  { title: '岗位 / 聘期要求依据', type: 'award' },
-  { title: '个人发展报告', type: 'chart' },
+  { title: '档案待确认', type: 'folder' },
+  { title: '岗位 / 聘期待核验依据', type: 'award' },
+  { title: '个人发展报告待同步', type: 'chart' },
 ]
 
 function goBack() {
@@ -26,21 +29,27 @@ function goActivityHome() {
 
 function goArchiveRecord() {
   uni.navigateTo({
-    url: '/pages/archive/record-detail/index?recordId=enterprise-practice-shandong-software',
+    url: `/pages/archive/record-detail/index?recordId=${archiveRecord.id}`,
+  })
+}
+
+function goArchivePendingList() {
+  uni.navigateTo({
+    url: '/pages/archive/draft-list/index',
   })
 }
 </script>
 
 <template>
   <view class="archive-success-page">
-    <MobileNavbar title="已入档" size="regular" @back="goBack" />
+    <MobileNavbar title="等待确认" size="regular" @back="goBack" />
 
     <view class="content">
       <MobileCard class="success-card">
         <view class="success-mark"></view>
         <view class="success-copy">
-          <text class="success-title">企业实践记录已入档</text>
-          <text class="success-desc">你补充的企业实践证明材料已通过核验，这条记录已正式入档到「企业实践」。</text>
+          <text class="success-title">企业实践记录已提交</text>
+          <text class="success-desc">你补充的企业实践证明材料已进入档案待确认队列，管理端确认后才会写入「企业实践」。</text>
         </view>
         <view class="spark spark--one"></view>
         <view class="spark spark--two"></view>
@@ -54,14 +63,14 @@ function goArchiveRecord() {
             <view class="tag-row">
               <text class="tag tag--neutral">企业实践</text>
               <text class="tag tag--neutral">行业实践</text>
-              <text class="tag tag--green">已入档</text>
+              <text class="tag tag--green">待确认</text>
             </view>
           </view>
         </view>
 
         <view class="section-title-row">
           <view class="accent-line"></view>
-          <text class="section-title">系统已整理</text>
+          <text class="section-title">已提交材料</text>
         </view>
         <view class="info-list">
           <view v-for="item in infoRows" :key="item.label" class="info-row">
@@ -83,19 +92,19 @@ function goArchiveRecord() {
             <text class="file-name">企业实践证明.pdf</text>
             <text class="file-meta">PDF | 2.4MB</text>
           </view>
-          <text class="file-state">已作为正式材料入档</text>
+          <text class="file-state">等待管理端确认</text>
           <view class="chevron"></view>
         </view>
 
         <view class="audit-box">
           <view class="audit-row">
             <view class="audit-icon audit-icon--clock"></view>
-            <text class="audit-label">入档时间</text>
+            <text class="audit-label">提交时间</text>
             <text class="audit-value">今天 10:42</text>
           </view>
           <view class="audit-row">
             <view class="audit-icon audit-icon--org"></view>
-            <text class="audit-label">核验部门</text>
+            <text class="audit-label">确认部门</text>
             <text class="audit-value">智能制造学院</text>
           </view>
         </view>
@@ -104,7 +113,7 @@ function goArchiveRecord() {
       <MobileCard class="usage-card">
         <view class="section-title-row">
           <view class="accent-line"></view>
-          <text class="section-title">这条记录现在可用于</text>
+          <text class="section-title">确认后可用于</text>
         </view>
 
         <view class="usage-grid">
@@ -113,13 +122,14 @@ function goArchiveRecord() {
             <text>{{ item.title }}</text>
           </view>
         </view>
-        <text class="usage-desc">这条记录可作为个人成长档案、岗位 / 聘期要求和个人发展报告的正式依据。</text>
+        <text class="usage-desc">这条记录当前处于归档确认中，管理端确认后可作为个人成长档案、岗位 / 聘期要求和个人发展报告依据。</text>
       </MobileCard>
     </view>
 
     <view class="bottom-actions">
       <MobileActionButton class="action-button action-button--home" variant="outline" @tap="goActivityHome">返回首页</MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary" @tap="goArchiveRecord">查看档案详情</MobileActionButton>
+      <MobileActionButton class="action-button action-button--home" variant="outline" @tap="goArchivePendingList">查看档案待确认</MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="goArchiveRecord">查看提交内容</MobileActionButton>
     </view>
   </view>
 </template>

@@ -15,7 +15,7 @@ const submitRows = [
 
 const processSteps = [
   '所在学院或相关部门将进行核验',
-  '核验通过后，这条记录会正式入档',
+  '审核通过后，实践计划进入企业实践记录',
   '如需补充，系统会通过待办提醒你',
 ]
 
@@ -34,7 +34,7 @@ function submitPlan() {
     <view class="hero">
       <MobileNavbar title="" size="compact" @back="goBack" />
       <text class="hero-title">确认提交</text>
-      <text class="hero-subtitle">提交后，这条档案将进入待核验状态</text>
+      <text class="hero-subtitle">提交后，实践计划将进入待审核状态</text>
     </view>
 
     <view class="content">
@@ -44,12 +44,12 @@ function submitPlan() {
           <view class="summary-check"></view>
         </view>
         <view class="summary-copy">
-          <text class="summary-title">这条档案将提交部门核验</text>
+          <text class="summary-title">实践计划将提交部门审核</text>
           <view class="tag-row">
             <text>企业实践</text>
             <text>行业实践</text>
           </view>
-          <text class="summary-desc">核验通过后，这条记录将正式入档到企业实践档案。</text>
+          <text class="summary-desc">审核通过后会生成企业实践记录，归档仍需后续确认。</text>
         </view>
       </MobileCard>
 

@@ -30,7 +30,7 @@ const archiveFiles = [
 
 const destinations = [
   { title: '我的教研室', desc: '查看活动与记录', type: 'room' },
-  { title: '成长档案 · 教研科研维度', desc: '查看已归档的教研成果', type: 'archive' },
+  { title: '档案待确认', desc: '查看待确认教研记录', type: 'archive' },
 ]
 
 function goBack() {
@@ -156,7 +156,7 @@ function goResearchRoom() {
           <view class="formed-check"></view>
           <view class="formed-copy">
             <text class="formed-title">已形成教研活动记录</text>
-            <text class="formed-desc">归档记录将作为你的教研活动事实，沉淀到成长档案中。</text>
+            <text class="formed-desc">记录已进入档案待确认队列，对齐 archiveStore.processingRecords，管理端确认后才写入成长档案事实。</text>
           </view>
         </view>
         <view class="destination-grid">
@@ -172,7 +172,7 @@ function goResearchRoom() {
 
       <view class="info-tip">
         <view class="info-icon"></view>
-        <text>归档后的记录可作为正式事实，用于岗位竞聘、聘期考核等场景的数据引用。</text>
+        <text>当前是教研活动归档结果，不等同正式档案事实；管理端确认后才用于岗位竞聘、聘期考核等场景。</text>
       </view>
     </view>
 

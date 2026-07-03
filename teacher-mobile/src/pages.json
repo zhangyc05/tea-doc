@@ -507,6 +507,12 @@
       }
     },
     {
+      "path": "pages/archive/basic-info-detail/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/archive/record-list/index",
       "style": {
         "navigationStyle": "custom"
@@ -514,6 +520,12 @@
     },
     {
       "path": "pages/archive/draft-list/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/development-plan-edit/index",
       "style": {
         "navigationStyle": "custom"
       }

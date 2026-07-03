@@ -64,6 +64,11 @@ mustInclude('plan submit page', planSubmit, 'submitEnterprisePlan')
 
 const planConfirm = source(files.planConfirm)
 mustInclude('plan confirm page', planConfirm, 'submitEnterprisePlan')
+for (const legacyText of ['这条档案', '正式入档', '将正式入档']) {
+  if (planConfirm.includes(legacyText)) {
+    failures.push(`plan confirm page still presents enterprise plan submission as ${legacyText}`)
+  }
+}
 
 const importExport = source(files.importExport)
 mustInclude('waiting page', importExport, 'goEnterpriseList')

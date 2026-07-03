@@ -92,6 +92,37 @@ function findUnboundNativeButtons(source: string) {
 }
 
 describe('admin visual action guardrails', () => {
+  it('wires archive and group portrait pages to their dedicated asset packs', () => {
+    expect(archiveProcessingPage).toContain('archive-processing-assets/archive-processing-hero-art.png')
+    expect(archiveProcessingPage).toContain('archive-processing-assets/archive-processing-hero-emblem.svg')
+    expect(archiveProcessingPage).toContain('archiveStatusIconMap')
+    expect(archiveProcessingPage).toContain('sourceIconMap')
+    expect(archiveProcessingPage).not.toContain('@/images/hero-art.png')
+    expect(archiveProcessingPage).not.toContain("icon: 'clock'")
+
+    expect(archiveImportUploadPage).toContain('archive-processing-assets/icons/icon-file-excel.svg')
+    expect(archiveImportUploadPage).toContain('fileTypeIconMap')
+    expect(archiveImportUploadPage).toContain('<img class="file-type-icon" :src="fileTypeIconMap[file.type]" alt="" />')
+    expect(archiveImportBatchPage).toContain('archive-processing-assets/icons/icon-file-excel.svg')
+    expect(archiveImportBatchPage).toContain('fileTypeIconMap')
+    expect(archiveImportBatchPage).toContain('<img class="file-type-icon" :src="fileTypeIconMap[file.type]" alt="" />')
+
+    expect(archiveQueryPage).toContain('archive-query-assets/archive-query-hero-art.png')
+    expect(archiveQueryPage).toContain('archive-query-assets/archive-query-hero-emblem.svg')
+    expect(archiveQueryPage).toContain('archive-query-assets/archive-query-empty.svg')
+    expect(archiveQueryPage).toContain('heroStatCards')
+    expect(archiveQueryPage).toContain('teacherAvatarMap')
+    expect(archiveQueryPage).not.toContain('@/images/hero-art.png')
+    expect(archiveQueryPage).not.toContain('avatar-circle')
+
+    expect(abilityProfileGroupPage).toContain('ability-group-portrait-assets/ability-group-portrait-hero-art.png')
+    expect(abilityProfileGroupPage).toContain('ability-group-portrait-assets/ability-group-portrait-empty.svg')
+    expect(abilityProfileGroupPage).toContain('iconSrc')
+    expect(abilityProfileGroupPage).toContain('supportDirectionIcons')
+    expect(abilityProfileGroupPage).toContain('focusTabIconMap')
+    expect(abilityProfileGroupPage).not.toMatch(/▤|♙|▣|▰|▥/)
+  })
+
   it('keeps button design guidance aligned with the completed btn-class migration', () => {
     expect(adminDesignGuide).not.toContain('管理端业务页面仍以局部 `.btn-*` 为主')
     expect(adminDesignGuide).not.toContain('或现有 `.btn-view/.btn-link` 逐步迁移')
@@ -158,8 +189,10 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for archive query search and detail actions', () => {
     expect(archiveQueryPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(archiveQueryPage).toContain('<Button class="search-action" @click="applySearch">搜索</Button>')
-    expect(archiveQueryPage).toContain('<Button variant="outline" @click="resetFilters">重置</Button>')
+    expect(archiveQueryPage).toContain('<Button class="search-action" @click="applySearch">')
+    expect(archiveQueryPage).toContain('iconActionSearch')
+    expect(archiveQueryPage).toContain('<Button variant="outline" @click="resetFilters">')
+    expect(archiveQueryPage).toContain('iconActionReset')
     expect(archiveQueryPage).toContain('<Button class="archive-detail-action" size="sm" @click="viewTeacherDetail(teacher.id)">')
     expect(archiveQueryPage).not.toContain('<button class="search-btn" @click="applySearch">搜索</button>')
     expect(archiveQueryPage).not.toContain('<button class="reset-btn" @click="resetFilters">重置</button>')

@@ -4,6 +4,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
+import iconFileImage from '@/assets/admin/archive-processing-assets/icons/icon-file-image.svg'
+import iconFilePdf from '@/assets/admin/archive-processing-assets/icons/icon-file-pdf.svg'
+import iconFileUnknown from '@/assets/admin/archive-processing-assets/icons/icon-file-unknown.svg'
+import iconFileWord from '@/assets/admin/archive-processing-assets/icons/icon-file-word.svg'
 import { getArchiveBatchStatusClass, getArchiveBatchStatusLabel } from '@/domain/admin/archive'
 import {
   cancelArchiveImportBatch,
@@ -22,6 +27,14 @@ const isCompleted = computed(() => batchInfo.value.status === 'recognized' || ba
 const isCancelled = computed(() => batchInfo.value.status === 'cancelled')
 const batchStatusLabel = computed(() => getArchiveBatchStatusLabel(batchInfo.value.status))
 const batchStatusClass = computed(() => getArchiveBatchStatusClass(batchInfo.value.status))
+
+const fileTypeIconMap: Record<ArchiveUploadedFile['type'], string> = {
+  excel: iconFileExcel,
+  pdf: iconFilePdf,
+  word: iconFileWord,
+  image: iconFileImage,
+  zip: iconFileUnknown,
+}
 
 // 步骤进度
 const steps = computed(() => {
@@ -246,7 +259,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
                 </div>
                 <div v-for="file in batchFiles" :key="file.id" class="file-row">
                   <span class="file-name">{{ file.name }}</span>
-                  <span>{{ fileTypeLabel(file.type) }}</span>
+                  <span class="file-type-cell">
+                    <img class="file-type-icon" :src="fileTypeIconMap[file.type]" alt="" />
+                    {{ fileTypeLabel(file.type) }}
+                  </span>
                   <span>{{ file.size }}</span>
                   <StatusBadge :status="file.batchStatus" />
                 </div>
@@ -808,6 +824,18 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 600;
+}
+
+.file-type-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.file-type-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 
 .file-count {

@@ -4,6 +4,24 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { Button } from '@/components/ui'
+import groupHeroArt from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-art.png'
+import groupHeroEmblem from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-emblem.svg'
+import groupEmpty from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-empty.svg'
+import iconAbilityPractice from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-practice.svg'
+import iconAbilityResearch from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-research.svg'
+import iconAbilityService from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-service.svg'
+import iconAbilityTeaching from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-teaching.svg'
+import iconBaselineYear from '@/assets/admin/ability-group-portrait-assets/icons/icon-baseline-year.svg'
+import iconBasicQualified from '@/assets/admin/ability-group-portrait-assets/icons/icon-basic-qualified.svg'
+import iconIndexDevelopment from '@/assets/admin/ability-group-portrait-assets/icons/icon-index-development.svg'
+import iconRadarAnalysis from '@/assets/admin/ability-group-portrait-assets/icons/icon-radar-analysis.svg'
+import iconSupportCourseResource from '@/assets/admin/ability-group-portrait-assets/icons/icon-support-course-resource.svg'
+import iconSupportPracticeTransform from '@/assets/admin/ability-group-portrait-assets/icons/icon-support-practice-transform.svg'
+import iconSupportResearchTeam from '@/assets/admin/ability-group-portrait-assets/icons/icon-support-research-team.svg'
+import iconSupportServiceUnified from '@/assets/admin/ability-group-portrait-assets/icons/icon-support-service-unified.svg'
+import iconTabCollege from '@/assets/admin/ability-group-portrait-assets/icons/icon-tab-college.svg'
+import iconTabMajor from '@/assets/admin/ability-group-portrait-assets/icons/icon-tab-major.svg'
+import iconTabTeacher from '@/assets/admin/ability-group-portrait-assets/icons/icon-tab-teacher.svg'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityProfileGroupMock } from '@/services/mock/ability-profile'
 
@@ -14,21 +32,32 @@ const groupProfile = getAbilityProfileGroupMock()
 const schoolRadarData = groupProfile.schoolRadarData
 const abilityDimensions = groupProfile.abilityDimensions
 
-const dimensionMeta: Record<string, { icon: string; tone: string }> = {
-  教学能力: { icon: 'book', tone: 'blue' },
-  教研能力: { icon: 'lab', tone: 'green' },
-  实践能力: { icon: 'briefcase', tone: 'orange' },
-  服务能力: { icon: 'heart', tone: 'purple' },
+const dimensionMeta: Record<string, { iconSrc: string; tone: string }> = {
+  教学能力: { iconSrc: iconAbilityTeaching, tone: 'blue' },
+  教研能力: { iconSrc: iconAbilityResearch, tone: 'green' },
+  实践能力: { iconSrc: iconAbilityPractice, tone: 'orange' },
+  服务能力: { iconSrc: iconAbilityService, tone: 'purple' },
 }
 
 const developmentDirections = groupProfile.developmentDirections
 const directionTones = ['blue', 'green', 'orange', 'purple']
+const supportDirectionIcons = [
+  iconSupportCourseResource,
+  iconSupportPracticeTransform,
+  iconSupportResearchTeam,
+  iconSupportServiceUnified,
+]
 
 // 重点关注对象数据
 const focusObjects = ref('院系')
 
 const focusTabs = groupProfile.focusTabs
 const focusData = groupProfile.focusData
+const focusTabIconMap: Record<string, string> = {
+  院系: iconTabCollege,
+  专业: iconTabMajor,
+  教师: iconTabTeacher,
+}
 const focusedGroupObject = ref(focusData[focusObjects.value][0]?.name ?? '')
 
 function switchTab(tabValue: string) {
@@ -67,7 +96,7 @@ function viewMoreObjects() {
 }
 
 function getDimensionMeta(dimension: string) {
-  return dimensionMeta[dimension] || { icon: 'book', tone: 'blue' }
+  return dimensionMeta[dimension] || { iconSrc: iconAbilityTeaching, tone: 'blue' }
 }
 
 function getDistributionTone(index: number) {
@@ -82,6 +111,7 @@ function getDistributionTone(index: number) {
         <article class="overview-card score-card">
           <div class="card-copy">
             <div class="section-heading">
+              <img class="section-icon" :src="iconIndexDevelopment" alt="" />
               <h2>综合发展指数</h2>
               <span class="info-dot">i</span>
             </div>
@@ -93,24 +123,21 @@ function getDistributionTone(index: number) {
               由教学、教研、实践、服务四个维度的发展指数按权重汇总形成
             </p>
             <div class="status-line">
-              <span class="check-dot">✓</span>
+              <img class="status-icon" :src="iconBasicQualified" alt="" />
               <span>基本能力：</span>
               <strong>达标</strong>
             </div>
           </div>
           <div class="score-illustration" aria-hidden="true">
-            <div class="folder-shape"></div>
-            <div class="chart-shape">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <img class="score-hero-art" :src="groupHeroArt" alt="" />
+            <img class="score-emblem" :src="groupHeroEmblem" alt="" />
           </div>
         </article>
 
         <article class="overview-card baseline-card">
           <div>
             <div class="section-heading">
+              <img class="section-icon" :src="iconBaselineYear" alt="" />
               <h2>首年基线</h2>
               <span class="info-dot">i</span>
             </div>
@@ -137,6 +164,7 @@ function getDistributionTone(index: number) {
       <section class="analysis-card">
         <div class="radar-panel">
           <div class="section-heading">
+            <img class="section-icon" :src="iconRadarAnalysis" alt="" />
             <h2>能力结构分析</h2>
             <span class="info-dot">i</span>
           </div>
@@ -167,7 +195,9 @@ function getDistributionTone(index: number) {
               <tr v-for="dim in abilityDimensions" :key="dim.dimension">
                 <td>
                   <div class="dimension-name" :class="getDimensionMeta(dim.dimension).tone">
-                    <span class="dimension-icon">{{ getDimensionMeta(dim.dimension).icon === 'book' ? '▤' : getDimensionMeta(dim.dimension).icon === 'lab' ? '♙' : getDimensionMeta(dim.dimension).icon === 'briefcase' ? '▣' : '◆' }}</span>
+                    <span class="dimension-icon" aria-hidden="true">
+                      <img class="dimension-icon-img" :src="getDimensionMeta(dim.dimension).iconSrc" alt="" />
+                    </span>
                     <strong>{{ dim.dimension }}</strong>
                   </div>
                 </td>
@@ -210,7 +240,9 @@ function getDistributionTone(index: number) {
               class="direction-card"
               :class="directionTones[index]"
             >
-              <span class="direction-icon">{{ index === 0 ? '▣' : index === 1 ? '▰' : index === 2 ? '●' : '▥' }}</span>
+              <span class="direction-icon" aria-hidden="true">
+                <img class="direction-icon-img" :src="supportDirectionIcons[index]" alt="" />
+              </span>
               <h3 class="direction-title">{{ direction.title }}</h3>
               <p class="direction-observation">{{ direction.observation }}</p>
               <div class="key-dimension">
@@ -238,11 +270,17 @@ function getDistributionTone(index: number) {
                 :class="{ active: focusObjects === tab.value }"
                 @click="switchTab(tab.value)"
               >
-                {{ tab.label }}
+                <img class="tab-icon" :src="focusTabIconMap[tab.value]" alt="" />
+                <span>{{ tab.label }}</span>
               </button>
             </div>
           </div>
-          <table class="focus-table">
+          <div v-if="focusData[focusObjects].length === 0" class="group-empty">
+            <img :src="groupEmpty" alt="" />
+            <h3>暂无重点关注对象</h3>
+            <p>当前筛选口径下未识别到需要重点展示的对象。</p>
+          </div>
+          <table v-else class="focus-table">
             <thead>
               <tr>
                 <th>对象</th>
@@ -354,6 +392,13 @@ function getDistributionTone(index: number) {
   margin-bottom: clamp(10px, 0.7vw, 14px);
 }
 
+.section-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  object-fit: contain;
+}
+
 .section-heading h2,
 .focus-head h2 {
   margin: 0;
@@ -428,16 +473,11 @@ function getDistributionTone(index: number) {
   padding: 2px 8px;
 }
 
-.check-dot {
-  display: inline-flex;
+.status-icon {
   width: 20px;
   height: 20px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #e8fff2;
-  color: #13a854;
-  font-size: 13px;
+  flex: none;
+  object-fit: contain;
 }
 
 .score-illustration {
@@ -457,45 +497,24 @@ function getDistributionTone(index: number) {
   content: '';
 }
 
-.folder-shape {
+.score-hero-art {
   position: relative;
-  width: 126px;
-  height: 104px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #7fb0ff, #d9e8ff);
-  box-shadow: 18px 16px 34px rgba(65, 122, 220, 0.18);
+  z-index: 1;
+  width: 180px;
+  max-width: 100%;
+  height: 132px;
+  object-fit: contain;
 }
 
-.folder-shape::before {
+.score-emblem {
   position: absolute;
-  left: 12px;
-  top: -10px;
-  width: 78px;
-  height: 26px;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  background: #a8c9ff;
-  content: '';
+  right: 22px;
+  top: 22px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
 }
-
-.chart-shape {
-  position: absolute;
-  display: flex;
-  right: 48px;
-  bottom: 42px;
-  align-items: flex-end;
-  gap: 7px;
-}
-
-.chart-shape span {
-  display: block;
-  width: 10px;
-  border-radius: 5px 5px 0 0;
-  background: #4d8eff;
-}
-
-.chart-shape span:nth-child(1) { height: 22px; }
-.chart-shape span:nth-child(2) { height: 38px; }
-.chart-shape span:nth-child(3) { height: 56px; }
 
 .baseline-card {
   display: grid;
@@ -657,6 +676,12 @@ function getDistributionTone(index: number) {
   font-size: 14px;
 }
 
+.dimension-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
 .dimension-name.blue .dimension-icon { background: #0b63f6; }
 .dimension-name.green .dimension-icon { background: #16b569; }
 .dimension-name.orange .dimension-icon { background: #ff7a00; }
@@ -748,6 +773,12 @@ function getDistributionTone(index: number) {
   font-weight: 950;
 }
 
+.direction-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
 .direction-card.green .direction-icon { background: #16b569; }
 .direction-card.orange .direction-icon { background: #ff7a00; }
 .direction-card.purple .direction-icon { background: #7657ff; }
@@ -801,6 +832,9 @@ function getDistributionTone(index: number) {
 }
 
 .tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
@@ -808,6 +842,12 @@ function getDistributionTone(index: number) {
   padding: 0 6px 8px;
   font-size: 14px;
   font-weight: 900;
+}
+
+.tab-icon {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
 }
 
 .tab-btn.active {
@@ -820,6 +860,30 @@ function getDistributionTone(index: number) {
 .focus-table th:nth-child(3) { width: 22%; }
 .focus-table th:nth-child(4) { width: 31%; }
 .focus-table th:nth-child(5) { width: 13%; }
+
+.group-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-admin-xs);
+  min-height: 220px;
+  padding: 34px 18px;
+  border: 1px dashed var(--color-card-border);
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.group-empty img {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+}
+
+.group-empty h3,
+.group-empty p {
+  margin: 0;
+}
 
 .focused-row td {
   background: var(--color-admin-bg);

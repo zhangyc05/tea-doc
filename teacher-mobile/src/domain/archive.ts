@@ -55,6 +55,18 @@ export type ArchiveCorrectionRecord = {
   adminStoreRefs: string[]
 }
 
+export type ArchiveDevelopmentPlanDraft = {
+  id: string
+  title: string
+  categoryName: string
+  updatedAt: string
+  status: 'draft' | 'submitted'
+  target: string
+  actions: string
+  evidence: string
+  adminStoreRefs: string[]
+}
+
 const archivedTrainingSteps = [
   { title: '系统识别', desc: '部门导入培训名单后，系统按姓名、工号和学院匹配到当前账号。', time: '06.14 09:12' },
   { title: '教师确认', desc: '教师在待办中确认记录属于本人。', time: '06.14 09:21' },
@@ -152,6 +164,41 @@ export const archiveCategorySummaries: Record<ArchiveCategoryKey, ArchiveCategor
 }
 
 export const archiveRecords: MobileArchiveRecord[] = [
+  {
+    id: 'basic-info-teacher-profile',
+    title: '林老师基础信息档案',
+    category: 'basic-info',
+    categoryName: '基本信息',
+    type: '基础履历',
+    date: '06.14',
+    updatedAt: '2026.06.14',
+    source: '管理端确认',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'archived',
+    summary: '基础信息已由人事和二级学院确认，当前作为成长档案基本信息维度的正式事实，用于岗位聘期、能力画像和发展报告引用。',
+    fields: [
+      { label: '姓名', value: '林晓' },
+      { label: '工号', value: 'T2020017' },
+      { label: '所属学院', value: '智能制造学院' },
+      { label: '当前岗位', value: '专业课教师' },
+      { label: '职称', value: '讲师' },
+      { label: '任职时间', value: '2020.09 至今' },
+      { label: '最高学历', value: '硕士研究生' },
+      { label: '毕业院校', value: '南京工业大学' },
+      { label: '工作经历', value: '智能制造学院专业课教师；曾参与企业产线调试项目' },
+    ],
+    materials: [
+      { name: '教师基础信息确认单.pdf', meta: 'PDF · 来源于人事系统同步' },
+      { name: '最高学历证明.pdf', meta: 'PDF · 来源于部门核验' },
+    ],
+    usages: ['能力画像：提供岗位、职称和学历基础字段', '岗位/聘期对照：作为当前聘期与岗位要求匹配依据', '个人发展报告：作为教师身份和履历基础信息'],
+    sourceSteps: [
+      { title: '人事同步', desc: '人事系统同步教师身份、岗位、职称和学院信息。', time: '06.14 08:40' },
+      { title: '部门核验', desc: '二级学院核验任职、学历和工作经历信息。', time: '06.14 09:10' },
+      { title: '管理端确认', desc: '管理端确认后写入 teacherArchiveFacts，成为正式基本信息档案事实。', time: '06.14 09:18' },
+    ],
+    adminStoreRefs: ['teacherArchiveFacts'],
+  },
   {
     id: 'certificate-digital-literacy',
     title: '职业院校教师数字素养提升培训证书',
@@ -358,6 +405,20 @@ export const archiveRecords: MobileArchiveRecord[] = [
 
 export const archiveCorrections: ArchiveCorrectionRecord[] = []
 
+export const archiveDevelopmentPlanDrafts: ArchiveDevelopmentPlanDraft[] = [
+  {
+    id: 'development-plan-2026',
+    title: '2026 年个人发展计划草稿',
+    categoryName: '个人发展',
+    updatedAt: '刚刚',
+    status: 'draft',
+    target: '围绕数字化教学、企业实践和虚拟教研协作，形成 3 项可核验的发展成果。',
+    actions: '完成数字化教学培训，参与企业实践不少于 15 天，沉淀 1 个虚拟教研共建案例。',
+    evidence: '培训总结、企业实践日志、虚拟教研活动记录和阶段材料。',
+    adminStoreRefs: ['archiveStore.processingRecords'],
+  },
+]
+
 export function getArchiveCategorySummary(category: ArchiveCategoryKey): ArchiveCategorySummary {
   const summary = archiveCategorySummaries[category] || archiveCategorySummaries['personal-development']
   const records = getArchiveRecordsByCategory(category)
@@ -379,6 +440,10 @@ export function getRecentArchiveRecords(limit = 3): MobileArchiveRecord[] {
 
 export function getPendingArchiveRecords(): MobileArchiveRecord[] {
   return archiveRecords.filter((record) => record.status === 'pending-verify' || record.status === 'need-supplement')
+}
+
+export function getArchiveDraftRecords(): ArchiveDevelopmentPlanDraft[] {
+  return archiveDevelopmentPlanDrafts.filter((record) => record.status === 'draft')
 }
 
 export function getArchiveOverviewStats() {
@@ -447,6 +512,59 @@ export function submitArchiveCorrectionSupplement(correctionId: string) {
   const record = findArchiveRecordById(correction.recordId)
   if (record) record.status = 'pending-verify'
   return correction
+}
+
+export function saveArchiveDevelopmentPlanDraft(
+  draftId: string,
+  values: Pick<ArchiveDevelopmentPlanDraft, 'target' | 'actions' | 'evidence'>,
+): ArchiveDevelopmentPlanDraft {
+  const draft = archiveDevelopmentPlanDrafts.find((item) => item.id === draftId) || archiveDevelopmentPlanDrafts[0]
+  draft.target = values.target
+  draft.actions = values.actions
+  draft.evidence = values.evidence
+  draft.updatedAt = '刚刚'
+  draft.status = 'draft'
+  return draft
+}
+
+export function submitArchiveDevelopmentPlanDraft(draftId: string): MobileArchiveRecord {
+  const draft = archiveDevelopmentPlanDrafts.find((item) => item.id === draftId) || archiveDevelopmentPlanDrafts[0]
+  const recordId = `${draft.id}-archive`
+  const existingRecord = findArchiveRecordById(recordId)
+  if (existingRecord) return existingRecord
+
+  draft.status = 'submitted'
+  draft.updatedAt = '刚刚'
+
+  const record: MobileArchiveRecord = {
+    id: recordId,
+    title: draft.title,
+    category: 'personal-development',
+    categoryName: '个人发展',
+    type: '发展计划',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: '档案草稿提交',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '教师提交个人发展计划草稿，当前等待管理端或部门核验。核验通过后才会成为个人发展维度的正式档案事实。',
+    fields: [
+      { label: '发展目标', value: draft.target },
+      { label: '行动安排', value: draft.actions },
+      { label: '佐证材料', value: draft.evidence },
+    ],
+    materials: [{ name: '个人发展计划草稿.txt', meta: '文本草稿 · 来源于档案草稿编辑' }],
+    usages: ['个人发展报告：待核验后作为发展计划依据', '能力画像：待核验后支撑后续发展建议'],
+    sourceSteps: [
+      { title: '保存草稿', desc: '教师在手机端编辑个人发展计划草稿。', time: '刚刚' },
+      { title: '提交核验', desc: '草稿已提交，等待管理端或部门核验。', time: '进行中' },
+      { title: '写入档案', desc: '核验通过后进入成长档案个人发展维度。', time: '待完成' },
+    ],
+    adminStoreRefs: ['archiveStore.processingRecords', 'teacherArchiveFacts'],
+  }
+
+  archiveRecords.unshift(record)
+  return record
 }
 
 export function createArchiveSupplementRecord(): MobileArchiveRecord {

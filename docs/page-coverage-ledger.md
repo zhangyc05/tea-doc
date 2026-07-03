@@ -150,13 +150,13 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 手机端档案真实状态回写缺少统一 domain 动作，首页数量、查询和更正结果仍停留在静态 / 路由参数态 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/*` | 手机端档案真实状态回写已补第一版；扩展 `archived`、`pending-verify`、`need-supplement`、`removed` 状态，新增统计、搜索、更正申请、需补充和补充材料状态回写，并用 `test:archive-business` 守卫 |
 | 2026-07-02 | 手机端培训活动页面已覆盖，但申请、总结、归档和需求未与管理端培训管理、成长档案状态对齐 | `teacher-mobile/src/pages/activity/training*`、`teacher-mobile/src/domain/training.ts` | 手机端培训活动闭环已补第一版；新增培训 domain/store，推荐培训、我的培训、申请、总结草稿、材料上传、归档 trace 和培训需求均对齐 `trainingStore` / `archiveStore.processingRecords` 口径，不直接复用管理端 store |
 | 2026-07-02 | 手机端教学反思页面已覆盖，但开始方式、依据选择、草稿和确认记录缺少统一状态 | `teacher-mobile/src/domain/reflection.ts`、`teacher-mobile/src/pages/activity/reflection*` | 手机端教学反思闭环已补第一版；新增反思 domain/store，开始方式、课程 / 课次、依据材料、AI 会话、草稿和确认反思写入同一记录，确认后对齐 `reflectionStore.records` 并生成 `archiveStore.processingRecords` 待确认记录 |
-| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档 |
-| 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录 |
+| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档；`test:enterprise-business` 和 `test:enterprise-archive` 已补计划确认、补充提交、归档结果不直入档 guardrail |
+| 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录；`test:virtual-research-business` 已补归档结果页区分“教研活动已归档”和“档案待确认”的 guardrail |
 | 2026-07-03 | 手机端各模块“提交成功 / 归档成功 / 已入档”口径不一致 | `docs/business-logic-map.md` | 已补第 17 节，统一待办、档案、培训、反思、企业实践、虚拟教研到管理端对象映射、材料提交、审批结果和入档结果口径 |
 | 2026-07-03 | 手机端档案首页和待办证书结果页仍有入口停留在 toast 或无动作 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/todo/certificate-*` | 档案首页搜索进入查询页，分类进入分类概览，最近入档和查看全部进入记录详情 / 列表；档案查询页支持本页清空和分类筛选；证书详情确认 / 移出分别进入等待入档确认和已移出结果页；确认结果“查看待核验记录”按 `recordId` 进入详情页 |
 | 2026-07-03 | 手机端档案记录详情缺少统一承接页，导致查询结果和个人发展入档结果只能停在查询页 | `teacher-mobile/src/pages/archive/record-detail/index.vue`、`teacher-mobile/src/pages.json` | 已新增 `pages/archive/record-detail/index` 并注册路由；档案查询记录点击、待办证书确认结果和活动归档结果页均按 `recordId` 进入详情页；新增 `npm run test:archive-detail` 守卫路由、入口和同源记录 |
 | 2026-07-03 | 待办证书确认本人后不应直接显示正式已入档 | `teacher-mobile/src/stores/todoStore.ts`、`teacher-mobile/src/pages/todo/certificate-archive-success/index.vue`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 已补：`confirmTodoCertificate()` 改为 `pending-verify`，确认结果页展示等待入档确认，档案记录 `certificate-digital-literacy` 进入待核验并追溯 `archiveStore.processingRecords` / `teacherArchiveFacts`；`test:todo-business` 已新增防直入档 guardrail |
-| 2026-07-03 | 手机端培训、企业实践、虚拟教研结果页仍没有统一档案详情入口 | `teacher-mobile/src/pages/activity/*archive*`、`teacher-mobile/src/pages/archive/record-detail/index.vue` | 培训归档结果、企业实践已入档、虚拟教研归档结果和 V1 归档结果均已接入 `pages/archive/record-detail/index`；详情页支持 `pending-verify` 归档确认中状态；`test:archive-detail` 已纳入这些入口守卫 |
+| 2026-07-03 | 手机端培训、企业实践、虚拟教研结果页仍没有统一档案详情入口 | `teacher-mobile/src/pages/activity/*archive*`、`teacher-mobile/src/pages/archive/record-detail/index.vue` | 培训归档结果、企业实践等待入档确认页、虚拟教研归档结果和 V1 归档结果均已接入 `pages/archive/record-detail/index`；详情页支持 `pending-verify` 归档确认中状态；`test:archive-detail` 已纳入这些入口守卫 |
 | 2026-07-03 | 手机端档案 54 张效果图缺少逐图补页、合并和移出判定 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive/*` | 已补 M-01 档案 54 张效果图补页清单，明确 2 张保留已有、18 张合并状态、27 张补页、7 张移出教师端 |
 | 2026-07-03 | 手机端档案 27 个补页项如果逐图建页会造成页面膨胀 | `docs/page-coverage-ledger.md` | 已补 M-02 档案统一路由命名草案，将 27 个补页项收敛为 12 个新增路由和 2 个保留路由 |
 | 2026-07-03 | 手机端档案 12 个新增路由如果直接按页面写会复制分类卡、记录卡、详情块和更正材料结构 | `docs/page-coverage-ledger.md`、`teacher-mobile/src/pages/archive/*` | 已补 M-03 档案统一组件边界，后续补页按 5 个语义组件拆分 |
@@ -360,7 +360,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 分组 | 效果图数 | 当前源码/路由状态 | 当前判定 |
 | --- | ---: | --- | --- |
 | 根目录档案通用页 | 17 | `pages/archive/index` 可覆盖“教师端手机｜档案｜档案首页”；`pages/archive/record-query` 可覆盖“教师端手机｜档案｜档案记录查询”；搜索无结果、个人成长记录、档案草稿、职称聘用详情、发展计划编辑、分类/访问/角色/会话/绩效/反馈/活动管理等未见独立档案路由 | 仅入口和查询页已明确映射；其余多为缺页或未注册管理类页面 |
-| 基本信息 | 4 | `pages/archive/index` 只展示“基本信息”分类卡片；未见基本信息档案页、详情页、教育背景详情页独立路由 | 缺页 |
+| 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历和来源追溯 | 基本信息详情页第一版已落地；后续只剩真实接口和附件预览深化 |
 | 教学工作 | 6 | `pages/archive/record-query` 有教学工作搜索结果；未见教学工作概览、列表、教学评价记录详情独立路由 | 查询结果局部覆盖；概览/列表/详情缺页 |
 | 教研科研 | 6 | `pages/archive/record-query` 有教研科研搜索结果；虚拟教研活动页有“成长档案 · 教研科研”归档结果，但不属于档案模块路由 | 查询结果和活动归档结果局部承接；档案概览/分类/详情缺页 |
 | 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
@@ -466,9 +466,9 @@ M-01 结论：
 | `pages/archive/category/index` | 统一分类首页 / 概览 | `category=basic-info|teaching|research|enterprise-practice|honor|personal-development|social-service|assessment` | 基本信息档案页、教学工作概览、教研科研概览、企业实践首页/概览、成果荣誉档案/概览、个人发展档案页、社会服务档案页、考核评价档案页 |
 | `pages/archive/record-list/index` | 统一分类记录列表 | `category`、`recordType`、`filter` | 教学工作记录列表、教研科研记录列表、企业实践记录列表、成果荣誉记录列表、根目录 `记录列表页面.png` |
 | `pages/archive/record-detail/index` | 统一档案记录详情；第一版已新增并承接查询结果和待办证书入档结果 | `recordId`、`recordTitle`、`category`、`recordType`、`section` | 个人成长记录、活动详情页面、教学评价记录详情、教研记录详情、教研记录详情归档信息/活动记录、企业实践记录详情、教学成果奖记录详情 |
-| `pages/archive/basic-info-detail/index` | 基本信息专属详情 | `section=profile|education|employment` | 基本信息详情页、基本信息档案详情、教育背景、根目录 `基本信息.png` |
+| `pages/archive/basic-info-detail/index` | 基本信息专属详情；第一版已新增并读取 `domain/archive.ts` 的 `basic-info-teacher-profile` 事实 | `recordId`、`section=profile|education|employment` | 基本信息详情页、基本信息档案详情、教育背景、根目录 `基本信息.png` |
 | `pages/archive/draft-list/index` | 档案草稿 / 待确认记录列表；第一版已新增并承接 `pending-verify` 记录 | `status=draft|pending-confirm|pending-verify` | `成长档案-档案草稿.png` |
-| `pages/archive/development-plan-edit/index` | 个人发展计划编辑 | `planId`、`mode=edit|create` | `发展计划编辑.png` |
+| `pages/archive/development-plan-edit/index` | 个人发展计划编辑；第一版已新增并读取 `domain/archive.ts` 的发展计划草稿 | `draftId`、`planId`、`mode=edit|create` | `发展计划编辑.png` |
 | `pages/archive/correction/apply/index` | 职称聘用更正申请 | `recordId`、`category=title-employment` | `教师端手机｜档案｜职称聘用更正申请.png` |
 | `pages/archive/correction/submitted/index` | 更正申请提交结果 | `requestId` | `教师端手机｜档案｜更正申请已提交.png` |
 | `pages/archive/correction/detail/index` | 更正申请详情 | `requestId` | `教师端手机｜档案｜更正申请详情.png` |
@@ -479,7 +479,7 @@ M-01 结论：
 M-02 收敛结果：
 
 - 保留现有路由 2 个：`archive/index`、`archive/record-query/index`。
-- 新增统一档案路由 6 个：`category`、`record-list`、`record-detail`、`basic-info-detail`、`draft-list`、`development-plan-edit`；其中 `record-detail` 第一版已落地。
+- 新增统一档案路由 6 个：`category`、`record-list`、`record-detail`、`basic-info-detail`、`draft-list`、`development-plan-edit`；其中 `record-detail`、`basic-info-detail` 和 `development-plan-edit` 第一版已落地。发展计划草稿编辑页第一版已落地。
 - 新增更正链路路由 6 个：`correction/apply`、`correction/submitted`、`correction/detail`、`correction/progress`、`correction/result`、`correction/supplement`。
 - 27 个补页项收敛为 12 个新增路由；18 个合并状态通过参数或页面分段承接；7 个管理类效果图不进入教师端补页。
 - 后续 `M-03` 应按这些路由定义统一组件边界：分类卡、记录卡、详情块、来源记录、更正材料块。
@@ -509,8 +509,8 @@ M-03 组件到路由关系：
 | `pages/archive/record-list/index` | `ArchiveRecordCard` | 读取筛选参数，组织列表筛选、空状态和记录详情跳转 |
 | `pages/archive/record-detail/index` | `ArchiveDetailSection`、`ArchiveSourceBlock` | 读取 `recordId`、`category`、`recordType`、`section`，组织详情分段和来源追溯 |
 | `pages/archive/basic-info-detail/index` | `ArchiveDetailSection`、`ArchiveSourceBlock` | 读取 `section`，组织个人基础信息、教育背景、任职信息 |
-| `pages/archive/draft-list/index` | `ArchiveRecordCard` | 读取 `status`，组织草稿、待确认、待核验列表 |
-| `pages/archive/development-plan-edit/index` | 暂不抽公共组件 | 页面内承接发展计划编辑表单，避免过早泛化 |
+| `pages/archive/draft-list/index` | `ArchiveRecordCard` | 读取 `status`，组织草稿、待确认、待核验列表；草稿进入 `development-plan-edit`，待核验记录进入统一详情 |
+| `pages/archive/development-plan-edit/index` | 暂不抽公共组件 | 页面内承接发展计划编辑表单，保存写回草稿，提交生成待核验档案记录 |
 | `pages/archive/correction/apply/index` | `ArchiveCorrectionMaterialBlock` | 组织更正申请表单、材料选择和提交动作 |
 | `pages/archive/correction/submitted/index` | 暂不抽公共组件 | 结果页只承接提交反馈、返回档案和查看更正进度 |
 | `pages/archive/correction/detail/index` | `ArchiveCorrectionMaterialBlock`、`ArchiveSourceBlock` | 组织更正详情、来源记录和处理进度入口 |
@@ -948,7 +948,7 @@ M-12 验证：
 | 优先级 | 问题 | 位置 | 建议 |
 | --- | --- | --- | --- |
 | P0 | 手机端效果图 142 张，但注册页面 86 个 | `teacher-mobile/src/pages` | 逐图判断“一页多状态”还是未覆盖 |
-| P0 | 档案模块效果图 54 张，当前已有 11 个档案模块注册页面，分类概览、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版，但大量基础信息详情、草稿编辑仍未见独立路由 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实档案记录模型和剩余独立详情页，避免重复补分类 / 列表模板 |
+| P0 | 档案模块效果图 54 张，当前已有 13 个档案模块注册页面，分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版，但真实附件预览和管理端接口仍待深化 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实附件 / 管理端接口和剩余来源详情，避免重复补分类 / 列表模板 |
 | P1 | 活动模块页面数量与效果图基本一致，但业务流是否跨页闭环尚未审计 | `teacher-mobile/src/pages/activity` | 下一步建立教学反思、培训、企业实践、虚拟教研手机端业务地图 |
 | P1 | 我的模块 6 张效果图当前只有 1 个综合页承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 明确能力画像、发展报告、岗位/聘期对照是否补独立页面 |
 | P1 | AI 助手缺页已补，补充档案可生成本地待核验记录，但仍缺真实 AI 会话和管理端同步 | `teacher-mobile/src/pages/assistant/*`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 后续从本地数据闭环转入接口、附件上传和管理端确认结果同步 |
@@ -1194,7 +1194,7 @@ M-12 验证：
 | --- | --- | --- |
 | V-01 | 手机端页面补齐后验证注册关系 | `teacher-mobile/src/pages.json` 与页面文件一一对应 |
 | V-02 | 手机端业务地图更新后自检入口 | 每个新增页面都能从现有入口进入或明确为待接入口 |
-| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
+| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
 | V-03 | 手机端类型检查 | 执行 `cd teacher-mobile && npm run typecheck` |
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |

@@ -135,7 +135,7 @@ function goResearchRecord() {
         <view class="destination-body">
           <view class="cloud-icon"></view>
           <text class="destination-text">
-            本次活动记录已沉淀到虚拟教研记录，可在“我的教研室”和“成长档案 · 教研科研维度”查看。
+            本次活动记录已形成虚拟教研记录，并进入档案待确认队列，对齐 archiveStore.processingRecords。
           </text>
         </view>
       </MobileCard>

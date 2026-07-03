@@ -4,7 +4,20 @@ import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import heroArt from '@/images/hero-art.png'
+import processingHeroArt from '@/assets/admin/archive-processing-assets/archive-processing-hero-art.png'
+import processingHeroEmblem from '@/assets/admin/archive-processing-assets/archive-processing-hero-emblem.svg'
+import iconStatusArchived from '@/assets/admin/archive-processing-assets/icons/icon-status-archived.svg'
+import iconStatusException from '@/assets/admin/archive-processing-assets/icons/icon-status-exception.svg'
+import iconStatusPendingComplete from '@/assets/admin/archive-processing-assets/icons/icon-status-pending-complete.svg'
+import iconStatusPendingConfirm from '@/assets/admin/archive-processing-assets/icons/icon-status-pending-confirm.svg'
+import iconStatusPendingVerify from '@/assets/admin/archive-processing-assets/icons/icon-status-pending-verify.svg'
+import iconStatusWithdrawing from '@/assets/admin/archive-processing-assets/icons/icon-status-withdrawing.svg'
+import iconSourceAll from '@/assets/admin/archive-processing-assets/icons/icon-source-all.svg'
+import iconSourceDepartmentUpload from '@/assets/admin/archive-processing-assets/icons/icon-source-department-upload.svg'
+import iconSourceDevelopment from '@/assets/admin/archive-processing-assets/icons/icon-source-development.svg'
+import iconSourcePublicCollection from '@/assets/admin/archive-processing-assets/icons/icon-source-public-collection.svg'
+import iconSourceResearchReport from '@/assets/admin/archive-processing-assets/icons/icon-source-research-report.svg'
+import iconSourceTeachingResearch from '@/assets/admin/archive-processing-assets/icons/icon-source-teaching-research.svg'
 import {
   createArchiveProcessingRecordDetail,
   getArchiveProcessingMock,
@@ -22,13 +35,31 @@ const route = useRoute()
 const archiveState = getArchiveState()
 const { sourceOptions: archiveSourceOptions } = getArchiveProcessingMock()
 
+const archiveStatusIconMap = {
+  待确认: iconStatusPendingConfirm,
+  待检验: iconStatusPendingVerify,
+  待补充: iconStatusPendingComplete,
+  异常待处理: iconStatusException,
+  拟退中: iconStatusWithdrawing,
+  已入档: iconStatusArchived,
+} as const
+
+const sourceIconMap: Record<string, string> = {
+  全部来源: iconSourceAll,
+  发展活动: iconSourceDevelopment,
+  部门上报: iconSourceDepartmentUpload,
+  教研成果: iconSourceTeachingResearch,
+  公开征集: iconSourcePublicCollection,
+  科研申报: iconSourceResearchReport,
+}
+
 // 统计数据
 const statCards = computed(() => [
-  { label: '待确认', value: countByStatus('待确认'), tone: 'confirm', icon: 'clock' },
-  { label: '待检验', value: countByStatus('待检验'), tone: 'verify', icon: 'shield' },
-  { label: '待补充', value: countByStatus('待补充'), tone: 'supplement', icon: 'folder' },
-  { label: '异常待处理', value: countByStatus('异常待处理'), tone: 'exception', icon: 'alert' },
-  { label: '拟退中', value: countByStatus('拟退中'), tone: 'returning', icon: 'edit' },
+  { label: '待确认', value: countByStatus('待确认'), tone: 'confirm', iconSrc: archiveStatusIconMap.待确认 },
+  { label: '待检验', value: countByStatus('待检验'), tone: 'verify', iconSrc: archiveStatusIconMap.待检验 },
+  { label: '待补充', value: countByStatus('待补充'), tone: 'supplement', iconSrc: archiveStatusIconMap.待补充 },
+  { label: '异常待处理', value: countByStatus('异常待处理'), tone: 'exception', iconSrc: archiveStatusIconMap.异常待处理 },
+  { label: '拟退中', value: countByStatus('拟退中'), tone: 'returning', iconSrc: archiveStatusIconMap.拟退中 },
 ])
 
 // 筛选条件
@@ -47,10 +78,11 @@ const statusOptions = computed(() => [
 
 const sourceOptions = computed(() => {
   return [
-    { label: '全部来源', value: '全部来源', count: archiveState.processingRecords.length },
+    { label: '全部来源', value: '全部来源', iconSrc: iconSourceAll, count: archiveState.processingRecords.length },
     ...archiveSourceOptions.map(source => ({
       label: source,
       value: source,
+      iconSrc: sourceIconMap[source] ?? iconSourceAll,
       count: archiveState.processingRecords.filter(record => record.source === source).length,
     })),
   ]
@@ -121,16 +153,13 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
       <section class="processing-hero admin-hero">
         <div
           class="hero-art"
-          :style="{ backgroundImage: `url(${heroArt})` }"
+          :style="{ backgroundImage: `url(${processingHeroArt})` }"
           aria-hidden="true"
         />
 
         <div class="hero-content">
           <div class="hero-emblem" aria-hidden="true">
-            <svg viewBox="0 0 44 44">
-              <path d="M12 8h15l5 5v23H12z" />
-              <path d="M27 8v7h7M17 18h11M17 23h11M17 28h8" />
-            </svg>
+            <img class="hero-emblem-img" :src="processingHeroEmblem" alt="" />
           </div>
 
           <div class="hero-main">
@@ -145,25 +174,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
                 :class="card.tone"
               >
                 <span class="stat-icon" aria-hidden="true">
-                  <svg v-if="card.icon === 'clock'" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="8" />
-                    <path d="M12 7v5l3 2" />
-                  </svg>
-                  <svg v-else-if="card.icon === 'shield'" viewBox="0 0 24 24">
-                    <path d="M12 3l7 3v5c0 4.8-2.8 8.1-7 10-4.2-1.9-7-5.2-7-10V6z" />
-                    <path d="M9 12l2 2 4-5" />
-                  </svg>
-                  <svg v-else-if="card.icon === 'folder'" viewBox="0 0 24 24">
-                    <path d="M4 7h6l2 3h8v8H4z" />
-                  </svg>
-                  <svg v-else-if="card.icon === 'alert'" viewBox="0 0 24 24">
-                    <path d="M12 4l8 15H4z" />
-                    <path d="M12 9v4M12 17h.01" />
-                  </svg>
-                  <svg v-else viewBox="0 0 24 24">
-                    <path d="M4 17l1 3 3-1L19 8l-4-4z" />
-                    <path d="M13 6l4 4" />
-                  </svg>
+                  <img class="stat-icon-img" :src="card.iconSrc" alt="" />
                 </span>
                 <span class="stat-text">{{ card.label }}</span>
                 <strong>{{ card.value }}</strong>
@@ -220,7 +231,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
                 :class="{ active: sourceFilter === option.value }"
                 @click="sourceFilter = option.value"
               >
-                <span class="filter-dot" aria-hidden="true"></span>
+                <img class="filter-icon" :src="option.iconSrc" alt="" />
                 <span class="filter-label">{{ option.label }}</span>
                 <span class="filter-count">{{ option.count }}</span>
               </li>
@@ -860,14 +871,10 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   box-shadow: 0 18px 34px rgba(11, 99, 246, 0.18);
 }
 
-.hero-emblem svg {
+.hero-emblem-img {
   width: 58%;
   height: 58%;
-  fill: rgba(11, 99, 246, 0.12);
-  stroke: var(--color-primary);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  object-fit: contain;
 }
 
 .hero-main {
@@ -923,14 +930,10 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   border-radius: 50%;
 }
 
-.stat-icon svg {
+.stat-icon-img {
   width: 25px;
   height: 25px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  object-fit: contain;
 }
 
 .stat-card.confirm .stat-icon {
@@ -1057,6 +1060,12 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .filter-item.active .filter-dot {
   border-color: var(--color-primary);
   background: var(--color-primary);
+}
+
+.filter-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 
 .filter-label {

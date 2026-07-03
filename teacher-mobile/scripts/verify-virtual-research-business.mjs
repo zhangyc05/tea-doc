@@ -16,6 +16,7 @@ const files = {
   supplement: resolve(root, 'src/pages/activity/virtual-research-supplement-material/index.vue'),
   resubmitted: resolve(root, 'src/pages/activity/virtual-research-resubmitted/index.vue'),
   archiveResult: resolve(root, 'src/pages/activity/virtual-research-archive-result/index.vue'),
+  archiveResultV1: resolve(root, 'src/pages/activity/virtual-research-archive-result-v1/index.vue'),
   archivedConfirmed: resolve(root, 'src/pages/activity/virtual-research-archived-confirmed/index.vue'),
   businessMap: resolve(projectRoot, 'docs/business-logic-map.md'),
   coverageLedger: resolve(projectRoot, 'docs/page-coverage-ledger.md'),
@@ -98,6 +99,21 @@ mustInclude('resubmitted page', resubmitted, 'goContributionDetail')
 const archiveResult = source(files.archiveResult)
 mustInclude('archive result page', archiveResult, 'submitVirtualResearchArchive')
 mustInclude('archive result page', archiveResult, 'goResearchRoom')
+
+for (const [label, file] of [
+  ['archive result page', files.archiveResult],
+  ['archive result v1 page', files.archiveResultV1],
+  ['archived confirmed page', files.archivedConfirmed],
+]) {
+  const pageSource = source(file)
+  mustInclude(label, pageSource, '档案待确认')
+  mustInclude(label, pageSource, 'archiveStore.processingRecords')
+  for (const legacyText of ['正式事实', '正式入档', '沉淀到成长档案中']) {
+    if (pageSource.includes(legacyText)) {
+      failures.push(`${label} still presents virtual research archive result as ${legacyText}`)
+    }
+  }
+}
 
 const archivedConfirmed = source(files.archivedConfirmed)
 mustInclude('archived confirmed page', archivedConfirmed, 'goResearchRoom')

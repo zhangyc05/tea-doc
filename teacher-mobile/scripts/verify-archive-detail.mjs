@@ -5,8 +5,10 @@ const root = resolve(import.meta.dirname, '..')
 const pagesJson = JSON.parse(readFileSync(resolve(root, 'src/pages.json'), 'utf8'))
 const route = 'pages/archive/record-detail/index'
 const categoryRoute = 'pages/archive/category/index'
+const basicInfoDetailRoute = 'pages/archive/basic-info-detail/index'
 const recordListRoute = 'pages/archive/record-list/index'
 const draftListRoute = 'pages/archive/draft-list/index'
+const developmentPlanEditRoute = 'pages/archive/development-plan-edit/index'
 const correctionApplyRoute = 'pages/archive/correction/apply/index'
 const correctionSubmittedRoute = 'pages/archive/correction/submitted/index'
 const correctionProgressRoute = 'pages/archive/correction/progress/index'
@@ -14,8 +16,10 @@ const correctionResultRoute = 'pages/archive/correction/result/index'
 const correctionSupplementRoute = 'pages/archive/correction/supplement/index'
 const pageFile = resolve(root, 'src/pages/archive/record-detail/index.vue')
 const categoryPageFile = resolve(root, 'src/pages/archive/category/index.vue')
+const basicInfoDetailPageFile = resolve(root, 'src/pages/archive/basic-info-detail/index.vue')
 const recordListPageFile = resolve(root, 'src/pages/archive/record-list/index.vue')
 const draftListPageFile = resolve(root, 'src/pages/archive/draft-list/index.vue')
+const developmentPlanEditPageFile = resolve(root, 'src/pages/archive/development-plan-edit/index.vue')
 const correctionApplyPageFile = resolve(root, 'src/pages/archive/correction/apply/index.vue')
 const correctionSubmittedPageFile = resolve(root, 'src/pages/archive/correction/submitted/index.vue')
 const correctionProgressPageFile = resolve(root, 'src/pages/archive/correction/progress/index.vue')
@@ -42,12 +46,20 @@ if (!pagesJson.pages.some((page) => page.path === categoryRoute)) {
   failures.push(`${categoryRoute} is not registered in src/pages.json`)
 }
 
+if (!pagesJson.pages.some((page) => page.path === basicInfoDetailRoute)) {
+  failures.push(`${basicInfoDetailRoute} is not registered in src/pages.json`)
+}
+
 if (!pagesJson.pages.some((page) => page.path === recordListRoute)) {
   failures.push(`${recordListRoute} is not registered in src/pages.json`)
 }
 
 if (!pagesJson.pages.some((page) => page.path === draftListRoute)) {
   failures.push(`${draftListRoute} is not registered in src/pages.json`)
+}
+
+if (!pagesJson.pages.some((page) => page.path === developmentPlanEditRoute)) {
+  failures.push(`${developmentPlanEditRoute} is not registered in src/pages.json`)
 }
 
 if (!pagesJson.pages.some((page) => page.path === correctionApplyRoute)) {
@@ -78,12 +90,20 @@ if (!existsSync(categoryPageFile)) {
   failures.push(`${categoryRoute}.vue does not exist`)
 }
 
+if (!existsSync(basicInfoDetailPageFile)) {
+  failures.push(`${basicInfoDetailRoute}.vue does not exist`)
+}
+
 if (!existsSync(recordListPageFile)) {
   failures.push(`${recordListRoute}.vue does not exist`)
 }
 
 if (!existsSync(draftListPageFile)) {
   failures.push(`${draftListRoute}.vue does not exist`)
+}
+
+if (!existsSync(developmentPlanEditPageFile)) {
+  failures.push(`${developmentPlanEditRoute}.vue does not exist`)
 }
 
 if (!existsSync(correctionApplyPageFile)) {
@@ -112,8 +132,28 @@ if (!existsSync(archiveDomainFile)) {
 
 if (existsSync(archiveDomainFile)) {
   const archiveDomainSource = readFileSync(archiveDomainFile, 'utf8')
+  if (!archiveDomainSource.includes('basic-info-teacher-profile')) {
+    failures.push('archive domain does not include a basic information archive fact record')
+  }
+
   if (!archiveDomainSource.includes('getPendingArchiveRecords')) {
     failures.push('archive domain does not expose pending archive records helper')
+  }
+
+  if (!archiveDomainSource.includes('ArchiveDevelopmentPlanDraft')) {
+    failures.push('archive domain does not define development plan draft records')
+  }
+
+  if (!archiveDomainSource.includes('getArchiveDraftRecords')) {
+    failures.push('archive domain does not expose draft archive records helper')
+  }
+
+  if (!archiveDomainSource.includes('saveArchiveDevelopmentPlanDraft')) {
+    failures.push('archive domain does not expose development plan draft save action')
+  }
+
+  if (!archiveDomainSource.includes('submitArchiveDevelopmentPlanDraft')) {
+    failures.push('archive domain does not expose development plan draft submit action')
   }
 
   if (!archiveDomainSource.includes("record.status === 'pending-verify'")) {
@@ -155,12 +195,43 @@ if (!archiveIndexSource.includes('domain/archive')) {
 
 if (existsSync(categoryPageFile)) {
   const categorySource = readFileSync(categoryPageFile, 'utf8')
+  if (!categorySource.includes('/pages/archive/basic-info-detail/index')) {
+    failures.push('archive category page does not navigate basic-info records to basic-info detail')
+  }
+
   if (!categorySource.includes('/pages/archive/record-list/index')) {
     failures.push('archive category page does not navigate to record-list')
   }
 
   if (!categorySource.includes('domain/archive')) {
     failures.push('archive category page does not read archive records from shared domain')
+  }
+}
+
+if (existsSync(basicInfoDetailPageFile)) {
+  const basicInfoDetailSource = readFileSync(basicInfoDetailPageFile, 'utf8')
+  if (!basicInfoDetailSource.includes('domain/archive')) {
+    failures.push('archive basic-info detail page does not read archive records from shared domain')
+  }
+
+  if (!basicInfoDetailSource.includes('findArchiveRecordById')) {
+    failures.push('archive basic-info detail page does not locate the basic information record by recordId')
+  }
+
+  if (!basicInfoDetailSource.includes('basic-info-teacher-profile')) {
+    failures.push('archive basic-info detail page does not use the basic information archive fact record')
+  }
+
+  if (!basicInfoDetailSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive basic-info detail page does not provide source record detail entry')
+  }
+
+  if (!basicInfoDetailSource.includes('/pages/archive/correction/apply/index')) {
+    failures.push('archive basic-info detail page does not provide correction entry')
+  }
+
+  if (!basicInfoDetailSource.includes('recordId=')) {
+    failures.push('archive basic-info detail page does not preserve recordId in navigation')
   }
 }
 
@@ -189,8 +260,39 @@ if (existsSync(draftListPageFile)) {
     failures.push('archive draft-list page does not use pending verification records helper')
   }
 
+  if (!draftListSource.includes('getArchiveDraftRecords')) {
+    failures.push('archive draft-list page does not use archive draft records helper')
+  }
+
+  if (!draftListSource.includes('/pages/archive/development-plan-edit/index')) {
+    failures.push('archive draft-list page does not navigate to development plan draft edit page')
+  }
+
   if (!draftListSource.includes('recordId=')) {
     failures.push('archive draft-list page does not navigate to detail by recordId')
+  }
+}
+
+if (existsSync(developmentPlanEditPageFile)) {
+  const developmentPlanEditSource = readFileSync(developmentPlanEditPageFile, 'utf8')
+  if (!developmentPlanEditSource.includes('domain/archive')) {
+    failures.push('archive development plan edit page does not read archive draft records from shared domain')
+  }
+
+  if (!developmentPlanEditSource.includes('saveArchiveDevelopmentPlanDraft')) {
+    failures.push('archive development plan edit page does not save draft state')
+  }
+
+  if (!developmentPlanEditSource.includes('submitArchiveDevelopmentPlanDraft')) {
+    failures.push('archive development plan edit page does not submit draft into pending archive record')
+  }
+
+  if (!developmentPlanEditSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive development plan edit page does not navigate to submitted archive record detail')
+  }
+
+  if (!developmentPlanEditSource.includes('/pages/archive/draft-list/index')) {
+    failures.push('archive development plan edit page does not navigate back to draft list')
   }
 }
 
@@ -362,6 +464,14 @@ const ledgerSource = readFileSync(docsLedgerFile, 'utf8')
 const completedTaskList = ledgerSource.split('### 已完成任务编号')[1] || ''
 if (!ledgerSource.includes('| V-02a | 手机端档案入口守卫 | 已补：')) {
   failures.push('coverage ledger does not mark V-02a archive entry guard as implemented')
+}
+
+if (!ledgerSource.includes('基本信息详情页第一版已落地')) {
+  failures.push('coverage ledger does not mark the basic information detail page as implemented')
+}
+
+if (!ledgerSource.includes('发展计划草稿编辑页第一版已落地')) {
+  failures.push('coverage ledger does not mark the development plan draft edit page as implemented')
 }
 
 if (!completedTaskList.includes('V-02a')) {

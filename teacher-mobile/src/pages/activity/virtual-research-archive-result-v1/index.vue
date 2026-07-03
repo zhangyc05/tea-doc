@@ -139,7 +139,7 @@ function goResearchRoom() {
           <view class="cloud-icon"></view>
           <view class="destination-copy">
             <text class="destination-title">已形成教研活动记录</text>
-            <text class="destination-desc">可在「我的教研室」和「成长档案·教研科研」中查看</text>
+            <text class="destination-desc">已进入档案待确认，对齐 archiveStore.processingRecords，管理端确认后写入成长档案</text>
           </view>
         </view>
       </MobileCard>

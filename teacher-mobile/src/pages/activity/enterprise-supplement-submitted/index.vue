@@ -31,7 +31,7 @@ const infoRows = [
 const verifyRows = [
   { label: '当前状态：', value: '待部门核验', type: 'tag' },
   { label: '由谁核验：', value: '所在学院或人事相关部门', type: 'people' },
-  { label: '核验通过后：', value: '这条企业实践记录将正式入档到「企业实践」', type: 'doc' },
+  { label: '确认通过后：', value: '管理端确认后写入「企业实践」档案事实', type: 'doc' },
   { label: '如需补充：', value: '系统会通过待办提醒你', type: 'bell' },
 ]
 
