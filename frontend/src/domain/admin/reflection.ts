@@ -67,3 +67,7 @@ export type ReflectionDetailMock = {
   sourceData: ReflectionSourceData
   relatedReflections: RelatedReflection[]
 }
+
+export type ReflectionState = {
+  operationMessage: string
+}

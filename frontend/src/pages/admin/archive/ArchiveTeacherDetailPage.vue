@@ -815,7 +815,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   display: flex;
   align-items: center;
   gap: var(--space-admin-sm);
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   width: min(660px, 62%);
   padding: 9px 14px;
   border: 1px solid #cfe0fa;
@@ -925,7 +925,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 }
 
 .info-card {
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
   border: 1px solid #d5e1f1;
   border-radius: 7px;
   background: #fbfdff;
@@ -966,7 +966,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   align-self: flex-end;
   min-width: 132px;
   height: 34px;
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
   padding: 0 10px;
   color: var(--color-admin-primary-hover);
   font-size: 14px;
@@ -1238,7 +1238,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   align-items: center;
   gap: var(--space-admin-lg);
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-admin-md);
   padding-left: 34px;
 }
 

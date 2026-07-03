@@ -134,7 +134,7 @@ export function uploadTrainingCertificateInState(state: TrainingState, recordId:
       '2026-05-18 10:00 培训记录材料完整，生成成长档案待确认记录',
     ],
   })
-  state.operationMessage = `${record.teacher} 的培训结业证书已补充，记录材料已完整。`
+  state.operationMessage = `${record.teacher} 的培训结业证书已补充，记录材料已完整，并已生成成长档案待确认记录。`
   return record
 }
 

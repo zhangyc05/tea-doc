@@ -436,7 +436,7 @@ function deriveExecutionVersion() {
   max-width: 100%;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: var(--space-admin-md) 18px;
+  gap: var(--space-admin-md) var(--space-admin-card-gap);
   margin-top: clamp(14px, 0.95vw, 18px);
   overflow: visible;
   border: 0;
@@ -508,7 +508,7 @@ function deriveExecutionVersion() {
 
 .operation-message {
   display: inline-flex;
-  margin-left: 10px;
+  margin-left: var(--space-admin-sm);
   color: #18845a;
   font-weight: 850;
 }
@@ -517,9 +517,9 @@ function deriveExecutionVersion() {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   overflow-y: auto;
-  padding: 24px;
+  padding: var(--space-admin-2xl);
 }
 
 .drawer-form-in-sheet {
@@ -566,7 +566,7 @@ function deriveExecutionVersion() {
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
-  padding: 24px;
+  padding: var(--space-admin-2xl);
 }
 
 .version-list-in-sheet {
@@ -576,7 +576,7 @@ function deriveExecutionVersion() {
 .version-card {
   border: 1px solid #e3ebf6;
   border-radius: var(--radius-admin-panel);
-  padding: 16px;
+  padding: var(--space-admin-lg);
   background: #fff;
 }
 

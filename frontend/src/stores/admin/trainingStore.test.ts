@@ -87,5 +87,6 @@ describe('training business state', () => {
       source: '培训管理',
       status: '待确认',
     })
+    expect(getTrainingState().operationMessage).toContain('成长档案待确认记录')
   })
 })

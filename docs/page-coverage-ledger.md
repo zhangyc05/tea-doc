@@ -48,7 +48,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png` | `frontend/src/pages/admin/ability-list/AbilityListBasePage.vue` | `/admin/ability-list/base` | 默认页，`active-key="ability-list-base"` | 已映射；编辑指标、查看版本记录、派生执行版均已接入本地业务状态；能力树展示数据已迁入 `frontend/src/services/mock/ability-list.ts` |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版优化建议.png` | `frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue` | `/admin/ability-list/base/optimization` | 从基准模板页 `goToOptimization()` 进入；支持建议筛选、采纳、暂缓、弃用、应用到基准模板、上传制度文件、重新分析运行反馈和查看版本记录 | 已映射；已接入优化建议到基准模板的本地闭环，上传制度文件和重新分析会写入 `abilityListStore.optimizationSuggestions`，版本记录跳回基准模板版本抽屉；建议来源和问题筛选展示数据已迁入 `frontend/src/services/mock/ability-list.ts` |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版查看页.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 默认页，`active-key="ability-list-execution"` | 已映射；当前基准页；执行版能力树展示数据已迁入 `frontend/src/services/mock/ability-list.ts` |
-| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版指标编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 点击指标行编辑触发 `editingIndicator`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存会更新 `abilityListStore.executionIndicators` 并标记为草稿调整 |
+| `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版指标编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue` | `/admin/ability-list/execution` | 点击指标行编辑触发 `editingIndicator`，展示 `DetailSheet width="form"` | 已映射为同页抽屉状态；保存会更新 `abilityListStore.executionIndicators` 并标记为草稿调整 |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版发布确认.png` | `frontend/src/pages/admin/ability-list/AbilityListPublishConfirmPage.vue` | `/admin/ability-list/execution/publish-confirm` | 发布确认页，`publishStatus` 从 `pending` 切为 `published` | 已映射；基准模板页和执行版页均可派生下一周期执行版并进入发布确认页，发布后旧执行版进入历史版记录；发布影响卡展示数据已迁入 `frontend/src/services/mock/ability-list.ts` |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 默认页，左侧对象树、中间映射表、右侧详情 | 已映射；新增、编辑、删除、确认配置均已接入 `abilityListStore.requirementMappings`；要求对象分组展示数据已迁入 `frontend/src/services/mock/ability-list.ts` |
 | `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜岗位与聘期要求映射编辑抽屉.png` | `frontend/src/pages/admin/ability-list/AbilityListRequirementMappingPage.vue` | `/admin/ability-list/execution/requirement-mapping` | 点击“编辑映射”或行内“编辑”触发 `editingMapping`，展示 `edit-drawer-overlay` | 已映射为同页抽屉状态；保存会更新 `abilityListStore.requirementMappings` |
@@ -106,7 +106,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 
 | 效果图/页面 | 源码 | 路由 | 页面状态 | 当前判定 |
 | --- | --- | --- | --- | --- |
-| 分析报告中心 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | `/admin/reports` | 报告卡片、筛选、详情面板、AI 分析会话 | 已映射；读取 `reportStore.reports`，查看/查看大屏/查看原因打开同页面板，导出/更新/重新生成/继续分析/继续追问/AI 助手均写入共享状态 |
+| 分析报告中心 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | `/admin/reports` | 报告卡片、筛选、详情面板、AI 分析会话 | 已映射；读取 `reportStore.reports`，对象/周期/状态/搜索筛选均绑定报告数据，查看/查看大屏/查看原因打开同页面板，导出/更新/重新生成/继续分析/继续追问/AI 助手均写入共享状态 |
 
 ### 已处理问题
 
@@ -121,15 +121,21 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-02 | 导入批次“取消本次任务”只返回档案处理页，未形成取消状态 | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue`、`frontend/src/stores/admin/archiveStore.ts` | 新增 `cancelled` 批次状态和 `cancelArchiveImportBatch()`，取消后文件状态改为“已取消”，不生成处理记录 |
 | 2026-07-02 | 教师档案详情不读取处理页确认入档事实 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 档案详情读取 `archiveStore.teacherArchiveFacts`，来源抽屉支持栏目合并来源，也支持从已入档事实卡片按当前点击事实过滤对应来源 |
 | 2026-07-03 | 成长档案 B 项闭环复核需要对齐台账顶部结论 | `frontend/src/stores/admin/archiveStore.ts`、`frontend/src/pages/admin/archive/*`、`docs/page-coverage-ledger.md` | 已复核 `archiveStore` 上传文件、导入批次、识别结果、处理记录、教师档案事实和来源记录链路；`npm run test -- archiveStore` 1 个测试文件 / 7 个用例通过 |
-| 2026-07-03 | 成长档案来源详情需要按当前点击事实精确过滤，不只按栏目合并来源 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 B20；资料来源与更正记录中的已入档事实卡片可直接打开该事实来源记录，抽屉按 `fact.id` 过滤 `archiveStore` 来源；待最终验证 |
+| 2026-07-03 | 成长档案来源详情需要按当前点击事实精确过滤，不只按栏目合并来源 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 B20；资料来源与更正记录中的已入档事实卡片可直接打开该事实来源记录，抽屉按 `fact.id` 过滤 `archiveStore` 来源；`npm run test` 24 个测试文件 / 207 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-02 | 培训管理资源、需求、计划、申请、记录材料均为页面局部状态 | `frontend/src/pages/admin/training/*` | 新增 `frontend/src/stores/admin/trainingStore.ts`，资源草稿、需求匹配、计划草稿/发布、申请处理、记录材料和成长档案沉淀均接入共享状态 |
 | 2026-07-03 | 培训管理 C 项闭环复核需要同步当前验证结果 | `frontend/src/stores/admin/trainingStore.ts`、`frontend/src/pages/admin/training/*`、`docs/business-logic-map.md` | 已复核 `trainingStore` 资源、需求、计划、申请、记录材料和成长档案待确认处理记录链路；`npm run test -- trainingStore` 1 个测试文件 / 6 个用例通过；业务地图已移除过期的“后续拆 store”表述 |
+| 2026-07-03 | 培训记录完整后生成成长档案待确认记录的口径需要在操作反馈中可见 | `frontend/src/stores/admin/training/actions.ts`、`frontend/src/pages/admin/training/TrainingRecordDetailPage.vue`、`frontend/src/stores/admin/trainingStore.test.ts`、`docs/business-logic-map.md` | 已补 C23；上传培训证书后，记录状态变为完整，生成 `archiveStore.processingRecords` 待确认记录，页面反馈通过 `trainingStore.operationMessage` 明确提示“成长档案待确认记录”；`npm run test` 24 个测试文件 / 207 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 分析报告中心“周期”筛选只有控件，没有绑定报告业务数据 | `frontend/src/domain/admin/report.ts`、`frontend/src/stores/admin/report/initialData.ts`、`frontend/src/pages/admin/reports/ReportCenterPage.vue` | 已补 D10-D11；`ReportCard` 增加 `period`，报告中心周期筛选和详情展示读取该字段，补 store 与页面 guardrail 测试 |
 | 2026-07-02 | 能力画像群体页存在 `console.log` 空动作 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue` | “查看完整建议”跳教师画像重点支持筛选；教师对象跳画像详情；院系/专业对象给出页面内降级提示 |
 | 2026-07-03 | 能力画像 D1-D3 需要复核业务地图、数据关系和按钮动作 | `frontend/src/pages/admin/ability-profile/*`、`frontend/src/services/mock/ability-profile.ts`、`docs/business-logic-map.md` | 已复核群体画像、教师画像列表、教师画像详情三层关系；按钮 `console.log` 命中 0；教师对象真实跳转，院系/专业为明确降级提示；展示数据已迁入 mock service，业务类型已迁入 domain |
+| 2026-07-03 | 教师画像列表分页总数和页码仍为硬编码展示 | `frontend/src/pages/admin/ability-profile/AbilityProfileTeacherPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 D1-D3 分页闭环；总数、页码和当前页数据全部绑定 `filteredTeachers`，筛选后重置页码，上一页/下一页/页码按钮均有明确状态动作；`npm run test -- src/pages/admin/adminVisualActions.test.ts` 1 个测试文件 / 54 个用例通过 |
 | 2026-07-02 | 教学反思详情“查看更多相关记录”跳列表但列表不读取问题关键词 | `frontend/src/pages/admin/reflection/*` | 反思总览读取 `keyword` query，并显示当前问题定位提示；共性观察筛选和详情更多相关记录形成闭环 |
-| 2026-07-03 | 教学反思 D4-D5 需要复核列表、详情、来源数据和相关记录闭环 | `frontend/src/pages/admin/reflection/*`、`frontend/src/domain/admin/reflection.ts`、`frontend/src/services/mock/reflection.ts`、`docs/business-logic-map.md` | 已复核列表筛选、详情跳转、来源数据页面内反馈、相关详情跳转和更多相关记录 keyword 回流；按钮 `console.log` 命中 0；展示数据已迁入 mock service，业务类型已迁入 domain；尚未写入成长档案事实 |
+| 2026-07-03 | 教学反思 D4-D5 需要复核列表、详情、来源数据和相关记录闭环 | `frontend/src/pages/admin/reflection/*`、`frontend/src/domain/admin/reflection.ts`、`frontend/src/services/mock/reflection.ts`、`docs/business-logic-map.md` | 已复核列表筛选、详情跳转、来源数据页面内反馈、相关详情跳转和更多相关记录 keyword 回流；按钮 `console.log` 命中 0；展示数据已迁入 mock service，业务类型已迁入 domain |
+| 2026-07-03 | 教学反思详情显示“已进入成长档案”但未写入档案处理记录 | `frontend/src/stores/admin/reflectionStore.ts`、`frontend/src/pages/admin/reflection/ReflectionDetailPage.vue`、`frontend/src/stores/admin/reflectionStore.test.ts`、`docs/business-logic-map.md` | 已补 D5 反思沉淀闭环；详情页改为生成成长档案待确认记录，调用 `sendReflectionToArchive()` 写入 `archiveStore.processingRecords`，不直接入档；`npm run test -- src/stores/admin/reflectionStore.test.ts` 1 个测试文件 / 1 个用例通过 |
 | 2026-07-02 | 企业实践申请、跟踪、记录归档为页面局部状态 | `frontend/src/pages/admin/practice/*` | 新增 `frontend/src/stores/admin/practiceStore.ts`，申请同意/退回、年度跟踪、记录归档和成长档案待确认记录均接入共享状态 |
+| 2026-07-03 | 企业实践“查看记录/查看档案”仍停留在当前表格定位 | `frontend/src/pages/admin/practice/*`、`frontend/src/pages/admin/archive/ArchiveProcessingPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 D6-D7 跨页闭环；已同意申请和年度跟踪可跳实践记录总览指定记录，已归档记录可跳成长档案处理页指定 `practice-*` 待确认记录；`npm run test -- src/pages/admin/adminVisualActions.test.ts` 1 个测试文件 / 54 个用例通过 |
 | 2026-07-02 | 虚拟教研室、活动、记录和档案沉淀为页面局部状态 | `frontend/src/pages/admin/virtual-lab/*` | 新增 `frontend/src/stores/admin/virtualLabStore.ts`，教研室、成员、活动、记录和成长档案待确认记录均接入共享状态 |
+| 2026-07-03 | 虚拟教研记录生成档案待确认后仍停留在记录详情页 | `frontend/src/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue`、`frontend/src/pages/admin/archive/ArchiveProcessingPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 D8-D9 档案沉淀跨页闭环；记录详情生成 `virtual-lab-*` 待确认记录后跳成长档案处理页并选中该记录；`npm run test -- src/pages/admin/adminVisualActions.test.ts` 1 个测试文件 / 54 个用例通过 |
 | 2026-07-02 | 分析报告按钮只写页面提示，导出、查看、生成、AI 助手行为不明确 | `frontend/src/pages/admin/reports/ReportCenterPage.vue` | 新增 `frontend/src/stores/admin/reportStore.ts`，报告详情、导出状态、重新生成/更新、AI 分析会话均接入共享状态 |
 | 2026-07-02 | `/admin/system` 只有占位页且无管理端效果图对应 | `frontend/src/router/admin.routes.ts`、`frontend/src/components/layout/AdminSidebar.vue` | 删除系统管理占位路由、侧边栏入口和 `AdminPlaceholderPage.vue` |
 | 2026-07-02 | 培训资源存在未挂路由页面 | `frontend/src/pages/admin/training/ResourceLibraryPage.vue` | 保留已映射效果图的 `TrainingResourcePage.vue`，删除未挂路由旧页面 |
@@ -161,6 +167,8 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 手机端补页后需要重新执行 H5 构建 | `teacher-mobile` | 已补 V-04，`npm run build:h5` 通过；仍存在既有 npm `disturl` 和 Sass deprecation warning |
 | 2026-07-03 | 手机端补页后需要重新执行微信小程序构建 | `teacher-mobile` | 已补 V-05，`npm run build:mp-weixin` 通过；仍存在既有 npm `disturl` 和 Sass deprecation warning |
 | 2026-07-03 | 手机端补页、注册、入口和验证结果需要回写台账 | `docs/page-coverage-ledger.md` | 已补 V-06，台账已同步 86 个注册页面、AI 助手页面状态、V-01 至 V-05 验证结果 |
+| 2026-07-03 | 手机端培训归档结果页只进入静态详情，提交动作未显式生成待核验记录 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/activity/training-summary/index.vue`、`teacher-mobile/src/pages/activity/training-archive-result/index.vue` | 已补 G9-04；提交归档调用 `createTrainingArchiveRecord()` 生成 / 定位 `pending-verify` 档案记录，结果页可进入记录详情和档案待确认列表；新增 `npm run test:training-archive` |
+| 2026-07-03 | 手机端企业实践归档等待确认和补充已提交停留在提示或静态结果 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/activity/enterprise-archive-result/index.vue`、`teacher-mobile/src/pages/activity/enterprise-supplement-submitted/index.vue` | 已补 G11-05；等待确认和补充提交结果调用 `createEnterprisePracticeArchiveRecord()` 生成 / 定位 `pending-verify` 档案记录，可进入记录详情和档案待确认列表；新增 `npm run test:enterprise-archive` |
 | 2026-07-03 | 管理端剩余页面需复扫 `console.log` 空动作 | `frontend/src/pages/admin/**/*.vue` | 已补 D-01，当前管理端页面源码 `console.log` 命中数为 0 |
 | 2026-07-03 | 管理端剩余 `operationMessage` 需要区分真实动作和降级提示 | `frontend/src/pages/admin/**/*.vue`、`docs/page-coverage-ledger.md` | 已补 D-02，当前管理端页面源码 `operationMessage.set/fromStore` 共 46 处，已按真实状态、页面选择筛选、真实跳转、降级提示分类 |
 | 2026-07-03 | 管理端需复扫未挂路由页面，避免废弃页面干扰台账 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/router/admin.routes.ts` | 已补 D-03，当前管理端页面文件 30 个、路由动态导入 30 个，无未挂路由页面、无路由缺失文件；`ability-profile/components/SimpleRadarChart.vue` 为组件不计页面 |
@@ -173,7 +181,12 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 管理端收尾后需要执行最终验证 | `frontend` | 已补 D-10，`npm run test` 18 个测试文件 / 118 个用例通过，`npm run typecheck` 通过，`npm run build` 通过；仍有既有 npm `disturl` warning |
 | 2026-07-03 | 管理端表格空状态重复分散，适合作为组件收敛低风险试点 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/components/common/EmptyState.vue` | 已补 E15-01 至 E15-03，扫描空状态命中 35 处；新增 `EmptyState` 并迁移培训、企业实践、能力清单、反思概览、报告中心、虚拟教研室共 14 个空状态点，筛选和业务状态不变；`npm run test` 19 个测试文件 / 123 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 管理端视觉态按钮需要统一处理，避免无动作按钮被误判为业务闭环 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E16-01 至 E16-03；能力清单执行版基准版、档案处理当前筛选改为只读 `span`；档案查阅搜索按钮接入真实过滤；能力画像“查看更多对象”改为明确降级提示；新增 `adminVisualActions.test.ts` 约束空按钮不回归；`npm run test` 20 个测试文件 / 125 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 管理端静态分页占位仍使用可点击按钮，容易被误判为已接入翻页闭环 | `frontend/src/pages/admin/training/TrainingResourcePage.vue`、`frontend/src/pages/admin/training/TrainingApplicationPage.vue`、`frontend/src/pages/admin/training/TrainingRecordPage.vue`、`frontend/src/pages/admin/practice/PracticeApplicationPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E16-04；培训资源、培训申请、培训记录、企业实践申请的静态分页页码和上一页/下一页占位改为只读 `span`，当前页增加 `aria-current="page"`；未新增分页业务逻辑，避免把视觉分页标记为业务闭环 |
+| 2026-07-03 | 管理端顶栏范围、年度和消息数尚未接入切换或消息中心，不应伪装成可点击控件 | `frontend/src/components/layout/AdminTopbar.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E16-05；顶栏“全校”“2026 年度”和消息数改为只读 `span`，消息数使用 `role="status"` 和明确 `aria-label`；未新增全局筛选或消息中心业务，后续若接入真实交互需补状态和路由闭环 |
+| 2026-07-03 | 虚拟教研室详情页三处 disabled 分页按钮仍会造成“已有分页控件”的误判 | `frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E16-06；成员、近期教研活动、已形成记录三处分页占位改为只读 `span`，当前页增加 `aria-current="page"`；保留总数和每页展示文案，不新增真实翻页逻辑 |
+| 2026-07-03 | 视觉态按钮治理需要从逐点约束升级为全局防回归，避免新增页面重新引入无动作原生按钮 | `frontend/src/pages/admin/adminVisualActions.test.ts`、`frontend/src/pages/admin/**/*.vue`、`frontend/src/components/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 E16-07；新增 `adminVisualSources` 跨页面/关键组件 guardrail，扫描原生 `<button>` 必须具备 `@click`、禁用态或表单提交语义；当前覆盖管理端 29 个页面和 6 个关键组件，`adminVisualActions.test.ts` 59 个用例通过 |
 | 2026-07-03 | 管理端需要建立模块级测试约定，避免 store、domain、页面源码测试职责混乱 | `frontend/docs/admin-design-system-guide.md`、`docs/business-logic-map.md`、`frontend/src/**/*test.ts` | 已补 E17-01 至 E17-03；当前管理端共有 20 个测试文件，能力清单、成长档案、培训、企业实践、分析报告、虚拟教研均有 store 行为测试；practice/report/virtual-lab 已补 structure 测试；新增公共组件 `EmptyState` 已有 props/事件测试；页面 raw guardrail 用于路由、空状态、视觉态按钮，不替代 store 行为测试 |
+| 2026-07-03 | 拆分后的 admin store structure test 覆盖不完整，需要防止只拆文件不补注入式测试 | `frontend/src/stores/admin/adminStoreStructure.test.ts`、`frontend/src/stores/admin/abilityListStore.structure.test.ts`、`frontend/src/stores/admin/archiveStore.structure.test.ts`、`frontend/src/stores/admin/trainingStore.structure.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E17-04；能力清单、成长档案、培训管理已补 structure 测试，当前六个拆分 store 均覆盖 `initialData/actions` 注入 state 行为；新增 `adminStoreStructure.test.ts` 扫描所有拆分 store，防止后续漏补结构测试 |
 | 2026-07-03 | Store 行为需要有独立 Vitest 脚本入口，方便业务闭环重构阶段快速验证 | `frontend/package.json`、`frontend/src/stores/admin/**/*test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E18；新增 `npm run test:stores`，专门执行 `vitest run src/stores/admin`；E19 的 `npm run test` 和 E20 的 AGENTS 管理端验证命令已存在；`npm run test:stores` 9 个测试文件 / 47 个用例通过，`npm run test` 20 个测试文件 / 125 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 管理端设计系统重构前需要先扫描重复颜色、阴影、圆角和间距 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/docs/admin-design-system-guide.md` | 已补 F1/F2；当前扫描 50 个 `.vue/.css` 文件，颜色高频项为 `#1268f6` 147 次、`#17233d` 108 次、`#0f5eef` 78 次、`#dce6f5` 64 次；阴影高频项为卡片弱阴影 21/16/11 次；圆角高频项为 `8px` 95 次、`6px` 92 次；间距高频项为 `16px` 71 次、`12px` 65 次、`8px` 63 次 |
 | 2026-07-03 | 第一批 CSS variables 需要先落地，作为后续替换硬编码的稳定入口 | `frontend/src/styles/tokens.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-01；新增管理端高频色值、阴影和间距 token，当前只建立变量不替换页面硬编码；新增 `tokens.test.ts` 约束第一批 token 不回退；`npm run test` 21 个测试文件 / 127 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
@@ -192,18 +205,37 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 小型内联 `gap: 10px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-14；页面和组件样式中的普通和双值 `gap: 10px` 已替换为 `gap: var(--space-admin-sm)`，双值 `gap` 保留第二轴间距；`npm run test` 24 个测试文件 / 204 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 中型内联 `gap: 12px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-15；页面和组件样式中的普通和双值 `gap: 12px` 已替换为 `gap: var(--space-admin-md)`，双值 `gap` 保留第二轴间距，响应式 `clamp(...)` 和 `column-gap` 不纳入本批；`npm run test` 24 个测试文件 / 205 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 大型内联 `gap: 16px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-16；页面和组件样式中的显式 `gap: 16px` 已替换为 `gap: var(--space-admin-lg)`，响应式 `clamp(...)`、`column-gap` 和 padding/margin 不纳入本批；`npm run test` 24 个测试文件 / 206 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 卡片 / 区块常用 `gap: 18px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-17；新增 `--space-admin-card-gap`，页面和组件样式中的显式 `gap: 18px` 已替换为 `gap: var(--space-admin-card-gap)`，响应式 `clamp(...)` 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 27 个用例通过 |
+| 2026-07-03 | 超大区块 `gap: 20px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-18；页面和组件样式中的显式 `gap: 20px` 已替换为 `gap: var(--space-admin-xl)`，padding/margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 28 个用例通过 |
+| 2026-07-03 | 双倍超大区块 `gap: 24px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-19；页面和组件样式中的显式 `gap: 24px` 已替换为 `gap: var(--space-admin-2xl)`，padding/margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 29 个用例通过 |
+| 2026-07-03 | 超大单值 `padding: 20px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-20；页面和组件样式中的单值 `padding: 20px` 已替换为 `padding: var(--space-admin-xl)`，双值、四值和响应式 padding 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 30 个用例通过 |
+| 2026-07-03 | 双倍超大单值 `padding: 24px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-21；页面和组件样式中的单值 `padding: 24px` 已替换为 `padding: var(--space-admin-2xl)`，双值、四值和响应式 padding 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 31 个用例通过 |
+| 2026-07-03 | 卡片单值 `padding: 18px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-22；页面和组件样式中的单值 `padding: 18px` 已替换为 `padding: var(--space-admin-card-gap)`，双值、四值和响应式 padding 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 32 个用例通过 |
+| 2026-07-03 | 大型单值 `padding: 16px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-23；页面和组件样式中的单值 `padding: 16px` 已替换为 `padding: var(--space-admin-lg)`，双值、四值和响应式 padding 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 33 个用例通过 |
+| 2026-07-03 | 中型单值 `padding: 12px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-24；页面和组件样式中的单值 `padding: 12px` 已替换为 `padding: var(--space-admin-md)`，双值、四值和响应式 padding 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 34 个用例通过 |
+| 2026-07-03 | 超大单值 `margin: 20px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-25；页面和组件样式中的单值 `margin: 20px` 已替换为 `margin: var(--space-admin-xl)`，方向性、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 35 个用例通过 |
+| 2026-07-03 | 紧凑方向性 `margin-*: 8px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-26；页面和组件样式中的方向性 `margin-*: 8px` 已替换为 `margin-*: var(--space-admin-xs)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 36 个用例通过 |
+| 2026-07-03 | 小型方向性 `margin-*: 10px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-27；页面和组件样式中的方向性 `margin-*: 10px` 已替换为 `margin-*: var(--space-admin-sm)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 37 个用例通过 |
+| 2026-07-03 | 大型方向性 `margin-*: 16px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-28；页面和组件样式中的方向性 `margin-*: 16px` 已替换为 `margin-*: var(--space-admin-lg)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 38 个用例通过 |
+| 2026-07-03 | 中型方向性 `margin-*: 12px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-29；页面和组件样式中的方向性 `margin-*: 12px` 已替换为 `margin-*: var(--space-admin-md)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 39 个用例通过 |
+| 2026-07-03 | 超大方向性 `margin-*: 20px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-30；页面和组件样式中的方向性 `margin-*: 20px` 已替换为 `margin-*: var(--space-admin-xl)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 40 个用例通过 |
+| 2026-07-03 | 双倍超大方向性 `margin-*: 24px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-31；页面和组件样式中的方向性 `margin-*: 24px` 已替换为 `margin-*: var(--space-admin-2xl)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 41 个用例通过 |
+| 2026-07-03 | 卡片方向性 `margin-*: 18px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-32；页面和组件样式中的方向性 `margin-*: 18px` 已替换为 `margin-*: var(--space-admin-card-gap)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 42 个用例通过 |
+| 2026-07-03 | 方向性 margin 常用 token 档位收敛后，需要判断剩余硬编码是否继续新增 token | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-33；当前剩余方向性 `margin-*` 已无 `8/10/12/16/18/20/24px` 常用 token 档位硬编码；`2/3/4/5/6/7/9/11/13px` 归为局部微调，`22/28/30/34/48/54px` 归为单页版式特例，暂不新增 token；`14px` 高频但不在现有体系内，后续结合目标效果图页面级复核 |
 | 2026-07-03 | 管理端按钮等级需要先形成规则，再逐页迁移局部 `.btn-*` | `frontend/src/components/ui/button.ts`、`frontend/src/pages/admin/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F4-01/F4-44；公共 `Button` 已有 `default`、`secondary`、`outline`、`ghost`、`danger` variant；第一轮扫描高频项为 `.btn-primary` 27 处、`.btn-secondary` 22 处、`.btn-view` 18 处、`.btn-link` 16 处、`.btn-reset` 11 处、`.btn-source` 10 处；能力清单三处编辑抽屉底部、基准模板页顶部优化/版本/派生入口、基准模板优化建议页上传/分析/应用/版本/建议处理动作、执行版页顶部派生/历史版本入口、发布确认页返回/确认发布动作、要求映射页新增/编辑/删除/确认配置动作、能力画像群体页查看完整建议和查看画像动作、培训计划新建抽屉底部、培训计划主入口、右侧筛选动作、筛选重置和表格行内查看、培训计划详情参与教师查看/处理、培训记录筛选重置、行内查看、详情页上传材料/相关记录查看和侧栏主动作、培训资源行内查看和侧栏筛选入口及筛选重置、培训需求行内查看和匹配资源及侧栏筛选入口和筛选重置、培训申请行内查看和处理、培训申请筛选重置和右侧处理提醒动作、培训资源/需求/申请筛选区查询、培训资源/需求新增动作、档案处理详情确认入档/退回/异常/补充说明动作、导入资料上传页选择文件/从文件夹导入/删除/取消/开始识别动作、导入批次详情底部批次状态动作、档案查阅搜索/重置/查看档案动作、教师档案详情返回/打印/导出/关闭/来源/记录详情动作、教师档案详情结构类去 `btn-*` 前缀、教学反思/培训计划详情返回入口、虚拟教研室列表筛选重置和查看详情入口、虚拟教研室详情页主次动作和行内查看/移出动作、虚拟教研活动详情页查看/形成记录动作、虚拟教研记录详情页来源/入档动作、企业实践申请/跟踪/记录筛选重置和查询、企业实践记录/跟踪导出动作、企业实践三页状态动作、报告中心卡片动作和培训计划新建入口、教学反思总览隐藏重置、详情来源数据、总览/详情查看类动作、分析报告中心查询和重置、企业实践三页查看类动作已迁移到公共 `Button`，并补 `adminVisualActions.test.ts` guardrail；当前 `frontend/src/pages/admin/**/*.vue` 已无 `btn-*` 页面级按钮类 |
 | 2026-07-03 | 管理端状态徽章需要把 `StatusBadge` 的 tone、文案和业务状态边界写清楚 | `frontend/src/components/common/StatusBadge.vue`、`frontend/src/domain/admin/domainTypes.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F5-01；扫描 `StatusBadge` 的 `success`、`warning`、`danger`、`info`、`neutral`、`purple` 六类 tone、管理端/教师端文案映射和页面源码 guardrail 后，已在设计规则文档明确状态 tone 语义、典型状态、覆盖规则和展示型 tone 边界；本轮仅更新文档，不改页面代码 |
 | 2026-07-03 | 管理端表格密度需要先形成三档规则，再逐页抽组件 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/components/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F6-01；当前表格相关源码命中约 437 处，现状可归为紧凑关联表、标准业务列表、宽信息列表三档；已在设计规则文档明确表头高度、数据行高度、字号、单元格 padding、操作列和空状态口径；本轮仅更新文档，不改页面代码 |
 | 2026-07-03 | 管理端详情页布局需要区分独立详情页、右侧详情面板和抽屉职责 | `frontend/src/pages/admin/**/*DetailPage.vue`、`frontend/src/pages/admin/archive/*`、`frontend/docs/admin-design-system-guide.md` | 已补 F7-01；扫描独立详情页、列表工作台右侧详情面板和来源/记录抽屉后，已在设计规则文档明确返回/面包屑、标题区、摘要区、主内容区、侧栏区、来源/相关记录的职责；本轮仅更新文档，不改页面代码 |
-| 2026-07-03 | 管理端抽屉宽度和结构需要区分编辑表单、版本记录、来源记录和轻量详情 | `frontend/src/components/common/DetailSheet.vue`、`frontend/src/pages/admin/ability-list/*`、`frontend/src/pages/admin/training/TrainingPlanPage.vue`、`frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F8-01；扫描 `DetailSheet` 360/480/640/760px 分档、能力清单 540px 编辑抽屉和 620px 版本抽屉、要求映射 660px 复杂编辑抽屉、培训计划 484px 新建抽屉、档案来源记录 540px 阅读型抽屉后，已在设计规则文档明确六类抽屉宽度、结构、底部操作和响应式口径；E12-02/E12-04 后 `DetailSheet` 已增加 `form` 540px 标准编辑表单分档、`history` 620px 版本记录分档、`source` 540px 来源记录分档和 `placement="reader"` 阅读型偏移 |
+| 2026-07-03 | 管理端抽屉宽度和结构需要区分编辑表单、版本记录、来源记录和轻量详情 | `frontend/src/components/common/DetailSheet.vue`、`frontend/src/pages/admin/ability-list/*`、`frontend/src/pages/admin/training/TrainingPlanPage.vue`、`frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F8-01；扫描 `DetailSheet` 360/480/640/760px 分档、能力清单 540px 编辑抽屉和 620px 版本抽屉、要求映射 660px 复杂编辑抽屉、培训计划 484px 新建抽屉、档案来源记录 540px 阅读型抽屉后，已在设计规则文档明确六类抽屉宽度、结构、底部操作和响应式口径；E12-02/E12-07 后 `DetailSheet` 已覆盖基准模板编辑、基准模板版本、执行版编辑、执行版历史版本、成长档案来源记录和培训计划新建抽屉 |
 | 2026-07-03 | 管理端设计规则文档需要和当前组件、测试入口、验收命令保持一致 | `frontend/docs/admin-design-system-guide.md`、`frontend/src/components/common/*`、`frontend/src/components/ui/button.ts`、`frontend/src/components/layout/FloatingAIAssistant.vue`、`frontend/src/components/business/training/TrainingResourceDetailSheet.vue` | 已补 F9-01；已核对设计文档中的 `Button`、`StatusBadge`、`EmptyState`、`DetailSheet`、`FilterBar`、`PageHeader`、`FloatingAIAssistant`、`TrainingResourceDetailSheet`、`tokens.test.ts`、`adminVisualActions.test.ts`、`domainTypes.test.ts` 均有当前工程对应文件，并确认验收命令仍为 `npm run test`、`npm run typecheck`、`npm run build`；本轮仅更新文档，不改页面代码 |
+| 2026-07-03 | F4-44 后设计规则文档仍残留局部 `.btn-*` 作为现行样板的表述 | `frontend/docs/admin-design-system-guide.md`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 F9-02；按钮等级表已改为只以公共 `Button` variant 为准，F6 表格操作列不再建议 `.btn-view/.btn-link` 逐步迁移；新增 `adminVisualActions.test.ts` guardrail 防止设计规则再次把已收尾的页面级 `.btn-*` 当作现行做法 |
 | 2026-07-03 | 管理端抽组件后需要有固定结构自检口径，避免公共组件迁移破坏效果图区域关系和页面密度 | `frontend/docs/admin-design-system-guide.md`、`docs/page-coverage-ledger.md`、`效果图/管理PC端/*` | 已补 F10-01；已在管理端设计规则文档新增抽组件结构自检清单，要求每次结构性重构记录目标效果图、区域结构、比例与密度、业务入口、响应式和验证命令；本轮仅更新文档，不改页面代码 |
 | 2026-07-03 | 第一批详情抽屉组件迁移需要选择低风险编辑表单并保留效果图结构 | `frontend/src/components/common/DetailSheet.vue`、`frontend/src/components/common/DetailSheet.test.ts`、`frontend/src/pages/admin/ability-list/AbilityListBasePage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E12-01/E12-02；第一批只迁移能力清单基准模板编辑指标抽屉，不迁移版本记录、要求映射和成长档案来源记录；新增 `DetailSheet form` 540px 分档，基准模板编辑抽屉改用 `DetailSheet`，保留原字段、保存行为和底部按钮；F10 自检：目标效果图为 `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png`，区域结构不变，抽屉宽度仍为 540px，业务入口和保存动作不变 |
 | 2026-07-03 | 能力清单基准模板版本记录抽屉适合迁入 `DetailSheet`，但必须保留 620px 宽度和版本追溯字段 | `frontend/src/components/common/DetailSheet.vue`、`frontend/src/components/common/DetailSheet.test.ts`、`frontend/src/pages/admin/ability-list/AbilityListBasePage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E12-03；新增 `DetailSheet history` 620px 分档和 `showFooter=false` 只读抽屉模式，基准模板版本记录抽屉改用 `DetailSheet`，保留版本号、状态、发布时间、来源、操作人五项字段；F10 自检：目标效果图为 `效果图/管理PC端/1能力清单/管理端PC｜能力清单｜基准模版查看页.png` 的版本记录状态，区域结构不变，抽屉宽度仍为 620px，业务入口和关闭动作不变 |
 | 2026-07-03 | 成长档案教师详情来源记录抽屉适合迁入 `DetailSheet`，但必须保留阅读型顶部偏移和来源筛选 | `frontend/src/components/common/DetailSheet.vue`、`frontend/src/components/common/DetailSheet.test.ts`、`frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E12-04；新增 `DetailSheet source` 540px 分档和 `placement="reader"` 阅读型偏移，成长档案教师详情来源记录抽屉改用 `DetailSheet`，保留全部/已确认入档/待说明筛选、计数、来源、状态、入档时间、正文对应内容和记录详情反馈；F10 自检：目标效果图为 `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜来源详情.png`，抽屉宽度仍为 540px，顶部仍下沉保留正文上下文，业务入口和关闭动作不变 |
 | 2026-07-03 | 抽屉组件规则需要明确适用、慎用和禁用边界，避免后续把独立详情页或主列表误迁入抽屉 | `frontend/docs/admin-design-system-guide.md`、`docs/page-coverage-ledger.md` | 已补 E12-05；管理端设计规则已明确 `DetailSheet` 适用于局部编辑、版本记录、来源记录、轻量只读详情和确认动作；字段分组过多、复杂横向表格、跨模块导航需慎用；禁止替代独立详情页、承载主列表筛选分页、伪装不可用动作或抽屉套同级抽屉 |
 | 2026-07-03 | 培训计划新建抽屉适合迁入 `DetailSheet md`，但必须保留轻量新建表单和三按钮底部动作 | `frontend/src/pages/admin/training/TrainingPlanPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E12-06；培训计划新建抽屉改用 `DetailSheet title="新建培训计划" width="md"`，保留计划名称、培训方向、关联需求、关联资源、面向对象、培训时间、参与方式、申请处理、计划名额、材料要求、计划说明字段，以及取消、保存草稿、保存并发布三个底部动作；F10 自检：目标效果图为 `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜新建培训计划｜附属流程.png`，业务入口和保存行为不变 |
+| 2026-07-03 | 能力清单执行版编辑和历史版本抽屉适合迁入 `DetailSheet`，但必须保留保存行为和版本追溯字段 | `frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E12-07；执行版编辑指标抽屉改用 `DetailSheet title="编辑指标" width="form" mode="edit"`，保留指标名称、四级标准、计算规则和 `saveEdit()` 写入 `abilityListStore.executionIndicators`；执行版历史版本抽屉改用 `DetailSheet title="执行版历史版本" width="history" :show-footer="false"`，保留版本号、状态、发布时间、来源、操作人；F10 自检：目标效果图为执行版查看页和执行版指标编辑抽屉，业务入口和保存行为不变 |
 | 2026-07-03 | 右侧摘要面板需要先区分列表工作台辅助判断、详情面板和独立详情页侧栏，避免过早抽象 | `frontend/src/pages/admin/training/*`、`frontend/src/pages/admin/archive/ArchiveProcessingPage.vue`、`frontend/src/pages/admin/reports/ReportCenterPage.vue`、`frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 E13-01；第一批候选限定为培训需求“资源匹配建议”和培训申请“处理提醒”，第二批候选为培训资源“资源概览”；档案处理记录详情、报告中心详情面板、能力清单优化建议详情暂不迁移；独立详情页侧栏禁止纳入第一批摘要组件 |
 | 2026-07-03 | 右侧摘要面板组件接口需要先保持轻量，避免把业务数据、筛选或详情字段塞进公共组件 | `frontend/docs/admin-design-system-guide.md`、`docs/page-coverage-ledger.md` | 已补 E13-02；推荐组件为 `frontend/src/components/common/InsightSidebar.vue`，只提供标题、items、selected、action 三个插槽和卡片外壳；页面继续负责业务状态、选中对象、跳转和降级提示；测试边界限定为插槽渲染和试点页 guardrail |
 | 2026-07-03 | 右侧摘要面板第一批试点需要选择低风险页面，验证公共外壳不破坏效果图密度和业务入口 | `frontend/src/components/common/InsightSidebar.vue`、`frontend/src/components/common/InsightSidebar.test.ts`、`frontend/src/pages/admin/training/TrainingDemandPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E13-03；新增 `InsightSidebar` 轻量外壳并迁移培训需求页右侧“资源匹配建议”，保留三条建议文案、当前查看需求摘要和“查看待匹配需求”动作；F10 自检：目标效果图为 `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜需求管理.png`，右侧卡片结构、密度和业务入口不变 |
@@ -213,6 +245,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 筛选栏组件接口需要保留页面业务控制权，只收敛布局外壳，避免公共组件理解所有字段枚举 | `frontend/docs/admin-design-system-guide.md`、`docs/page-coverage-ledger.md` | 已补 E14-02；保留现有 `FilterBar`，第一批建议新增 `CompactFilterBar`，只提供 fields、search、actions、message 四个插槽；页面继续负责字段值、筛选函数、store 写入、按钮文案和操作反馈 |
 | 2026-07-03 | 筛选栏第一批试点需要验证筛选行为和布局不退化，且不把字段枚举塞进公共组件 | `frontend/src/components/common/CompactFilterBar.vue`、`frontend/src/components/common/CompactFilterBar.test.ts`、`frontend/src/pages/admin/training/TrainingResourcePage.vue`、`frontend/src/pages/admin/training/TrainingDemandPage.vue`、`frontend/src/pages/admin/training/TrainingApplicationPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E14-03；新增 `CompactFilterBar` 并迁移培训资源、培训需求、培训申请筛选区，保留三页各自四个筛选字段、搜索、重置、查询、操作反馈和资源页新增资源入口；F10 自检：目标效果图为 `效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜资源管理.png`、`效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜需求管理.png`、`效果图/管理PC端/4发展活动/2培训管理/管理端PC｜培训管理｜申请管理.png`，筛选区字段、密度和业务入口不变 |
 | 2026-07-03 | 筛选栏第二批迁移需要保留各页差异，不为了统一组件新增无业务必要动作 | `frontend/src/pages/admin/training/TrainingPlanPage.vue`、`frontend/src/pages/admin/training/TrainingRecordPage.vue`、`frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E14-04；培训计划、培训记录、虚拟教研室列表筛选区已迁移到 `CompactFilterBar`；计划和记录页保留输入即过滤和重置入口，不新增查询按钮；虚拟教研室保留搜索回车、重置、查询、操作反馈和卡片/表格视图切换；禁迁边界仍为档案处理左侧筛选面板、报告中心 tab 工具区、能力清单来源侧栏 |
+| 2026-07-03 | 企业实践三页筛选区仍使用局部 `filter-section`，需要纳入紧凑筛选栏第三批 | `frontend/src/pages/admin/practice/PracticeApplicationPage.vue`、`frontend/src/pages/admin/practice/PracticeTrackingPage.vue`、`frontend/src/pages/admin/practice/PracticeRecordPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts` | 已补 E14-05；实践申请、实践跟踪、实践记录筛选区已迁移到 `CompactFilterBar`，保留年度/院系/状态/完成情况/计入天数/搜索字段、重置/查询动作和操作反馈；实践跟踪、实践记录的导出动作仍保留在列表标题区；F10 自检：目标效果图为企业实践申请/跟踪/记录对应管理端效果图，筛选字段、列表密度和业务入口不变 |
 
 ### 待处理问题
 
@@ -286,7 +319,7 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 
 | 模块 | 效果图数 | 当前页面状态 | 结论 |
 | --- | ---: | --- | --- |
-| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致 | 已建立第一版逐图分组映射；后续重点审计证书确认、修改、入档和移出待确认的业务闭环 |
+| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 已建立第一版逐图分组映射；证书确认、修改待核验、入档和移出待确认已形成本地状态闭环，后续扩展其它待办类型和动态联动 |
 | 档案 | 54 | `pages/archive/index`、`pages/archive/record-query` 已注册；部分企业实践、培训证书、虚拟教研入档结果由活动/待办页面承接 | 高风险；已建立第一版逐图缺口判断，档案主体详情页明显不足 |
 | 活动 | 71 | 教学反思、培训进修、企业实践、虚拟教研和活动首页页面数量与效果图分组基本一致 | 已建立第一版逐图分组映射；缺页风险低，下一步重点审计业务流闭环 |
 | 我的 | 6 | 当前仅有 `pages/profile/index` 综合页 | 高风险；我的主页可覆盖，能力画像、用到的记录、发展报告、岗位/聘期对照缺独立页面 |
@@ -798,14 +831,14 @@ AI 助手效果图共 2 张，已补 AI 助手首页、补充档案页和提交�
 
 | 效果图/状态 | 当前源码/路由状态 | 当前判定 |
 | --- | --- | --- |
-| 补充档案 | `pages/assistant/archive-supplement/index` 已注册，AI 助手首页可进入 | 已补；提交后进入待核验结果页 |
-| 补充档案已提交 | `pages/assistant/archive-supplement-submitted/index` 已注册 | 已补；结果页明确“待核验 / 档案待确认”，可返回档案或 AI 助手 |
+| 补充档案 | `pages/assistant/archive-supplement/index` 已注册，AI 助手首页可进入 | 已补；提交时调用 `createArchiveSupplementRecord()` 生成 `pending-verify` 档案记录 |
+| 补充档案已提交 | `pages/assistant/archive-supplement-submitted/index` 已注册 | 已补；读取 `recordId`，可进入待核验记录详情、档案待确认列表或返回 AI 助手 |
 
 当前结论：
 
 - AI 助手缺页风险已由 M-10 到 M-12 补齐；底部导航、页面注册和补充档案提交结果已形成最小闭环。
-- AI 助手补充档案只生成待核验 / 待确认结果，不直接写正式档案事实。
-- 后续重点从缺页转为数据闭环：AI 会话、档案待核验列表、管理端确认结果需要接入统一状态。
+- AI 助手补充档案会生成 `domain/archive.ts` 中的待核验 / 待确认记录，不直接写正式档案事实。
+- 后续重点从缺页转为跨端同步：AI 会话、管理端确认结果和真实附件上传需要接入统一接口。
 
 #### M-09 AI 助手一级入口策略
 
@@ -901,7 +934,8 @@ M-12 验证：
 | P0 | 档案模块效果图 54 张，当前已有 11 个档案模块注册页面，分类概览、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版，但大量基础信息详情、草稿编辑仍未见独立路由 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实档案记录模型和剩余独立详情页，避免重复补分类 / 列表模板 |
 | P1 | 活动模块页面数量与效果图基本一致，但业务流是否跨页闭环尚未审计 | `teacher-mobile/src/pages/activity` | 下一步建立教学反思、培训、企业实践、虚拟教研手机端业务地图 |
 | P1 | 我的模块 6 张效果图当前只有 1 个综合页承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 明确能力画像、发展报告、岗位/聘期对照是否补独立页面 |
-| P1 | AI 助手缺页已补，后续仍需接入真实 AI 会话和档案待核验数据 | `teacher-mobile/src/pages/assistant/*`、`docs/business-logic-map.md` | 后续从缺页修复转入数据闭环和状态同步 |
+| P1 | AI 助手缺页已补，补充档案可生成本地待核验记录，但仍缺真实 AI 会话和管理端同步 | `teacher-mobile/src/pages/assistant/*`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 后续从本地数据闭环转入接口、附件上传和管理端确认结果同步 |
+| P1 | 待办证书主链已补本地状态，但其它待办类型仍是提示态 | `teacher-mobile/src/stores/todoStore.ts`、`teacher-mobile/src/pages/todo/*` | 后续把企业实践补充、培训证书补充、教学反思草稿等动作接入同一 store 或真实接口 |
 | P2 | 构建有大量 Sass deprecation warning | `teacher-mobile/src/**/*.vue`、`wot-design-uni` | 暂不阻塞，后续统一处理 |
 
 ## 细粒度推进任务池
@@ -939,7 +973,7 @@ M-12 验证：
 | G9-01 | 梳理培训活动首页到培训列表入口 | 记录页面、路由和培训对象 |
 | G9-02 | 梳理培训申请提交链路 | 明确申请状态和管理端培训申请关系 |
 | G9-03 | 梳理培训总结提交链路 | 明确总结是否进入培训记录材料 |
-| G9-04 | 梳理培训归档结果链路 | 明确结果页是否生成档案待确认记录 |
+| G9-04 | 梳理培训归档结果链路 | 已补：提交归档生成 / 定位 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G9-05 | 梳理培训需求提交链路 | 明确需求对象是否对应管理端培训需求 |
 | G9-06 | 梳理培训推荐命中结果链路 | 明确推荐结果是否可进入申请或需求 |
 | G10-01 | 梳理教学反思开始方式 | 明确自主反思、AI 引导、草稿的入口差异 |
@@ -951,7 +985,7 @@ M-12 验证：
 | G11-02 | 梳理企业实践计划提交链路 | 明确提交、确认、通过、退回、修改状态 |
 | G11-03 | 梳理企业实践进行中记录链路 | 明确日志、证明上传和进度详情关系 |
 | G11-04 | 梳理企业实践补充材料链路 | 明确补充、再次补充、历史补充状态 |
-| G11-05 | 梳理企业实践归档链路 | 明确归档成功、归档结果、档案待确认关系 |
+| G11-05 | 梳理企业实践归档链路 | 已补：等待确认和补充提交结果生成 / 定位 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G11-06 | 对齐管理端企业实践 store | 明确手机端状态与管理端申请、跟踪、记录的映射 |
 | G12-01 | 梳理虚拟教研室入口 | 明确我的教研室、邀请和活动列表关系 |
 | G12-02 | 梳理虚拟教研活动详情链路 | 明确进行中、确认、补充提交状态 |
@@ -980,6 +1014,8 @@ M-12 验证：
 | M-10 | 修正 AI 助手 TabBar 入口 | 若确定独立页面，则 `MobileTabBar.vue` 不再指向 `/pages/activity/index` |
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
 | M-12 | 补 AI 助手“补充档案已提交”页面 | 结果页能返回对应档案或待办上下文 |
+| M-13 | 补待办证书共享状态 | `todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、入档成功和移出结果 |
+| M-14 | 补 AI 助手补充档案待核验记录 | `createArchiveSupplementRecord()` 生成 `pending-verify`，结果页进入记录详情和档案待确认列表 |
 
 ### P1：管理端工程重构任务
 
@@ -991,6 +1027,7 @@ M-12 验证：
 | E12-04 | 迁移成长档案教师详情来源记录抽屉 | 已新增 `DetailSheet source` 540px 分档和 `placement="reader"` 阅读型偏移，来源过滤、计数、关闭、内容展示和详情反馈行为不变 |
 | E12-05 | 补抽屉组件使用规则 | 已在 `frontend/docs/admin-design-system-guide.md` 记录 `DetailSheet` 适用、慎用和禁用场景 |
 | E12-06 | 迁移培训计划新建抽屉 | 已迁移到 `DetailSheet md`，保留新建计划字段、保存草稿、保存并发布和取消动作 |
+| E12-07 | 迁移能力清单执行版抽屉 | 已迁移执行版编辑指标和历史版本抽屉到 `DetailSheet form/history`，保留保存行为和版本追溯字段 |
 | E13-01 | 扫描右侧摘要面板重复结构 | 已输出候选页面和不迁移理由；第一批候选为培训需求页、培训申请页，培训资源页作为第二批，档案处理/报告中心/能力清单优化建议详情暂不迁移 |
 | E13-02 | 定义右侧摘要面板组件接口 | 已定义 `InsightSidebar` 轻量接口，只覆盖标题、洞察/提醒列表、当前选中对象摘要和底部动作插槽 |
 | E13-03 | 迁移一个低风险摘要面板试点 | 已新增 `InsightSidebar` 并迁移培训需求页右侧“资源匹配建议”，保留原建议文案、当前需求摘要和查看待匹配需求动作 |
@@ -1000,15 +1037,21 @@ M-12 验证：
 | E14-02 | 定义筛选栏组件边界 | 已明确 `CompactFilterBar` 只收敛布局插槽，档案处理左侧筛选面板、报告中心 tab 工具区、能力清单来源侧栏不纳入第一批 |
 | E14-03 | 迁移第一批低风险筛选栏 | 已新增 `CompactFilterBar` 并迁移培训资源、培训需求、培训申请筛选区，保留各自四个筛选字段、搜索、重置、查询、操作反馈和必要业务动作入口 |
 | E14-04 | 迁移第二批紧凑筛选栏 | 已迁移培训计划、培训记录、虚拟教研室列表筛选区；保留计划/记录页输入即过滤，保留虚拟教研室显式查询和视图切换 |
+| E14-05 | 迁移企业实践筛选栏 | 已迁移实践申请、实践跟踪、实践记录筛选区；保留各自筛选字段、搜索、重置、查询和操作反馈，导出动作仍留在列表标题区 |
 | E15-01 | 扫描表格空状态 | 已输出页面内空状态文案和结构差异，当前管理端空状态命中 35 处 |
 | E15-02 | 定义表格空状态组件 | 已新增 `frontend/src/components/common/EmptyState.vue`，支持标题、说明、主操作和无操作态 |
 | E15-03 | 迁移一个低风险空状态试点 | 已迁移培训、企业实践、能力清单、反思概览、报告中心、虚拟教研室共 14 个空状态点；页面空数据时展示一致且不改变业务逻辑 |
 | E16-01 | 扫描视觉态按钮 | 已输出无动作按钮和降级提示清单，管理端空按钮优先处理 |
 | E16-02 | 分类视觉态按钮处理规则 | 已按只读展示、真实过滤、真实跳转、降级提示分类；只读值不能用 `button`，暂未闭环必须给降级提示 |
 | E16-03 | 更新台账风险表 | 已更新管理端风险表，并新增 `adminVisualActions.test.ts` 防止空按钮回归 |
+| E16-04 | 处理静态分页视觉按钮 | 已将培训资源、培训申请、培训记录、企业实践申请的静态分页占位从 button 改为只读 span；真实分页另行接状态和点击处理 |
+| E16-05 | 处理顶栏只读上下文按钮 | 已将顶栏范围、年度和消息数从无动作 button 改为只读 span；消息数保留状态语义，真实消息中心后续另行接路由闭环 |
+| E16-06 | 处理详情页 disabled 分页按钮 | 已将虚拟教研室详情成员、活动、记录三处 disabled 分页按钮改为只读 span；真实分页后续需接状态和点击处理 |
+| E16-07 | 建立无动作原生按钮全局 guardrail | 已在 `adminVisualActions.test.ts` 扫描管理端页面和关键组件，要求原生 button 必须有动作、禁用态或表单语义 |
 | E17-01 | 建立模块级测试约定 | 已在 `frontend/docs/admin-design-system-guide.md` 说明 domain、store、structure、mock service、component、page raw guardrail 分别测什么 |
 | E17-02 | 扫描 store 行为测试缺口 | 已确认能力清单、成长档案、培训、企业实践、分析报告、虚拟教研均有 store 行为测试；practice/report/virtual-lab 另有 structure 测试 |
 | E17-03 | 为新增重构组件补最小测试 | 已确认新增公共组件 `EmptyState` 覆盖 props、渲染形态和 action 事件；后续新增公共组件按同一规则补测试 |
+| E17-04 | 补齐拆分 store 结构测试 | 已补 ability-list/archive/training structure tests，并新增 `adminStoreStructure.test.ts` 防止拆分 store 漏结构测试 |
 | E18 | 给 store 行为补 Vitest 脚本入口 | 已新增 `npm run test:stores`，执行 `vitest run src/stores/admin` |
 | E19 | 在 package.json 增加 test 脚本 | 已存在 `npm run test`，执行完整 `vitest run` |
 | E20 | 更新 AGENTS 里的验证命令 | 已存在管理端 `npm run test`、`npm run typecheck`、`npm run build` 验证命令 |
@@ -1035,6 +1078,23 @@ M-12 验证：
 | F3-14 | 替换小型内联 gap 硬编码 | 已替换 `gap: 10px` 为 `var(--space-admin-sm)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
 | F3-15 | 替换中型内联 gap 硬编码 | 已替换 `gap: 12px` 为 `var(--space-admin-md)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
 | F3-16 | 替换大型内联 gap 硬编码 | 已替换显式 `gap: 16px` 为 `var(--space-admin-lg)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-17 | 替换卡片 / 区块常用 gap 硬编码 | 已新增 `--space-admin-card-gap` 并替换显式 `gap: 18px`，补扫描测试防回退；响应式 `clamp(...)` 不纳入本批 |
+| F3-18 | 替换超大区块 gap 硬编码 | 已替换显式 `gap: 20px` 为 `var(--space-admin-xl)`，补扫描测试防回退；padding/margin 不纳入本批 |
+| F3-19 | 替换双倍超大区块 gap 硬编码 | 已替换显式 `gap: 24px` 为 `var(--space-admin-2xl)`，补扫描测试防回退；padding/margin 不纳入本批 |
+| F3-20 | 替换超大单值 padding 硬编码 | 已替换单值 `padding: 20px` 为 `var(--space-admin-xl)`，补扫描测试防回退；双值、四值和响应式 padding 不纳入本批 |
+| F3-21 | 替换双倍超大单值 padding 硬编码 | 已替换单值 `padding: 24px` 为 `var(--space-admin-2xl)`，补扫描测试防回退；双值、四值和响应式 padding 不纳入本批 |
+| F3-22 | 替换卡片单值 padding 硬编码 | 已替换单值 `padding: 18px` 为 `var(--space-admin-card-gap)`，补扫描测试防回退；双值、四值和响应式 padding 不纳入本批 |
+| F3-23 | 替换大型单值 padding 硬编码 | 已替换单值 `padding: 16px` 为 `var(--space-admin-lg)`，补扫描测试防回退；双值、四值和响应式 padding 不纳入本批 |
+| F3-24 | 替换中型单值 padding 硬编码 | 已替换单值 `padding: 12px` 为 `var(--space-admin-md)`，补扫描测试防回退；双值、四值和响应式 padding 不纳入本批 |
+| F3-25 | 替换超大单值 margin 硬编码 | 已替换单值 `margin: 20px` 为 `var(--space-admin-xl)`，补扫描测试防回退；方向性、多值和响应式 margin 不纳入本批 |
+| F3-26 | 替换紧凑方向性 margin 硬编码 | 已替换方向性 `margin-*: 8px` 为对应 `var(--space-admin-xs)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-27 | 替换小型方向性 margin 硬编码 | 已替换方向性 `margin-*: 10px` 为对应 `var(--space-admin-sm)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-28 | 替换大型方向性 margin 硬编码 | 已替换方向性 `margin-*: 16px` 为对应 `var(--space-admin-lg)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-29 | 替换中型方向性 margin 硬编码 | 已替换方向性 `margin-*: 12px` 为对应 `var(--space-admin-md)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-30 | 替换超大方向性 margin 硬编码 | 已替换方向性 `margin-*: 20px` 为对应 `var(--space-admin-xl)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-31 | 替换双倍超大方向性 margin 硬编码 | 已替换方向性 `margin-*: 24px` 为对应 `var(--space-admin-2xl)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-32 | 替换卡片方向性 margin 硬编码 | 已替换方向性 `margin-*: 18px` 为对应 `var(--space-admin-card-gap)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
+| F3-33 | 审计剩余方向性 margin | 已确认常用 token 档位方向性 margin 无残留；剩余微调值和版式特例暂不新增 token，`14px` 留待页面级视觉复核 |
 | F4-01 | 整理按钮等级规则 | 已在 `frontend/docs/admin-design-system-guide.md` 明确主按钮、次按钮、轮廓按钮、文本按钮、危险按钮和图标按钮使用场景 |
 | F4-02 | 扫描按钮等级混用 | 已完成第一轮扫描，输出公共 `Button` variant 现状和局部 `.btn-*` 高频类；后续按低风险区域逐页迁移 |
 | F4-03 | 迁移能力清单抽屉底部按钮试点 | 已将能力清单基准模板、执行版、要求映射三个编辑抽屉底部按钮迁移到公共 `Button`，并补源码 guardrail |
@@ -1084,6 +1144,7 @@ M-12 验证：
 | F7-01 | 整理详情页布局规则 | 已在 `frontend/docs/admin-design-system-guide.md` 明确独立详情页、页面内右侧详情面板和抽屉边界，并定义标题区、摘要区、主内容区、侧栏区、来源/相关记录职责 |
 | F8-01 | 整理抽屉宽度和结构规则 | 已在 `frontend/docs/admin-design-system-guide.md` 明确轻量详情/确认、轻量新建、标准编辑、复杂编辑、版本/历史、来源记录六类抽屉宽度、结构、底部操作和响应式口径 |
 | F9-01 | 更新管理端设计规则文档 | 已核对 `frontend/docs/admin-design-system-guide.md` 中的核心组件、源码 guardrail 和验收命令引用均能对应当前工程文件 |
+| F9-02 | 对齐按钮规则文档与 F4 收尾事实 | 已移除设计规则中把页面级 `.btn-*` 作为现行样板的表述，并补 `adminVisualActions.test.ts` guardrail |
 | F10-01 | 每次抽组件后做效果图结构自检 | 已在 `frontend/docs/admin-design-system-guide.md` 明确目标效果图、区域结构、比例与密度、业务入口、响应式和验证命令六项自检，并要求回写台账 |
 
 ### P2：管理端剩余审计和收尾任务
@@ -1140,9 +1201,14 @@ E15-03
 E16-01
 E16-02
 E16-03
+E16-04
+E16-05
+E16-06
+E16-07
 E17-01
 E17-02
 E17-03
+E17-04
 E18
 E19
 E20
@@ -1164,6 +1230,23 @@ F3-13
 F3-14
 F3-15
 F3-16
+F3-17
+F3-18
+F3-19
+F3-20
+F3-21
+F3-22
+F3-23
+F3-24
+F3-25
+F3-26
+F3-27
+F3-28
+F3-29
+F3-30
+F3-31
+F3-32
+F3-33
 F4-01
 F4-02
 F4-03
@@ -1175,18 +1258,23 @@ F6-01
 F7-01
 F8-01
 F9-01
+F9-02
 F10-01
 E12-01
 E12-02
 E12-03
 E12-04
 E12-05
+E12-06
+E12-07
 E13-01
 E13-02
 E13-03
 E14-01
 E14-02
 E14-03
+E14-04
+E14-05
 M-01
 M-02
 M-03

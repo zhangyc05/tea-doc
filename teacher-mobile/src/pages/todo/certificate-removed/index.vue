@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import { getTodoState } from '../../../stores/todoStore'
+
+const todoState = getTodoState()
+const certificate = computed(() => todoState.certificate)
 
 function goBack() {
   uni.navigateBack()
@@ -44,13 +49,13 @@ function goPendingList() {
         <view class="record-ribbon"></view>
       </view>
       <view class="record-copy">
-        <text class="record-title">职业院校教师数字素养提升培训证书</text>
+        <text class="record-title">{{ certificate.title }}</text>
         <view class="tag-row">
-          <text class="tag tag--green">个人发展</text>
-          <text class="tag tag--green">培训进修</text>
+          <text class="tag tag--green">{{ certificate.category }}</text>
+          <text class="tag tag--green">{{ certificate.type }}</text>
           <text class="tag tag--orange">原待确认</text>
         </view>
-        <text class="record-source">来源：部门导入培训名单</text>
+        <text class="record-source">来源：{{ certificate.source }}</text>
       </view>
     </MobileCard>
 

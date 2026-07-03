@@ -56,4 +56,17 @@ describe('report center business state', () => {
       prompt: '围绕岗位 / 聘期要求对照问答继续追问',
     })
   })
+
+  it('keeps report periods in the shared report data for page filtering', () => {
+    const state = getReportState()
+
+    expect(state.reports.map(report => report.period)).toEqual([
+      '2026 年度',
+      '2026 年度',
+      '2026 年度',
+      '2026 年度',
+      '2025 年度',
+      '2024 年度',
+    ])
+  })
 })

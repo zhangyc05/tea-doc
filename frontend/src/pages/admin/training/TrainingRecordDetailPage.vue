@@ -31,7 +31,7 @@ function goBack() {
 
 function uploadMaterial() {
   uploadTrainingCertificate(recordId)
-  operationMessage.set('培训结业证书已补充，记录材料已完整。')
+  operationMessage.fromStore(trainingState)
 }
 
 function viewRelatedRecord(recordId: string) {
@@ -306,7 +306,7 @@ function viewRelatedRecord(recordId: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-admin-lg);
 }
 
 .breadcrumb {
@@ -378,7 +378,7 @@ function viewRelatedRecord(recordId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   margin-bottom: 14px;
 }
 

@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import abilityListBasePage from '@/pages/admin/ability-list/AbilityListBasePage.vue?raw'
 import abilityListExecutionPage from '@/pages/admin/ability-list/AbilityListExecutionPage.vue?raw'
 import abilityListBaseOptimizationPage from '@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue?raw'
 import abilityListPublishConfirmPage from '@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue?raw'
 import abilityListRequirementMappingPage from '@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
 import abilityProfileGroupPage from '@/pages/admin/ability-profile/AbilityProfileGroupPage.vue?raw'
+import abilityProfileTeacherPage from '@/pages/admin/ability-profile/AbilityProfileTeacherPage.vue?raw'
 import archiveImportBatchPage from '@/pages/admin/archive/ArchiveImportBatchPage.vue?raw'
 import archiveImportUploadPage from '@/pages/admin/archive/ArchiveImportUploadPage.vue?raw'
 import archiveProcessingPage from '@/pages/admin/archive/ArchiveProcessingPage.vue?raw'
@@ -27,8 +30,81 @@ import virtualLabActivityDetailPage from '@/pages/admin/virtual-lab/VirtualLabAc
 import virtualLabRecordDetailPage from '@/pages/admin/virtual-lab/VirtualLabRecordDetailPage.vue?raw'
 import virtualLabRoomDetailPage from '@/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue?raw'
 import virtualLabRoomPage from '@/pages/admin/virtual-lab/VirtualLabRoomPage.vue?raw'
+import abilityIndicatorTable from '@/components/admin/ability-list/AbilityIndicatorTable.vue?raw'
+import abilityStructureTree from '@/components/admin/ability-list/AbilityStructureTree.vue?raw'
+import detailSheet from '@/components/common/DetailSheet.vue?raw'
+import pageHeader from '@/components/common/PageHeader.vue?raw'
+import adminSidebar from '@/components/layout/AdminSidebar.vue?raw'
+import adminTopbar from '@/components/layout/AdminTopbar.vue?raw'
+
+const adminDesignGuide = readFileSync(
+  fileURLToPath(new URL('../../../docs/admin-design-system-guide.md', import.meta.url)),
+  'utf8',
+)
+
+const adminVisualSources = [
+  ['AbilityListBasePage.vue', abilityListBasePage],
+  ['AbilityListExecutionPage.vue', abilityListExecutionPage],
+  ['AbilityListBaseOptimizationPage.vue', abilityListBaseOptimizationPage],
+  ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage],
+  ['AbilityListRequirementMappingPage.vue', abilityListRequirementMappingPage],
+  ['AbilityProfileGroupPage.vue', abilityProfileGroupPage],
+  ['AbilityProfileTeacherPage.vue', abilityProfileTeacherPage],
+  ['ArchiveImportBatchPage.vue', archiveImportBatchPage],
+  ['ArchiveImportUploadPage.vue', archiveImportUploadPage],
+  ['ArchiveProcessingPage.vue', archiveProcessingPage],
+  ['ArchiveQueryPage.vue', archiveQueryPage],
+  ['ArchiveTeacherDetailPage.vue', archiveTeacherDetailPage],
+  ['PracticeApplicationPage.vue', practiceApplicationPage],
+  ['PracticeRecordPage.vue', practiceRecordPage],
+  ['PracticeTrackingPage.vue', practiceTrackingPage],
+  ['ReflectionDetailPage.vue', reflectionDetailPage],
+  ['ReflectionOverviewPage.vue', reflectionOverviewPage],
+  ['ReportCenterPage.vue', reportCenterPage],
+  ['TrainingApplicationPage.vue', trainingApplicationPage],
+  ['TrainingDemandPage.vue', trainingDemandPage],
+  ['TrainingPlanDetailPage.vue', trainingPlanDetailPage],
+  ['TrainingPlanPage.vue', trainingPlanPage],
+  ['TrainingRecordDetailPage.vue', trainingRecordDetailPage],
+  ['TrainingRecordPage.vue', trainingRecordPage],
+  ['TrainingResourcePage.vue', trainingResourcePage],
+  ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage],
+  ['VirtualLabRecordDetailPage.vue', virtualLabRecordDetailPage],
+  ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage],
+  ['VirtualLabRoomPage.vue', virtualLabRoomPage],
+  ['AbilityIndicatorTable.vue', abilityIndicatorTable],
+  ['AbilityStructureTree.vue', abilityStructureTree],
+  ['DetailSheet.vue', detailSheet],
+  ['PageHeader.vue', pageHeader],
+  ['AdminSidebar.vue', adminSidebar],
+  ['AdminTopbar.vue', adminTopbar],
+] as const
+
+function findUnboundNativeButtons(source: string) {
+  return [...source.matchAll(/<button\b[\s\S]*?<\/button>/g)]
+    .map(match => match[0])
+    .filter(button => !button.includes('@click')
+      && !button.includes('disabled')
+      && !button.includes(':disabled')
+      && !button.includes('type="submit"')
+      && !button.includes('type=\'submit\''))
+    .map(button => button.replace(/\s+/g, ' ').trim())
+}
 
 describe('admin visual action guardrails', () => {
+  it('keeps button design guidance aligned with the completed btn-class migration', () => {
+    expect(adminDesignGuide).not.toContain('管理端业务页面仍以局部 `.btn-*` 为主')
+    expect(adminDesignGuide).not.toContain('或现有 `.btn-view/.btn-link` 逐步迁移')
+  })
+
+  it('keeps native admin buttons bound to actions or explicit disabled/form semantics', () => {
+    const offenders = adminVisualSources.flatMap(([filename, source]) => {
+      return findUnboundNativeButtons(source).map(button => `${filename}: ${button}`)
+    })
+
+    expect(offenders).toEqual([])
+  })
+
   it('does not render read-only values as clickable buttons', () => {
     expect(abilityListExecutionPage).toContain('<span class="admin-summary-link template-link">')
     expect(abilityListExecutionPage).not.toContain('<button class="admin-summary-link template-link">')
@@ -37,6 +113,13 @@ describe('admin visual action guardrails', () => {
     expect(archiveProcessingPage).toContain('<span class="filter-link">{{ sourceFilter }}</span>')
     expect(archiveProcessingPage).not.toContain('<button class="filter-link">{{ statusFilter }}</button>')
     expect(archiveProcessingPage).not.toContain('<button class="filter-link">{{ sourceFilter }}</button>')
+
+    expect(adminTopbar).toContain('<span class="scope-button">')
+    expect(adminTopbar).toContain('<span class="scope-button year-button">')
+    expect(adminTopbar).toContain('<span class="message-button" role="status" aria-label="消息 12 条">')
+    expect(adminTopbar).not.toContain('<button type="button" class="scope-button">')
+    expect(adminTopbar).not.toContain('<button type="button" class="scope-button year-button">')
+    expect(adminTopbar).not.toContain('<button type="button" class="message-button" aria-label="消息">')
   })
 
   it('binds visible action buttons to explicit behavior or degradation feedback', () => {
@@ -44,6 +127,33 @@ describe('admin visual action guardrails', () => {
 
     expect(abilityProfileGroupPage).toContain('function viewMoreObjects()')
     expect(abilityProfileGroupPage).toContain('<button class="more-btn" @click="viewMoreObjects">查看更多对象 ↓</button>')
+  })
+
+  it('does not render static pagination indicators as clickable buttons', () => {
+    expect(trainingResourcePage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
+    expect(trainingResourcePage).toContain('<span class="page-button active" aria-current="page">1</span>')
+    expect(trainingResourcePage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(trainingResourcePage).not.toContain('<button class="page-button" type="button"')
+    expect(trainingResourcePage).not.toContain('<button class="page-button active" type="button">1</button>')
+
+    expect(trainingApplicationPage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
+    expect(trainingApplicationPage).toContain('<span class="page-button active" aria-current="page">1</span>')
+    expect(trainingApplicationPage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(trainingApplicationPage).not.toContain('<button class="page-button" type="button"')
+
+    expect(trainingRecordPage).toContain('<span class="page-button active" aria-current="page">1</span>')
+    expect(trainingRecordPage).not.toContain('<button type="button">1</button>')
+
+    expect(practiceApplicationPage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
+    expect(practiceApplicationPage).toContain('<span class="page-button active" aria-current="page">{{ currentPage }}</span>')
+    expect(practiceApplicationPage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(practiceApplicationPage).not.toContain('<button class="page-button" type="button"')
+
+    expect(virtualLabRoomDetailPage).toContain('<span class="pager-button" aria-label="上一页">‹</span>')
+    expect(virtualLabRoomDetailPage).toContain('<span class="pager-current" aria-current="page">1</span>')
+    expect(virtualLabRoomDetailPage).toContain('<span class="pager-button" aria-label="下一页">›</span>')
+    expect(virtualLabRoomDetailPage).not.toContain('<button disabled>‹</button>')
+    expect(virtualLabRoomDetailPage).not.toContain('<button disabled>›</button>')
   })
 
   it('uses the shared Button component for archive query search and detail actions', () => {
@@ -104,8 +214,8 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).not.toContain('<button class="btn-primary" @click="saveIndicatorEdit">保存调整</button>')
 
     expect(abilityListExecutionPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(abilityListExecutionPage).toContain('<Button variant="outline" @click="closeEditDrawer">取消</Button>')
-    expect(abilityListExecutionPage).toContain('<Button @click="saveEdit">保存</Button>')
+    expect(abilityListExecutionPage).toContain('mode="edit"')
+    expect(abilityListExecutionPage).toContain('@confirm="saveEdit"')
     expect(abilityListExecutionPage).not.toContain('<button class="btn-secondary" @click="closeEditDrawer">取消</button>')
     expect(abilityListExecutionPage).not.toContain('<button class="btn-primary" @click="saveEdit">保存</button>')
 
@@ -134,6 +244,24 @@ describe('admin visual action guardrails', () => {
     expect(abilityListExecutionPage).not.toContain('<button class="secondary-action btn-secondary" @click="openVersionDrawer">历史版本</button>')
   })
 
+  it('uses DetailSheet for the ability list execution edit and history drawer shells', () => {
+    expect(abilityListExecutionPage).toContain('DetailSheet')
+    expect(abilityListExecutionPage).toContain('title="编辑指标"')
+    expect(abilityListExecutionPage).toContain('width="form"')
+    expect(abilityListExecutionPage).toContain('mode="edit"')
+    expect(abilityListExecutionPage).toContain('title="执行版历史版本"')
+    expect(abilityListExecutionPage).toContain('width="history"')
+    expect(abilityListExecutionPage).toContain(':show-footer="false"')
+    expect(abilityListExecutionPage).toContain('version.versionNo')
+    expect(abilityListExecutionPage).toContain('getExecutionVersionStatusLabel(version.status)')
+    expect(abilityListExecutionPage).toContain('version.publishedAt')
+    expect(abilityListExecutionPage).toContain('version.source')
+    expect(abilityListExecutionPage).toContain('version.operator')
+    expect(abilityListExecutionPage).not.toContain('<div v-if="editingIndicator" class="edit-drawer-overlay"')
+    expect(abilityListExecutionPage).not.toContain('<div v-if="showVersionDrawer" class="edit-drawer-overlay"')
+    expect(abilityListExecutionPage).not.toContain('class="edit-drawer version-drawer"')
+  })
+
   it('uses the shared Button component for ability list publish confirmation actions', () => {
     expect(abilityListPublishConfirmPage).toContain('import { Button } from \'@/components/ui\'')
     expect(abilityListPublishConfirmPage).toContain('<Button variant="outline" @click="goBack">返回修改</Button>')
@@ -157,6 +285,20 @@ describe('admin visual action guardrails', () => {
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-primary" @click="openEditDrawer(selectedMapping)">编辑映射</button>')
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-outline danger-outline" @click="deleteMapping">删除</button>')
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-secondary" @click="confirmMapping">确认配置</button>')
+  })
+
+  it('uses DetailSheet for the ability list requirement mapping complex edit drawer', () => {
+    expect(abilityListRequirementMappingPage).toContain('DetailSheet')
+    expect(abilityListRequirementMappingPage).toContain('title="编辑要求项映射"')
+    expect(abilityListRequirementMappingPage).toContain('width="complex"')
+    expect(abilityListRequirementMappingPage).toContain('<template #footer>')
+    expect(abilityListRequirementMappingPage).toContain('<h4 class="form-section-title"><span>1</span>基本信息</h4>')
+    expect(abilityListRequirementMappingPage).toContain('<h4 class="form-section-title"><span>2</span>映射配置</h4>')
+    expect(abilityListRequirementMappingPage).toContain('<h4 class="form-section-title"><span>3</span>对照依据</h4>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" @click="deleteMapping">删除要求项</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="outline" @click="closeEditDrawer">取消</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button @click="saveMapping">保存映射</Button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<div v-if="editingMapping" class="edit-drawer-overlay"')
   })
 
   it('uses the shared Button component for ability list base optimization actions', () => {
@@ -188,6 +330,16 @@ describe('admin visual action guardrails', () => {
     expect(abilityProfileGroupPage).toContain('<Button variant="ghost" size="sm" @click="viewProfile(item.name)">查看画像</Button>')
     expect(abilityProfileGroupPage).not.toContain('<button class="btn-primary" @click="viewFullAdvice">')
     expect(abilityProfileGroupPage).not.toContain('<button class="btn-link" @click="viewProfile(item.name)">查看画像</button>')
+  })
+
+  it('keeps ability profile teacher pagination bound to filtered local data', () => {
+    expect(abilityProfileTeacherPage).toContain('const total = computed(() => filteredTeachers.value.length)')
+    expect(abilityProfileTeacherPage).toContain('const paginatedTeachers = computed(() =>')
+    expect(abilityProfileTeacherPage).toContain('v-for="(teacher, index) in paginatedTeachers"')
+    expect(abilityProfileTeacherPage).toContain('function goToPage(page: number)')
+    expect(abilityProfileTeacherPage).not.toContain('const total = 142')
+    expect(abilityProfileTeacherPage).not.toContain('<button type="button">2</button>')
+    expect(abilityProfileTeacherPage).not.toContain('<button type="button">3</button>')
   })
 
   it('uses DetailSheet for the ability list base edit drawer shell', () => {
@@ -337,18 +489,25 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for practice view-only row actions', () => {
     expect(practiceApplicationPage).toContain('<Button variant="ghost" size="sm" @click="viewApplication(app.id)">')
+    expect(practiceApplicationPage).toContain('router.push(`/admin/practice/records?recordId=${record.id}`)')
     expect(practiceApplicationPage).not.toContain('<button class="btn-view" @click="viewApplication(app.id)">')
     expect(practiceApplicationPage).not.toContain('class="btn-view"\n                          @click="viewApplication(app.id)"')
 
+    expect(practiceRecordPage).toContain('const route = useRoute()')
+    expect(practiceRecordPage).toContain('const activeRecordId = ref(String(route.query.recordId || \'1\'))')
     expect(practiceRecordPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(record.id)">')
     expect(practiceRecordPage).toContain('v-if="record.currentStatus === \'已归档\'"')
     expect(practiceRecordPage).toContain('@click="viewArchive(record.id)"')
+    expect(practiceRecordPage).toContain('router.push(`/admin/archive/processing?recordId=practice-${id}`)')
+    expect(archiveProcessingPage).toContain('const route = useRoute()')
+    expect(archiveProcessingPage).toContain('const selectedRecordId = ref(String(route.query.recordId || \'2\'))')
     expect(practiceRecordPage).not.toContain('<button class="btn-view" @click="viewDetail(record.id)">')
     expect(practiceRecordPage).not.toContain('class="btn-archive"\n                          @click="viewArchive(record.id)"')
 
     expect(practiceTrackingPage).toContain('variant="ghost"')
     expect(practiceTrackingPage).toContain('size="sm"')
     expect(practiceTrackingPage).toContain('@click="viewRecord(tracking.id)"')
+    expect(practiceTrackingPage).toContain('router.push(`/admin/practice/records?recordId=${record.id}`)')
     expect(practiceTrackingPage).not.toContain('class="btn-view"\n                        @click="viewRecord(tracking.id)"')
   })
 
@@ -432,6 +591,7 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabRecordDetailPage).toContain('<Button variant="outline" @click="viewSourceActivity">查看来源活动</Button>')
     expect(virtualLabRecordDetailPage).toContain('<Button @click="viewSourceMaterials">查看来源资料</Button>')
     expect(virtualLabRecordDetailPage).toContain('<Button @click="sendToArchive">生成档案待确认</Button>')
+    expect(virtualLabRecordDetailPage).toContain('router.push(`/admin/archive/processing?recordId=virtual-lab-${recordId.value}`)')
     expect(virtualLabRecordDetailPage).toContain('<Button variant="ghost" @click="operationMessage.set(\'已展示全部参与教师入口。\')">查看全部 ›</Button>')
     expect(virtualLabRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button>')
     expect(virtualLabRecordDetailPage).not.toContain('<button class="btn-secondary" @click="viewSourceActivity">查看来源活动</button>')
@@ -464,10 +624,13 @@ describe('admin visual action guardrails', () => {
     expect(reflectionDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedDetail(related.id)">')
     expect(reflectionDetailPage).toContain('<Button variant="ghost" @click="viewMoreRelated">')
     expect(reflectionDetailPage).toContain('<Button class="source-data-action" variant="outline" size="lg" @click="viewSourceData">')
+    expect(reflectionDetailPage).toContain('sendReflectionToArchive(reflectionId)')
+    expect(reflectionDetailPage).toContain('<Button class="archive-send-action" variant="outline" size="lg" @click="sendToArchive">')
     expect(reflectionDetailPage).not.toContain('<button class="btn-back" @click="goBack">‹ 返回列表</button>')
     expect(reflectionDetailPage).not.toContain('<button class="btn-view" @click="viewRelatedDetail(related.id)">')
     expect(reflectionDetailPage).not.toContain('<button class="btn-link" @click="viewMoreRelated">')
     expect(reflectionDetailPage).not.toContain('<button class="btn-source" @click="viewSourceData">')
+    expect(reflectionDetailPage).not.toContain('已进入{{ reflectionDetail.destination }}')
   })
 
   it('uses the shared Button component for training plan table row actions', () => {
@@ -479,6 +642,9 @@ describe('admin visual action guardrails', () => {
     expect(reportCenterPage).toContain('<Button')
     expect(reportCenterPage).toContain('class="report-card-action"')
     expect(reportCenterPage).toContain('@click="handleCardAction(report.id, button)"')
+    expect(reportCenterPage).toContain('const matchesPeriod = selectedPeriod.value === \'全部\' || report.period === selectedPeriod.value')
+    expect(reportCenterPage).toContain('const selectedPeriod = ref(\'全部\')')
+    expect(reportCenterPage).toContain('<span><b>周期：</b>{{ report.period }}</span>')
     expect(reportCenterPage).not.toContain('class="btn-action"')
     expect(reportCenterPage).not.toContain('.btn-action')
 
@@ -510,6 +676,7 @@ describe('admin visual action guardrails', () => {
   it('uses the shared Button component for training record detail material actions', () => {
     expect(trainingRecordDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(trainingRecordDetailPage).toContain('<Button size="sm" @click="uploadMaterial">')
+    expect(trainingRecordDetailPage).toContain('operationMessage.fromStore(trainingState)')
     expect(trainingRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedRecord(related.id)">')
     expect(trainingRecordDetailPage).not.toContain('.btn-back')
     expect(trainingRecordDetailPage).not.toContain('<button class="btn-upload" @click="uploadMaterial">')
@@ -720,6 +887,57 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabRoomPage).toContain('operationMessage.text.value')
     expect(virtualLabRoomPage).not.toContain('<button class="btn-reset" @click="resetFilters">重置</button>')
     expect(virtualLabRoomPage).not.toContain('<div class="filter-section">')
+  })
+
+  it('uses CompactFilterBar for the practice application filter area', () => {
+    expect(practiceApplicationPage).toContain('CompactFilterBar')
+    expect(practiceApplicationPage).toContain('<CompactFilterBar>')
+    expect(practiceApplicationPage).toContain('<template #fields>')
+    expect(practiceApplicationPage).toContain('<template #search>')
+    expect(practiceApplicationPage).toContain('<template #actions>')
+    expect(practiceApplicationPage).toContain('<template #message>')
+    expect(practiceApplicationPage).toContain('selectedYear')
+    expect(practiceApplicationPage).toContain('selectedDepartment')
+    expect(practiceApplicationPage).toContain('selectedStatus')
+    expect(practiceApplicationPage).toContain('selectedTime')
+    expect(practiceApplicationPage).toContain('placeholder="搜索教师姓名 / 工号 / 实践单位"')
+    expect(practiceApplicationPage).toContain('resetFilters')
+    expect(practiceApplicationPage).toContain('applyFilters')
+    expect(practiceApplicationPage).not.toContain('<div class="filter-section">')
+  })
+
+  it('uses CompactFilterBar for the practice tracking filter area', () => {
+    expect(practiceTrackingPage).toContain('CompactFilterBar')
+    expect(practiceTrackingPage).toContain('<CompactFilterBar>')
+    expect(practiceTrackingPage).toContain('<template #fields>')
+    expect(practiceTrackingPage).toContain('<template #search>')
+    expect(practiceTrackingPage).toContain('<template #actions>')
+    expect(practiceTrackingPage).toContain('<template #message>')
+    expect(practiceTrackingPage).toContain('selectedYear')
+    expect(practiceTrackingPage).toContain('selectedDepartment')
+    expect(practiceTrackingPage).toContain('selectedMajor')
+    expect(practiceTrackingPage).toContain('selectedCompletion')
+    expect(practiceTrackingPage).toContain('selectedStatus')
+    expect(practiceTrackingPage).toContain('placeholder="搜索教师姓名 / 工号"')
+    expect(practiceTrackingPage).toContain('resetFilters')
+    expect(practiceTrackingPage).toContain('applyFilters')
+    expect(practiceTrackingPage).not.toContain('<div class="filter-section">')
+  })
+
+  it('uses CompactFilterBar for the practice record filter area', () => {
+    expect(practiceRecordPage).toContain('CompactFilterBar')
+    expect(practiceRecordPage).toContain('<CompactFilterBar>')
+    expect(practiceRecordPage).toContain('<template #fields>')
+    expect(practiceRecordPage).toContain('<template #search>')
+    expect(practiceRecordPage).toContain('<template #actions>')
+    expect(practiceRecordPage).toContain('<template #message>')
+    expect(practiceRecordPage).toContain('selectedDepartment')
+    expect(practiceRecordPage).toContain('selectedStatus')
+    expect(practiceRecordPage).toContain('selectedDays')
+    expect(practiceRecordPage).toContain('placeholder="搜索教师、实践单位"')
+    expect(practiceRecordPage).toContain('resetFilters')
+    expect(practiceRecordPage).toContain('applyFilters')
+    expect(practiceRecordPage).not.toContain('<div class="filter-section">')
   })
 
   it('uses the shared Button component for the training record sidebar action', () => {

@@ -22,7 +22,7 @@ defineProps<{
 <style scoped>
 .insight-sidebar {
   min-width: 0;
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
   background: #fff;
@@ -43,7 +43,7 @@ defineProps<{
 }
 
 .insight-sidebar__action {
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 @media (max-width: 1320px) {

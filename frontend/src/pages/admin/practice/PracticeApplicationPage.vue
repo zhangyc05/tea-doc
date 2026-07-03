@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { EmptyState, StatusBadge } from '@/components/common'
+import { useRouter } from 'vue-router'
+import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
@@ -9,6 +10,7 @@ import {
   returnPracticeApplication,
 } from '@/stores/admin/practiceStore'
 
+const router = useRouter()
 const practiceState = getPracticeState()
 
 // 筛选条件
@@ -64,6 +66,16 @@ function resetFilters() {
 function viewApplication(id: string) {
   activeApplicationId.value = id
   practiceState.operationMessage = '已在表格中定位该实践申请。'
+}
+
+function viewRecordForApplication(id: string) {
+  activeApplicationId.value = id
+  const record = practiceState.records.find(item => item.applicationId === id)
+  if (!record) {
+    practiceState.operationMessage = '当前申请尚未生成实践记录。'
+    return
+  }
+  router.push(`/admin/practice/records?recordId=${record.id}`)
 }
 
 function approveApplication(id: string) {
@@ -128,8 +140,8 @@ function applyFilters() {
       <section class="main-section">
         <div class="content-card">
           <!-- 筛选区 -->
-          <div class="filter-section">
-            <div class="filter-row">
+          <CompactFilterBar>
+            <template #fields>
               <label class="filter-item">
                 <span class="filter-label">年度：</span>
                 <select v-model="selectedYear" class="filter-select">
@@ -167,6 +179,8 @@ function applyFilters() {
                   <option>2026-05</option>
                 </select>
               </label>
+            </template>
+            <template #search>
               <input
                 v-model="searchQuery"
                 type="text"
@@ -174,13 +188,15 @@ function applyFilters() {
                 class="search-input"
                 @keyup.enter="applyFilters"
               />
-            </div>
-            <div class="search-row">
+            </template>
+            <template #actions>
               <Button variant="outline" @click="resetFilters">重置</Button>
               <Button @click="applyFilters">查询</Button>
+            </template>
+            <template #message>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
-            </div>
-          </div>
+            </template>
+          </CompactFilterBar>
 
           <!-- 数据表格 -->
           <div class="table-section">
@@ -245,7 +261,7 @@ function applyFilters() {
                           v-if="app.status === '已同意'"
                           variant="ghost"
                           size="sm"
-                          @click="viewApplication(app.id)"
+                          @click="viewRecordForApplication(app.id)"
                         >
                           查看记录
                         </Button>
@@ -265,9 +281,9 @@ function applyFilters() {
                 共 {{ total }} 条
               </div>
               <div class="pagination-controls">
-                <button class="page-button" type="button" aria-label="上一页">‹</button>
-                <button class="page-button active" type="button">{{ currentPage }}</button>
-                <button class="page-button" type="button" aria-label="下一页">›</button>
+                <span class="page-button" aria-label="上一页">‹</span>
+                <span class="page-button active" aria-current="page">{{ currentPage }}</span>
+                <span class="page-button" aria-label="下一页">›</span>
                 <span>前往</span>
                 <input class="page-input" value="1" aria-label="页码" readonly />
                 <span>页</span>
@@ -320,7 +336,7 @@ function applyFilters() {
   gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-muted);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-admin-md);
 }
 
 .breadcrumb .separator {
@@ -348,7 +364,7 @@ function applyFilters() {
   padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .stat-card {
@@ -356,7 +372,7 @@ function applyFilters() {
   display: grid;
   grid-template-columns: 82px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
@@ -396,7 +412,7 @@ function applyFilters() {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 34px;
   line-height: 1;
   font-weight: 700;
@@ -431,7 +447,7 @@ function applyFilters() {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   color: #52617a;
   font-size: 13px;
 }
@@ -448,16 +464,8 @@ function applyFilters() {
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
-.filter-section {
-  padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--color-admin-border);
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: 180px 180px 210px 190px minmax(260px, 1fr);
-  gap: 14px;
-  align-items: center;
+.content-card :deep(.compact-filter-bar) {
+  padding-top: 16px;
 }
 
 .filter-item {
@@ -485,13 +493,6 @@ function applyFilters() {
   background: #fff;
   cursor: pointer;
   outline: none;
-}
-
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-md);
-  margin-top: 10px;
 }
 
 .search-input {
@@ -658,6 +659,9 @@ function applyFilters() {
 }
 
 .page-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 34px;
   font-weight: 700;
 }
@@ -689,14 +693,10 @@ function applyFilters() {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
-  .stats-container,
-  .filter-row {
+  .stats-container {
     grid-template-columns: 1fr;
   }
 
@@ -704,7 +704,6 @@ function applyFilters() {
     flex-direction: column;
   }
 
-  .search-row,
   .pagination-section,
   .pagination-controls {
     flex-wrap: wrap;

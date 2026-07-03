@@ -1,7 +1,22 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { findArchiveRecordById } from '../../../domain/archive'
+
+type ArchiveResultQuery = {
+  recordId?: string
+}
+
+const query = ref<ArchiveResultQuery>({})
+
+onLoad((options) => {
+  query.value = options as ArchiveResultQuery
+})
+
+const archiveRecord = computed(() => findArchiveRecordById(query.value.recordId) || findArchiveRecordById('training-digital-teaching-archive'))
 
 const submittedItems = [
   { icon: 'doc', label: '培训信息', value: '数字化教学能力提升 | 线上课程 | 12 学时' },
@@ -26,8 +41,12 @@ function goHome() {
 
 function goArchiveRecord() {
   uni.navigateTo({
-    url: '/pages/archive/record-detail/index?recordId=training-digital-teaching-archive',
+    url: `/pages/archive/record-detail/index?recordId=${archiveRecord.value?.id || query.value.recordId || 'training-digital-teaching-archive'}`,
   })
+}
+
+function goArchivePendingList() {
+  uni.navigateTo({ url: '/pages/archive/draft-list/index' })
 }
 </script>
 
@@ -56,8 +75,8 @@ function goArchiveRecord() {
           </view>
         </view>
         <view class="hero-desc">
-          <text>你的“数字化教学能力提升”培训总结和结业材料已提交。</text>
-          <text>系统确认后，将沉淀到成长档案「个人发展」维度。</text>
+          <text>你的“{{ archiveRecord?.title || '数字化教学能力提升' }}”培训总结和结业材料已提交。</text>
+          <text>系统确认后，将沉淀到成长档案「{{ archiveRecord?.categoryName || '个人发展' }}」维度。</text>
         </view>
         <view class="info-tip">
           <view class="info-tip__icon">i</view>
@@ -110,6 +129,7 @@ function goArchiveRecord() {
       <view class="page-actions">
         <MobileActionButton class="primary-action" variant="primary" @tap="goTraining">返回培训进修</MobileActionButton>
         <MobileActionButton class="outline-action" variant="outline" @tap="goArchiveRecord">查看提交内容</MobileActionButton>
+        <MobileActionButton class="outline-action" variant="outline" @tap="goArchivePendingList">查看档案待确认</MobileActionButton>
         <button class="home-link" @tap="goHome">返回活动首页</button>
       </view>
     </view>

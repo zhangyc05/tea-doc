@@ -357,7 +357,7 @@ function viewVersionHistory() {
   padding: 26px 24px 34px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   background: var(--color-admin-bg);
   color: var(--color-admin-text-strong);
 }
@@ -401,7 +401,7 @@ function viewVersionHistory() {
   min-height: 268px;
   display: grid;
   grid-template-columns: 92px minmax(0, 1fr) 350px;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
   padding: 44px 42px;
   overflow: hidden;
   border: 1px solid var(--color-admin-border);
@@ -456,7 +456,7 @@ function viewVersionHistory() {
 }
 
 .stat-item strong {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   color: var(--color-admin-text-strong);
   font-size: 30px;
   line-height: 1;
@@ -484,7 +484,7 @@ function viewVersionHistory() {
   margin-top: 28px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .hero-actions button:disabled {
@@ -564,7 +564,7 @@ function viewVersionHistory() {
 .source-list {
   display: grid;
   gap: var(--space-admin-sm);
-  padding: 16px;
+  padding: var(--space-admin-lg);
 }
 
 .source-item,
@@ -731,7 +731,7 @@ function viewVersionHistory() {
 .detail-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding: 22px 26px 26px;
 }
 

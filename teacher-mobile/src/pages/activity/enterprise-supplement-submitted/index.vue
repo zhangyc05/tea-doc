@@ -1,7 +1,25 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { createEnterprisePracticeArchiveRecord, findArchiveRecordById } from '../../../domain/archive'
+
+type SupplementSubmittedQuery = {
+  recordId?: string
+}
+
+const query = ref<SupplementSubmittedQuery>({})
+
+onLoad((options) => {
+  query.value = options as SupplementSubmittedQuery
+  if (!query.value.recordId) {
+    query.value.recordId = createEnterprisePracticeArchiveRecord().id
+  }
+})
+
+const archiveRecord = computed(() => findArchiveRecordById(query.value.recordId) || createEnterprisePracticeArchiveRecord())
 
 const infoRows = [
   { label: '实践单位：', value: '山东某软件科技有限公司', type: 'building' },
@@ -19,6 +37,18 @@ const verifyRows = [
 
 function goBack() {
   uni.navigateBack()
+}
+
+function goArchiveRecord() {
+  uni.navigateTo({ url: `/pages/archive/record-detail/index?recordId=${archiveRecord.value.id}` })
+}
+
+function goArchivePendingList() {
+  uni.navigateTo({ url: '/pages/archive/draft-list/index' })
+}
+
+function goActivityHome() {
+  uni.navigateTo({ url: '/pages/activity/index' })
 }
 </script>
 
@@ -88,8 +118,9 @@ function goBack() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="action-button action-button--archive" variant="outline">查看成长档案</MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary">返回首页</MobileActionButton>
+      <MobileActionButton class="action-button action-button--archive" variant="outline" @tap="goArchivePendingList">查看档案待确认</MobileActionButton>
+      <MobileActionButton class="action-button action-button--archive" variant="outline" @tap="goArchiveRecord">查看提交内容</MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="goActivityHome">返回首页</MobileActionButton>
     </view>
   </view>
 </template>

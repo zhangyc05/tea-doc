@@ -270,15 +270,15 @@ function showIncompleteResources() {
                 <select class="page-size" aria-label="每页条数">
                   <option>10条/页</option>
                 </select>
-                <button class="page-button" type="button" aria-label="上一页">‹</button>
-                <button class="page-button active" type="button">1</button>
-                <button class="page-button" type="button">2</button>
-                <button class="page-button" type="button">3</button>
-                <button class="page-button" type="button">4</button>
-                <button class="page-button" type="button">5</button>
-                <button class="page-button" type="button">6</button>
-                <button class="page-button" type="button">7</button>
-                <button class="page-button" type="button" aria-label="下一页">›</button>
+                <span class="page-button" aria-label="上一页">‹</span>
+                <span class="page-button active" aria-current="page">1</span>
+                <span class="page-button">2</span>
+                <span class="page-button">3</span>
+                <span class="page-button">4</span>
+                <span class="page-button">5</span>
+                <span class="page-button">6</span>
+                <span class="page-button">7</span>
+                <span class="page-button" aria-label="下一页">›</span>
                 <span>前往</span>
                 <input class="page-input" value="1" aria-label="页码" readonly />
                 <span>页</span>
@@ -417,7 +417,7 @@ function showIncompleteResources() {
   display: grid;
   grid-template-columns: 82px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   min-height: 132px;
   padding: 22px 30px;
   background: #fff;
@@ -458,7 +458,7 @@ function showIncompleteResources() {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 34px;
   line-height: 1;
   font-weight: 700;
@@ -477,7 +477,7 @@ function showIncompleteResources() {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   font-size: 13px;
   color: #6c7890;
 }
@@ -554,7 +554,7 @@ function showIncompleteResources() {
 }
 
 .operation-message {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   color: #1d6df2;
   font-size: 13px;
   font-weight: 600;
@@ -681,6 +681,9 @@ function showIncompleteResources() {
 }
 
 .page-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 34px;
   height: 34px;
   border: none;
@@ -794,7 +797,7 @@ function showIncompleteResources() {
 }
 
 .selected-meta {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   color: var(--color-admin-text-muted);
   font-size: 13px;
   line-height: 1.6;
@@ -834,7 +837,7 @@ function showIncompleteResources() {
 
   .stat-card {
     grid-template-columns: 64px minmax(0, 1fr);
-    padding: 18px;
+    padding: var(--space-admin-card-gap);
   }
 
   .stat-icon {

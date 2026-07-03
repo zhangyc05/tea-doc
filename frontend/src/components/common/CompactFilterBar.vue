@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-admin-md);
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
 }
 
 @media (max-width: 1320px) {

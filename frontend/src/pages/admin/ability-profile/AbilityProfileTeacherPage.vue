@@ -24,8 +24,6 @@ const teachers = teacherListProfile.teachers
 
 const currentPage = ref(1)
 const pageSize = 12
-const total = 142
-const totalPages = Math.ceil(total / pageSize)
 const avatarTones = ['tone-blue', 'tone-cyan', 'tone-green', 'tone-indigo', 'tone-orange', 'tone-purple']
 const filteredTeachers = computed(() => {
   const keyword = searchQuery.value.trim()
@@ -37,6 +35,13 @@ const filteredTeachers = computed(() => {
     const matchesFocus = selectedFocus.value === '全部' || teacher.focusType === selectedFocus.value
     return matchesKeyword && matchesCollege && matchesTitle && matchesType && matchesFocus
   })
+})
+const total = computed(() => filteredTeachers.value.length)
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+const pageNumbers = computed(() => Array.from({ length: totalPages.value }, (_, index) => index + 1))
+const paginatedTeachers = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return filteredTeachers.value.slice(start, start + pageSize)
 })
 
 function switchViewMode(mode: 'list' | 'card') {
@@ -58,6 +63,10 @@ function resetFilters() {
 
 function viewTeacherProfile(teacherId: string) {
   router.push(`/admin/ability-profile/teacher/${teacherId}`)
+}
+
+function goToPage(page: number) {
+  currentPage.value = Math.min(Math.max(page, 1), totalPages.value)
 }
 
 function getFocusTypeClass(focusType: string): string {
@@ -90,25 +99,25 @@ function getAvatarTone(index: number): string {
 
         <div class="filter-field">
           <span>学院</span>
-          <select v-model="selectedCollege">
+          <select v-model="selectedCollege" @change="applySearch">
             <option v-for="college in colleges" :key="college" :value="college">{{ college }}</option>
           </select>
         </div>
         <div class="filter-field">
           <span>职称</span>
-          <select v-model="selectedTitle">
+          <select v-model="selectedTitle" @change="applySearch">
             <option v-for="title in titles" :key="title" :value="title">{{ title }}</option>
           </select>
         </div>
         <div class="filter-field">
           <span>教师类型</span>
-          <select v-model="selectedType">
+          <select v-model="selectedType" @change="applySearch">
             <option v-for="type in teacherTypes" :key="type" :value="type">{{ type }}</option>
           </select>
         </div>
         <div class="filter-field">
           <span>关注类型</span>
-          <select v-model="selectedFocus">
+          <select v-model="selectedFocus" @change="applySearch">
             <option v-for="focus in focusTypes" :key="focus" :value="focus">{{ focus }}</option>
           </select>
         </div>
@@ -129,7 +138,7 @@ function getAvatarTone(index: number): string {
         </header>
 
         <div v-if="viewMode === 'card'" class="cards-grid">
-          <article v-for="(teacher, index) in filteredTeachers" :key="teacher.id" class="teacher-card">
+          <article v-for="(teacher, index) in paginatedTeachers" :key="teacher.id" class="teacher-card">
             <span class="focus-badge card-badge" :class="getFocusTypeClass(teacher.focusType)">
               {{ teacher.focusType }}
             </span>
@@ -169,7 +178,7 @@ function getAvatarTone(index: number): string {
         </div>
 
         <div v-else class="teacher-table">
-          <article v-for="(teacher, index) in filteredTeachers" :key="teacher.id" class="teacher-row">
+          <article v-for="(teacher, index) in paginatedTeachers" :key="teacher.id" class="teacher-row">
             <div class="teacher-identity">
               <div class="avatar-figure" :class="getAvatarTone(index)">
                 <span class="avatar-hair"></span>
@@ -208,13 +217,17 @@ function getAvatarTone(index: number): string {
         <select :value="pageSize" aria-label="每页条数">
           <option>{{ pageSize }} 条/页</option>
         </select>
-        <button type="button" disabled>&lt;</button>
-        <button type="button" class="active-page">{{ currentPage }}</button>
-        <button type="button">2</button>
-        <button type="button">3</button>
-        <span>...</span>
-        <button type="button">{{ totalPages }}</button>
-        <button type="button">&gt;</button>
+        <button type="button" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">&lt;</button>
+        <button
+          v-for="page in pageNumbers"
+          :key="page"
+          type="button"
+          :class="{ 'active-page': currentPage === page }"
+          @click="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+        <button type="button" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">&gt;</button>
       </footer>
     </div>
   </AdminLayout>
@@ -332,8 +345,8 @@ function getAvatarTone(index: number): string {
 }
 
 .list-shell {
-  margin-top: 16px;
-  padding: 20px;
+  margin-top: var(--space-admin-lg);
+  padding: var(--space-admin-xl);
   border-radius: var(--radius-lg);
 }
 
@@ -341,8 +354,8 @@ function getAvatarTone(index: number): string {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 18px;
+  gap: var(--space-admin-card-gap);
+  margin-bottom: var(--space-admin-card-gap);
 }
 
 .section-head h1 {
@@ -389,7 +402,7 @@ function getAvatarTone(index: number): string {
 .teacher-card {
   position: relative;
   min-height: 258px;
-  padding: 20px;
+  padding: var(--space-admin-xl);
   border: 1px solid #e4eaf3;
   border-radius: var(--radius-lg);
   background: #ffffff;
@@ -511,7 +524,7 @@ function getAvatarTone(index: number): string {
 .card-metrics {
   display: grid;
   gap: var(--space-admin-sm);
-  margin-top: 18px;
+  margin-top: var(--space-admin-card-gap);
 }
 
 .card-metrics div,
@@ -563,7 +576,7 @@ function getAvatarTone(index: number): string {
 }
 
 .tag-row {
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
   padding-right: 84px;
 }
 
@@ -642,7 +655,7 @@ function getAvatarTone(index: number): string {
   justify-content: flex-end;
   align-items: center;
   gap: var(--space-admin-xs);
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
   padding: 14px 18px;
   border-radius: var(--radius-lg);
   color: #64748b;

@@ -210,7 +210,7 @@ const filteredRecords = computed(() => {
               </div>
               <div class="table-footer">
                 <span>共 {{ filteredRecords.length }} 条</span>
-                <button type="button">1</button>
+                <span class="page-button active" aria-current="page">1</span>
                 <span>10 条/页</span>
               </div>
             </div>
@@ -272,7 +272,7 @@ const filteredRecords = computed(() => {
   display: flex;
   align-items: center;
   gap: var(--space-admin-md);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-admin-xl);
   font-size: 14px;
   color: var(--color-admin-text-title);
   font-weight: 800;
@@ -305,7 +305,7 @@ const filteredRecords = computed(() => {
   padding: 24px 0 18px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .stat-card {
@@ -368,7 +368,7 @@ const filteredRecords = computed(() => {
   line-height: 1;
   font-weight: 900;
   color: var(--color-admin-primary-hover);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-admin-md);
   white-space: nowrap;
 }
 
@@ -394,7 +394,7 @@ const filteredRecords = computed(() => {
   font-size: 16px;
   color: var(--color-admin-text-title);
   font-weight: 900;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
 }
 
 .stat-desc {
@@ -412,7 +412,7 @@ const filteredRecords = computed(() => {
 .record-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .main-content {
@@ -558,10 +558,12 @@ const filteredRecords = computed(() => {
   font-size: 14px;
 }
 
-.table-footer button {
+.page-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 36px;
   height: 36px;
-  border: 0;
   border-radius: var(--radius-sm);
   background: var(--color-admin-primary-hover);
   color: #fff;
@@ -576,7 +578,7 @@ const filteredRecords = computed(() => {
   background: #fff;
   border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
-  padding: 24px;
+  padding: var(--space-admin-2xl);
   box-shadow: var(--shadow-admin-card-soft);
 }
 
@@ -595,7 +597,7 @@ const filteredRecords = computed(() => {
 
 .reminder-item {
   display: flex;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   align-items: center;
   min-height: 132px;
   padding: 22px 18px;
@@ -633,7 +635,7 @@ const filteredRecords = computed(() => {
   font-size: 18px;
   font-weight: 900;
   color: #07183d;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
 }
 
 .reminder-desc {

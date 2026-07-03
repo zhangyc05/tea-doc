@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionDetailMock } from '@/services/mock/reflection'
+import { getReflectionState, sendReflectionToArchive } from '@/stores/admin/reflectionStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -17,6 +18,7 @@ const reflectionDetail = ref(reflectionDetailMock.reflectionDetail)
 const reflectionContent = reflectionDetailMock.reflectionContent
 const sourceData = reflectionDetailMock.sourceData
 const relatedReflections = reflectionDetailMock.relatedReflections
+const reflectionState = getReflectionState()
 
 function goBack() {
   router.push('/admin/reflection')
@@ -32,6 +34,10 @@ function viewRelatedDetail(id: string) {
 
 function viewMoreRelated() {
   router.push('/admin/reflection?keyword=课堂互动反馈不足')
+}
+
+function sendToArchive() {
+  sendReflectionToArchive(reflectionId)
 }
 </script>
 
@@ -198,12 +204,16 @@ function viewMoreRelated() {
               <h3 class="sidebar-title">记录去向</h3>
               <div class="sidebar-content">
                 <p class="destination-text">
-                  已进入{{ reflectionDetail.destination }}。
+                  待生成{{ reflectionDetail.destination }}待确认记录。
                 </p>
                 <p class="destination-text">
                   可用于教学改进过程记录和组织分析统计。
                 </p>
               </div>
+              <Button class="archive-send-action" variant="outline" size="lg" @click="sendToArchive">
+                生成档案待确认记录
+              </Button>
+              <p v-if="reflectionState.operationMessage" class="source-message">{{ reflectionState.operationMessage }}</p>
             </div>
           </div>
         </div>
@@ -231,7 +241,7 @@ function viewMoreRelated() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-admin-card-gap);
 }
 
 .breadcrumb {
@@ -265,7 +275,7 @@ function viewMoreRelated() {
 .detail-back-action {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-admin-lg);
   padding: 0;
   color: var(--color-admin-primary-hover);
   font-size: 14px;
@@ -401,7 +411,7 @@ function viewMoreRelated() {
 
 /* 教学反思内容 */
 .reflection-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-admin-2xl);
   padding-left: 14px;
   border-left: 4px solid var(--color-admin-primary-hover);
 }
@@ -517,8 +527,8 @@ function viewMoreRelated() {
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 18px;
+  gap: var(--space-admin-xl);
+  margin-bottom: var(--space-admin-card-gap);
 }
 
 .sidebar .info-row {

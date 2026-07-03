@@ -29,22 +29,22 @@ const breadcrumbItems = computed(() => {
     </div>
 
     <div class="topbar-actions">
-      <button type="button" class="scope-button">
+      <span class="scope-button">
         <span>全校</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
-      </button>
-      <button type="button" class="scope-button year-button">
+      </span>
+      <span class="scope-button year-button">
         <span>2026 年度</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
-      </button>
+      </span>
 
-      <button type="button" class="message-button" aria-label="消息">
+      <span class="message-button" role="status" aria-label="消息 12 条">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M18 9.2A6 6 0 0 0 6 9.2c0 7-3 7.3-3 7.3h18s-3-.3-3-7.3Z" />
           <path d="M9.8 19a2.4 2.4 0 0 0 4.4 0" />
         </svg>
         <em>12</em>
-      </button>
+      </span>
 
       <div class="user-box">
         <div class="avatar">周</div>
@@ -119,7 +119,6 @@ const breadcrumbItems = computed(() => {
   font-size: clamp(14px, 0.85vw, 16px);
   font-weight: 800;
   box-shadow: 0 4px 12px rgba(16, 40, 90, 0.03);
-  cursor: pointer;
 }
 
 .year-button {
@@ -147,7 +146,6 @@ const breadcrumbItems = computed(() => {
   border: 0;
   background: transparent;
   color: #415373;
-  cursor: pointer;
 }
 
 .message-button svg {

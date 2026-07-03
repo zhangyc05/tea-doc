@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import { createArchiveSupplementRecord } from '../../../domain/archive'
 
 const archiveTypes = ['培训证书', '企业实践证明', '教研活动记录']
 const materialItems = [
@@ -11,7 +12,8 @@ const materialItems = [
 ]
 
 function submitSupplement() {
-  uni.redirectTo({ url: '/pages/assistant/archive-supplement-submitted/index' })
+  const record = createArchiveSupplementRecord()
+  uni.redirectTo({ url: `/pages/assistant/archive-supplement-submitted/index?recordId=${record.id}` })
 }
 </script>
 

@@ -1,7 +1,25 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { createEnterprisePracticeArchiveRecord, findArchiveRecordById } from '../../../domain/archive'
+
+type ArchiveResultQuery = {
+  recordId?: string
+}
+
+const query = ref<ArchiveResultQuery>({})
+
+onLoad((options) => {
+  query.value = options as ArchiveResultQuery
+  if (!query.value.recordId) {
+    query.value.recordId = createEnterprisePracticeArchiveRecord().id
+  }
+})
+
+const archiveRecord = computed(() => findArchiveRecordById(query.value.recordId) || createEnterprisePracticeArchiveRecord())
 
 const steps = [
   { title: '记录实践日志', time: '05-10', state: 'done' },
@@ -29,11 +47,15 @@ function goBack() {
 }
 
 function backToList() {
-  uni.showToast({ title: '返回实践列表', icon: 'none' })
+  uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
 }
 
-function viewNotice() {
-  uni.showToast({ title: '查看消息通知', icon: 'none' })
+function viewArchiveRecord() {
+  uni.navigateTo({ url: `/pages/archive/record-detail/index?recordId=${archiveRecord.value.id}` })
+}
+
+function goArchivePendingList() {
+  uni.navigateTo({ url: '/pages/archive/draft-list/index' })
 }
 </script>
 
@@ -84,7 +106,7 @@ function viewNotice() {
         <view class="card-head">
           <view class="head-icon head-icon--overview"></view>
           <text class="card-title">本次实践概览</text>
-          <text class="detail-link">查看详情</text>
+          <text class="detail-link" @tap="viewArchiveRecord">查看详情</text>
           <view class="link-arrow"></view>
         </view>
 
@@ -123,8 +145,11 @@ function viewNotice() {
       <MobileActionButton class="action-button action-button--list" variant="outline" @tap="backToList">
         返回实践列表
       </MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary" @tap="viewNotice">
-        查看消息通知
+      <MobileActionButton class="action-button action-button--list" variant="outline" @tap="goArchivePendingList">
+        查看档案待确认
+      </MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="viewArchiveRecord">
+        查看提交内容
       </MobileActionButton>
     </view>
   </view>

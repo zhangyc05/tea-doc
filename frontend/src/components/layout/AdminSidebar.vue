@@ -433,7 +433,7 @@ function handleParentAction(item: AdminNavItem) {
 }
 
 .admin-sidebar.collapsed .nav-group + .nav-group {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
 }
 
 .nav-item {

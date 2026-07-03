@@ -74,6 +74,40 @@ F3-15 已完成中型内联间距替换：页面和组件样式中的普通和�
 
 F3-16 已完成大型内联间距替换：页面和组件样式中的显式 `gap: 16px` 已改为 `gap: var(--space-admin-lg)`；响应式 `clamp(...)`、`column-gap` 和 padding/margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
+F3-17 已完成卡片 / 区块常用间距替换：页面和组件样式中的显式 `gap: 18px` 已改为 `gap: var(--space-admin-card-gap)`；响应式 `clamp(...)` 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-18 已完成超大区块间距替换：页面和组件样式中的显式 `gap: 20px` 已改为 `gap: var(--space-admin-xl)`；本批只处理 `gap`，padding / margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-19 已完成双倍超大区块间距替换：页面和组件样式中的显式 `gap: 24px` 已改为 `gap: var(--space-admin-2xl)`；本批只处理 `gap`，padding / margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-20 已完成超大单值内边距替换：页面和组件样式中的单值 `padding: 20px` 已改为 `padding: var(--space-admin-xl)`；双值、四值和响应式 padding 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-21 已完成双倍超大单值内边距替换：页面和组件样式中的单值 `padding: 24px` 已改为 `padding: var(--space-admin-2xl)`；双值、四值和响应式 padding 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-22 已完成卡片单值内边距替换：页面和组件样式中的单值 `padding: 18px` 已改为 `padding: var(--space-admin-card-gap)`；双值、四值和响应式 padding 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-23 已完成大型单值内边距替换：页面和组件样式中的单值 `padding: 16px` 已改为 `padding: var(--space-admin-lg)`；双值、四值和响应式 padding 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-24 已完成中型单值内边距替换：页面和组件样式中的单值 `padding: 12px` 已改为 `padding: var(--space-admin-md)`；双值、四值和响应式 padding 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-25 已完成超大单值外边距替换：页面和组件样式中的单值 `margin: 20px` 已改为 `margin: var(--space-admin-xl)`；方向性 margin、多值 margin 和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-26 已完成紧凑方向性外边距替换：页面和组件样式中的方向性 `margin-*: 8px` 已改为 `margin-*: var(--space-admin-xs)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-27 已完成小型方向性外边距替换：页面和组件样式中的方向性 `margin-*: 10px` 已改为 `margin-*: var(--space-admin-sm)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-28 已完成大型方向性外边距替换：页面和组件样式中的方向性 `margin-*: 16px` 已改为 `margin-*: var(--space-admin-lg)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-29 已完成中型方向性外边距替换：页面和组件样式中的方向性 `margin-*: 12px` 已改为 `margin-*: var(--space-admin-md)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-30 已完成超大方向性外边距替换：页面和组件样式中的方向性 `margin-*: 20px` 已改为 `margin-*: var(--space-admin-xl)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-31 已完成双倍超大方向性外边距替换：页面和组件样式中的方向性 `margin-*: 24px` 已改为 `margin-*: var(--space-admin-2xl)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-32 已完成卡片方向性外边距替换：页面和组件样式中的方向性 `margin-*: 18px` 已改为 `margin-*: var(--space-admin-card-gap)`；单值、双值、多值和响应式 margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-33 已完成剩余方向性外边距审计：当前剩余方向性 `margin-*` 已无 `8/10/12/16/18/20/24px` 常用 token 档位硬编码；`2/3/4/5/6/7/9/11/13px` 归为图形、图标、文字基线或紧凑列表微调，`22/28/30/34/48/54px` 归为单页版式特例，暂不新增 token；`14px` 出现 19 处但不在现有间距体系内，需结合目标效果图做页面级复核后再决定是否新增 token 或局部保留。
+
 高频颜色候选：
 
 | 现有值 | 出现次数 | 建议归并 |
@@ -116,10 +150,31 @@ F3-16 已完成大型内联间距替换：页面和组件样式中的显式 `gap
 | `16px` | 71 | F3-16 已替换显式 `gap: 16px` 为 `--space-admin-lg`；响应式 `clamp(...)`、`column-gap`、padding/margin 分后续批次处理 |
 | `12px` | 65 | F3-15 已替换 `gap: 12px` 为 `--space-admin-md`；padding/margin 和 `column-gap` 分后续批次处理 |
 | `8px` | 63 | F3-13 已替换 `gap: 8px` 为 `--space-admin-xs`；padding/margin 分后续批次处理 |
-| `18px` | 45 | 页面块间紧凑间距候选 token |
+| `18px` | 45 | F3-17 已替换显式 `gap: 18px` 为 `--space-admin-card-gap`；响应式 `clamp(...)`、padding/margin 分后续批次处理 |
 | `10px` | 44 | F3-14 已替换 `gap: 10px` 为 `--space-admin-sm`；padding/margin 分后续批次处理 |
-| `20px` | 35 | 面板内边距候选 token |
-| `24px` | 19 | 页面区块内边距候选 token |
+| `20px` | 35 | F3-18 已替换显式 `gap: 20px` 为 `--space-admin-xl`；padding/margin 分后续批次处理 |
+| `24px` | 19 | F3-19 已替换显式 `gap: 24px` 为 `--space-admin-2xl`；padding/margin 分后续批次处理 |
+| `padding: 20px` | 13 | F3-20 已替换单值 padding 为 `--space-admin-xl`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 24px` | 8 | F3-21 已替换单值 padding 为 `--space-admin-2xl`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 18px` | 11 | F3-22 已替换单值 padding 为 `--space-admin-card-gap`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 16px` | 12 | F3-23 已替换单值 padding 为 `--space-admin-lg`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 12px` | 3 | F3-24 已替换单值 padding 为 `--space-admin-md`；双值、四值和响应式 padding 分后续批次处理 |
+| `margin: 20px` | 1 | F3-25 已替换单值 margin 为 `--space-admin-xl`；方向性、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 8px` | 27 | F3-26 已替换方向性 margin 为 `--space-admin-xs`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 10px` | 22 | F3-27 已替换方向性 margin 为 `--space-admin-sm`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 16px` | 21 | F3-28 已替换方向性 margin 为 `--space-admin-lg`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 12px` | 8 | F3-29 已替换方向性 margin 为 `--space-admin-md`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 20px` | 8 | F3-30 已替换方向性 margin 为 `--space-admin-xl`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 24px` | 3 | F3-31 已替换方向性 margin 为 `--space-admin-2xl`；单值、多值和响应式 margin 分后续批次处理 |
+| `margin-*: 18px` | 5 | F3-32 已替换方向性 margin 为 `--space-admin-card-gap`；单值、多值和响应式 margin 分后续批次处理 |
+
+剩余方向性外边距审计：
+
+| 剩余值 | 出现次数 | 处理口径 |
+| --- | ---: | --- |
+| `2px`、`3px`、`4px`、`5px`、`6px`、`7px`、`9px`、`11px`、`13px` | 23 | 低频微调值，主要服务图标、文字基线、紧凑列表和局部对齐；暂不新增 token |
+| `14px` | 19 | 高频但不在现有间距体系内；后续结合目标效果图做页面级复核后，再决定新增 token 还是局部保留 |
+| `22px`、`28px`、`30px`、`34px`、`48px`、`54px` | 12 | 单页版式特例或大段落错位控制；暂不纳入通用 spacing token |
 
 收敛顺序：
 
@@ -151,6 +206,7 @@ F3-16 已完成大型内联间距替换：页面和组件样式中的显式 `gap
 --space-admin-sm
 --space-admin-md
 --space-admin-lg
+--space-admin-card-gap
 --space-admin-xl
 --space-admin-2xl
 ```
@@ -180,26 +236,26 @@ frontend/src/components/admin/ability-list/AbilityStructureTree.vue
 
 ### 按钮等级
 
-管理端新增或重构按钮优先使用 `frontend/src/components/ui/button.ts` 的 `Button` 组件；旧页面中的局部 `.btn-*` 样式只在逐页迁移时保留，不作为新增页面样板。
+管理端新增或重构按钮必须优先使用 `frontend/src/components/ui/button.ts` 的 `Button` 组件。F4-44 后管理端页面源码已完成页面级 `.btn-*` 按钮类收尾；旧类名只作为历史迁移记录，不作为新增页面样板。
 
 按钮等级口径：
 
-| 等级 | 组件 variant / 旧样式 | 使用场景 |
+| 等级 | 组件 variant | 使用场景 |
 | --- | --- | --- |
-| 主按钮 | `variant="default"` / `.btn-primary` | 页面主提交、发布、确认、保存并发布、进入关键流程；同一区域通常只保留一个 |
-| 次按钮 | `variant="secondary"` / `.btn-secondary` | 查询、保存草稿、非破坏性辅助动作；不能和主按钮同时抢视觉中心 |
-| 轮廓按钮 | `variant="outline"` / `.btn-outline` | 取消任务、查看上传文件、边界明确但不应强调的动作 |
-| 文本按钮 | `variant="ghost"` / `.btn-link`、`.btn-view` | 表格行内查看、编辑、更多、来源等轻量动作；必须有真实跳转、状态变化或明确降级提示 |
-| 危险按钮 | `variant="danger"` / `.btn-danger`、`.danger`、`.btn-return` | 删除、退回、标记异常、未同意等会改变业务状态且具有负向后果的动作 |
-| 图标按钮 | `size="icon"` / `.icon-button`、`.message-button` | 搜索、消息、关闭等固定尺寸图标动作；必须提供 `aria-label` 或 `title` |
+| 主按钮 | `variant="default"` | 页面主提交、发布、确认、保存并发布、进入关键流程；同一区域通常只保留一个 |
+| 次按钮 | `variant="secondary"` | 查询、保存草稿、非破坏性辅助动作；不能和主按钮同时抢视觉中心 |
+| 轮廓按钮 | `variant="outline"` | 取消任务、查看上传文件、边界明确但不应强调的动作 |
+| 文本按钮 | `variant="ghost"` | 表格行内查看、编辑、更多、来源等轻量动作；必须有真实跳转、状态变化或明确降级提示 |
+| 危险按钮 | `variant="danger"` | 删除、退回、标记异常、未同意等会改变业务状态且具有负向后果的动作 |
+| 图标按钮 | `size="icon"` | 搜索、关闭等固定尺寸图标动作；必须提供 `aria-label` 或 `title` |
 
 F4-01/F4-02 当前扫描结论：
 
 - 公共 `Button` 当前已定义 `default`、`secondary`、`outline`、`ghost`、`danger` 五类 variant 和 `sm`、`md`、`lg`、`icon` 四类 size。
-- 公共 `Button` 已用于 `EmptyState`、`FilterBar`、`DetailSheet`、`PageHeader`、`FloatingAIAssistant`、`TrainingResourceDetailSheet`，但管理端业务页面仍以局部 `.btn-*` 为主。
-- 高频局部按钮类：`.btn-primary` 27 处、`.btn-secondary` 22 处、`.btn-view` 18 处、`.btn-link` 16 处、`.btn-reset` 11 处、`.btn-source` 10 处。
-- 后续迁移顺序：先迁移低风险筛选栏和抽屉底部按钮，再迁移表格行内动作，最后处理页面 hero / 特殊视觉按钮。
-- 不做一次性全量替换；每次迁移必须确认不破坏目标图里的尺寸、密度、位置和状态反馈。
+- 公共 `Button` 已用于 `EmptyState`、`FilterBar`、`DetailSheet`、`PageHeader`、`FloatingAIAssistant`、`TrainingResourceDetailSheet` 和管理端页面主要动作入口。
+- F4-44 已完成页面级按钮类迁移，`frontend/src/pages/admin/adminVisualActions.test.ts` 会继续约束页面和关键组件的真实动作、只读按钮和旧类回退。
+- 后续新增或改造按钮时，先按本节选择 `variant` 和 `size`，再用页面结构类承接局部宽度、对齐和特殊排版。
+- 每次按钮迁移必须确认不破坏目标图里的尺寸、密度、位置和状态反馈。
 
 F4-03 试点迁移：
 
@@ -502,7 +558,7 @@ F6-01 当前扫描结论：
 | 密度 | 使用场景 | 表头 | 数据行 | 字号 | 单元格 | 操作列 |
 | --- | --- | --- | --- | --- | --- | --- |
 | 紧凑关联表 | 详情页里的相关记录、材料清单、来源记录 | 38-40px | 42-46px | 13px | `padding: 0 12px` 或 `0 14px`，长文本省略 | `ghost` 文本按钮，最多 1-2 个动作 |
-| 标准业务列表 | 管理页主列表、筛选结果列表 | 42-48px | 50-56px | 13px | `padding: 0 12px` 或 `13px 12px`，必要时 `table-layout: fixed` | 查看/编辑等轻量动作使用 `Button variant="ghost"` 或现有 `.btn-view/.btn-link` 逐步迁移 |
+| 标准业务列表 | 管理页主列表、筛选结果列表 | 42-48px | 50-56px | 13px | `padding: 0 12px` 或 `13px 12px`，必要时 `table-layout: fixed` | 查看/编辑等轻量动作使用 `Button variant="ghost"`；需要强调的行内状态动作使用 `secondary` 或 `danger` |
 | 宽信息列表 | 字段多、状态多、需要横向滚动的业务表 | 46-50px | 60-70px | 13px | `padding: 13px 12px` 到 `15px 14px`，允许固定列宽 | 操作列宽度明确，不挤压状态列和主对象列 |
 
 实施规则：
@@ -521,6 +577,7 @@ E14-01 当前扫描结论：
 
 - 已覆盖第一批：培训资源、培训需求、培训申请。三页均为 4 个 select + 1 个搜索输入 + 重置 / 查询动作，布局接近，业务状态由页面和 `trainingStore` 承载。
 - 已覆盖第二批：培训计划、培训记录、虚拟教研室列表。培训计划和培训记录保留输入即过滤、不新增查询按钮；虚拟教研室保留显式查询动作和视图切换。
+- 已覆盖第三批：企业实践申请、年度实践跟踪、实践记录。三页保留原年度/院系/状态/完成情况/计入天数等筛选字段、搜索输入、重置 / 查询动作和操作反馈，实践跟踪与实践记录页顶部导出动作仍留在列表标题区。
 - 暂不迁移：档案查阅页。它是搜索区 + 筛选控件 + 视图/卡片结果组合，视觉权重高于普通表格筛选栏。
 - 禁止迁移：档案处理左侧筛选面板、报告中心 tab + 筛选混合工具区、能力清单优化建议来源侧栏。这些不是横向筛选栏，强迁会破坏目标图区域结构。
 
@@ -556,9 +613,9 @@ E14-01 当前扫描结论：
 命名口径：
 
 - 保留现有 `FilterBar`，不在本轮改造中重写它。
-- 已新增 `frontend/src/components/common/CompactFilterBar.vue`，用于培训管理和虚拟教研室列表这类紧凑表格筛选栏。
+- 已新增 `frontend/src/components/common/CompactFilterBar.vue`，用于培训管理、企业实践和虚拟教研室列表这类紧凑表格筛选栏。
 - 组件测试只验证插槽区域和响应式外壳；页面 guardrail 只验证已迁移页面使用公共组件且保留筛选字段、搜索、重置、查询或必要业务动作入口。
-- 已覆盖培训资源、培训需求、培训申请、培训计划、培训记录、虚拟教研室列表筛选区；目标效果图为培训管理资源/需求/申请/计划/记录和虚拟教研室列表对应管理端效果图。
+- 已覆盖培训资源、培训需求、培训申请、培训计划、培训记录、企业实践申请、企业实践跟踪、企业实践记录、虚拟教研室列表筛选区；目标效果图为培训管理资源/需求/申请/计划/记录、企业实践申请/跟踪/记录和虚拟教研室列表对应管理端效果图。
 
 ### 详情页布局
 
@@ -640,8 +697,8 @@ E13-01 当前扫描结论：
 
 F8-01 当前扫描结论：
 
-- `DetailSheet` 已提供 `sm` 360px、`md` 480px、`form` 540px、`source` 540px、`history` 620px、`lg` 640px、`xl` 760px 七档宽度；当前培训计划新建抽屉使用 `md`，培训资源详情使用 `lg`，能力清单基准模板编辑指标抽屉使用 `form`，基准模板版本记录抽屉使用 `history`，成长档案来源记录抽屉使用 `source`。
-- 能力清单执行版编辑抽屉宽 540px，执行版版本记录抽屉宽 620px；要求映射编辑抽屉宽 `min(660px, 100vw)`。
+- `DetailSheet` 已提供 `sm` 360px、`md` 480px、`form` 540px、`source` 540px、`history` 620px、`lg` 640px、`xl` 760px 七档宽度；当前培训计划新建抽屉使用 `md`，培训资源详情使用 `lg`，能力清单基准模板编辑指标和执行版编辑指标抽屉使用 `form`，基准模板版本记录和执行版历史版本抽屉使用 `history`，成长档案来源记录抽屉使用 `source`。
+- 要求映射编辑抽屉宽 `min(660px, 100vw)`，属于复杂编辑表单，后续迁移前需单独评估字段分组和危险动作位置。
 - 培训计划新建抽屉已迁入 `DetailSheet md`，属于轻量新建表单。
 - 教师档案来源记录抽屉宽 `min(540px, calc(100vw - 28px))`，顶部留出正文阅读上下文，承载来源卡片、筛选 tab 和底部说明。
 
@@ -675,6 +732,9 @@ F8-01 当前扫描结论：
 ## 业务交互要求
 
 - 页面中不应出现未实现但看起来可点击的空操作。
+- 静态分页展示不应使用 `button`。只有接入真实分页状态、禁用态和点击处理的分页控件才允许使用按钮；仅用于展示当前页、页数或上一页/下一页占位时，使用 `span`、`aria-current="page"` 和只读样式，不能用 disabled button 伪装成分页闭环。
+- 顶栏范围、年度、消息数等全局上下文若尚未接入切换或消息中心，只能作为只读展示；不得使用 `button` 或 pointer 光标伪装成交互控件。
+- 管理端页面和关键组件的原生 `<button>` 必须具备真实 `@click`、显式禁用态或表单提交语义；`frontend/src/pages/admin/adminVisualActions.test.ts` 会扫描无动作原生按钮，新增页面时必须同步纳入该 guardrail 或使用公共 `Button`。
 - 如果当前阶段只支持视觉反馈，应在台账里标记为“视觉态/待业务闭环”，不能标记为业务完成。
 - 路由跳转、返回、详情、提交、状态切换需要按模块审计。
 
@@ -701,6 +761,7 @@ npm run test:stores
 - `frontend/src/domain/admin/*.test.ts`：覆盖业务状态枚举、状态文案、状态样式 helper，以及页面不再内联业务状态样式的源码 guardrail。
 - `frontend/src/stores/admin/*Store.test.ts`：覆盖跨页面业务状态流转、列表写入、详情读取、审批/确认/退回/异常等动作，以及写入成长档案处理记录的副作用。
 - `frontend/src/stores/admin/*Store.structure.test.ts`：覆盖拆分后的 `initialData`、`actions` 可对注入 state 独立运行，避免单例 store 难以测试。
+- 已拆为 `initialData.ts` + `actions.ts` 的管理端 store 必须同步存在对应 `*Store.structure.test.ts`；`frontend/src/stores/admin/adminStoreStructure.test.ts` 负责扫描该约定，防止后续只拆文件不补结构测试。
 - `frontend/src/services/mock/*.test.ts`：覆盖稳定 mock service 的数据形状、克隆隔离和页面消费入口，防止页面重新承载大段 mock 数组。
 - `frontend/src/components/common/*.test.ts`：覆盖可复用组件的 props、渲染形态和关键事件；新增公共组件至少补一个最小组件测试。
 - `frontend/src/pages/admin/*.test.ts`：只做页面源码级 guardrail，例如路由页面映射、视觉态按钮、空状态组件使用；真实业务行为优先放到 store/domain 测试。

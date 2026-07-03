@@ -590,7 +590,7 @@ function switchViewMode(mode: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-admin-lg);
 }
 
 .header-left {
@@ -641,14 +641,14 @@ function switchViewMode(mode: string) {
 .teachers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .teacher-card {
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
-  padding: 20px;
+  padding: var(--space-admin-xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-admin-lg);

@@ -133,7 +133,7 @@ function goBack() {
   padding: 26px 24px 34px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   background: var(--color-admin-bg);
   color: var(--color-admin-text-strong);
 }
@@ -177,7 +177,7 @@ function goBack() {
   min-height: 310px;
   display: grid;
   grid-template-columns: 92px minmax(0, 1fr) 390px;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
   padding: 48px 42px;
   overflow: hidden;
   border: 1px solid var(--color-admin-border);
@@ -202,7 +202,7 @@ function goBack() {
 .hero-title-row {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .hero-title {
@@ -245,7 +245,7 @@ function goBack() {
 
 .summary-value {
   display: block;
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   color: var(--color-admin-text-strong);
   font-size: 15px;
   line-height: 1.45;
@@ -303,7 +303,7 @@ function goBack() {
 .impact-cards {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 24px;
+  gap: var(--space-admin-2xl);
 }
 
 .impact-card {
@@ -365,7 +365,7 @@ function goBack() {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding: 22px 28px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
@@ -404,7 +404,7 @@ function goBack() {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
   padding: 0 38px;
   background: #fff;
   border: 1px solid var(--color-admin-border);

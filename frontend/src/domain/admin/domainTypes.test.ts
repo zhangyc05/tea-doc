@@ -470,6 +470,7 @@ describe('admin domain types', () => {
       title: '2026 年度学校教师发展分析报告',
       type: '分析报告',
       target: '全校教师',
+      period: '2026 年度',
       basis: '正式档案事实 | 执行版能力清单',
       generatedTime: '06-24 10:20',
       status: '已生成',

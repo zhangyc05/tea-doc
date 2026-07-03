@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import { getTodoState } from '../../../stores/todoStore'
 
-const changes = [
-  { label: '发证单位', from: '山东省教师发展中心', to: '全国职业院校教师培训中心' },
-  { label: '获得时间', from: '2026.05', to: '2026.06.10' },
-  { label: '证书编号', from: 'PX202605168', to: 'PX20260610027' },
-  { label: '培训学时', from: '32 学时', to: '40 学时' },
-]
+const todoState = getTodoState()
+const certificate = computed(() => todoState.certificate)
+const changes = computed(() => certificate.value.changes)
 
 const nextSteps = [
   '部门将核验你修改后的证书信息',
@@ -57,8 +56,8 @@ function showSubmitRecord() {
           <view class="certificate-icon__paper"></view>
         </view>
         <view class="record-body">
-          <text class="record-title">职业院校教师数字素养提升培训证书</text>
-          <text class="record-meta">个人发展 ｜ 培训进修 ｜ <text class="record-state">待核验</text></text>
+          <text class="record-title">{{ certificate.title }}</text>
+          <text class="record-meta">{{ certificate.category }} ｜ {{ certificate.type }} ｜ <text class="record-state">待核验</text></text>
         </view>
       </view>
     </MobileCard>
@@ -78,8 +77,8 @@ function showSubmitRecord() {
           <view class="file-icon__mountain"></view>
         </view>
         <view class="material-info">
-          <text class="material-name">培训证书.jpg</text>
-          <text class="material-meta">JPG · 1.2MB · 2026-05-15</text>
+          <text class="material-name">{{ certificate.material.name }}</text>
+          <text class="material-meta">{{ certificate.material.meta }}</text>
         </view>
       </view>
     </MobileCard>

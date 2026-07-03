@@ -19,6 +19,18 @@ function collectGapValues(content: string): string[] {
   return Array.from(content.matchAll(/(?:^|\n)\s*gap:\s*([^;]+);/g), ([, value]) => value)
 }
 
+function collectPaddingValues(content: string): string[] {
+  return Array.from(content.matchAll(/(?:^|\n)\s*padding:\s*([^;]+);/g), ([, value]) => value)
+}
+
+function collectMarginValues(content: string): string[] {
+  return Array.from(content.matchAll(/(?:^|\n)\s*margin:\s*([^;]+);/g), ([, value]) => value)
+}
+
+function collectDirectionalMarginValues(content: string): string[] {
+  return Array.from(content.matchAll(/(?:^|\n)\s*margin-(?:top|right|bottom|left):\s*([^;]+);/g), ([, value]) => value)
+}
+
 describe('admin design tokens', () => {
   it('defines the first batch of admin color tokens from the F1 scan', () => {
     expect(tokensCss).toContain('--color-admin-primary: #1268F6;')
@@ -39,6 +51,9 @@ describe('admin design tokens', () => {
     expect(tokensCss).toContain('--space-admin-sm: 10px;')
     expect(tokensCss).toContain('--space-admin-md: 12px;')
     expect(tokensCss).toContain('--space-admin-lg: 16px;')
+    expect(tokensCss).toContain('--space-admin-card-gap: 18px;')
+    expect(tokensCss).toContain('--space-admin-xl: 20px;')
+    expect(tokensCss).toContain('--space-admin-2xl: 24px;')
   })
 
   it('keeps high-frequency primary color usage behind the admin primary token', () => {
@@ -254,5 +269,181 @@ describe('admin design tokens', () => {
     })
 
     expect(hardcodedLargeGapFiles).toEqual([])
+  })
+
+  it('keeps common card and section gaps behind the card gap spacing token', () => {
+    const hardcodedCardGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)18px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedCardGapFiles).toEqual([])
+  })
+
+  it('keeps extra large section gaps behind the extra large spacing token', () => {
+    const hardcodedExtraLargeGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)20px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedExtraLargeGapFiles).toEqual([])
+  })
+
+  it('keeps double extra large section gaps behind the double extra large spacing token', () => {
+    const hardcodedDoubleExtraLargeGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)24px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedDoubleExtraLargeGapFiles).toEqual([])
+  })
+
+  it('keeps extra large single-value padding behind the extra large spacing token', () => {
+    const hardcodedExtraLargePaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '20px'
+      })
+    })
+
+    expect(hardcodedExtraLargePaddingFiles).toEqual([])
+  })
+
+  it('keeps large single-value padding behind the large spacing token', () => {
+    const hardcodedLargePaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '16px'
+      })
+    })
+
+    expect(hardcodedLargePaddingFiles).toEqual([])
+  })
+
+  it('keeps medium single-value padding behind the medium spacing token', () => {
+    const hardcodedMediumPaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '12px'
+      })
+    })
+
+    expect(hardcodedMediumPaddingFiles).toEqual([])
+  })
+
+  it('keeps card single-value padding behind the card gap spacing token', () => {
+    const hardcodedCardPaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '18px'
+      })
+    })
+
+    expect(hardcodedCardPaddingFiles).toEqual([])
+  })
+
+  it('keeps double extra large single-value padding behind the double extra large spacing token', () => {
+    const hardcodedDoubleExtraLargePaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '24px'
+      })
+    })
+
+    expect(hardcodedDoubleExtraLargePaddingFiles).toEqual([])
+  })
+
+  it('keeps extra large single-value margin behind the extra large spacing token', () => {
+    const hardcodedExtraLargeMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectMarginValues(content).some((value) => {
+        return value.trim() === '20px'
+      })
+    })
+
+    expect(hardcodedExtraLargeMarginFiles).toEqual([])
+  })
+
+  it('keeps compact directional margins behind the extra small spacing token', () => {
+    const hardcodedCompactDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '8px'
+      })
+    })
+
+    expect(hardcodedCompactDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps small directional margins behind the small spacing token', () => {
+    const hardcodedSmallDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '10px'
+      })
+    })
+
+    expect(hardcodedSmallDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps medium directional margins behind the medium spacing token', () => {
+    const hardcodedMediumDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '12px'
+      })
+    })
+
+    expect(hardcodedMediumDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps large directional margins behind the large spacing token', () => {
+    const hardcodedLargeDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '16px'
+      })
+    })
+
+    expect(hardcodedLargeDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps card directional margins behind the card gap spacing token', () => {
+    const hardcodedCardDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '18px'
+      })
+    })
+
+    expect(hardcodedCardDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps extra large directional margins behind the extra large spacing token', () => {
+    const hardcodedExtraLargeDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '20px'
+      })
+    })
+
+    expect(hardcodedExtraLargeDirectionalMarginFiles).toEqual([])
+  })
+
+  it('keeps double extra large directional margins behind the double extra large spacing token', () => {
+    const hardcodedDoubleExtraLargeDirectionalMarginFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectDirectionalMarginValues(content).some((value) => {
+        return value.trim() === '24px'
+      })
+    })
+
+    expect(hardcodedDoubleExtraLargeDirectionalMarginFiles).toEqual([])
   })
 })

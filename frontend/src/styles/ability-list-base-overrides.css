@@ -9,7 +9,7 @@
   max-width: none !important;
   align-items: center !important;
   flex-wrap: nowrap !important;
-  gap: 18px !important;
+  gap: var(--space-admin-card-gap) !important;
   overflow: visible !important;
   border: 0 !important;
   background: transparent !important;

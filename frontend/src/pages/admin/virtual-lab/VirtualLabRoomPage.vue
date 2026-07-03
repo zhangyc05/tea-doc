@@ -310,7 +310,7 @@ function viewDetail(roomId: string) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
 }
 
 .breadcrumb {
@@ -355,7 +355,7 @@ function viewDetail(roomId: string) {
   padding: 0 22px 24px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .stat-card {
@@ -364,7 +364,7 @@ function viewDetail(roomId: string) {
   grid-template-columns: 66px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-lg);
-  padding: 20px;
+  padding: var(--space-admin-xl);
   background: #fff;
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
@@ -409,7 +409,7 @@ function viewDetail(roomId: string) {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 32px;
   line-height: 1;
   font-weight: 700;
@@ -437,7 +437,7 @@ function viewDetail(roomId: string) {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   font-size: 12px;
   line-height: 1.5;
   color: #8a98ad;
@@ -542,7 +542,7 @@ function viewDetail(roomId: string) {
 }
 
 .rooms-section {
-  padding: 20px;
+  padding: var(--space-admin-xl);
 }
 
 .rooms-grid {
@@ -555,7 +555,7 @@ function viewDetail(roomId: string) {
   min-height: 218px;
   display: flex;
   flex-direction: column;
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
   background: #fff;
@@ -595,7 +595,7 @@ function viewDetail(roomId: string) {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-admin-sm) 18px;
+  gap: var(--space-admin-sm) var(--space-admin-card-gap);
 }
 
 .room-meta div {
@@ -647,7 +647,7 @@ function viewDetail(roomId: string) {
 }
 
 .recent-row {
-  margin-top: 12px;
+  margin-top: var(--space-admin-md);
   display: flex;
   align-items: center;
   justify-content: space-between;

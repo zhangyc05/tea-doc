@@ -1,14 +1,33 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import { findArchiveRecordById } from '../../../domain/archive'
+
+type SubmittedQuery = {
+  recordId?: string
+}
+
+const query = ref<SubmittedQuery>({})
+
+onLoad((options) => {
+  query.value = options as SubmittedQuery
+})
+
+const archiveRecord = computed(() => findArchiveRecordById(query.value.recordId))
 
 function backAssistant() {
   uni.redirectTo({ url: '/pages/assistant/index' })
 }
 
 function goArchive() {
-  uni.redirectTo({ url: '/pages/archive/index' })
+  uni.redirectTo({ url: `/pages/archive/record-detail/index?recordId=${archiveRecord.value?.id || query.value.recordId || 'ai-archive-supplement'}` })
+}
+
+function goPendingList() {
+  uni.redirectTo({ url: '/pages/archive/draft-list/index' })
 }
 </script>
 
@@ -29,7 +48,7 @@ function goArchive() {
       </view>
       <view class="status-row">
         <text>记录去向</text>
-        <text>档案待确认</text>
+        <text>{{ archiveRecord?.categoryName || '档案待确认' }}</text>
       </view>
       <view class="status-row">
         <text>预计处理</text>
@@ -39,10 +58,13 @@ function goArchive() {
 
     <view class="action-group">
       <MobileActionButton class="action-button" variant="primary" @tap="goArchive">
-        查看档案
+        查看待核验记录
       </MobileActionButton>
       <MobileActionButton class="action-button" variant="outline" @tap="backAssistant">
         返回 AI 助手
+      </MobileActionButton>
+      <MobileActionButton class="action-button" variant="outline" @tap="goPendingList">
+        查看档案待确认
       </MobileActionButton>
     </view>
   </MobilePageShell>

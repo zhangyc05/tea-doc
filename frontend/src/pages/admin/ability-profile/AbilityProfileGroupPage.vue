@@ -292,7 +292,7 @@ function getDistributionTone(index: number) {
 .breadcrumb-line {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   color: var(--color-text-primary);
   font-size: clamp(18px, 1.15vw, 22px);
   font-weight: 950;
@@ -495,7 +495,7 @@ function getDistributionTone(index: number) {
 .baseline-list {
   position: relative;
   display: grid;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   margin: 16px 0 0;
   padding: 0 0 0 48px;
   list-style: none;
@@ -780,12 +780,12 @@ function getDistributionTone(index: number) {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-admin-lg);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
 }
 
 .focus-tabs {
   display: flex;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   border-bottom: 1px solid var(--color-card-border);
 }
 

@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { createTrainingArchiveRecord } from '../../../domain/archive'
 
 const readyItems = [
   { text: '培训信息已带出', done: true },
@@ -21,7 +22,8 @@ function goBack() {
 }
 
 function goArchiveResult() {
-  uni.navigateTo({ url: '/pages/activity/training-archive-result/index' })
+  const record = createTrainingArchiveRecord()
+  uni.navigateTo({ url: `/pages/activity/training-archive-result/index?recordId=${record.id}` })
 }
 </script>
 

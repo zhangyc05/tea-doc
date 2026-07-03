@@ -16,7 +16,7 @@ import {
 const reportState = getReportState()
 const activeTab = ref('全部')
 const selectedTarget = ref('全部')
-const selectedPeriod = ref('2026 年度')
+const selectedPeriod = ref('全部')
 const selectedStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
@@ -33,11 +33,12 @@ const filteredReports = computed(() => {
       || report.type === activeTab.value
       || (activeTab.value === '专题解读' && report.type === '图表解读')
     const matchesTarget = selectedTarget.value === '全部' || report.target === selectedTarget.value
+    const matchesPeriod = selectedPeriod.value === '全部' || report.period === selectedPeriod.value
     const matchesStatus = selectedStatus.value === '全部' || report.status === selectedStatus.value
     const matchesKeyword = !keyword
-      || `${report.title} ${report.type} ${report.target} ${report.basis}`.toLowerCase().includes(keyword)
+      || `${report.title} ${report.type} ${report.target} ${report.period} ${report.basis}`.toLowerCase().includes(keyword)
 
-    return matchesTab && matchesTarget && matchesStatus && matchesKeyword
+    return matchesTab && matchesTarget && matchesPeriod && matchesStatus && matchesKeyword
   })
 })
 
@@ -66,7 +67,7 @@ function handleCardAction(cardId: string, action: string) {
 
 function resetFilters() {
   selectedTarget.value = '全部'
-  selectedPeriod.value = '2026 年度'
+  selectedPeriod.value = '全部'
   selectedStatus.value = '全部'
   searchQuery.value = ''
   appliedSearchQuery.value = ''
@@ -116,6 +117,7 @@ function openAiAssistant() {
             <label class="filter-item">
               <span>周期：</span>
               <select v-model="selectedPeriod">
+                <option>全部</option>
                 <option>2026 年度</option>
                 <option>2025 年度</option>
                 <option>2024 年度</option>
@@ -154,6 +156,7 @@ function openAiAssistant() {
               <div class="report-meta">
                 <span><b>类型：</b>{{ report.type }}</span>
                 <span><b>对象：</b>{{ report.target }}</span>
+                <span><b>周期：</b>{{ report.period }}</span>
                 <span><b>依据：</b>{{ report.basis }}</span>
                 <span><b>生成时间：</b>{{ report.generatedTime }}</span>
                 <span>
@@ -192,6 +195,7 @@ function openAiAssistant() {
             <div class="detail-content">
               <strong>{{ selectedReport.title }}</strong>
               <p>分析对象：{{ selectedReport.target }}</p>
+              <p>分析周期：{{ selectedReport.period }}</p>
               <p>分析依据：{{ selectedReport.basis }}</p>
               <p>生成时间：{{ selectedReport.generatedTime }}</p>
               <p>导出状态：{{ selectedReport.exportStatus }}</p>
@@ -294,7 +298,7 @@ function openAiAssistant() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
 }
 
 .tabs-container {
@@ -399,7 +403,7 @@ function openAiAssistant() {
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px 18px;
+  gap: var(--space-admin-2xl) var(--space-admin-card-gap);
 }
 
 .report-card {
@@ -407,7 +411,7 @@ function openAiAssistant() {
   display: grid;
   grid-template-columns: 78px minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
-  gap: 0 18px;
+  gap: 0 var(--space-admin-card-gap);
   padding: 28px 24px 24px;
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
@@ -486,7 +490,7 @@ function openAiAssistant() {
   grid-column: 2;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding-top: 22px;
   flex-wrap: wrap;
 }
@@ -512,7 +516,7 @@ function openAiAssistant() {
   margin-top: 22px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .detail-panel {
@@ -530,7 +534,7 @@ function openAiAssistant() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   border-bottom: 1px solid #e4ebf5;
 }
 
@@ -542,7 +546,7 @@ function openAiAssistant() {
 }
 
 .detail-content {
-  padding: 20px;
+  padding: var(--space-admin-xl);
   display: grid;
   gap: var(--space-admin-sm);
   color: #4d5d75;

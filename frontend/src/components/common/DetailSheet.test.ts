@@ -57,4 +57,17 @@ describe('DetailSheet', () => {
     expect(panel?.classList.contains('rounded-t-xl')).toBe(true)
     expect(document.body.querySelector('footer')).toBeNull()
   })
+
+  it('supports the complex admin edit drawer width', () => {
+    mount(DetailSheet, {
+      props: {
+        open: true,
+        title: '编辑要求项映射',
+        width: 'complex',
+      },
+      attachTo: document.body,
+    })
+
+    expect(document.body.querySelector('aside')?.classList.contains('w-[660px]')).toBe(true)
+  })
 })

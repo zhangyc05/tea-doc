@@ -511,8 +511,8 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
-		gap: 18px;
-		padding: 24px;
+		gap: var(--space-admin-card-gap);
+		padding: var(--space-admin-2xl);
 		background: var(--color-admin-bg);
 		color: var(--color-admin-text-strong);
 	}
@@ -550,7 +550,7 @@
 	.hero-content {
 		display: flex;
 		flex-direction: column;
-		gap: 20px;
+		gap: var(--space-admin-xl);
 	}
 
 	.hero-title {
@@ -641,7 +641,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
-		padding: 16px;
+		padding: var(--space-admin-lg);
 	}
 
 	.group-item {
@@ -691,7 +691,7 @@
 		flex-direction: column;
 		gap: 2px;
 		margin-top: 4px;
-		margin-left: 16px;
+		margin-left: var(--space-admin-lg);
 	}
 
 	/* 中间：要求项映射表 */
@@ -712,7 +712,7 @@
 	.table-footer {
 		display: flex;
 		justify-content: space-between;
-		padding: 16px;
+		padding: var(--space-admin-lg);
 		color: #7d899b;
 		font-size: 13px;
 		font-weight: 700;
@@ -725,7 +725,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-admin-md);
-		padding: 16px;
+		padding: var(--space-admin-lg);
 		max-height: 500px;
 		overflow-y: auto;
 	}
@@ -753,7 +753,7 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr 1.2fr;
 		gap: var(--space-admin-md);
-		padding: 16px;
+		padding: var(--space-admin-lg);
 		padding-top: 0;
 	}
 
@@ -928,7 +928,7 @@
 		grid-template-columns: 130px minmax(0, 1fr);
 		align-items: start;
 		gap: var(--space-admin-lg);
-		margin-bottom: 16px;
+		margin-bottom: var(--space-admin-lg);
 	}
 
 	.form-row:last-child {
@@ -979,7 +979,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--space-admin-xs);
-		margin-right: 24px;
+		margin-right: var(--space-admin-2xl);
 		color: #263b63;
 		font-size: 14px;
 		font-weight: 700;

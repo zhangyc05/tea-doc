@@ -1,24 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
+import {
+  confirmTodoCertificate,
+  getTodoById,
+  getTodoState,
+  removeTodoCertificate,
+} from '../../../stores/todoStore'
 
-const keyInfo = [
-  { label: '证书名称', value: '职业院校教师数字素养提升培训证书' },
-  { label: '培训项目', value: '教师数字素养提升专项培训' },
-  { label: '发证单位', value: '全国职业院校教师培训中心' },
-  { label: '获得时间', value: '2026.06.10' },
-  { label: '培训学时', value: '32 学时' },
-  { label: '证书编号', value: 'PX20260610027' },
-]
-
-const evidenceInfo = [
-  { label: '数据来源', value: '部门导入培训名单' },
-  { label: '识别依据', value: '姓名、工号、学院与当前账号一致' },
-  { label: '当前账号', value: '林老师 ｜ 智能制造学院' },
-]
+const todoState = getTodoState()
+const certificate = computed(() => todoState.certificate)
+const certificateTodo = computed(() => getTodoById(certificate.value.id))
+const keyInfo = computed(() => certificate.value.keyInfo)
+const evidenceInfo = computed(() => certificate.value.evidenceInfo)
 
 function goBack() {
   uni.navigateBack()
@@ -29,10 +27,12 @@ function goEdit() {
 }
 
 function goArchiveSuccess() {
+  confirmTodoCertificate(certificate.value.id)
   uni.navigateTo({ url: '/pages/todo/certificate-archive-success/index' })
 }
 
 function goRemoved() {
+  removeTodoCertificate(certificate.value.id)
   uni.navigateTo({ url: '/pages/todo/certificate-removed/index' })
 }
 </script>
@@ -48,11 +48,11 @@ function goRemoved() {
         <view class="certificate-icon__paper"></view>
       </view>
       <view class="summary-card__body">
-        <MobileStatusTag tone="blue">待确认</MobileStatusTag>
-        <text class="summary-title">确认一条培训证书</text>
+        <MobileStatusTag :tone="certificateTodo?.tone || 'blue'">{{ certificateTodo?.tag || '待确认' }}</MobileStatusTag>
+        <text class="summary-title">{{ certificateTodo?.title || certificate.title }}</text>
         <text class="summary-desc">确认后将进入后续核验，通过后入档</text>
       </view>
-      <text class="summary-state">待你确认</text>
+      <text class="summary-state">{{ certificateTodo?.state || '待你确认' }}</text>
     </MobileCard>
 
     <MobileCard class="info-card">
@@ -75,7 +75,7 @@ function goRemoved() {
       <text class="section-title">相关材料</text>
       <view class="material-row">
         <view class="material-icon"></view>
-        <text class="material-name">培训证书.jpg</text>
+        <text class="material-name">{{ certificate.material.name }}</text>
         <MobileActionButton class="material-link" variant="link" arrow>查看</MobileActionButton>
       </view>
     </MobileCard>

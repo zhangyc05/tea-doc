@@ -398,7 +398,7 @@ function handleApplication(teacherId: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-admin-lg);
 }
 
 .breadcrumb {
@@ -494,7 +494,7 @@ function handleApplication(teacherId: string) {
 .title-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .title-stat-card {
@@ -507,7 +507,7 @@ function handleApplication(teacherId: string) {
 
 .title-stat-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
   font-size: 14px;
   color: #7586a6;
   font-weight: 700;
@@ -754,7 +754,7 @@ function handleApplication(teacherId: string) {
   display: flex;
   align-items: baseline;
   gap: var(--space-admin-xs);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
 }
 
 .stat-number {
@@ -786,7 +786,7 @@ function handleApplication(teacherId: string) {
 }
 
 .stat-caption {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 13px;
   color: #7586a6;
 }
@@ -822,7 +822,7 @@ function handleApplication(teacherId: string) {
 
   .title-card {
     grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 20px;
+    gap: var(--space-admin-xl);
     padding: 22px 24px;
   }
 

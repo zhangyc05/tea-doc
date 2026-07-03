@@ -172,7 +172,12 @@ function viewRecord(id: string) {
             </div>
             <div class="table-footer">
               <span>共 {{ members.length }} 条</span>
-              <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
+              <div class="pager">
+                <span class="pager-button" aria-label="上一页">‹</span>
+                <span class="pager-current" aria-current="page">1</span>
+                <span class="pager-button" aria-label="下一页">›</span>
+                <span class="pager-size">10 条/页</span>
+              </div>
             </div>
           </div>
 
@@ -212,7 +217,12 @@ function viewRecord(id: string) {
             </div>
             <div class="table-footer">
               <span>共 {{ activities.length }} 条</span>
-              <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
+              <div class="pager">
+                <span class="pager-button" aria-label="上一页">‹</span>
+                <span class="pager-current" aria-current="page">1</span>
+                <span class="pager-button" aria-label="下一页">›</span>
+                <span class="pager-size">10 条/页</span>
+              </div>
             </div>
           </div>
         </div>
@@ -249,7 +259,12 @@ function viewRecord(id: string) {
           </div>
           <div class="table-footer">
             <span>共 {{ records.length }} 条</span>
-            <div class="pager"><button disabled>‹</button><b>1</b><button disabled>›</button><span>10 条/页</span></div>
+            <div class="pager">
+              <span class="pager-button" aria-label="上一页">‹</span>
+              <span class="pager-current" aria-current="page">1</span>
+              <span class="pager-button" aria-label="下一页">›</span>
+              <span class="pager-size">10 条/页</span>
+            </div>
           </div>
         </div>
       </section>
@@ -320,7 +335,7 @@ function viewRecord(id: string) {
   min-height: 188px;
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
   padding: 24px 30px;
 }
 
@@ -340,7 +355,7 @@ function viewRecord(id: string) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
 }
 
 .room-title-row h1 {
@@ -357,7 +372,7 @@ function viewRecord(id: string) {
 }
 
 .room-info-grid {
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-admin-md) 28px;
@@ -382,10 +397,10 @@ function viewRecord(id: string) {
 }
 
 .stats-container {
-  margin-top: 20px;
+  margin-top: var(--space-admin-xl);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .stat-card {
@@ -463,7 +478,7 @@ function viewRecord(id: string) {
 }
 
 .two-column-layout {
-  margin-top: 20px;
+  margin-top: var(--space-admin-xl);
   display: grid;
   grid-template-columns: 0.46fr 0.54fr;
   gap: var(--space-admin-lg);
@@ -556,8 +571,8 @@ function viewRecord(id: string) {
   gap: var(--space-admin-xs);
 }
 
-.pager button,
-.pager b {
+.pager-button,
+.pager-current {
   width: 28px;
   height: 28px;
   display: inline-flex;
@@ -569,13 +584,13 @@ function viewRecord(id: string) {
   color: #8a98ad;
 }
 
-.pager b {
+.pager-current {
   border-color: var(--color-admin-primary);
   background: var(--color-admin-primary);
   color: #fff;
 }
 
-.pager span {
+.pager-size {
   min-width: 78px;
   height: 28px;
   display: inline-flex;
@@ -587,14 +602,14 @@ function viewRecord(id: string) {
 }
 
 .records-card {
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 .records-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-admin-sm);
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
 }
 
 .record-item {
@@ -624,7 +639,7 @@ function viewRecord(id: string) {
 .record-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr 0.8fr;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .record-grid strong {

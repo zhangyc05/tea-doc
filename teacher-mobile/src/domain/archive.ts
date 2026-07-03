@@ -357,6 +357,109 @@ export function getPendingArchiveRecords(): MobileArchiveRecord[] {
   return archiveRecords.filter((record) => record.status === 'pending-verify')
 }
 
+export function createArchiveSupplementRecord(): MobileArchiveRecord {
+  const existingRecord = findArchiveRecordById('ai-archive-supplement')
+  if (existingRecord) return existingRecord
+
+  const record: MobileArchiveRecord = {
+    id: 'ai-archive-supplement',
+    title: 'AI 助手补充档案材料',
+    category: 'personal-development',
+    categoryName: '个人发展',
+    type: '材料补充',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: 'AI 助手补充',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '教师通过 AI 助手补充材料说明，当前正在等待部门或系统核验。核验通过后才会进入正式成长档案。',
+    fields: [
+      { label: '补充来源', value: '教师本人补充' },
+      { label: '关联分类', value: '个人发展 / 企业实践' },
+      { label: '当前状态', value: '待核验' },
+    ],
+    materials: [{ name: 'AI 助手补充说明.txt', meta: '文本说明 · 来源于 AI 助手补充' }],
+    usages: ['成长档案：核验通过后补充对应档案事实', '待办提醒：可继续查看核验进度'],
+    sourceSteps: [
+      { title: '教师补充', desc: '教师通过 AI 助手提交材料说明。', time: '刚刚' },
+      { title: '等待核验', desc: '部门或系统确认材料是否可作为正式档案事实。', time: '进行中' },
+      { title: '写入档案', desc: '核验通过后进入对应成长档案维度。', time: '待完成' },
+    ],
+  }
+
+  archiveRecords.unshift(record)
+  return record
+}
+
+export function createTrainingArchiveRecord(): MobileArchiveRecord {
+  const existingRecord = findArchiveRecordById('training-digital-teaching-archive')
+  if (existingRecord) return existingRecord
+
+  const record: MobileArchiveRecord = {
+    id: 'training-digital-teaching-archive',
+    title: '数字化教学能力提升培训归档',
+    category: 'personal-development',
+    categoryName: '个人发展',
+    type: '培训进修',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: '培训归档',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '数字化教学能力提升培训材料已提交，正在等待归档确认。确认通过后将沉淀到个人发展维度。',
+    fields: [
+      { label: '培训项目', value: '数字化教学能力提升' },
+      { label: '培训形式', value: '线上课程' },
+      { label: '培训学时', value: '12 学时' },
+      { label: '材料情况', value: '学习记录、培训总结、补充材料' },
+    ],
+    materials: [{ name: '数字化教学能力提升培训总结.pdf', meta: 'PDF · 680KB · 来源于培训归档' }],
+    usages: ['个人发展报告：计入培训进修记录', '能力画像：支撑数字化教学能力证据'],
+    sourceSteps: pendingVerifySteps,
+  }
+
+  archiveRecords.unshift(record)
+  return record
+}
+
+export function createEnterprisePracticeArchiveRecord(): MobileArchiveRecord {
+  const existingRecord = findArchiveRecordById('enterprise-practice-smart-equipment-archive')
+  if (existingRecord) return existingRecord
+
+  const record: MobileArchiveRecord = {
+    id: 'enterprise-practice-smart-equipment-archive',
+    title: '山东某智能装备有限公司企业实践归档',
+    category: 'enterprise-practice',
+    categoryName: '企业实践',
+    type: '行业实践',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: '企业实践归档',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '企业实践总结、日志和附件材料已提交，正在等待学院核验。核验通过后将进入成长档案企业实践维度。',
+    fields: [
+      { label: '实践名称', value: '山东某智能装备有限公司企业实践' },
+      { label: '实践岗位', value: '软件开发工程师' },
+      { label: '实践时间', value: '2026-05-10 至 2026-05-20' },
+      { label: '实践日志', value: '9 条' },
+    ],
+    materials: [
+      { name: '企业实践总结.pdf', meta: 'PDF · 来源于企业实践归档' },
+      { name: '企业实践证明.pdf', meta: 'PDF · 2.4MB · 来源于企业实践归档' },
+    ],
+    usages: ['岗位/聘期对照：待核验后支撑企业实践要求', '个人发展报告：待核验后计入行业实践经历'],
+    sourceSteps: [
+      { title: '提交归档', desc: '教师提交实践总结、日志和证明材料。', time: '刚刚' },
+      { title: '学院核验', desc: '等待学院确认实践经历、岗位、时间和材料真实性。', time: '进行中' },
+      { title: '写入档案', desc: '核验通过后进入成长档案企业实践维度。', time: '待完成' },
+    ],
+  }
+
+  archiveRecords.unshift(record)
+  return record
+}
+
 export function findArchiveRecordById(recordId?: string): MobileArchiveRecord | undefined {
   return recordId ? archiveRecords.find((record) => record.id === recordId) : undefined
 }

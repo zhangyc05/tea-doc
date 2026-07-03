@@ -1,23 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
+import { getTodoState, submitTodoCertificateCorrection } from '../../../stores/todoStore'
 
-const editableInfo = [
-  { label: '证书名称', value: '职业院校教师数字素养提升培训证书' },
-  { label: '发证单位', value: '山东省教师发展中心' },
-  { label: '获得时间', value: '2026.05' },
-  { label: '培训学时', value: '32 学时' },
-  { label: '证书编号', value: 'PX202605168' },
-]
+const todoState = getTodoState()
+const certificate = computed(() => todoState.certificate)
+const editableInfo = computed(() => certificate.value.editableInfo)
 
 function goBack() {
   uni.navigateBack()
 }
 
 function goSubmitResult() {
+  submitTodoCertificateCorrection(certificate.value.id)
   uni.navigateTo({ url: '/pages/todo/certificate-submit/index' })
 }
 
@@ -44,9 +43,9 @@ function showMaterialTip() {
           <view class="certificate-icon__paper"></view>
         </view>
         <view class="summary-body">
-          <text class="summary-title">职业院校教师数字素养提升培训证书</text>
-          <text class="summary-meta">个人发展 ｜ 培训进修</text>
-          <text class="summary-source">来源：部门导入培训名单</text>
+          <text class="summary-title">{{ certificate.title }}</text>
+          <text class="summary-meta">{{ certificate.category }} ｜ {{ certificate.type }}</text>
+          <text class="summary-source">来源：{{ certificate.source }}</text>
         </view>
       </view>
       <view class="summary-note">
@@ -71,8 +70,8 @@ function showMaterialTip() {
           <view class="file-icon__mountain"></view>
         </view>
         <view class="material-info">
-          <text class="material-name">培训证书.jpg</text>
-          <text class="material-meta">JPG · 1.2MB · 2026-05-15</text>
+          <text class="material-name">{{ certificate.material.name }}</text>
+          <text class="material-meta">{{ certificate.material.meta }}</text>
         </view>
         <MobileActionButton class="replace-button" variant="outline" @tap="showMaterialTip">更换材料</MobileActionButton>
       </view>

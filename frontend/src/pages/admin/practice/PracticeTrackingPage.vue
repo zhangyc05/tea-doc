@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { EmptyState, StatusBadge } from '@/components/common'
+import { useRouter } from 'vue-router'
+import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
@@ -8,6 +9,7 @@ import {
   remindPracticeApplication,
 } from '@/stores/admin/practiceStore'
 
+const router = useRouter()
 const practiceState = getPracticeState()
 
 // 筛选条件
@@ -61,7 +63,13 @@ function remindApply(id: string) {
 
 function viewRecord(id: string) {
   activeTrackingId.value = id
-  practiceState.operationMessage = '已在表格中定位该教师实践状态。'
+  const tracking = practiceState.trackings.find(item => item.id === id)
+  const record = practiceState.records.find(item => item.teacher === tracking?.teacher)
+  if (!record) {
+    practiceState.operationMessage = '当前教师尚未生成实践记录。'
+    return
+  }
+  router.push(`/admin/practice/records?recordId=${record.id}`)
 }
 
 function exportList() {
@@ -160,8 +168,8 @@ function applyFilters() {
             <Button @click="exportList">⇧ 导出名单</Button>
           </div>
           <!-- 筛选区 -->
-          <div class="filter-section">
-            <div class="filter-row">
+          <CompactFilterBar>
+            <template #fields>
               <div class="filter-item">
                 <label class="filter-label">年度</label>
                 <select v-model="selectedYear" class="filter-select">
@@ -206,8 +214,8 @@ function applyFilters() {
                   <option>已完成</option>
                 </select>
               </div>
-            </div>
-            <div class="search-row">
+            </template>
+            <template #search>
               <input
                 v-model="searchQuery"
                 type="text"
@@ -215,11 +223,15 @@ function applyFilters() {
                 class="search-input"
                 @keyup.enter="applyFilters"
               />
+            </template>
+            <template #actions>
               <Button variant="outline" @click="resetFilters">重置</Button>
               <Button variant="secondary" @click="applyFilters">查询</Button>
+            </template>
+            <template #message>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
-            </div>
-          </div>
+            </template>
+          </CompactFilterBar>
 
           <!-- 数据表格 -->
           <div class="table-section">
@@ -362,7 +374,7 @@ function applyFilters() {
   padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .stats-group {
@@ -436,7 +448,7 @@ function applyFilters() {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 30px;
   line-height: 1;
   font-weight: 700;
@@ -502,17 +514,6 @@ function applyFilters() {
   color: var(--color-admin-text-strong);
 }
 
-.filter-section {
-  padding: 0 24px 16px;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: 150px 190px 220px 190px 190px;
-  gap: var(--space-admin-md);
-  align-items: center;
-}
-
 .filter-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -539,13 +540,6 @@ function applyFilters() {
   background: #fff;
   cursor: pointer;
   outline: none;
-}
-
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-md);
-  margin-top: 12px;
 }
 
 .search-input {
@@ -694,14 +688,10 @@ function applyFilters() {
     grid-template-columns: 1fr;
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
-  .stats-cards,
-  .filter-row {
+  .stats-cards {
     grid-template-columns: 1fr;
   }
 
@@ -709,8 +699,5 @@ function applyFilters() {
     grid-template-columns: 64px minmax(0, 1fr);
   }
 
-  .search-row {
-    flex-wrap: wrap;
-  }
 }
 </style>

@@ -41,6 +41,7 @@ function viewMaterial(id: string) {
 function sendToArchive() {
   sendVirtualLabRecordToArchive(recordId.value)
   operationMessage.fromStore(virtualLabState)
+  router.push(`/admin/archive/processing?recordId=virtual-lab-${recordId.value}`)
 }
 </script>
 
@@ -259,7 +260,7 @@ function sendToArchive() {
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 92px;
+  gap: var(--space-admin-card-gap) 92px;
   color: #4d5d75;
   font-size: 15px;
 }
@@ -277,7 +278,7 @@ function sendToArchive() {
 
 .header-actions {
   display: flex;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .two-column-layout {
@@ -366,7 +367,7 @@ function sendToArchive() {
 }
 
 .number-list li + li {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
 }
 
 .number-list li::before {
@@ -442,7 +443,7 @@ function sendToArchive() {
 .avatar {
   width: 30px;
   height: 30px;
-  margin-right: 8px;
+  margin-right: var(--space-admin-xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -469,7 +470,7 @@ function sendToArchive() {
 .file-icon {
   width: 24px;
   height: 24px;
-  margin-right: 8px;
+  margin-right: var(--space-admin-xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;

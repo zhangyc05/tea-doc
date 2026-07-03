@@ -332,7 +332,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .upload-panel,
 .instructions-panel {
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
 }
 
 .upload-panel h2,
@@ -349,7 +349,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .upload-zone {
   min-height: 198px;
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
   border: 1px dashed #b9ccec;
   border-radius: var(--radius-lg);
   background: #fbfdff;
@@ -430,7 +430,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: flex;
   justify-content: center;
   gap: 22px;
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
 }
 
 .upload-action-button {
@@ -438,7 +438,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 }
 
 .file-card {
-  margin-top: 12px;
+  margin-top: var(--space-admin-md);
   border: 1px solid #dfe8f4;
   border-radius: var(--radius-admin-panel);
   overflow: hidden;
@@ -533,7 +533,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .instructions-panel ul {
   display: grid;
-  gap: 24px;
+  gap: var(--space-admin-2xl);
   margin: 24px 0 0;
   padding: 0;
   list-style: none;

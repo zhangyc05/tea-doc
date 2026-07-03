@@ -346,7 +346,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: flex;
   align-items: center;
   gap: var(--space-admin-xs);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
   font-size: 13px;
   color: #667799;
 }
@@ -371,7 +371,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .hero-head {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   padding: 14px 24px 6px;
 }
 
@@ -650,7 +650,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .step-item {
   display: flex;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   min-height: 38px;
 }
 

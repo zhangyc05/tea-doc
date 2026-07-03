@@ -1,89 +1,37 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
+import { getVisibleTodoItems, type MobileTodoItem } from '../../../stores/todoStore'
 
-type TodoTone = 'blue' | 'orange' | 'purple'
+const visibleTodos = computed(() => getVisibleTodoItems())
+const filters = computed(() => {
+  const pendingConfirmCount = visibleTodos.value.filter(item => item.status === 'pending-confirm').length
+  const pendingSupplementCount = visibleTodos.value.filter(item => item.status === 'pending-supplement').length
+  const improvableCount = visibleTodos.value.filter(item => item.status === 'improvable').length
 
-const filters = ['全部(6)', '待确认(2)', '待补充(2)', '可完善(2)']
-
-const todos: Array<{
-  tag: string
-  title: string
-  desc: string
-  state: string
-  action: string
-  tone: TodoTone
-  icon: 'file' | 'clock' | 'folder' | 'pen' | 'note'
-}> = [
-  {
-    tag: '待确认',
-    title: '确认一条培训证书',
-    desc: '系统已帮你识别，请确认是否属于本人',
-    state: '待你确认',
-    action: '去确认',
-    tone: 'blue',
-    icon: 'file',
-  },
-  {
-    tag: '待确认',
-    title: '确认一条培训学时记录',
-    desc: '系统已识别一条培训学时，请确认是否属于本人',
-    state: '待你确认',
-    action: '去确认',
-    tone: 'blue',
-    icon: 'clock',
-  },
-  {
-    tag: '待补充',
-    title: '补一条企业实践记录',
-    desc: '用于完善当前聘期要求依据',
-    state: '用于聘期要求',
-    action: '去补充',
-    tone: 'orange',
-    icon: 'folder',
-  },
-  {
-    tag: '待补充',
-    title: '补充一份培训证书',
-    desc: '用于完善培训记录依据',
-    state: '用于培训记录',
-    action: '去补充',
-    tone: 'orange',
-    icon: 'folder',
-  },
-  {
-    tag: '可完善',
-    title: '继续整理教学反思',
-    desc: '系统已保存草稿，可随时完善',
-    state: '已保存草稿',
-    action: '继续完善',
-    tone: 'purple',
-    icon: 'pen',
-  },
-  {
-    tag: '可完善',
-    title: '继续整理企业实践总结',
-    desc: '系统已生成草稿，可继续完善',
-    state: '已生成草稿',
-    action: '继续完善',
-    tone: 'purple',
-    icon: 'note',
-  },
-]
+  return [
+    `全部(${visibleTodos.value.length})`,
+    `待确认(${pendingConfirmCount})`,
+    `待补充(${pendingSupplementCount})`,
+    `可完善(${improvableCount})`,
+  ]
+})
 
 function goBack() {
   uni.navigateBack()
 }
 
-function goCertificateDetail() {
-  uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
-}
+function showTodoAction(item: MobileTodoItem) {
+  if (item.id === 'certificate-digital-literacy') {
+    uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
+    return
+  }
 
-function showPendingAction(title: string) {
-  uni.showToast({ title, icon: 'none' })
+  uni.showToast({ title: item.action, icon: 'none' })
 }
 </script>
 
@@ -103,7 +51,7 @@ function showPendingAction(title: string) {
     </view>
 
     <MobileCard class="todo-list-card">
-      <view v-for="(item, index) in todos" :key="item.title" class="todo-list-row">
+      <view v-for="item in visibleTodos" :key="item.id" class="todo-list-row">
         <view class="todo-icon" :class="[`todo-icon--${item.tone}`, `todo-icon--${item.icon}`]">
           <view class="todo-icon__glyph"></view>
         </view>
@@ -117,7 +65,7 @@ function showPendingAction(title: string) {
           <MobileActionButton
             class="todo-action"
             variant="outline"
-            @tap="index === 0 ? goCertificateDetail() : showPendingAction(item.action)"
+            @tap="showTodoAction(item)"
           >
             {{ item.action }}
           </MobileActionButton>

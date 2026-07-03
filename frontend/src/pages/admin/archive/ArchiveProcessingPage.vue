@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -18,6 +18,7 @@ import {
 } from '@/stores/admin/archiveStore'
 
 const router = useRouter()
+const route = useRoute()
 const archiveState = getArchiveState()
 const { sourceOptions: archiveSourceOptions } = getArchiveProcessingMock()
 
@@ -57,7 +58,7 @@ const sourceOptions = computed(() => {
 
 // 选中的记录详情
 const searchKeyword = ref('')
-const selectedRecordId = ref('2')
+const selectedRecordId = ref(String(route.query.recordId || '2'))
 
 const processingRecords = computed(() => {
   return archiveState.processingRecords.filter(record => {
@@ -398,14 +399,14 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .stats-section {
   max-width: var(--admin-content-max-width);
   margin: 0 auto;
-  padding: 24px;
+  padding: var(--space-admin-2xl);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-admin-lg);
 }
 
 .stat-card {
-  padding: 20px;
+  padding: var(--space-admin-xl);
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
@@ -440,7 +441,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .stat-number {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
   color: var(--color-text-primary);
 }
 
@@ -460,7 +461,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   display: flex;
   align-items: center;
   gap: var(--space-admin-md);
-  padding: 16px;
+  padding: var(--space-admin-lg);
   background: #f0f9ff;
   border: 1px solid #bae6fd;
   border-radius: var(--radius-admin-panel);
@@ -490,11 +491,11 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
-  padding: 20px;
+  padding: var(--space-admin-xl);
 }
 
 .filter-group {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-admin-2xl);
 }
 
 .filter-group:last-child {
@@ -583,7 +584,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
-  padding: 20px;
+  padding: var(--space-admin-xl);
   min-width: 0;
   overflow: hidden;
 }
@@ -592,7 +593,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-admin-lg);
 }
 
 .list-title {
@@ -621,8 +622,8 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .filter-summary {
-  margin-bottom: 16px;
-  padding: 12px;
+  margin-bottom: var(--space-admin-lg);
+  padding: var(--space-admin-md);
   background: #f8fafc;
   border-radius: var(--radius-sm);
   font-size: 13px;
@@ -643,7 +644,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .admin-table th {
-  padding: 12px;
+  padding: var(--space-admin-md);
   text-align: left;
   font-size: 13px;
   font-weight: 600;
@@ -653,7 +654,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .admin-table td {
-  padding: 12px;
+  padding: var(--space-admin-md);
   font-size: 14px;
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-card-border);
@@ -687,13 +688,13 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
-  padding: 20px;
+  padding: var(--space-admin-xl);
   display: flex;
   flex-direction: column;
 }
 
 .detail-header {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-admin-xl);
   padding-bottom: 20px;
   border-bottom: 1px solid var(--color-card-border);
 }
@@ -711,7 +712,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .detail-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-admin-xl);
 }
 
 .section-title {
@@ -787,7 +788,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 
 /* 操作按钮 */
 .detail-actions {
-  margin-top: 20px;
+  margin-top: var(--space-admin-xl);
   padding-top: 20px;
   border-top: 1px solid var(--color-card-border);
   display: flex;
@@ -1204,7 +1205,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 
 .detail-eyebrow {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
 }
 
 .detail-heading-row {
@@ -1225,7 +1226,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .detail-section {
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
   padding-bottom: 10px;
   border-bottom: 1px solid var(--color-card-border-soft);
 }
@@ -1256,7 +1257,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .info-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 18px;
+  gap: 6px var(--space-admin-card-gap);
 }
 
 .info-item {
@@ -1339,7 +1340,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-admin-md);
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   padding-top: 11px;
 }
 

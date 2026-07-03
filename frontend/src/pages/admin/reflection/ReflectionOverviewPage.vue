@@ -294,13 +294,13 @@ function viewRelatedRecords() {
 .stats-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: var(--space-admin-2xl);
 }
 
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   min-height: 178px;
   padding: 24px 30px;
   background: #fff;
@@ -411,7 +411,7 @@ function viewRelatedRecords() {
 
 /* 筛选区 */
 .filter-section {
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
 }
 
 .issue-filter-message {
@@ -428,7 +428,7 @@ function viewRelatedRecords() {
 .filter-row {
   display: grid;
   grid-template-columns: 220px 250px 150px minmax(220px, 1fr);
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   align-items: center;
   margin-bottom: 0;
 }

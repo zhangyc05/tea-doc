@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { EmptyState, StatusBadge } from '@/components/common'
+import { useRoute, useRouter } from 'vue-router'
+import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
@@ -9,6 +10,8 @@ import {
   remindPracticeMaterial,
 } from '@/stores/admin/practiceStore'
 
+const router = useRouter()
+const route = useRoute()
 const practiceState = getPracticeState()
 
 // 筛选条件
@@ -17,7 +20,7 @@ const selectedStatus = ref('全部')
 const selectedDays = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
-const activeRecordId = ref('1')
+const activeRecordId = ref(String(route.query.recordId || '1'))
 
 // 统计数据
 const stats = computed(() => ({
@@ -74,7 +77,7 @@ function confirmArchive(id: string) {
 
 function viewArchive(id: string) {
   activeRecordId.value = id
-  practiceState.operationMessage = '已在表格中定位已归档记录。'
+  router.push(`/admin/archive/processing?recordId=practice-${id}`)
 }
 
 function exportRecords() {
@@ -145,8 +148,8 @@ function applyFilters() {
             <Button @click="exportRecords">⇩ 导出记录</Button>
           </div>
           <!-- 筛选区 -->
-          <div class="filter-section">
-            <div class="filter-row">
+          <CompactFilterBar>
+            <template #fields>
               <label class="filter-item">
                 <span class="filter-label">院系范围：</span>
                 <select v-model="selectedDepartment" class="filter-select">
@@ -176,6 +179,8 @@ function applyFilters() {
                   <option>暂未计入</option>
                 </select>
               </label>
+            </template>
+            <template #search>
               <input
                 v-model="searchQuery"
                 type="text"
@@ -183,13 +188,15 @@ function applyFilters() {
                 class="search-input"
                 @keyup.enter="applyFilters"
               />
-            </div>
-            <div class="search-row">
+            </template>
+            <template #actions>
               <Button variant="outline" @click="resetFilters">重置</Button>
               <Button variant="secondary" @click="applyFilters">查询</Button>
+            </template>
+            <template #message>
               <span v-if="practiceState.operationMessage" class="operation-message">{{ practiceState.operationMessage }}</span>
-            </div>
-          </div>
+            </template>
+          </CompactFilterBar>
 
           <!-- 数据表格 -->
           <div class="table-section">
@@ -329,7 +336,7 @@ function applyFilters() {
   padding: 0 22px 26px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .stat-card {
@@ -382,7 +389,7 @@ function applyFilters() {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 32px;
   line-height: 1;
   font-weight: 700;
@@ -421,7 +428,7 @@ function applyFilters() {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   color: #52617a;
   font-size: 13px;
   line-height: 1.5;
@@ -454,17 +461,6 @@ function applyFilters() {
   color: var(--color-admin-text-strong);
 }
 
-.filter-section {
-  padding: 0 20px 16px;
-}
-
-.filter-row {
-  display: grid;
-  grid-template-columns: 190px 190px 190px minmax(260px, 1fr);
-  gap: 14px;
-  align-items: center;
-}
-
 .filter-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -490,13 +486,6 @@ function applyFilters() {
   background: #fff;
   cursor: pointer;
   outline: none;
-}
-
-.search-row {
-  display: flex;
-  gap: var(--space-admin-md);
-  align-items: center;
-  margin-top: 10px;
 }
 
 .search-input {
@@ -641,19 +630,11 @@ function applyFilters() {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .filter-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
-  .stats-container,
-  .filter-row {
+  .stats-container {
     grid-template-columns: 1fr;
-  }
-
-  .search-row {
-    flex-wrap: wrap;
   }
 }
 </style>

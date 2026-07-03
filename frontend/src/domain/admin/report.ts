@@ -22,6 +22,7 @@ export type ReportCard = {
   title: string
   type: ReportType
   target: string
+  period: string
   basis: string
   generatedTime: string
   status: ReportStatus

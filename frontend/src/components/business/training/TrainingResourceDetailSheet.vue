@@ -137,13 +137,13 @@ function statusClass(status: TrainingResourceMockItem['status']) {
   display: flex;
   justify-content: space-between;
   gap: var(--space-admin-lg);
-  padding: 18px;
+  padding: var(--space-admin-card-gap);
   background: linear-gradient(180deg, var(--color-page-bg-soft), var(--color-card-bg));
 }
 
 .detail-eyebrow {
   display: inline-flex;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
   color: var(--color-primary);
   font-size: 12px;
   font-weight: 800;
@@ -216,7 +216,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 }
 
 .detail-section {
-  padding: 16px;
+  padding: var(--space-admin-lg);
 }
 
 .detail-section.soft {
@@ -228,7 +228,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
   justify-content: space-between;
   gap: var(--space-admin-md);
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
 }
 
 .section-title-row h3 {
@@ -254,7 +254,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 }
 
 .empty-detail {
-  padding: 16px;
+  padding: var(--space-admin-lg);
   color: var(--color-text-secondary);
   font-size: 14px;
 }

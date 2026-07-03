@@ -334,7 +334,7 @@ function switchTeacher() {
 
 .hero-meta span {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
   color: #69778d;
   font-size: 13px;
   font-weight: 600;
@@ -349,7 +349,7 @@ function switchTeacher() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-admin-lg);
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 .panel {
@@ -367,7 +367,7 @@ function switchTeacher() {
   display: grid;
   grid-template-columns: 128px 1fr;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   min-height: 150px;
 }
 
@@ -389,7 +389,7 @@ function switchTeacher() {
   display: flex;
   align-items: baseline;
   gap: var(--space-admin-xs);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-admin-sm);
 }
 
 .score-line strong {
@@ -455,7 +455,7 @@ dd {
 .baseline-layout {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(180px, 0.7fr);
-  gap: 24px;
+  gap: var(--space-admin-2xl);
   min-height: 150px;
 }
 
@@ -535,7 +535,7 @@ dd {
   display: grid;
   grid-template-columns: minmax(360px, 0.75fr) minmax(520px, 1.25fr);
   gap: 26px;
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 .radar-column {
@@ -549,7 +549,7 @@ dd {
 
 .radar-column :deep(.radar-legend) {
   justify-content: flex-start;
-  gap: var(--space-admin-sm) 18px;
+  gap: var(--space-admin-sm) var(--space-admin-card-gap);
   margin-top: -6px;
 }
 
@@ -604,7 +604,7 @@ td:last-child {
 }
 
 .support-panel {
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 .support-panel th:nth-child(1) {

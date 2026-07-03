@@ -1,0 +1,96 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+const root = resolve(import.meta.dirname, '..')
+const files = {
+  store: resolve(root, 'src/stores/todoStore.ts'),
+  todoIndex: resolve(root, 'src/pages/todo/index.vue'),
+  todoAll: resolve(root, 'src/pages/todo/all/index.vue'),
+  detail: resolve(root, 'src/pages/todo/certificate-detail/index.vue'),
+  edit: resolve(root, 'src/pages/todo/certificate-edit/index.vue'),
+  submit: resolve(root, 'src/pages/todo/certificate-submit/index.vue'),
+  archiveSuccess: resolve(root, 'src/pages/todo/certificate-archive-success/index.vue'),
+  removed: resolve(root, 'src/pages/todo/certificate-removed/index.vue'),
+}
+
+const failures = []
+
+for (const [name, file] of Object.entries(files)) {
+  if (!existsSync(file)) {
+    failures.push(`${name} file does not exist: ${file}`)
+  }
+}
+
+const source = (file) => existsSync(file) ? readFileSync(file, 'utf8') : ''
+const storeSource = source(files.store)
+
+if (!storeSource.includes('confirmTodoCertificate')) {
+  failures.push('todo store does not expose confirmTodoCertificate')
+}
+
+if (!storeSource.includes('submitTodoCertificateCorrection')) {
+  failures.push('todo store does not expose submitTodoCertificateCorrection')
+}
+
+if (!storeSource.includes('removeTodoCertificate')) {
+  failures.push('todo store does not expose removeTodoCertificate')
+}
+
+if (!storeSource.includes("'pending-verify'")) {
+  failures.push('todo store does not represent pending verification status')
+}
+
+if (!storeSource.includes("'archived'")) {
+  failures.push('todo store does not represent archived status')
+}
+
+if (!storeSource.includes("'removed'")) {
+  failures.push('todo store does not represent removed status')
+}
+
+const pagesThatMustReadStore = [
+  ['todo index', files.todoIndex],
+  ['todo all', files.todoAll],
+  ['certificate detail', files.detail],
+  ['certificate edit', files.edit],
+  ['certificate submit result', files.submit],
+  ['archive success result', files.archiveSuccess],
+  ['removed result', files.removed],
+]
+
+for (const [label, file] of pagesThatMustReadStore) {
+  const pageSource = source(file)
+  if (!pageSource.includes('stores/todoStore')) {
+    failures.push(`${label} page does not read shared todo store`)
+  }
+}
+
+if (!source(files.detail).includes('confirmTodoCertificate(')) {
+  failures.push('certificate detail confirmation does not update shared todo state')
+}
+
+if (!source(files.detail).includes('removeTodoCertificate(')) {
+  failures.push('certificate detail removal does not update shared todo state')
+}
+
+if (!source(files.edit).includes('submitTodoCertificateCorrection(')) {
+  failures.push('certificate edit submit does not update shared todo state')
+}
+
+if (!source(files.todoIndex).includes('visibleTodoItems')) {
+  failures.push('todo index does not derive visible todos from shared state')
+}
+
+if (!source(files.todoAll).includes('visibleTodos')) {
+  failures.push('all todo page does not derive visible todos from shared state')
+}
+
+if (failures.length > 0) {
+  console.error(`Todo business verification failed with ${failures.length} issue(s):`)
+  for (const failure of failures) {
+    console.error(`- ${failure}`)
+  }
+  process.exit(1)
+}
+
+console.log('Todo business verification passed.')

@@ -1,44 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../components/MobileStatusTag.vue'
+import { getHomeTodoItems, type MobileTodoItem } from '../../stores/todoStore'
 
-type TagTone = 'purple' | 'blue' | 'orange' | 'green'
-
-const todoItems: Array<{
-  tag: string
-  title: string
-  desc: string
-  state: string
-  action: string
-  tone: TagTone
-}> = [
-  {
-    tag: '待确认',
-    title: '确认一条培训证书',
-    desc: '系统已帮你识别，请确认是否属于本人',
-    state: '待你确认',
-    action: '去确认',
-    tone: 'blue',
-  },
-  {
-    tag: '待补充',
-    title: '补一条企业实践记录',
-    desc: '用于完善当前聘期要求依据',
-    state: '用于聘期要求',
-    action: '去补充',
-    tone: 'orange',
-  },
-  {
-    tag: '可完善',
-    title: '继续整理教学反思',
-    desc: '系统已保存草稿，可随时完善',
-    state: '已保存草稿',
-    action: '继续完善',
-    tone: 'purple',
-  },
-]
+const visibleTodoItems = computed(() => getHomeTodoItems())
 
 const dynamics = [
   {
@@ -65,13 +33,13 @@ function goAllTodo() {
   uni.navigateTo({ url: '/pages/todo/all/index' })
 }
 
-function showTodoAction(action: string) {
-  if (action === '去确认') {
+function showTodoAction(item: MobileTodoItem) {
+  if (item.id === 'certificate-digital-literacy') {
     uni.navigateTo({ url: '/pages/todo/certificate-detail/index' })
     return
   }
 
-  uni.showToast({ title: action, icon: 'none' })
+  uni.showToast({ title: item.action, icon: 'none' })
 }
 
 function goAllDynamics() {
@@ -115,7 +83,7 @@ function goAllDynamics() {
         </view>
       </view>
 
-      <view v-for="item in todoItems" :key="item.title" class="todo-row">
+      <view v-for="item in visibleTodoItems" :key="item.id" class="todo-row">
         <view class="todo-visual" :class="`todo-visual--${item.tone}`">
           <view class="todo-visual__shape"></view>
         </view>
@@ -126,7 +94,7 @@ function goAllDynamics() {
         </view>
         <view class="todo-row__side">
           <text class="todo-row__state" :class="`todo-row__state--${item.tone}`">{{ item.state }}</text>
-          <MobileActionButton class="outline-action" variant="outline" arrow @tap="showTodoAction(item.action)">{{ item.action }}</MobileActionButton>
+          <MobileActionButton class="outline-action" variant="outline" arrow @tap="showTodoAction(item)">{{ item.action }}</MobileActionButton>
         </view>
       </view>
 

@@ -352,7 +352,7 @@ function matchDemand(id: string) {
   padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .stat-card {
@@ -360,7 +360,7 @@ function matchDemand(id: string) {
   display: grid;
   grid-template-columns: 82px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
@@ -400,7 +400,7 @@ function matchDemand(id: string) {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 34px;
   line-height: 1;
   font-weight: 700;
@@ -432,7 +432,7 @@ function matchDemand(id: string) {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   font-size: 13px;
   color: #6c7890;
 }
@@ -444,7 +444,7 @@ function matchDemand(id: string) {
 .demand-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   align-items: start;
 }
 
@@ -647,7 +647,7 @@ function matchDemand(id: string) {
   font-size: 14px;
   font-weight: 700;
   color: var(--color-admin-text-strong);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
 }
 
 .suggestion-desc {
@@ -658,7 +658,7 @@ function matchDemand(id: string) {
 
 .selected-demand {
   margin: 14px 0 0;
-  padding: 16px;
+  padding: var(--space-admin-lg);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
   background: var(--color-admin-bg-soft);
@@ -693,7 +693,7 @@ function matchDemand(id: string) {
   .stat-card,
   .suggestion-item {
     grid-template-columns: 64px minmax(0, 1fr);
-    padding: 18px;
+    padding: var(--space-admin-card-gap);
   }
 
   .stat-icon,

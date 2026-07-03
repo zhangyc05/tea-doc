@@ -249,9 +249,9 @@ function rejectCurrentApplication() {
               </div>
               <div class="pagination-row">
                 <span>共 5 条</span>
-                <button class="page-button" type="button" aria-label="上一页">‹</button>
-                <button class="page-button active" type="button">1</button>
-                <button class="page-button" type="button" aria-label="下一页">›</button>
+                <span class="page-button" aria-label="上一页">‹</span>
+                <span class="page-button active" aria-current="page">1</span>
+                <span class="page-button" aria-label="下一页">›</span>
                 <select class="page-size" aria-label="每页条数">
                   <option>10条/页</option>
                 </select>
@@ -361,7 +361,7 @@ function rejectCurrentApplication() {
   padding: 0 22px 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .stat-card {
@@ -369,7 +369,7 @@ function rejectCurrentApplication() {
   display: grid;
   grid-template-columns: 82px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
@@ -409,7 +409,7 @@ function rejectCurrentApplication() {
 }
 
 .stat-value {
-  margin-top: 8px;
+  margin-top: var(--space-admin-xs);
   font-size: 34px;
   line-height: 1;
   font-weight: 700;
@@ -438,7 +438,7 @@ function rejectCurrentApplication() {
 }
 
 .stat-desc {
-  margin-top: 10px;
+  margin-top: var(--space-admin-sm);
   color: #6c7890;
   font-size: 13px;
 }
@@ -450,7 +450,7 @@ function rejectCurrentApplication() {
 .application-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   align-items: start;
 }
 
@@ -621,6 +621,9 @@ function rejectCurrentApplication() {
 }
 
 .page-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 34px;
   height: 34px;
   border: 1px solid #d7e2f1;
@@ -653,7 +656,7 @@ function rejectCurrentApplication() {
   background: #fff;
   border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
-  padding: 20px;
+  padding: var(--space-admin-xl);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -716,7 +719,7 @@ function rejectCurrentApplication() {
   font-size: 14px;
   font-weight: 700;
   color: var(--color-admin-text-strong);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
 }
 
 .reminder-desc {
@@ -727,7 +730,7 @@ function rejectCurrentApplication() {
 
 .selected-application {
   margin-top: 14px;
-  padding: 16px;
+  padding: var(--space-admin-lg);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-admin-panel);
   background: var(--color-admin-bg-soft);
@@ -743,7 +746,7 @@ function rejectCurrentApplication() {
 
 .full-width {
   width: 100%;
-  margin-top: 16px;
+  margin-top: var(--space-admin-lg);
 }
 
 @media (max-width: 1320px) {
@@ -781,7 +784,7 @@ function rejectCurrentApplication() {
   .stat-card,
   .reminder-item {
     grid-template-columns: 64px minmax(0, 1fr);
-    padding: 18px;
+    padding: var(--space-admin-card-gap);
   }
 
   .stat-icon,

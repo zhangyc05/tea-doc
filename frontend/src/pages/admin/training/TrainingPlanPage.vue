@@ -414,7 +414,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   display: flex;
   align-items: center;
   gap: var(--space-admin-md);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-admin-xl);
   font-size: 14px;
   font-weight: 800;
   color: var(--color-admin-text-title);
@@ -433,7 +433,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .page-title {
@@ -466,7 +466,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   padding: 24px 0 18px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .stat-card {
@@ -532,7 +532,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   font-size: 16px;
   color: var(--color-admin-text-title);
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-admin-xs);
 }
 
 .stat-value {
@@ -540,7 +540,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   line-height: 1;
   font-weight: 900;
   color: var(--color-admin-primary-hover);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-admin-md);
 }
 
 .stat-registering .stat-value {
@@ -571,7 +571,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .plan-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 20px;
+  gap: var(--space-admin-xl);
 }
 
 .main-content {
@@ -727,7 +727,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .table-footer {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: var(--space-admin-xl);
   padding: 16px 24px 24px;
   color: var(--color-admin-text-subtle);
   font-size: 13px;
@@ -812,7 +812,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-admin-card-gap);
 }
 
 .form-item {

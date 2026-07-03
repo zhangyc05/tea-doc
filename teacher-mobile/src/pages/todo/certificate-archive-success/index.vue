@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import { getTodoState } from '../../../stores/todoStore'
+
+const todoState = getTodoState()
+const certificate = computed(() => todoState.certificate)
 
 const nextItems = [
   { icon: 'folder', text: '可在「个人发展」中查看这条记录' },
@@ -53,8 +58,8 @@ function goArchiveRecord() {
           <view class="document-line"></view>
         </view>
         <view class="record-copy">
-          <text class="record-title">职业院校教师数字素养提升培训证书</text>
-          <text class="record-meta">个人发展 ｜ 已入档 ｜ 06.14</text>
+          <text class="record-title">{{ certificate.title }}</text>
+          <text class="record-meta">{{ certificate.category }} ｜ 已入档 ｜ 06.14</text>
           <text class="record-desc">系统识别并由你确认后，已进入成长档案。</text>
         </view>
       </view>
