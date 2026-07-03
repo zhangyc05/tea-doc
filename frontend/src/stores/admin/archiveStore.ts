@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import type { ArchiveProcessingRecord, ArchiveUploadedFile } from '@/domain/admin/archive'
+import type { ArchiveProcessingRecord, ArchiveUploadedFile, TeacherArchiveExportRecord } from '@/domain/admin/archive'
 import {
   addArchiveUploadedFilesInState,
   cancelArchiveImportBatchInState,
@@ -28,6 +28,8 @@ export type {
   ArchiveUploadedFileStatus,
   ArchiveUploadedFileType,
   TeacherArchiveFact,
+  TeacherArchiveExportRecord,
+  TeacherArchiveExportStatus,
 } from '@/domain/admin/archive'
 
 const state = reactive(createInitialArchiveState())
@@ -92,4 +94,29 @@ export function getArchiveSourceRecordsForFact(factId: string) {
   const fact = state.teacherArchiveFacts.find(item => item.id === factId)
   if (!fact) return []
   return state.processingRecords.filter(record => record.id === fact.sourceRecordId)
+}
+
+export function createTeacherArchiveExportRecord(payload: {
+  teacherId: string
+  teacherName: string
+  cycle: string
+  factCount: number
+  operator?: string
+}): TeacherArchiveExportRecord {
+  const createdAt = '刚刚'
+  const record: TeacherArchiveExportRecord = {
+    id: `archive-export-${payload.teacherId}-${state.exportRecords.length + 1}`,
+    teacherId: payload.teacherId,
+    teacherName: payload.teacherName,
+    cycle: payload.cycle,
+    status: '已完成',
+    factCount: payload.factCount,
+    fileName: `teacher-archive-${payload.teacherId}-${state.exportRecords.length + 1}.txt`,
+    createdAt,
+    operator: payload.operator || '档案管理员',
+  }
+
+  state.exportRecords.unshift(record)
+  state.operationMessage = `已生成成长档案导出记录：${record.fileName}`
+  return record
 }

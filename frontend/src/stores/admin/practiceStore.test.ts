@@ -9,6 +9,9 @@ import {
 import {
   approvePracticeApplication,
   confirmPracticeArchive,
+  completePracticeExportTask,
+  createPracticeExportTask,
+  failPracticeExportTask,
   getPracticeState,
   remindPracticeApplication,
   resetPracticeState,
@@ -94,5 +97,40 @@ describe('practice business state', () => {
       originalFile: '青岛工业机器人有限公司 / 2026-06-10 至 2026-06-22 / 12 天 / 现场调试实践',
       source: '企业实践',
     })
+  })
+
+  it('tracks local export tasks for practice lists and record exports', () => {
+    const trackingTask = createPracticeExportTask({
+      type: '教师实践跟踪名单',
+      recordCount: 4,
+    })
+
+    expect(trackingTask).toMatchObject({
+      type: '教师实践跟踪名单',
+      status: '导出中',
+      recordCount: 4,
+      operator: '实践管理员',
+    })
+
+    const completedTask = completePracticeExportTask(trackingTask.id)
+    const recordTask = createPracticeExportTask({
+      type: '企业实践记录',
+      recordCount: 5,
+    })
+    const failedTask = failPracticeExportTask(recordTask.id, '当前筛选结果为空')
+    const state = getPracticeState()
+
+    expect(completedTask).toMatchObject({
+      id: trackingTask.id,
+      status: '已完成',
+      fileName: 'practice-tracking-list-1.xlsx',
+    })
+    expect(failedTask).toMatchObject({
+      id: recordTask.id,
+      status: '失败',
+      failureReason: '当前筛选结果为空',
+    })
+    expect(state.exportTasks.map(task => task.status)).toEqual(['失败', '已完成'])
+    expect(state.operationMessage).toContain('实践导出任务失败')
   })
 })

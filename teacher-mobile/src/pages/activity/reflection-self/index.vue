@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { addReflectionMaterial, startReflectionAiSession } from '../../../domain/reflection'
+import { addReflectionMaterial, getMobileReflectionState, selectReflectionCourse, startReflectionAiSession } from '../../../domain/reflection'
+
+const reflectionState = getMobileReflectionState()
+const materialCount = computed(() => reflectionState.evidence.filter((item) => item.status === 'uploaded' || item.status === 'recorded').length)
 
 const scopeCards = [
   { title: '单次课', icon: 'video', active: false },
@@ -29,7 +33,10 @@ function goAiChat() {
 
 function addMaterial(title: string) {
   addReflectionMaterial(title, title.includes('音频') ? 'audio' : 'material')
-  uni.showToast({ title: '材料已加入依据', icon: 'none' })
+}
+
+function changeCourse() {
+  selectReflectionCourse('智能制造基础')
 }
 </script>
 
@@ -101,7 +108,7 @@ function addMaterial(title: string) {
             <view class="course-line"></view>
             <text class="course-note">不确定也可以先跳过，AI 会根据内容帮您识别。</text>
           </view>
-          <MobileActionButton class="change-button" variant="outline">更换</MobileActionButton>
+          <MobileActionButton class="change-button" variant="outline" @tap="changeCourse">更换</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -126,8 +133,8 @@ function addMaterial(title: string) {
     <view class="bottom-actions">
       <view class="material-icon"></view>
       <view class="bottom-copy">
-        <text class="bottom-title">已添加 <text>0</text> 份材料</text>
-        <text class="bottom-desc">没有材料也可以直接开始</text>
+        <text class="bottom-title">已添加 <text>{{ materialCount }}</text> 份材料</text>
+        <text class="bottom-desc">{{ reflectionState.operationMessage || '没有材料也可以直接开始' }}</text>
       </view>
       <MobileActionButton class="start-button" variant="primary" @tap="goAiChat">开始 AI 对话</MobileActionButton>
     </view>

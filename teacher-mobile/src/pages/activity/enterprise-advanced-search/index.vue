@@ -2,6 +2,14 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import {
+  addEnterpriseSupplementMaterial,
+  getMobileEnterpriseState,
+  saveEnterpriseArchiveDraft,
+  submitEnterpriseSupplement,
+} from '../../../domain/enterprise'
+
+const enterpriseState = getMobileEnterpriseState()
 
 const infoRows = [
   { label: '实践单位', value: '山东某软件科技有限公司', type: 'company' },
@@ -14,8 +22,18 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function uploadProof() {
+  addEnterpriseSupplementMaterial()
+}
+
+function handleLater() {
+  saveEnterpriseArchiveDraft('enterprise-jinan-training-base')
+  uni.navigateBack()
+}
+
+function submitSupplement() {
+  const archiveRecord = submitEnterpriseSupplement()
+  uni.navigateTo({ url: `/pages/activity/enterprise-supplement-submitted/index?recordId=${archiveRecord.id}` })
 }
 </script>
 
@@ -79,11 +97,11 @@ function showToast(title: string) {
           </view>
         </view>
 
-        <button class="upload-box" @tap="showToast('上传企业实践证明')">
+        <button class="upload-box" @tap="uploadProof">
           <view class="plus-icon"></view>
           <text>上传企业实践证明</text>
         </button>
-        <text class="upload-tip">支持 PDF、图片、Word 文档，建议上传带单位盖章或签字的证明材料。</text>
+        <text class="upload-tip">{{ enterpriseState.operationMessage || '支持 PDF、图片、Word 文档，建议上传带单位盖章或签字的证明材料。' }}</text>
       </MobileCard>
 
       <MobileCard class="note-card">
@@ -105,10 +123,10 @@ function showToast(title: string) {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="bottom-button" variant="outline" @tap="showToast('稍后处理')">
+      <MobileActionButton class="bottom-button" variant="outline" @tap="handleLater">
         稍后处理
       </MobileActionButton>
-      <MobileActionButton class="bottom-button" variant="primary" @tap="showToast('提交补充')">
+      <MobileActionButton class="bottom-button" variant="primary" @tap="submitSupplement">
         提交补充
       </MobileActionButton>
     </view>

@@ -130,7 +130,7 @@ cd teacher-mobile && npm run test:profile-business && npm run test:mobile-admin-
 | 2026-07-02 | 能力画像群体页存在 `console.log` 空动作 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue` | “查看完整建议”跳教师画像重点支持筛选；教师对象跳画像详情；院系/专业对象保留在群体画像重点关注对象筛选态内定位 |
 | 2026-07-03 | 能力画像 D1-D3 需要复核业务地图、数据关系和按钮动作 | `frontend/src/pages/admin/ability-profile/*`、`frontend/src/services/mock/ability-profile.ts`、`docs/business-logic-map.md` | 已复核群体画像、教师画像列表、教师画像详情三层关系；按钮 `console.log` 命中 0；教师对象真实跳转，院系/专业保留为群体画像内筛选态；展示数据已迁入 mock service，业务类型已迁入 domain |
 | 2026-07-03 | 教师画像列表分页总数和页码仍为硬编码展示 | `frontend/src/pages/admin/ability-profile/AbilityProfileTeacherPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 D1-D3 分页闭环；总数、页码和当前页数据全部绑定 `filteredTeachers`，筛选后重置页码，上一页/下一页/页码按钮均有明确状态动作；`npm run test -- src/pages/admin/adminVisualActions.test.ts` 1 个测试文件 / 54 个用例通过 |
-| 2026-07-03 | 能力画像需要和成长档案事实、能力清单执行版建立真实计算关系 | `frontend/src/services/mock/ability-profile.ts`、`frontend/src/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue`、`frontend/src/services/mock/ability-profile.test.ts`、`docs/business-logic-map.md` | 已补教师画像详情第一版计算；`calculateTeacherAbilityProfile()` 使用 `archiveStore.teacherArchiveFacts` 和 `abilityListStore.executionIndicators` 生成发展指数、雷达分、维度说明和支持方向证据；群体画像聚合仍待后续扩展；`npm run test -- src/services/mock/ability-profile.test.ts` 1 个测试文件 / 4 个用例通过 |
+| 2026-07-03 | 能力画像需要和成长档案事实、能力清单执行版建立真实计算关系 | `frontend/src/services/mock/ability-profile.ts`、`frontend/src/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue`、`frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue`、`frontend/src/services/mock/ability-profile.test.ts`、`docs/business-logic-map.md` | 已补教师画像详情和群体画像第一版计算；`calculateTeacherAbilityProfile()` 使用 `archiveStore.teacherArchiveFacts` 和 `abilityListStore.executionIndicators` 生成教师发展指数、雷达分、维度说明和支持方向证据；`calculateAbilityProfileGroup()` 聚合教师画像、正式档案事实和执行版指标生成群体综合指数、维度分布和关注对象；`npm run test -- ability-profile.test.ts` 1 个测试文件 / 5 个用例通过 |
 | 2026-07-03 | 群体画像院系 / 专业查看画像需要决定独立页或筛选态 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已决定保留为群体画像内筛选态，不新增独立页；院系 / 专业“查看画像”会定位当前对象并显示选中行，不再提示无独立画像页面；`npm run test -- src/pages/admin/adminVisualActions.test.ts` 1 个测试文件 / 62 个用例通过 |
 | 2026-07-02 | 教学反思详情“查看更多相关记录”跳列表但列表不读取问题关键词 | `frontend/src/pages/admin/reflection/*` | 反思总览读取 `keyword` query，并显示当前问题定位提示；共性观察筛选和详情更多相关记录形成闭环 |
 | 2026-07-03 | 教学反思 D4-D5 需要复核列表、详情、来源数据和相关记录闭环 | `frontend/src/pages/admin/reflection/*`、`frontend/src/domain/admin/reflection.ts`、`frontend/src/services/mock/reflection.ts`、`docs/business-logic-map.md` | 已复核列表筛选、详情跳转、来源数据页面内反馈、相关详情跳转和更多相关记录 keyword 回流；按钮 `console.log` 命中 0；展示数据已迁入 mock service，业务类型已迁入 domain |
@@ -149,10 +149,10 @@ cd teacher-mobile && npm run test:profile-business && npm run test:mobile-admin-
 | 2026-07-02 | 手机端待办页面数量已对应效果图，但证书确认、修改、移出和入档结果缺少业务地图 | `teacher-mobile/src/pages/todo/*` | 已补 `docs/business-logic-map.md` 第 11 节，明确对象、状态、主流程、页面动作和未闭环点 |
 | 2026-07-02 | 手机端档案 54 张效果图只有 2 个档案主体页面，且跨模块入档结果未回到统一档案事实 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/activity/*`、`teacher-mobile/src/pages/todo/*` | 已补 `docs/business-logic-map.md` 第 12 节，明确档案信息架构、状态口径、页面动作和入档口径缺口 |
 | 2026-07-03 | 手机端档案真实状态回写缺少统一 domain 动作，首页数量、查询和更正结果仍停留在静态 / 路由参数态 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/*` | 手机端档案真实状态回写已补第一版；扩展 `archived`、`pending-verify`、`need-supplement`、`removed` 状态，新增统计、搜索、更正申请、需补充和补充材料状态回写，并用 `test:archive-business` 守卫 |
-| 2026-07-02 | 手机端培训活动页面已覆盖，但申请、总结、归档和需求未与管理端培训管理、成长档案状态对齐 | `teacher-mobile/src/pages/activity/training*`、`teacher-mobile/src/domain/training.ts` | 手机端培训活动闭环已补第一版；新增培训 domain/store，推荐培训、我的培训、申请、总结草稿、材料上传、归档 trace 和培训需求均对齐 `trainingStore` / `archiveStore.processingRecords` 口径，不直接复用管理端 store |
-| 2026-07-02 | 手机端教学反思页面已覆盖，但开始方式、依据选择、草稿和确认记录缺少统一状态 | `teacher-mobile/src/domain/reflection.ts`、`teacher-mobile/src/pages/activity/reflection*` | 手机端教学反思闭环已补第一版；新增反思 domain/store，开始方式、课程 / 课次、依据材料、AI 会话、草稿和确认反思写入同一记录，确认后对齐 `reflectionStore.records` 并生成 `archiveStore.processingRecords` 待确认记录 |
-| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，补充材料对象、核验状态和处理历史写入同一实践记录，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档；企业实践兼容路由名边界已核对，`enterprise-import-export` 承接计划等待确认，`enterprise-workflow-config` 承接归档日志详情；`test:enterprise-business` 和 `test:enterprise-archive` 已补计划确认、补充提交、归档结果不直入档 guardrail |
-| 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录；`test:virtual-research-business` 已补归档结果页区分“教研活动已归档”和“档案待确认”的 guardrail |
+| 2026-07-02 | 手机端培训活动页面已覆盖，但申请、总结、归档和需求未与管理端培训管理、成长档案状态对齐 | `teacher-mobile/src/pages/activity/training*`、`teacher-mobile/src/domain/training.ts` | 手机端培训活动闭环已补第一版；新增培训 domain/store，推荐培训、我的培训、申请、总结草稿、材料上传、归档 trace 和培训需求均对齐 `trainingStore` / `archiveStore.processingRecords` 口径，不直接复用管理端 store；2026-07-03 复补培训总结页修改总结、AI 优化、材料更新和保存草稿读取同一培训记录并回显状态 |
+| 2026-07-02 | 手机端教学反思页面已覆盖，但开始方式、依据选择、草稿和确认记录缺少统一状态 | `teacher-mobile/src/domain/reflection.ts`、`teacher-mobile/src/pages/activity/reflection*` | 手机端教学反思闭环已补第一版；新增反思 domain/store，开始方式、课程 / 课次、依据材料、AI 会话、草稿和确认反思写入同一记录，确认后对齐 `reflectionStore.records` 并生成 `archiveStore.processingRecords` 待确认记录；2026-07-03 复补课程 / 课次 / 阶段 / 自主反思 / AI 对话的材料动作回写和草稿页同源依据读取 |
+| 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，补充材料对象、核验状态和处理历史写入同一实践记录，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档；企业实践兼容路由名边界已核对，`enterprise-import-export` 承接计划等待确认，`enterprise-workflow-config` 承接归档日志详情；2026-07-03 复补 `enterprise-advanced-search`、`enterprise-login-history`、`enterprise-workflow-config`、`enterprise-archive-edit` 的补充材料、查看日志、返回日志和草稿动作；`test:enterprise-business` 和 `test:enterprise-archive` 已补计划确认、补充提交、归档结果不直入档 guardrail |
+| 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录；2026-07-03 复补活动列表规则说明、邀请页近期活动和贡献入口、待确认贡献页语音 / 拍照 / 上传补充材料、完整贡献确认页贡献详情和材料预览；`test:virtual-research-business` 已补归档结果页区分“教研活动已归档”和“档案待确认”的 guardrail |
 | 2026-07-03 | 手机端各模块“提交成功 / 归档成功 / 已入档”口径不一致 | `docs/business-logic-map.md` | 已补第 17 节，统一待办、档案、培训、反思、企业实践、虚拟教研到管理端对象映射、材料提交、审批结果和入档结果口径 |
 | 2026-07-03 | 手机端档案首页和待办证书结果页仍有入口停留在 toast 或无动作 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/todo/certificate-*` | 档案首页搜索进入查询页，分类进入分类概览，最近入档和查看全部进入记录详情 / 列表；档案查询页支持本页清空和分类筛选；证书详情确认 / 移出分别进入等待入档确认和已移出结果页；确认结果“查看待核验记录”按 `recordId` 进入详情页 |
 | 2026-07-03 | 手机端档案记录详情缺少统一承接页，导致查询结果和个人发展入档结果只能停在查询页 | `teacher-mobile/src/pages/archive/record-detail/index.vue`、`teacher-mobile/src/pages.json` | 已新增 `pages/archive/record-detail/index` 并注册路由；档案查询记录点击、待办证书确认结果和活动归档结果页均按 `recordId` 进入详情页；新增 `npm run test:archive-detail` 守卫路由、入口和同源记录 |
@@ -361,7 +361,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 分组 | 效果图数 | 当前源码/路由状态 | 当前判定 |
 | --- | ---: | --- | --- |
 | 根目录档案通用页 | 17 | `pages/archive/index`、`pages/archive/category/index`、`pages/archive/record-list/index`、`pages/archive/record-detail/index`、`pages/archive/draft-list/index` 和更正链路承接档案首页、分类、列表、详情、草稿 / 待确认和处理状态；活动 / 待办结果页进入统一详情 | 已按当前前台模拟口径合并承接；后续增强来源详情、接口同步和附件预览，不作为当前阻塞项 |
-| 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历、来源追溯和材料预览降级入口 | 基本信息详情页第一版已落地；档案材料预览降级入口已补，后续只剩真实接口和真实附件服务深化 |
+| 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历、来源追溯和材料预览降级入口 | 基本信息详情页第一版已落地；档案材料预览统一降级模型已补，后续只剩真实接口和真实附件服务深化 |
 | 教学工作 | 6 | 由统一分类页、记录列表、记录查询和统一详情承接教学工作记录；具体教学评价详情后续作为详情数据增强 | 已由统一页面承接，不再标为当前缺页阻塞 |
 | 教研科研 | 6 | 由统一分类页、记录列表、记录查询、统一详情和虚拟教研归档结果页承接 | 已由统一页面和活动结果页承接，不再标为当前缺页阻塞 |
 | 企业实践 | 4 | 由统一分类页、记录列表、统一详情和企业实践活动计划 / 补充 / 归档结果页承接 | 已由统一页面和活动流程承接，不再标为当前缺页阻塞 |
@@ -624,9 +624,9 @@ teacher-mobile/src/pages/profile/index.vue
 | 我的主页 | `pages/profile/index` | 已映射为综合页 |
 | 我的能力画像 | `pages/profile/ability-profile/index` 已注册；我的主页“查看画像”进入该页 | 已补前台模拟详情，展示发展指数、能力等级、维度分布、短板提示、推荐方向 |
 | 画像用到的记录 | `pages/profile/ability-profile/records/index` 已注册；能力画像页进入 | 已补前台模拟记录，展示记录名称、档案分类、引用维度、引用原因、证据强度，并下钻统一档案详情 |
-| 个人发展报告 | `pages/profile/development-report/index` 已注册；我的主页“查看报告”进入该页 | 已补前台模拟报告，展示报告状态、周期、能力摘要、依据记录、建议行动；导出和 AI 解读给明确降级提示 |
+| 个人发展报告 | `pages/profile/development-report/index` 已注册；我的主页“查看报告”进入该页 | 已补前台模拟报告，展示报告状态、周期、能力摘要、依据记录、建议行动；导出给明确降级提示，AI 解读进入能力画像 |
 | 目标岗位对照 | `pages/profile/target-position/index` 已注册；能力画像和发展报告进入 | 已补前台模拟对照，展示目标岗位、匹配度、已满足要求、缺口要求、证据入口、建议行动 |
-| 聘期要求对照 | `pages/profile/tenure-requirement/index` 已注册；能力画像和发展报告进入 | 已补前台模拟对照，展示当前聘期、完成度、风险、已完成 / 缺失证据、建议行动；去完成给明确降级提示 |
+| 聘期要求对照 | `pages/profile/tenure-requirement/index` 已注册；能力画像和发展报告进入 | 已补前台模拟对照，展示当前聘期、完成度、风险、已完成 / 缺失证据、建议行动；去完成进入企业实践材料、虚拟教研活动或目标岗位对照 |
 
 第一版结论：
 
@@ -748,7 +748,7 @@ M-06 后续实现边界：
 - `pages/profile/index` 的“查看报告”按钮后续应跳转 `pages/profile/development-report/index`。
 - 个人发展报告页面只读展示为主，不在本页直接修改档案事实、能力画像或岗位/聘期映射。
 - “查看依据记录”应优先跳转 `pages/profile/ability-profile/records/index` 或 `pages/archive/record-detail/index`，不在报告页复制完整记录列表。
-- 导出、重新生成、AI 解读等动作若暂未实现，必须标记为视觉态或降级提示，不能表现成已闭环。
+- 导出、重新生成等动作若暂未实现，必须标记为视觉态或降级提示，不能表现成已闭环；AI 解读可先进入能力画像页承接。
 
 #### M-07 目标岗位对照页面策略
 
@@ -900,7 +900,7 @@ M-09 后续实现边界：
 - 新增 `teacher-mobile/src/pages/assistant/index.vue`，作为 AI 助手一级 tab 首页。
 - `teacher-mobile/src/pages.json` 已注册 `pages/assistant/index`。
 - `teacher-mobile/src/components/MobileTabBar.vue` 已将 `assistant` 路由从 `/pages/activity/index` 改为 `/pages/assistant/index`。
-- AI 助手首页提供“补充档案”“解读能力画像”“查看待办建议”三个入口，其中“补充档案”已进入 M-11 页面，“查看待办建议”跳转待办首页，“解读能力画像”暂为待补齐提示。
+- AI 助手首页提供“补充档案”“解读能力画像”“查看待办建议”三个入口，其中“补充档案”已进入 M-11 页面，“解读能力画像”跳转我的能力画像页，“查看待办建议”跳转待办首页。
 
 M-10 验证：
 
@@ -990,7 +990,7 @@ M-12 验证：
 | G8-14 | 更新档案缺页优先级 | 在本文档风险表中标明先补哪些页面 |
 | G9-01 | 梳理培训活动首页到培训列表入口 | 记录页面、路由和培训对象 |
 | G9-02 | 梳理培训申请提交链路 | 已补：申请培训调用 `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取同一申请并提供详情入口；管理端同意 / 未同意回写由 `syncMobileTrainingApplicationResult()` 承接，同意后进入我的培训，未同意后结果页显示未通过 |
-| G9-03 | 梳理培训总结提交链路 | 已补：总结页读取同一培训记录，保存草稿、AI 优化、上传 / 更换材料和提交归档均更新培训记录状态 |
+| G9-03 | 梳理培训总结提交链路 | 已补：总结页读取同一培训记录，修改总结、保存草稿、AI 优化、上传 / 更换材料和提交归档均更新培训记录状态 |
 | G9-04 | 梳理培训归档结果链路 | 已补：提交归档生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G9-05 | 梳理培训需求提交链路 | 已补：两类需求提交均调用 `submitTrainingDemand()` 生成 `待匹配` 需求，结果页按 `demandId` 展示后续匹配状态；培训需求匹配结果回写由 `syncMobileTrainingDemandResult()` 承接，支持已匹配、暂不处理和已转培训申请 |
 | G9-06 | 梳理培训推荐命中结果链路 | 已补：推荐培训读取 `getMobileTrainingState()`，直接学习进入总结 / 学习记录承接页，需申请培训生成待处理申请 |
@@ -1002,23 +1002,24 @@ M-12 验证：
 | G11-01 | 梳理企业实践年度概览入口 | 已补：概览 / 列表读取 `getMobileEnterpriseState()`，筛选状态由 `setEnterpriseFilter()` 统一维护 |
 | G11-02 | 梳理企业实践计划提交链路 | 已补：计划保存、提交、确认、退回和重新提交接入 `practiceStore.applications` 对齐口径 |
 | G11-03 | 梳理企业实践进行中记录链路 | 已补：继续记录、日志草稿和保存日志写入 `practiceStore.records` 对齐口径 |
-| G11-04 | 梳理企业实践补充材料链路 | 已补：补充重新提交和历史补录接入实践记录材料状态、补充材料对象、核验状态和处理历史，并生成档案待确认记录 |
+| G11-04 | 梳理企业实践补充材料链路 | 已补：上传证明先调用 `addEnterpriseSupplementMaterial()` 写入实践记录材料状态、补充材料对象、核验状态和处理历史；补充重新提交和历史补录生成档案待确认记录 |
 | G11-05 | 梳理企业实践归档链路 | 已补：总结归档和编辑归档调用企业实践 domain，等待确认和补充提交结果生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G11-06 | 对齐管理端企业实践 store | 已补：手机端企业实践闭环对齐 `practiceStore.applications`、`practiceStore.records`、`archiveStore.processingRecords`，管理端确认后才进入正式档案事实 |
 | G11-07 | 核对企业实践兼容路由名边界 | 已补：企业实践兼容路由名边界已核对，`enterprise-import-export` 承接计划等待确认，`enterprise-workflow-config` 承接归档日志详情；后续若重命名需同步 pages、入口、台账和守卫 |
 | G12-01 | 梳理虚拟教研室入口 | 已补：我的教研室进入邀请、贡献确认、教研室状态和活动列表 |
-| G12-02 | 梳理虚拟教研活动详情链路 | 已补：活动列表筛选和详情 / 补充 / 记录入口接入状态，活动详情材料预览降级入口已接入 |
-| G12-03 | 梳理贡献确认链路 | 已补：补充遗漏、不是我的、确认贡献和提交结果接入统一贡献对象，贡献详情虚拟教研材料预览降级入口已接入 |
+| G12-02 | 梳理虚拟教研活动详情链路 | 已补：活动列表筛选、规则说明和详情 / 补充 / 记录入口接入状态，邀请页近期活动进入活动列表，活动详情材料预览降级入口已接入 |
+| G12-03 | 梳理贡献确认链路 | 已补：语音 / 拍照 / 上传补充材料、补充遗漏、不是我的、确认贡献和提交结果接入统一贡献对象，虚拟教研材料预览降级入口已接入贡献详情和完整确认页 |
 | G12-04 | 梳理阶段材料补充链路 | 已补：阶段材料草稿、提交结果、补充材料草稿和重新提交接入活动材料状态 |
 | G12-05 | 梳理虚拟教研归档链路 | 已补：归档结果调用虚拟教研 domain，先形成教研记录，再生成带 `processingQueueTrace` 的档案待确认 |
 | G12-06 | 对齐管理端虚拟教研 store | 已补：手机端虚拟教研闭环对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records`、带 `processingQueueTrace` 的 `archiveStore.processingRecords` |
-| G12-07 | 判定虚拟教研资料维护页归属 | 已补：虚拟教研成员资料归属已判定，成员资料页不直接写成长档案事实；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告 |
+| G12-07 | 判定虚拟教研资料维护页归属 | 已补：虚拟教研成员资料归属和动作边界已判定，成员资料页动作只写 `memberProfileLastAction`、进入虚拟教研路由或走材料预览降级，不直接写成长档案事实；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告 |
 | G12-08 | 明确多个贡献确认页状态机 | 已补：虚拟教研贡献确认页状态机已明确，`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页 |
 | G12-09 | 补已加入教研室真实入口 | 已补：已加入教研室返回和待确认贡献入口已接真实路由，底部返回进入我的教研室，待确认贡献卡片和主按钮进入贡献确认页 |
 | G12-10 | 补贡献详情和记录详情入口 | 已补：贡献详情和记录详情材料预览及返回教研记录已接真实入口，材料走虚拟教研预览降级，返回进入统一档案记录详情 |
 | G12-11 | 补活动进行中会议入口 | 已补：进入会议调用 `openVirtualResearchMeeting()` 定位活动会议入口并保留 `virtualLabStore.activities` 追溯，当前为真实会议 SDK 待接入的统一降级说明 |
 | G12-12 | 补阶段材料上传和拍照集合 | 已补：阶段材料页上传 / 拍照调用 `addStageMaterial()` 写入 `stageMaterials`，保存草稿和提交材料同步集合状态并对齐 `virtualLabStore.activities` |
-| G12-13 | 补补充材料上传和拍照集合 | 已补：补充材料页上传 / 拍照调用 `addSupplementMaterial()` 写入 `supplementMaterials`，保存草稿和重新提交同步集合状态并对齐 `virtualLabStore.activities` / `virtualLabStore.records` |
+| G12-13 | 补虚拟教研材料来源模型 | 已补：虚拟教研材料来源模型已补，会议纪要、任务分工、发言摘录、阶段材料和个人贡献统一为 `VirtualResearchEvidenceSourceKey` / `VirtualResearchSourceTrace`，贡献确认和归档结果页用 `sourceKeys` 展示，档案待确认记录写入来源材料追溯 |
+| G12-13 | 补补充材料上传和拍照集合 | 已补：补充材料页上传 / 拍照 / 语音调用 `addSupplementMaterial()` 写入 `supplementMaterials`，保存草稿和重新提交同步集合状态并对齐 `virtualLabStore.activities` / `virtualLabStore.records` |
 | G12-14 | 补贡献确认视觉页统一状态机动作 | 已补：待确认详情页和完整贡献确认页的补充动作进入补充材料页，确认动作调用 `confirmContribution()` 并进入贡献提交结果页 |
 | G12-15 | 补补充遗漏贡献页状态动作 | 已补：补充遗漏贡献页上传 / 拍照写入 `supplementMaterials`，保存草稿调用 `saveSupplementDraft()`，提交补充调用 `submitSupplementMaterial()` 并进入补充已提交页；结果页继续补充和去确认贡献均接真实路由 |
 | G12-16 | 补我的教研室看板状态页入口 | 已补：`virtual-research-role-assignment` 的查看邀请、确认贡献、进入教研室和全部教研活动入口均接真实路由 |
@@ -1036,9 +1037,9 @@ M-12 验证：
 | M-03 | 明确档案统一组件边界 | 给出分类卡、记录卡、详情块、来源记录的复用判断 |
 | M-04 | 明确我的能力画像页面策略 | 已补：新增 `pages/profile/ability-profile/index`，我的主页“查看画像”进入，展示发展指数、等级、维度、短板和推荐方向 |
 | M-05 | 明确画像用到的记录页面策略 | 已补：新增 `pages/profile/ability-profile/records/index`，从画像页进入，并跳统一档案详情 |
-| M-06 | 明确个人发展报告页面策略 | 已补：新增 `pages/profile/development-report/index`，我的主页“查看报告”进入，导出 / AI 解读给降级提示 |
+| M-06 | 明确个人发展报告页面策略 | 已补：新增 `pages/profile/development-report/index`，我的主页“查看报告”进入，导出给明确降级提示，AI 解读进入能力画像 |
 | M-07 | 明确目标岗位对照页面策略 | 已补：新增 `pages/profile/target-position/index`，从画像或报告进入，证据入口跳画像记录或档案详情 |
-| M-08 | 明确聘期要求对照页面策略 | 已补：新增 `pages/profile/tenure-requirement/index`，从画像或报告进入，补充材料 / 去完成给降级提示 |
+| M-08 | 明确聘期要求对照页面策略 | 已补：新增 `pages/profile/tenure-requirement/index`，从画像或报告进入，补充材料 / 去完成接入企业实践材料、虚拟教研活动或目标岗位对照入口 |
 | M-09 | 明确 AI 助手一级入口策略 | 判定独立 tab 页面或降级为档案/待办会话入口 |
 | M-10 | 修正 AI 助手 TabBar 入口 | 若确定独立页面，则 `MobileTabBar.vue` 不再指向 `/pages/activity/index` |
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
@@ -1163,14 +1164,14 @@ M-12 验证：
 | F4-29 | 迁移导入批次详情底部动作 | 已将导入批次详情页“返回档案处理 / 取消本次任务 / 刷新状态 / 查看上传文件 / 确认识别结果”迁移到公共 `Button`，保留批次识别状态流转和生成处理记录行为 |
 | F4-30 | 迁移档案查阅筛选和查看动作 | 已将档案查阅页“搜索 / 重置 / 查看成长档案”迁移到公共 `Button`，保留筛选状态提交、重置和教师档案详情跳转行为 |
 | F4-31 | 迁移导入资料上传页动作 | 已将导入部门资料上传页“选择文件 / 从本地文件夹导入 / 删除 / 取消 / 开始识别资料”迁移到公共 `Button`，保留文件选择、删除、返回和创建导入批次行为 |
-| F4-32 | 迁移教师档案详情动作 | 已将教师档案详情页“返回档案查询 / 打印 / 导出 PDF / 关闭 / 查看来源记录 / 查看记录详情”迁移到公共 `Button`，保留路由、打印、导出降级示例和来源过滤反馈行为 |
+| F4-32 | 迁移教师档案详情动作 | 已将教师档案详情页“返回档案查询 / 打印 / 导出 PDF / 关闭 / 查看来源记录 / 查看记录详情”迁移到公共 `Button`，保留路由、打印和来源过滤反馈行为；导出 PDF 已升级为写入 `archiveStore.exportRecords` 的本地导出记录并生成 mock 文本文件 |
 | F4-33 | 迁移能力清单基准模板顶部动作 | 已将基准模板页“优化基准模板 / 查看版本记录 / 派生执行版”迁移到公共 `Button`，保留优化建议跳转、版本记录抽屉和派生执行版行为 |
 | F4-34 | 迁移能力清单执行版顶部动作 | 已将执行版页“派生下一周期执行版 / 历史版本”迁移到公共 `Button`，保留派生执行版跳转和历史版本抽屉行为 |
 | F4-35 | 迁移能力清单发布确认动作 | 已将发布确认页“返回修改 / 确认发布”迁移到公共 `Button`，保留返回执行版和发布执行版状态流转行为 |
 | F4-36 | 迁移能力清单要求映射动作 | 已将要求映射页“新增要求项 / 编辑 / 删除 / 编辑映射 / 确认配置”迁移到公共 `Button`，保留新增、编辑、删除和确认配置的 `abilityListStore` 行为 |
 | F4-37 | 迁移能力清单优化建议动作 | 已将基准模板优化建议页“上传制度文件 / 重新分析运行反馈 / 应用到基准模板 / 查看版本记录 / 查看详情 / 采纳 / 暂缓 / 弃用 / 应用”迁移到公共 `Button`，保留上传制度来源、重新分析、应用建议、版本记录跳转和建议状态流转行为 |
 | F4-38 | 迁移能力画像群体页动作 | 已将群体画像页“查看完整建议”和表格行内“查看画像”迁移到公共 `Button`，保留重点支持筛选跳转、教师详情跳转和院系/专业页内筛选态定位 |
-| F4-39 | 迁移企业实践导出动作 | 已将实践记录页“导出记录”和年度实践跟踪页“导出名单”迁移到公共 `Button`，保留按当前筛选结果生成导出准备反馈的行为 |
+| F4-39 | 迁移企业实践导出动作 | 已将实践记录页“导出记录”和年度实践跟踪页“导出名单”迁移到公共 `Button`，并升级为写入 `practiceStore.exportTasks` 的本地模拟导出任务；页面展示导出中、已完成、失败、文件名和条数 |
 | F4-40 | 迁移教学反思详情来源动作 | 已将教学反思详情页“查看来源数据”迁移到公共 `Button`，保留展示关联课堂、评价和画像数据反馈的行为 |
 | F4-41 | 清理档案详情按钮结构类命名 | 已将教师档案详情页共享 `Button` 上残留的 `btn-*` 结构类改为语义化结构类，并移除档案处理页未使用的 `.btn-icon` 样式 |
 | F4-42 | 迁移详情页返回入口 | 已将教学反思详情页和培训计划详情页“返回列表”迁移到公共 `Button`，并删除培训记录详情页未使用的 `.btn-back` 样式 |
@@ -1206,7 +1207,7 @@ M-12 验证：
 | --- | --- | --- |
 | V-01 | 手机端页面补齐后验证注册关系 | `teacher-mobile/src/pages.json` 与页面文件一一对应 |
 | V-02 | 手机端业务地图更新后自检入口 | 每个新增页面都能从现有入口进入或明确为待接入口 |
-| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面、材料预览降级入口和入口存在 |
+| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面、材料预览统一降级模型和入口存在 |
 | V-03 | 手机端类型检查 | 执行 `cd teacher-mobile && npm run typecheck` |
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |

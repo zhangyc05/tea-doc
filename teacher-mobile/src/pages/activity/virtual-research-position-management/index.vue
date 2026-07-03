@@ -3,12 +3,13 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
+import { recordMemberProfileAction } from '../../../domain/virtualResearch'
 
 const viewEntries = [
-  { icon: 'calendar', title: '教研活动', desc: '查看活动安排与参与记录' },
-  { icon: 'note', title: '会议纪要', desc: '查看腾讯会议整理内容' },
-  { icon: 'folder', title: '阶段材料', desc: '补充过程材料与成果资料' },
-  { icon: 'star', title: '个人贡献', desc: '查看个人教研贡献记录' },
+  { icon: 'calendar', title: '教研活动', desc: '查看活动安排与参与记录', url: '/pages/activity/virtual-research-activity-list/index?from=member-profile' },
+  { icon: 'note', title: '会议纪要', desc: '查看腾讯会议整理内容', url: '/pages/activity/virtual-research-activity-detail-ongoing/index?from=member-profile' },
+  { icon: 'folder', title: '阶段材料', desc: '补充过程材料与成果资料', url: '/pages/activity/virtual-research-skill-management/index?from=member-profile' },
+  { icon: 'star', title: '个人贡献', desc: '查看个人教研贡献记录', url: '/pages/activity/virtual-research-contribution-detail/index?from=member-profile' },
 ]
 
 function goBack() {
@@ -23,8 +24,9 @@ function goContributionConfirm() {
   uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function goMemberEntry(entry: { title: string; url: string }) {
+  recordMemberProfileAction(`查看${entry.title}`)
+  uni.navigateTo({ url: entry.url })
 }
 </script>
 
@@ -94,7 +96,7 @@ function showToast(title: string) {
             v-for="entry in viewEntries"
             :key="entry.title"
             class="view-row"
-            @tap="showToast(entry.title)"
+            @tap="goMemberEntry(entry)"
           >
             <view class="view-icon" :class="`view-icon--${entry.icon}`" aria-hidden="true"></view>
             <view class="view-copy">

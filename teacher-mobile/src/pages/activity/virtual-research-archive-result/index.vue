@@ -2,7 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { submitVirtualResearchArchive } from '../../../domain/virtualResearch'
+import { formatVirtualResearchSourceLine, submitVirtualResearchArchive } from '../../../domain/virtualResearch'
 
 submitVirtualResearchArchive()
 
@@ -10,13 +10,13 @@ const contributions = [
   {
     index: 1,
     title: '提供企业设备调试案例素材',
-    source: '阶段材料、会议纪要',
+    sourceKeys: ['stage-material', 'meeting-minutes'] as const,
     desc: '你提供的案例素材被用于课程案例共创讨论。',
   },
   {
     index: 2,
     title: '补充设备故障诊断教学建议',
-    source: '发言摘录、会议纪要',
+    sourceKeys: ['speech-excerpt', 'meeting-minutes'] as const,
     desc: '你补充的教学建议被纳入课程应用讨论和方案完善。',
   },
 ]
@@ -116,7 +116,7 @@ function goResearchRoom() {
             <text class="index-badge">{{ item.index }}</text>
             <view class="contribution-copy">
               <text class="contribution-title">{{ item.title }}</text>
-              <text class="source-pill">来源：{{ item.source }}</text>
+              <text class="source-pill">来源：{{ formatVirtualResearchSourceLine([...item.sourceKeys]) }}</text>
               <text class="contribution-desc">{{ item.desc }}</text>
             </view>
             <view class="check-outline"></view>

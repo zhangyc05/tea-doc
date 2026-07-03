@@ -5,6 +5,9 @@ import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
+  completePracticeExportTask,
+  createPracticeExportTask,
+  failPracticeExportTask,
   getPracticeState,
   remindPracticeApplication,
 } from '@/stores/admin/practiceStore'
@@ -56,6 +59,10 @@ const activeTracking = computed(() => {
   return trackings.value.find((tracking) => tracking.id === activeTrackingId.value) ?? trackings.value[0]
 })
 
+const latestTrackingExportTask = computed(() => {
+  return practiceState.exportTasks.find(task => task.type === '教师实践跟踪名单')
+})
+
 function remindApply(id: string) {
   activeTrackingId.value = id
   remindPracticeApplication(id)
@@ -73,7 +80,15 @@ function viewRecord(id: string) {
 }
 
 function exportList() {
-  practiceState.operationMessage = `已准备导出 ${filteredTrackings.value.length} 条教师实践跟踪名单。`
+  const task = createPracticeExportTask({
+    type: '教师实践跟踪名单',
+    recordCount: filteredTrackings.value.length,
+  })
+  if (filteredTrackings.value.length === 0) {
+    failPracticeExportTask(task.id, '当前筛选结果为空')
+    return
+  }
+  completePracticeExportTask(task.id)
 }
 
 function resetFilters() {
@@ -314,6 +329,10 @@ function applyFilters() {
           </div>
           <div class="selected-summary" v-if="activeTracking">
             当前查看：{{ activeTracking.teacher }}，{{ activeTracking.currentProgress }}，{{ activeTracking.recentAction }}。
+          </div>
+          <div class="export-task" v-if="latestTrackingExportTask">
+            最近导出：{{ latestTrackingExportTask.status }} ｜ {{ latestTrackingExportTask.fileName }} ｜ {{ latestTrackingExportTask.recordCount }} 条
+            <span v-if="latestTrackingExportTask.failureReason"> ｜ {{ latestTrackingExportTask.failureReason }}</span>
           </div>
         </div>
       </section>
@@ -681,6 +700,17 @@ function applyFilters() {
 
 .selected-summary {
   padding: 0 24px 22px;
+}
+
+.export-task {
+  margin: 0 24px 22px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-admin-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-admin-bg-soft);
+  color: var(--color-admin-text-strong);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 @media (max-width: 1320px) {

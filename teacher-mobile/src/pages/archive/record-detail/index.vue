@@ -139,7 +139,7 @@ function requestCorrection() {
 
 function previewMaterial(material: { name: string; meta: string }) {
   const preview = previewArchiveMaterial(material)
-  uni.showToast({ title: preview.message, icon: 'none' })
+  uni.showToast({ title: `${preview.title}：${preview.status}，来源：${preview.source}。${preview.fallback}`, icon: 'none' })
 }
 </script>
 

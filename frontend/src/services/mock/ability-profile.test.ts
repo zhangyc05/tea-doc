@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  calculateAbilityProfileGroup,
   calculateTeacherAbilityProfile,
   getAbilityProfileGroupMock,
   getAbilityProfileTeacherDetailMock,
@@ -81,5 +82,52 @@ describe('ability profile mock service', () => {
     expect(profile.radarData.find(item => item.label === '实践能力')?.value).toBeGreaterThan(60)
     expect(profile.abilityDimensions.find(item => item.dimension === '教学能力')?.composition).toContain('课堂教学改进能力')
     expect(profile.supportDirections[0].focus).toContain('智能制造基础课堂改进记录')
+  })
+
+  it('aggregates group profile from teacher profiles, archive facts and execution indicators', () => {
+    const group = calculateAbilityProfileGroup([
+      {
+        id: 'fact-lin-teaching',
+        teacher: '林老师',
+        dimension: '教学工作',
+        title: '智能制造基础课堂改进记录',
+        sourceRecordId: 'reflection-1',
+        archiveTime: '2026-06-20',
+      },
+      {
+        id: 'fact-wang-practice',
+        teacher: '王老师',
+        dimension: '企业实践',
+        title: '青岛工业机器人有限公司企业实践',
+        sourceRecordId: 'practice-2',
+        archiveTime: '2026-06-21',
+      },
+    ], [
+      {
+        key: 'execution-teaching',
+        name: '课堂教学改进能力',
+        novice: '≥ 60分',
+        competent: '≥ 75分',
+        backbone: '≥ 85分',
+        expert: '≥ 95分',
+        basisLabel: '教学反思、课堂过程记录',
+      },
+      {
+        key: 'execution-practice',
+        name: '企业实践成果转化能力',
+        novice: '有企业实践记录',
+        competent: '实践记录可追溯',
+        backbone: '实践成果可转化',
+        expert: '形成示范案例',
+        basisLabel: '企业实践记录和成果材料',
+      },
+    ])
+
+    expect(group.dataBasis).toBe('教师画像 + 正式档案事实 + 执行版能力清单')
+    expect(group.developmentIndex).toBeGreaterThan(0)
+    expect(group.schoolRadarData.find(item => item.label === '教学能力')?.value).toBeGreaterThan(60)
+    expect(group.abilityDimensions.find(item => item.dimension === '实践能力')?.composition).toContain('企业实践成果转化能力')
+    expect(group.focusData['教师'][0].type).toBe('重点支持')
+    expect(group.focusData['院系'][0].reason).toContain('教师平均指数')
   })
 })

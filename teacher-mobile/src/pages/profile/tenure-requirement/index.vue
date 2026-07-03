@@ -11,7 +11,11 @@ const completed = [
 ]
 
 const missing = ['企业实践不少于 30 天证明', '课程改革成果归档记录']
-const actions = ['补充企业实践证明材料', '提交课程案例成果', '关注聘期风险提醒']
+const actions = [
+  { title: '补充企业实践证明材料', url: '/pages/activity/enterprise-advanced-search/index?from=tenure-requirement' },
+  { title: '提交课程案例成果', url: '/pages/activity/virtual-research-activity-list/index?from=tenure-requirement' },
+  { title: '关注聘期风险提醒', url: '/pages/profile/target-position/index?from=tenure-requirement' },
+]
 
 function goBack() {
   uni.navigateBack()
@@ -21,9 +25,6 @@ function navigateTo(url: string) {
   uni.navigateTo({ url })
 }
 
-function showUnavailable(action: string) {
-  uni.showToast({ title: `${action}暂未接入真实业务入口，请先在档案或活动模块补充`, icon: 'none' })
-}
 </script>
 
 <template>
@@ -65,9 +66,9 @@ function showUnavailable(action: string) {
 
     <MobileCard class="section-card">
       <text class="section-title">建议行动</text>
-      <view v-for="item in actions" :key="item" class="action-row">
-        <text>{{ item }}</text>
-        <MobileActionButton class="small-action" variant="outline" @tap="showUnavailable(item)">去完成</MobileActionButton>
+      <view v-for="item in actions" :key="item.title" class="action-row">
+        <text>{{ item.title }}</text>
+        <MobileActionButton class="small-action" variant="outline" @tap="navigateTo(item.url)">去完成</MobileActionButton>
       </view>
     </MobileCard>
   </MobilePageShell>

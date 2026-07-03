@@ -5,6 +5,14 @@ export type MobileTodoIcon = 'file' | 'clock' | 'folder' | 'pen' | 'note'
 export type MobileTodoStatus = 'pending-confirm' | 'pending-supplement' | 'improvable' | 'pending-verify' | 'archived' | 'removed'
 export type MobileTodoMaterialStatus = 'recognized' | 'previewed' | 'replaced' | 'pending-verify' | 'confirmed'
 export type MobileTodoDynamicType = '记录确认' | '材料更新' | '草稿保存' | '入档确认' | '其他'
+export type MobileTodoDynamicTimeFilter = '全部' | '今天' | '昨天' | '近 7 天' | '近 30 天'
+export type MobileTodoDynamicCategoryFilter = '全部' | string
+
+export type MobileTodoDynamicFilter = {
+  time: MobileTodoDynamicTimeFilter
+  type: '全部' | MobileTodoDynamicType
+  category: MobileTodoDynamicCategoryFilter
+}
 
 export type MobileTodoItem = {
   id: string
@@ -56,6 +64,7 @@ export type MobileTodoState = {
   todos: MobileTodoItem[]
   certificate: MobileTodoCertificate
   todoDynamics: MobileTodoDynamic[]
+  dynamicFilter: MobileTodoDynamicFilter
 }
 
 const certificateTodoId = 'certificate-digital-literacy'
@@ -228,6 +237,11 @@ const state = reactive<MobileTodoState>({
       relatedTodoId: 'teaching-reflection-draft',
     },
   ],
+  dynamicFilter: {
+    time: '全部',
+    type: '全部',
+    category: '全部',
+  },
 })
 
 export function getTodoState() {
@@ -252,6 +266,36 @@ export function getTodoActionUrl(todoId: string) {
 
 export function getRecentTodoDynamics(limit = 3) {
   return state.todoDynamics.slice(0, limit)
+}
+
+export function getFilteredTodoDynamics() {
+  return state.todoDynamics.filter(dynamic => {
+    const timeMatched =
+      state.dynamicFilter.time === '全部' ||
+      dynamic.group === state.dynamicFilter.time ||
+      (state.dynamicFilter.time === '近 7 天' && dynamic.group !== '更早') ||
+      state.dynamicFilter.time === '近 30 天'
+    const typeMatched = state.dynamicFilter.type === '全部' || dynamic.type === state.dynamicFilter.type
+    const categoryMatched = state.dynamicFilter.category === '全部' || dynamic.category === state.dynamicFilter.category
+    return timeMatched && typeMatched && categoryMatched
+  })
+}
+
+export function setTodoDynamicFilter(patch: Partial<MobileTodoDynamicFilter>) {
+  state.dynamicFilter = {
+    ...state.dynamicFilter,
+    ...patch,
+  }
+  return state.dynamicFilter
+}
+
+export function resetTodoDynamicFilter() {
+  state.dynamicFilter = {
+    time: '全部',
+    type: '全部',
+    category: '全部',
+  }
+  return state.dynamicFilter
 }
 
 export function updateTodoCertificateField(label: string, value: string) {

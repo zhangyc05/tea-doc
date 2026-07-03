@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { addReflectionMaterial, selectReflectionCourse } from '../../../domain/reflection'
+import { addReflectionMaterial, getMobileReflectionState, selectReflectionCourse } from '../../../domain/reflection'
+
+const reflectionState = getMobileReflectionState()
+const reflectionRecord = computed(() => reflectionState.records[0])
+const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
+const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
 
 const scopeOptions = [
   { title: '单次课', active: false },
@@ -46,17 +52,14 @@ function goEvidenceSelect() {
 
 function switchCourse() {
   selectReflectionCourse('智能制造基础')
-  uni.showToast({ title: '已选择当前课程', icon: 'none' })
 }
 
 function uploadMaterial() {
   addReflectionMaterial('补充教学资料', 'material')
-  uni.showToast({ title: '教学资料已加入依据', icon: 'none' })
 }
 
 function recordAudio() {
   addReflectionMaterial('课堂录音', 'audio')
-  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
 }
 
 function goDirectChat() {
@@ -163,8 +166,8 @@ function goDirectChat() {
 
     <view class="bottom-actions">
       <view class="selected-copy">
-        <text class="selected-title">已选 <text>5</text> 份依据</text>
-        <text class="selected-desc">课堂过程 2 | 成绩分析 2 | 评价反馈 1</text>
+        <text class="selected-title">已选 <text>{{ selectedEvidenceCount }}</text> 份依据</text>
+        <text class="selected-desc">{{ reflectionState.operationMessage || '课堂过程 2 | 成绩分析 2 | 评价反馈 1' }}</text>
       </view>
       <MobileActionButton class="start-button" variant="primary" @tap="goEvidenceSelect">开始 AI 引导反思</MobileActionButton>
     </view>

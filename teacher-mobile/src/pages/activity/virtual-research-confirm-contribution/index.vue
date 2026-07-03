@@ -2,19 +2,27 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { confirmContribution, rejectContribution } from '../../../domain/virtualResearch'
+import {
+  addSupplementMaterial,
+  confirmContribution,
+  formatVirtualResearchSourceLine,
+  getMobileVirtualResearchState,
+  rejectContribution,
+} from '../../../domain/virtualResearch'
+
+const virtualResearchState = getMobileVirtualResearchState()
 
 const contributions = [
   {
     title: '设备调试案例整理',
     desc: '你在会上负责整理企业设备调试案例，并同步给课程资源组。',
-    tags: ['会议纪要', '任务分工', '聊天记录'],
+    sourceKeys: ['meeting-minutes', 'task-assignment', 'personal-contribution'] as const,
     icon: 'folder',
   },
   {
     title: '发言与案例补充',
     desc: '你补充了“产线异常处理”课堂案例，并提出可用于课程资源共建的建议。',
-    tags: ['发言摘录', '会议纪要'],
+    sourceKeys: ['speech-excerpt', 'meeting-minutes'] as const,
     icon: 'message',
   },
 ]
@@ -23,12 +31,20 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function goSupplementContribution() {
   uni.navigateTo({ url: '/pages/activity/virtual-research-skill-management/index' })
+}
+
+function addVoiceMaterial() {
+  addSupplementMaterial('语音')
+}
+
+function addPhotoMaterial() {
+  addSupplementMaterial('拍照')
+}
+
+function addUploadMaterial() {
+  addSupplementMaterial('上传')
 }
 
 function markNotMine() {
@@ -88,7 +104,7 @@ function submitContribution() {
               <text class="contribution-title">{{ item.title }}</text>
               <text class="contribution-desc">{{ item.desc }}</text>
               <view class="tag-row">
-                <text v-for="tag in item.tags" :key="tag" class="source-tag">{{ tag }}</text>
+                <text v-for="tag in formatVirtualResearchSourceLine([...item.sourceKeys]).split('、')" :key="tag" class="source-tag">{{ tag }}</text>
               </view>
             </view>
             <text class="recognized-chip">已识别</text>
@@ -109,15 +125,15 @@ function submitContribution() {
             maxlength="120"
           />
           <view class="input-tools">
-            <button class="tool-button" @tap="showToast('语音')">
+            <button class="tool-button" @tap="addVoiceMaterial">
               <view class="tool-icon tool-icon--mic"></view>
               <text>语音</text>
             </button>
-            <button class="tool-button" @tap="showToast('拍照')">
+            <button class="tool-button" @tap="addPhotoMaterial">
               <view class="tool-icon tool-icon--camera"></view>
               <text>拍照</text>
             </button>
-            <button class="tool-button" @tap="showToast('上传')">
+            <button class="tool-button" @tap="addUploadMaterial">
               <view class="tool-icon tool-icon--upload"></view>
               <text>上传</text>
             </button>
@@ -140,6 +156,7 @@ function submitContribution() {
             <text>归档后可沉淀到成长档案 · 教研科研维度</text>
           </view>
         </view>
+        <text class="state-message">{{ virtualResearchState.operationMessage || '可补充语音、照片或附件作为贡献依据。' }}</text>
       </MobileCard>
 
       <button class="missing-link" @tap="goSupplementContribution">

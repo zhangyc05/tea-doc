@@ -3,6 +3,7 @@ import type {
   ArchiveRecognitionResult,
   ArchiveState,
   ArchiveUploadedFile,
+  TeacherArchiveExportRecord,
 } from '@/domain/admin/archive'
 
 export const emptyRecognitionResult: ArchiveRecognitionResult = {
@@ -133,6 +134,7 @@ export function createInitialArchiveState(): ArchiveState {
     importBatches: [],
     processingRecords: cloneProcessingRecords(initialProcessingRecords),
     teacherArchiveFacts: [],
+    exportRecords: [],
     operationMessage: '',
   }
 }
@@ -147,4 +149,8 @@ export function cloneProcessingRecords(records: ArchiveProcessingRecord[]) {
     issues: [...record.issues],
     processingHistory: [...record.processingHistory],
   }))
+}
+
+export function cloneArchiveExportRecords(records: TeacherArchiveExportRecord[]) {
+  return records.map(record => ({ ...record }))
 }

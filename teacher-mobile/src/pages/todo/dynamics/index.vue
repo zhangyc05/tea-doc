@@ -4,14 +4,24 @@ import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { getTodoState, type MobileTodoDynamic } from '../../../stores/todoStore'
+import {
+  getFilteredTodoDynamics,
+  getTodoState,
+  resetTodoDynamicFilter,
+  setTodoDynamicFilter,
+  type MobileTodoDynamic,
+  type MobileTodoDynamicCategoryFilter,
+  type MobileTodoDynamicTimeFilter,
+  type MobileTodoDynamicType,
+} from '../../../stores/todoStore'
 
-const filters = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
-const timeOptions = ['全部', '今天', '昨天', '近 7 天', '近 30 天']
-const typeOptions = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
+const filters: Array<'全部' | MobileTodoDynamicType> = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
+const timeOptions: MobileTodoDynamicTimeFilter[] = ['全部', '今天', '昨天', '近 7 天', '近 30 天']
+const typeOptions: Array<'全部' | MobileTodoDynamicType> = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
 const categoryOptions = ['全部', '培训与研修', '教学实践', '教学改革', '企业实践', '教学与研究']
 const todoState = getTodoState()
-const todoDynamics = computed(() => todoState.todoDynamics)
+const todoDynamics = computed(() => getFilteredTodoDynamics())
+const resultCount = computed(() => todoDynamics.value.length)
 const groups = computed(() => {
   const groupLabels: Array<MobileTodoDynamic['group']> = ['今天', '昨天', '更早']
   return groupLabels
@@ -44,6 +54,23 @@ function applyFilter() {
 
 const isFilterOpen = ref(false)
 
+function selectType(type: '全部' | MobileTodoDynamicType) {
+  setTodoDynamicFilter({ type })
+}
+
+function selectTime(time: MobileTodoDynamicTimeFilter) {
+  setTodoDynamicFilter({ time })
+}
+
+function selectCategory(category: MobileTodoDynamicCategoryFilter) {
+  setTodoDynamicFilter({ category })
+}
+
+function resetFilter() {
+  resetTodoDynamicFilter()
+  isFilterOpen.value = false
+}
+
 function showDynamic(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
@@ -65,7 +92,8 @@ function showDynamic(title: string) {
         v-for="(filter, index) in filters"
         :key="filter"
         class="filter-tab"
-        :class="{ 'filter-tab--active': index === 0 }"
+        :class="{ 'filter-tab--active': todoState.dynamicFilter.type === filter }"
+        @tap="selectType(filter)"
       >
         {{ filter }}
       </button>
@@ -106,10 +134,11 @@ function showDynamic(title: string) {
         <text class="filter-section__title">时间范围</text>
         <view class="option-row option-row--time">
           <button
-            v-for="(option, index) in timeOptions"
+            v-for="option in timeOptions"
             :key="option"
             class="option-pill"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.time === option }"
+            @tap="selectTime(option)"
           >
             {{ option }}
           </button>
@@ -120,10 +149,11 @@ function showDynamic(title: string) {
         <text class="filter-section__title">更新类型</text>
         <view class="option-row">
           <button
-            v-for="(option, index) in typeOptions"
+            v-for="option in typeOptions"
             :key="option"
             class="option-pill option-pill--compact"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.type === option }"
+            @tap="selectType(option)"
           >
             {{ option }}
           </button>
@@ -134,10 +164,11 @@ function showDynamic(title: string) {
         <text class="filter-section__title">相关分类</text>
         <view class="option-grid">
           <button
-            v-for="(option, index) in categoryOptions"
+            v-for="option in categoryOptions"
             :key="option"
             class="option-pill option-pill--grid"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.category === option }"
+            @tap="selectCategory(option)"
           >
             {{ option }}
           </button>
@@ -145,8 +176,8 @@ function showDynamic(title: string) {
       </view>
 
       <view class="drawer-actions">
-        <MobileActionButton class="drawer-action drawer-action--reset" variant="outline" @tap="closeFilter">重置</MobileActionButton>
-        <MobileActionButton class="drawer-action drawer-action--apply" variant="primary" @tap="applyFilter">查看结果（8）</MobileActionButton>
+        <MobileActionButton class="drawer-action drawer-action--reset" variant="outline" @tap="resetFilter">重置</MobileActionButton>
+        <MobileActionButton class="drawer-action drawer-action--apply" variant="primary" @tap="applyFilter">查看结果（{{ resultCount }}）</MobileActionButton>
       </view>
     </view>
   </MobilePageShell>

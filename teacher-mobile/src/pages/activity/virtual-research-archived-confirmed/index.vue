@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { formatVirtualResearchSourceLine } from '../../../domain/virtualResearch'
 
 const activityItems = [
   { icon: 'doc', label: '活动名称：', value: '课程案例共创碰头会' },
@@ -15,19 +16,19 @@ const contributions = [
   {
     icon: 'file',
     title: '提供企业设备调试案例素材',
-    source: '阶段材料、会议纪要',
+    sourceKeys: ['stage-material', 'meeting-minutes'] as const,
     tags: ['已确认'],
   },
   {
     icon: 'chat',
     title: '补充设备故障诊断教学建议',
-    source: '发言摘录、会议纪要',
+    sourceKeys: ['speech-excerpt', 'meeting-minutes'] as const,
     tags: ['已确认'],
   },
   {
     icon: 'group',
     title: '参与课程案例结构讨论',
-    source: '会议纪要、发言摘录、阶段材料、任务分工',
+    sourceKeys: ['meeting-minutes', 'speech-excerpt', 'stage-material', 'task-assignment'] as const,
     tags: ['新补充', '已确认'],
   },
 ]
@@ -100,7 +101,7 @@ function goResearchRecord() {
             <view class="contribution-icon" :class="`contribution-icon--${item.icon}`"></view>
             <view class="contribution-copy">
               <text class="contribution-title">{{ item.title }}</text>
-              <text class="contribution-source">来源：{{ item.source }}</text>
+              <text class="contribution-source">来源：{{ formatVirtualResearchSourceLine([...item.sourceKeys]) }}</text>
             </view>
             <view class="contribution-tags">
               <text

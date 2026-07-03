@@ -23,12 +23,19 @@ import iconTabCollege from '@/assets/admin/ability-group-portrait-assets/icons/i
 import iconTabMajor from '@/assets/admin/ability-group-portrait-assets/icons/icon-tab-major.svg'
 import iconTabTeacher from '@/assets/admin/ability-group-portrait-assets/icons/icon-tab-teacher.svg'
 import { useOperationMessage } from '@/lib/operationMessage'
-import { getAbilityProfileGroupMock } from '@/services/mock/ability-profile'
+import { calculateAbilityProfileGroup } from '@/services/mock/ability-profile'
+import { getAbilityListState } from '@/stores/admin/abilityListStore'
+import { getArchiveState } from '@/stores/admin/archiveStore'
 
 const router = useRouter()
 const operationMessage = useOperationMessage()
-const groupProfile = getAbilityProfileGroupMock()
+const groupProfile = calculateAbilityProfileGroup(
+  getArchiveState().teacherArchiveFacts,
+  getAbilityListState().executionIndicators,
+)
 
+const developmentIndex = groupProfile.developmentIndex
+const dataBasis = groupProfile.dataBasis
 const schoolRadarData = groupProfile.schoolRadarData
 const abilityDimensions = groupProfile.abilityDimensions
 
@@ -116,11 +123,11 @@ function getDistributionTone(index: number) {
               <span class="info-dot">i</span>
             </div>
             <div class="score-display">
-              <strong>68</strong>
+              <strong>{{ developmentIndex }}</strong>
               <span>/ 100</span>
             </div>
             <p>
-              由教学、教研、实践、服务四个维度的发展指数按权重汇总形成
+              由教学、教研、实践、服务四个维度的发展指数按权重汇总形成；依据：{{ dataBasis }}
             </p>
             <div class="status-line">
               <img class="status-icon" :src="iconBasicQualified" alt="" />

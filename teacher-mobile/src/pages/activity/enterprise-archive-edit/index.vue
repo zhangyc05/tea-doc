@@ -3,7 +3,9 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { saveEnterpriseArchiveDraft, submitEnterpriseArchive } from '../../../domain/enterprise'
+import { getMobileEnterpriseState, saveEnterpriseArchiveDraft, submitEnterpriseArchive } from '../../../domain/enterprise'
+
+const enterpriseState = getMobileEnterpriseState()
 
 const infoRows = [
   { label: '档案分类：', value: '企业实践  |  行业实践' },
@@ -18,17 +20,17 @@ function goBack() {
   uni.navigateBack()
 }
 
-function editField(label: string) {
-  uni.showToast({ title: `修改${label.replace('：', '')}`, icon: 'none' })
+function editField(_label: string) {
+  saveEnterpriseArchiveDraft()
 }
 
-function supplementMaterial() {
-  uni.showToast({ title: '去补充材料', icon: 'none' })
+function goSupplementMaterial() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-advanced-search/index' })
 }
 
 function backDraft() {
   saveEnterpriseArchiveDraft()
-  uni.showToast({ title: '归档草稿已保存', icon: 'none' })
+  uni.navigateBack()
 }
 
 function saveEdit() {
@@ -107,7 +109,7 @@ function saveEdit() {
             <text class="material-title">当前未上传证明材料</text>
             <text class="material-desc">可稍后补充企业实践证明、企业鉴定表或单位盖章证明</text>
           </view>
-          <MobileActionButton class="material-button" variant="outline" @tap="supplementMaterial">
+          <MobileActionButton class="material-button" variant="outline" @tap="goSupplementMaterial">
             去补充材料
           </MobileActionButton>
         </view>
@@ -117,7 +119,7 @@ function saveEdit() {
         <view class="shield-icon"></view>
         <view class="tip-copy">
           <text class="tip-title">温馨提示</text>
-          <text class="tip-desc">修改后的内容将作为提交校验前的最终草稿，你仍可在提交前继续补充材料。</text>
+          <text class="tip-desc">{{ enterpriseState.operationMessage || '修改后的内容将作为提交校验前的最终草稿，你仍可在提交前继续补充材料。' }}</text>
         </view>
         <view class="leaf-art"></view>
       </view>

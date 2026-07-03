@@ -72,6 +72,8 @@ export type AbilityProfileSupportDirection = {
 }
 
 export type AbilityProfileGroupMock = {
+  developmentIndex: number
+  dataBasis: string
   schoolRadarData: AbilityProfileScore[]
   abilityDimensions: AbilityProfileDimension[]
   developmentDirections: AbilityProfileDevelopmentDirection[]

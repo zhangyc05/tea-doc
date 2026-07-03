@@ -5,6 +5,7 @@ import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
   addSupplementMaterial,
   getMobileVirtualResearchState,
+  recordMemberProfileAction,
   saveSupplementDraft,
   submitSupplementMaterial,
 } from '../../../domain/virtualResearch'
@@ -30,17 +31,17 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function handleEvidenceAction(title: string) {
+  recordMemberProfileAction(`查看关联依据：${title}`)
+  uni.showToast({ title: `${title} 已关联到虚拟教研成员资料`, icon: 'none' })
 }
 
 function handleSupplementMaterialAction(title: string) {
-  if (title === '上传资料' || title === '拍照') {
-    const material = addSupplementMaterial(title === '拍照' ? '拍照' : '上传')
-    uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
-    return
-  }
-  showToast('语音说明入口待接入')
+  const material = title === '语音说明'
+    ? addSupplementMaterial('语音')
+    : addSupplementMaterial(title === '拍照' ? '拍照' : '上传')
+  recordMemberProfileAction(`${title}补充遗漏贡献材料`)
+  uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
 }
 
 function saveContributionDraft() {
@@ -137,7 +138,7 @@ function submitContributionSupplement() {
             :key="item.title"
             class="evidence-item"
             :class="{ 'evidence-item--inactive': !item.active }"
-            @tap="showToast(item.title)"
+            @tap="handleEvidenceAction(item.title)"
           >
             <view class="evidence-icon" :class="`evidence-icon--${item.icon}`"></view>
             <text class="evidence-title">{{ item.title }}</text>

@@ -168,6 +168,12 @@ if (existsSync(archiveDomainFile)) {
     failures.push('archive domain does not expose archive material preview action')
   }
 
+  for (const field of ['status:', 'source:', 'fallback:']) {
+    if (!archiveDomainSource.includes(field)) {
+      failures.push(`archive domain material preview model missing ${field}`)
+    }
+  }
+
   if (!archiveDomainSource.includes('真实附件服务后续接入')) {
     failures.push('archive domain does not define material preview fallback copy')
   }
@@ -191,6 +197,10 @@ if (existsSync(pageFile)) {
     failures.push('archive record detail page does not expose material preview action')
   }
 
+  if (!detailSource.includes('preview.status') || !detailSource.includes('preview.source') || !detailSource.includes('preview.fallback')) {
+    failures.push('archive record detail page does not use unified material preview status/source/fallback fields')
+  }
+
   if (!detailSource.includes('@tap=\"previewMaterial(material)\"')) {
     failures.push('archive record detail page material rows do not trigger preview action')
   }
@@ -201,6 +211,21 @@ if (existsSync(pageFile)) {
 
   if (!detailSource.includes('recordId=')) {
     failures.push('archive record detail page does not pass recordId to correction apply page')
+  }
+}
+
+if (existsSync(basicInfoDetailPageFile)) {
+  const basicInfoDetailSource = readFileSync(basicInfoDetailPageFile, 'utf8')
+  if (!basicInfoDetailSource.includes('previewArchiveMaterial')) {
+    failures.push('basic info detail page does not expose material preview action')
+  }
+
+  if (!basicInfoDetailSource.includes('preview.status') || !basicInfoDetailSource.includes('preview.source') || !basicInfoDetailSource.includes('preview.fallback')) {
+    failures.push('basic info detail page does not use unified material preview status/source/fallback fields')
+  }
+
+  if (!basicInfoDetailSource.includes('@tap=\"previewMaterial(material)\"')) {
+    failures.push('basic info detail page material rows do not trigger preview action')
   }
 }
 
@@ -530,8 +555,8 @@ if (!ledgerSource.includes('个人发展分类页已由统一分类页承接')) 
   failures.push('coverage ledger does not mark personal-development category as covered by archive category page')
 }
 
-if (!ledgerSource.includes('档案材料预览降级入口已补')) {
-  failures.push('coverage ledger does not mark archive material preview fallback as implemented')
+if (!ledgerSource.includes('档案材料预览统一降级模型已补')) {
+  failures.push('coverage ledger does not mark archive material preview fallback model as implemented')
 }
 
 if (!completedTaskList.includes('V-02a')) {

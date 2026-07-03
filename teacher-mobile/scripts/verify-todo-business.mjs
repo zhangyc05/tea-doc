@@ -55,6 +55,17 @@ if (!storeSource.includes('todoDynamics')) {
   failures.push('todo store does not keep dynamic events in shared state')
 }
 
+for (const apiName of [
+  'dynamicFilter',
+  'setTodoDynamicFilter',
+  'resetTodoDynamicFilter',
+  'getFilteredTodoDynamics',
+]) {
+  if (!storeSource.includes(apiName)) {
+    failures.push(`todo store does not expose ${apiName} for dynamic filtering`)
+  }
+}
+
 if (!storeSource.includes('submissionRecords')) {
   failures.push('todo store does not keep traceable submission records')
 }
@@ -69,6 +80,10 @@ if (!storeSource.includes('archiveStore.processingRecords')) {
 
 if (!storeSource.includes('getTodoActionUrl')) {
   failures.push('todo store does not expose action routes for non-certificate todos')
+}
+
+if (storeSource.includes("actionUrl: ''")) {
+  failures.push('todo store contains todo action without a concrete route')
 }
 
 if (!storeSource.includes("'pending-verify'")) {
@@ -183,8 +198,48 @@ if (!source(files.todoAll).includes('getTodoActionUrl')) {
   failures.push('all todo page does not route non-certificate todos through shared action map')
 }
 
+const todoIndexSource = source(files.todoIndex)
+const todoAllSource = source(files.todoAll)
+if (todoIndexSource.includes('uni.showToast({ title: item.action')) {
+  failures.push('todo index action button still falls back to action text toast')
+}
+
+if (todoAllSource.includes('uni.showToast({ title: item.action')) {
+  failures.push('all todo action button still falls back to action text toast')
+}
+
 if (!source(files.dynamics).includes('todoDynamics')) {
   failures.push('dynamics page does not derive events from shared state')
+}
+
+const dynamicsSource = source(files.dynamics)
+const dynamicsFilterSource = source(resolve(root, 'src/pages/todo/dynamics-filter/index.vue'))
+if (!dynamicsSource.includes('getFilteredTodoDynamics')) {
+  failures.push('dynamics page does not read filtered todo dynamics')
+}
+
+if (!dynamicsSource.includes('setTodoDynamicFilter')) {
+  failures.push('dynamics page filter drawer does not update shared dynamic filter')
+}
+
+if (!dynamicsSource.includes('resetTodoDynamicFilter')) {
+  failures.push('dynamics page filter drawer does not reset shared dynamic filter')
+}
+
+if (!dynamicsFilterSource.includes('getFilteredTodoDynamics')) {
+  failures.push('standalone dynamics filter page does not read filtered todo dynamics')
+}
+
+if (!dynamicsFilterSource.includes('setTodoDynamicFilter')) {
+  failures.push('standalone dynamics filter page does not update shared dynamic filter')
+}
+
+if (!dynamicsFilterSource.includes('resetTodoDynamicFilter')) {
+  failures.push('standalone dynamics filter page does not reset shared dynamic filter')
+}
+
+if (dynamicsFilterSource.includes('showToast(') || dynamicsFilterSource.includes('uni.showToast')) {
+  failures.push('standalone dynamics filter page still uses toast for filter actions')
 }
 
 const businessDoc = source(files.docsBusiness)

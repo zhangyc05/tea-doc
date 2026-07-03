@@ -12,6 +12,9 @@ const files = {
   importExport: resolve(root, 'src/pages/activity/enterprise-import-export/index.vue'),
   logRecord: resolve(root, 'src/pages/activity/enterprise-log-record/index.vue'),
   archiveEdit: resolve(root, 'src/pages/activity/enterprise-archive-edit/index.vue'),
+  advancedSearch: resolve(root, 'src/pages/activity/enterprise-advanced-search/index.vue'),
+  loginHistory: resolve(root, 'src/pages/activity/enterprise-login-history/index.vue'),
+  workflowConfig: resolve(root, 'src/pages/activity/enterprise-workflow-config/index.vue'),
   historySupplement: resolve(root, 'src/pages/activity/enterprise-history-supplement/index.vue'),
   historyConfirmed: resolve(root, 'src/pages/activity/enterprise-history-confirmed/index.vue'),
   businessMap: resolve(projectRoot, 'docs/business-logic-map.md'),
@@ -22,6 +25,9 @@ const failures = []
 const source = (file) => existsSync(file) ? readFileSync(file, 'utf8') : ''
 const mustInclude = (label, text, needle) => {
   if (!text.includes(needle)) failures.push(`${label} missing ${needle}`)
+}
+const mustNotInclude = (label, text, needle) => {
+  if (text.includes(needle)) failures.push(`${label} should not include ${needle}`)
 }
 
 for (const [name, file] of Object.entries(files)) {
@@ -41,6 +47,7 @@ mustInclude('enterprise domain', domain, 'saveEnterpriseLog')
 mustInclude('enterprise domain', domain, 'saveEnterpriseArchiveDraft')
 mustInclude('enterprise domain', domain, 'submitEnterpriseArchive')
 mustInclude('enterprise domain', domain, 'submitEnterpriseSupplement')
+mustInclude('enterprise domain', domain, 'addEnterpriseSupplementMaterial')
 mustInclude('enterprise domain', domain, 'MobileEnterpriseMaterial')
 mustInclude('enterprise domain', domain, 'MobileEnterpriseVerificationHistory')
 mustInclude('enterprise domain', domain, 'EnterpriseMaterialUploadStatus')
@@ -89,15 +96,39 @@ const logRecord = source(files.logRecord)
 mustInclude('log record page', logRecord, 'saveEnterpriseLogDraft')
 mustInclude('log record page', logRecord, 'saveEnterpriseLog')
 
-const workflowConfig = source(resolve(root, 'src/pages/activity/enterprise-workflow-config/index.vue'))
+const workflowConfig = source(files.workflowConfig)
 mustInclude('workflow config route page', workflowConfig, '日志详情')
 mustInclude('workflow config route page', workflowConfig, '所属实践')
 mustInclude('workflow config route page', workflowConfig, '附件资料')
 mustInclude('workflow config route page', workflowConfig, '归档说明')
+mustInclude('workflow config route page', workflowConfig, 'goEnterpriseLogList')
+mustNotInclude('workflow config route page', workflowConfig, "showToast('返回实践日志')")
 
 const archiveEdit = source(files.archiveEdit)
 mustInclude('archive edit page', archiveEdit, 'saveEnterpriseArchiveDraft')
 mustInclude('archive edit page', archiveEdit, 'submitEnterpriseArchive')
+mustInclude('archive edit page', archiveEdit, 'goSupplementMaterial')
+mustNotInclude('archive edit page', archiveEdit, "uni.showToast({ title: '去补充材料'")
+mustNotInclude('archive edit page', archiveEdit, "uni.showToast({ title: '归档草稿已保存'")
+
+const advancedSearch = source(files.advancedSearch)
+mustInclude('advanced search page', advancedSearch, 'addEnterpriseSupplementMaterial')
+mustInclude('advanced search page', advancedSearch, 'submitEnterpriseSupplement')
+mustInclude('advanced search page', advancedSearch, 'saveEnterpriseArchiveDraft')
+mustInclude('advanced search page', advancedSearch, 'getMobileEnterpriseState')
+mustNotInclude('advanced search page', advancedSearch, "showToast('上传企业实践证明')")
+mustNotInclude('advanced search page', advancedSearch, "showToast('稍后处理')")
+mustNotInclude('advanced search page', advancedSearch, "showToast('提交补充')")
+
+const loginHistory = source(files.loginHistory)
+mustInclude('login history page', loginHistory, 'addEnterpriseSupplementMaterial')
+mustInclude('login history page', loginHistory, 'getMobileEnterpriseState')
+mustInclude('login history page', loginHistory, 'goLogDetail')
+mustNotInclude('login history page', loginHistory, "showToast('查看日志')")
+mustNotInclude('login history page', loginHistory, "showToast('修改草稿')")
+mustNotInclude('login history page', loginHistory, "showToast('重新整理')")
+mustNotInclude('login history page', loginHistory, "showToast('补充资料')")
+mustNotInclude('login history page', loginHistory, "uni.showToast({ title: '归档草稿已保存'")
 
 const historySupplement = source(files.historySupplement)
 mustInclude('history supplement page', historySupplement, 'submitEnterpriseHistory')

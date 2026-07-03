@@ -5,10 +5,12 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
+  getMobileTrainingState,
   getTrainingSummaryDraft,
   optimizeTrainingSummary,
   saveTrainingSummaryDraft,
   submitTrainingArchive,
+  updateTrainingSummaryDraft,
   uploadTrainingMaterial,
 } from '../../../domain/training'
 
@@ -23,6 +25,7 @@ onLoad((options) => {
 })
 
 const trainingRecord = computed(() => getTrainingSummaryDraft(query.value.recordId))
+const trainingState = getMobileTrainingState()
 
 const readyItems = [
   { text: '培训信息已带出', done: true },
@@ -51,23 +54,19 @@ function goLearningRecord() {
 }
 
 function editSummary() {
-  saveTrainingSummaryDraft(trainingRecord.value.id)
-  uni.showToast({ title: '已进入总结编辑状态', icon: 'none' })
+  updateTrainingSummaryDraft(trainingRecord.value.id)
 }
 
 function optimizeSummary() {
   optimizeTrainingSummary(trainingRecord.value.id)
-  uni.showToast({ title: 'AI 已重新优化', icon: 'none' })
 }
 
 function replaceMaterial() {
   uploadTrainingMaterial(trainingRecord.value.id)
-  uni.showToast({ title: '培训材料已更新', icon: 'none' })
 }
 
 function saveDraft() {
   saveTrainingSummaryDraft(trainingRecord.value.id)
-  uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 </script>
 
@@ -118,6 +117,7 @@ function saveDraft() {
 
       <MobileCard class="ready-card">
         <text class="section-title">归档准备</text>
+        <text class="operation-message">{{ trainingState.operationMessage || '培训总结、学习心得和材料状态将写入同一培训记录。' }}</text>
         <view class="ready-list">
           <view v-for="item in readyItems" :key="item.text" class="ready-row">
             <view class="ready-dot" :class="{ 'ready-dot--pending': !item.done }"></view>

@@ -200,6 +200,30 @@ export function submitEnterpriseArchive(recordId = defaultPracticeId): MobileArc
   return createEnterprisePracticeArchiveRecord()
 }
 
+export function addEnterpriseSupplementMaterial(recordId = 'enterprise-jinan-training-base'): MobileEnterpriseRecord {
+  const record = ensureRecord(recordId)
+  record.materialStatus = '已上传'
+  upsertEnterpriseMaterial(record, {
+    id: `${record.id}-supplement-proof`,
+    name: '补充企业实践证明材料',
+    meta: '本地 mock 已上传，待提交核验',
+    uploadStatus: '已上传',
+    verificationStatus: '待核验',
+  })
+  record.verificationHistory.unshift(
+    createEnterpriseHistory(
+      `${record.id}-supplement-uploaded`,
+      '补充材料已上传',
+      '待核验',
+      '当前',
+      '已在本地实践记录中补充材料，提交后进入管理端核验队列。',
+    ),
+  )
+  record.adminStoreRefs = ['practiceStore.records', 'archiveStore.processingRecords']
+  state.operationMessage = '企业实践证明材料已上传，待提交核验'
+  return record
+}
+
 export function submitEnterpriseSupplement(recordId = 'enterprise-jinan-training-base'): MobileArchiveRecord {
   const record = ensureRecord(recordId)
   record.status = '归档确认中'

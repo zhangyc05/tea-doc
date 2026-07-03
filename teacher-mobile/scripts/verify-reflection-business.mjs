@@ -24,6 +24,9 @@ const source = (file) => existsSync(file) ? readFileSync(file, 'utf8') : ''
 const mustInclude = (label, text, needle) => {
   if (!text.includes(needle)) failures.push(`${label} missing ${needle}`)
 }
+const mustNotInclude = (label, text, needle) => {
+  if (text.includes(needle)) failures.push(`${label} should not include ${needle}`)
+}
 
 for (const [name, file] of Object.entries(files)) {
   if (!existsSync(file)) failures.push(`${name} file does not exist: ${file}`)
@@ -55,27 +58,47 @@ mustInclude('reflection start page', start, 'continueReflectionDraft')
 const course = source(files.course)
 mustInclude('reflection course page', course, 'selectReflectionCourse')
 mustInclude('reflection course page', course, 'addReflectionMaterial')
+mustInclude('reflection course page', course, 'getMobileReflectionState')
+mustNotInclude('reflection course page', course, "uni.showToast({ title: '教学资料已加入依据'")
+mustNotInclude('reflection course page', course, "uni.showToast({ title: '课堂音频已加入依据'")
 
 const evidence = source(files.evidence)
 mustInclude('reflection evidence page', evidence, 'selectReflectionLesson')
 mustInclude('reflection evidence page', evidence, 'selectReflectionEvidence')
+mustInclude('reflection evidence page', evidence, 'getMobileReflectionState')
+mustNotInclude('reflection evidence page', evidence, "uni.showToast({ title: '教学资料已加入依据'")
+mustNotInclude('reflection evidence page', evidence, "uni.showToast({ title: '课堂音频已加入依据'")
 
 const scope = source(files.scope)
 mustInclude('reflection scope page', scope, 'selectReflectionEvidence')
+mustInclude('reflection scope page', scope, 'getMobileReflectionState')
+mustNotInclude('reflection scope page', scope, "uni.showToast({ title: '阶段材料已加入依据'")
+mustNotInclude('reflection scope page', scope, "uni.showToast({ title: '课堂音频已加入依据'")
 
 const self = source(files.self)
+mustInclude('reflection self page', self, 'getMobileReflectionState')
 mustInclude('reflection self page', self, 'addReflectionMaterial')
 mustInclude('reflection self page', self, 'startReflectionAiSession')
+mustInclude('reflection self page', self, 'materialCount')
+mustNotInclude('reflection self page', self, "uni.showToast({ title: '材料已加入依据'")
 
 const guideChat = source(files.guideChat)
 mustInclude('reflection guide chat page', guideChat, 'startReflectionAiSession')
 mustInclude('reflection guide chat page', guideChat, 'saveReflectionDraft')
 
 const aiChat = source(files.aiChat)
+mustInclude('reflection ai chat page', aiChat, 'getMobileReflectionState')
 mustInclude('reflection ai chat page', aiChat, 'startReflectionAiSession')
 mustInclude('reflection ai chat page', aiChat, 'saveReflectionDraft')
+mustInclude('reflection ai chat page', aiChat, 'materialCount')
+mustNotInclude('reflection ai chat page', aiChat, "uni.showToast({ title: '材料已加入依据'")
 
 const draft = source(files.draft)
+mustInclude('reflection draft page', draft, 'getMobileReflectionState')
+mustInclude('reflection draft page', draft, 'reflectionRecord')
+mustInclude('reflection draft page', draft, 'selectedEvidence')
+mustInclude('reflection draft page', draft, 'selectedEvidence.length')
+mustInclude('reflection draft page', draft, 'reflectionRecord.course')
 mustInclude('reflection draft page', draft, 'saveReflectionDraft')
 mustInclude('reflection draft page', draft, 'optimizeReflectionDraft')
 mustInclude('reflection draft page', draft, 'confirmReflection')

@@ -46,10 +46,6 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function confirmInvitation() {
   confirmResearchInvitation()
   uni.navigateTo({ url: '/pages/activity/virtual-research-position-management/index' })
@@ -58,6 +54,14 @@ function confirmInvitation() {
 function declineInvitation() {
   declineResearchInvitation()
   uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goActivityList() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-list/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
 }
 </script>
 
@@ -108,7 +112,7 @@ function declineInvitation() {
       <MobileCard class="section-card activity-card">
         <text class="section-title">近期活动</text>
         <view class="activity-list">
-          <view v-for="item in activities" :key="item.title" class="activity-row" @tap="showToast(item.title)">
+          <view v-for="item in activities" :key="item.title" class="activity-row" @tap="goActivityList">
             <view class="date-badge">
               <view class="date-pin date-pin--left"></view>
               <view class="date-pin date-pin--right"></view>
@@ -134,7 +138,7 @@ function declineInvitation() {
         </view>
       </MobileCard>
 
-      <MobileCard class="notice-card" @tap="showToast('贡献待确认')">
+      <MobileCard class="notice-card" @tap="goContributionConfirm">
         <view class="notice-icon"></view>
         <view class="notice-copy">
           <text class="notice-title">加入后有 1 项贡献待确认</text>

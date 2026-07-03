@@ -1,56 +1,52 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import {
+  getFilteredTodoDynamics,
+  getTodoState,
+  resetTodoDynamicFilter,
+  setTodoDynamicFilter,
+  type MobileTodoDynamicTimeFilter,
+  type MobileTodoDynamicType,
+} from '../../../stores/todoStore'
 
-type Tone = 'green' | 'blue' | 'orange'
-
-const filters = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
-const timeOptions = ['全部', '今天', '昨天', '近 7 天', '近 30 天']
-const typeOptions = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
+const filters: Array<'全部' | MobileTodoDynamicType> = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
+const timeOptions: MobileTodoDynamicTimeFilter[] = ['全部', '今天', '昨天', '近 7 天', '近 30 天']
+const typeOptions: Array<'全部' | MobileTodoDynamicType> = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
 const categoryOptions = ['全部', '培训与研修', '教学实践', '教学改革', '企业实践', '教学与研究']
-
-const visibleItems: Array<{
-  title: string
-  desc: string
-  category: string
-  time: string
-  tone: Tone
-  icon: 'check' | 'file' | 'book'
-}> = [
-  {
-    title: '已确认一条培训证书',
-    desc: '《数字化教学能力提升》证书已完成人确认',
-    category: '培训与研修',
-    time: '09:21',
-    tone: 'green',
-    icon: 'check',
-  },
-  {
-    title: '培训学时已记录',
-    desc: '《数字化教学能力提升》已记录 16 学时',
-    category: '培训与研修',
-    time: '10:35',
-    tone: 'blue',
-    icon: 'file',
-  },
-  {
-    title: '已保存一篇教学反思',
-    desc: '《智能制造基础》第 5 次课后反思已保存草稿',
-    category: '教学实践',
-    time: '11:48',
-    tone: 'orange',
-    icon: 'book',
-  },
-]
+const todoState = getTodoState()
+const visibleItems = computed(() => getFilteredTodoDynamics())
+const resultCount = computed(() => visibleItems.value.length)
 
 function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function closeFilter() {
+  uni.navigateBack()
+}
+
+function selectType(type: '全部' | MobileTodoDynamicType) {
+  setTodoDynamicFilter({ type })
+}
+
+function selectTime(time: MobileTodoDynamicTimeFilter) {
+  setTodoDynamicFilter({ time })
+}
+
+function selectCategory(category: string) {
+  setTodoDynamicFilter({ category })
+}
+
+function resetFilter() {
+  resetTodoDynamicFilter()
+}
+
+function applyFilter() {
+  uni.redirectTo({ url: '/pages/todo/dynamics/index' })
 }
 </script>
 
@@ -59,7 +55,7 @@ function showToast(title: string) {
     <view class="page-content">
       <MobileNavbar title="全部动态" @back="goBack">
         <template #right>
-          <button class="filter-button" @tap="showToast('筛选已展开')">
+          <button class="filter-button" @tap="closeFilter">
             <view class="filter-button__icon"></view>
             <text>筛选</text>
           </button>
@@ -68,10 +64,11 @@ function showToast(title: string) {
 
       <view class="filter-tabs">
         <button
-          v-for="(filter, index) in filters"
+          v-for="filter in filters"
           :key="filter"
           class="filter-tab"
-          :class="{ 'filter-tab--active': index === 0 }"
+          :class="{ 'filter-tab--active': todoState.dynamicFilter.type === filter }"
+          @tap="selectType(filter)"
         >
           {{ filter }}
         </button>
@@ -82,10 +79,10 @@ function showToast(title: string) {
           <view class="date-dot"></view>
           <text>今天</text>
         </view>
-        <text class="date-count">3 条</text>
+        <text class="date-count">{{ resultCount }} 条</text>
       </view>
 
-      <MobileCard v-for="item in visibleItems" :key="item.title" class="dynamic-card">
+      <MobileCard v-for="item in visibleItems" :key="item.id" class="dynamic-card">
         <view class="dynamic-icon" :class="[`dynamic-icon--${item.tone}`, `dynamic-icon--${item.icon}`]">
           <view class="dynamic-icon__glyph"></view>
         </view>
@@ -94,7 +91,7 @@ function showToast(title: string) {
           <text class="dynamic-desc">{{ item.desc }}</text>
           <text class="dynamic-category" :class="`dynamic-category--${item.tone}`">{{ item.category }}</text>
         </view>
-        <text class="dynamic-time">{{ item.time }}</text>
+        <text class="dynamic-time">{{ item.time.replace('今天 ', '') }}</text>
         <view class="dynamic-arrow"></view>
       </MobileCard>
     </view>
@@ -104,17 +101,18 @@ function showToast(title: string) {
       <view class="drawer-handle"></view>
       <view class="drawer-head">
         <text class="drawer-title">筛选</text>
-        <button class="drawer-close" aria-label="关闭筛选" @tap="showToast('关闭筛选')"></button>
+        <button class="drawer-close" aria-label="关闭筛选" @tap="closeFilter"></button>
       </view>
 
       <view class="filter-section">
         <text class="filter-section__title">时间范围</text>
         <view class="option-row">
           <button
-            v-for="(option, index) in timeOptions"
+            v-for="option in timeOptions"
             :key="option"
             class="option-pill option-pill--time"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.time === option }"
+            @tap="selectTime(option)"
           >
             {{ option }}
           </button>
@@ -125,10 +123,11 @@ function showToast(title: string) {
         <text class="filter-section__title">更新类型</text>
         <view class="option-row">
           <button
-            v-for="(option, index) in typeOptions"
+            v-for="option in typeOptions"
             :key="option"
             class="option-pill option-pill--type"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.type === option }"
+            @tap="selectType(option)"
           >
             {{ option }}
           </button>
@@ -139,10 +138,11 @@ function showToast(title: string) {
         <text class="filter-section__title">相关分类</text>
         <view class="option-grid">
           <button
-            v-for="(option, index) in categoryOptions"
+            v-for="option in categoryOptions"
             :key="option"
             class="option-pill option-pill--grid"
-            :class="{ 'option-pill--active': index === 0 }"
+            :class="{ 'option-pill--active': todoState.dynamicFilter.category === option }"
+            @tap="selectCategory(option)"
           >
             {{ option }}
           </button>
@@ -150,9 +150,9 @@ function showToast(title: string) {
       </view>
 
       <view class="drawer-actions">
-        <MobileActionButton class="drawer-action" variant="outline" @tap="showToast('已重置')">重置</MobileActionButton>
-        <MobileActionButton class="drawer-action drawer-action--primary" variant="primary" @tap="showToast('查看结果（8）')">
-          查看结果（8）
+        <MobileActionButton class="drawer-action" variant="outline" @tap="resetFilter">重置</MobileActionButton>
+        <MobileActionButton class="drawer-action drawer-action--primary" variant="primary" @tap="applyFilter">
+          查看结果（{{ resultCount }}）
         </MobileActionButton>
       </view>
     </view>

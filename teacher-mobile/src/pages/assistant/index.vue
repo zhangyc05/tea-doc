@@ -9,7 +9,7 @@ type AssistantScene = {
   meta: string
   tone: 'green' | 'blue' | 'orange'
   action: string
-  url?: string
+  url: string
 }
 
 const assistantScenes: AssistantScene[] = [
@@ -27,6 +27,7 @@ const assistantScenes: AssistantScene[] = [
     meta: '只读解释，不修改画像结果',
     tone: 'blue',
     action: '查看画像',
+    url: '/pages/profile/ability-profile/index?from=assistant',
   },
   {
     title: '查看待办建议',
@@ -45,11 +46,6 @@ const recentNotes = [
 ]
 
 function goScene(scene: AssistantScene) {
-  if (!scene.url) {
-    uni.showToast({ title: '页面待补齐', icon: 'none' })
-    return
-  }
-
   uni.navigateTo({ url: scene.url })
 }
 </script>

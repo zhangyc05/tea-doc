@@ -12,7 +12,9 @@ import {
 import type { ArchiveSourceRecord, TeacherArchiveFact } from '@/domain/admin/archive'
 import {
   getArchiveSourceRecordsForFact,
+  getArchiveState,
   getTeacherArchiveFacts,
+  createTeacherArchiveExportRecord,
 } from '@/stores/admin/archiveStore'
 
 const route = useRoute()
@@ -21,6 +23,8 @@ const router = useRouter()
 const teacherId = computed(() => route.params.teacherId || 'lin')
 const teacherName = computed(() => getArchiveTeacherName(String(teacherId.value)))
 const teacherArchiveFacts = computed(() => getTeacherArchiveFacts(teacherName.value))
+const archiveState = getArchiveState()
+const latestExportRecord = computed(() => archiveState.exportRecords.find(record => record.teacherId === String(teacherId.value)))
 
 // 来源记录抽屉状态
 const drawerOpen = ref(false)
@@ -86,16 +90,22 @@ function printArchive() {
 }
 
 function exportPdf() {
+  const exportRecord = createTeacherArchiveExportRecord({
+    teacherId: String(teacherId.value),
+    teacherName: teacherName.value,
+    cycle: '2026年度发展周期',
+    factCount: teacherArchiveFacts.value.length,
+  })
   const blob = new Blob(['林老师成长档案\n2026年度发展周期\n此文件为页面导出示例。'], {
     type: 'text/plain;charset=utf-8',
   })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `teacher-archive-${teacherId.value}.txt`
+  link.download = exportRecord.fileName
   link.click()
   URL.revokeObjectURL(url)
-  operationMessage.set('已生成导出文件')
+  operationMessage.fromStore(archiveState)
 }
 
 function openDrawer(type: string) {
@@ -221,6 +231,9 @@ function isFactInDrawerType(dimension: string, type: string) {
       </section>
 
       <p v-if="operationMessage.text.value" class="action-toast">{{ operationMessage.text.value }}</p>
+      <p v-if="latestExportRecord" class="export-record">
+        最近导出：{{ latestExportRecord.fileName }} ｜ {{ latestExportRecord.status }} ｜ {{ latestExportRecord.factCount }} 条档案事实
+      </p>
 
       <!-- 主体内容区 -->
       <section class="main-content">
@@ -854,6 +867,18 @@ function isFactInDrawerType(dimension: string, type: string) {
   background: #fff;
   color: #12346c;
   box-shadow: 0 12px 24px rgba(21, 48, 93, 0.18);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.export-record {
+  width: min(1080px, calc(100vw - 48px));
+  margin: 12px auto 0;
+  padding: 10px 14px;
+  border: 1px solid #d8e4f5;
+  border-radius: var(--radius-sm);
+  background: var(--color-admin-bg-soft);
+  color: #405473;
   font-size: 13px;
   font-weight: 700;
 }

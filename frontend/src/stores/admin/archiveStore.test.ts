@@ -6,6 +6,7 @@ import {
   confirmArchiveBatchRecognition,
   confirmArchiveRecord,
   createArchiveImportBatch,
+  createTeacherArchiveExportRecord,
   getArchiveSourceRecordsForFact,
   getArchiveState,
   getTeacherArchiveFacts,
@@ -125,5 +126,29 @@ describe('archive business state', () => {
       id: '2',
       originalFile: '2026 年度课程建设项目 6 批名单.xlsx',
     })
+  })
+
+  it('creates a traceable teacher archive export record', () => {
+    confirmArchiveRecord('2')
+
+    const exportRecord = createTeacherArchiveExportRecord({
+      teacherId: 'lin',
+      teacherName: '林老师',
+      cycle: '2026年度发展周期',
+      factCount: getTeacherArchiveFacts('林老师').length,
+    })
+    const state = getArchiveState()
+
+    expect(exportRecord).toMatchObject({
+      teacherId: 'lin',
+      teacherName: '林老师',
+      cycle: '2026年度发展周期',
+      status: '已完成',
+      factCount: 1,
+      operator: '档案管理员',
+    })
+    expect(exportRecord.fileName).toContain('teacher-archive-lin')
+    expect(state.exportRecords[0]).toStrictEqual(exportRecord)
+    expect(state.operationMessage).toContain('已生成成长档案导出记录')
   })
 })

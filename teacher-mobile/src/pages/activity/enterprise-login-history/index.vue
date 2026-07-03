@@ -2,7 +2,14 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { saveEnterpriseArchiveDraft, submitEnterpriseArchive } from '../../../domain/enterprise'
+import {
+  addEnterpriseSupplementMaterial,
+  getMobileEnterpriseState,
+  saveEnterpriseArchiveDraft,
+  submitEnterpriseArchive,
+} from '../../../domain/enterprise'
+
+const enterpriseState = getMobileEnterpriseState()
 
 const summaryItems = [
   {
@@ -28,18 +35,25 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function saveArchiveDraft() {
   saveEnterpriseArchiveDraft()
-  uni.showToast({ title: '归档草稿已保存', icon: 'none' })
 }
 
 function submitArchive() {
   const archiveRecord = submitEnterpriseArchive()
   uni.navigateTo({ url: `/pages/activity/enterprise-archive-result/index?recordId=${archiveRecord.id}` })
+}
+
+function goLogDetail() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-workflow-config/index' })
+}
+
+function updateArchiveDraft() {
+  saveEnterpriseArchiveDraft()
+}
+
+function supplementMaterial() {
+  addEnterpriseSupplementMaterial()
 }
 </script>
 
@@ -74,7 +88,7 @@ function submitArchive() {
           </view>
           <view class="log-row">
             <text>已记录 <text class="green">9 天</text> 过程日志</text>
-            <button class="log-link" @tap="showToast('查看日志')">
+            <button class="log-link" @tap="goLogDetail">
               <text>查看日志</text>
               <view class="link-arrow"></view>
             </button>
@@ -112,10 +126,10 @@ function submitArchive() {
           </view>
 
           <view class="draft-actions">
-            <MobileActionButton class="draft-button" variant="outline" @tap="showToast('修改草稿')">
+            <MobileActionButton class="draft-button" variant="outline" @tap="updateArchiveDraft">
               修改草稿
             </MobileActionButton>
-            <MobileActionButton class="draft-button" variant="outline" @tap="showToast('重新整理')">
+            <MobileActionButton class="draft-button" variant="outline" @tap="updateArchiveDraft">
               重新整理
             </MobileActionButton>
           </view>
@@ -143,7 +157,7 @@ function submitArchive() {
         <view class="supplement">
           <text class="supplement-title">可继续补充</text>
           <text class="supplement-desc">实践证明、单位盖章材料、企业评价、过程照片、成果材料等。</text>
-          <button class="upload-button" @tap="showToast('补充资料')">
+          <button class="upload-button" @tap="supplementMaterial">
             <view class="plus-icon"></view>
             <text>补充资料</text>
           </button>
@@ -152,7 +166,7 @@ function submitArchive() {
 
       <view class="warning-card">
         <view class="warning-icon">!</view>
-        <text>提交后将进入归档确认，确认通过后才会进入成长档案，正式事实才能被画像、岗位对照和报告引用。</text>
+        <text>{{ enterpriseState.operationMessage || '提交后将进入归档确认，确认通过后才会进入成长档案，正式事实才能被画像、岗位对照和报告引用。' }}</text>
       </view>
     </view>
 

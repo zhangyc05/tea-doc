@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { confirmReflection, optimizeReflectionDraft, saveReflectionDraft } from '../../../domain/reflection'
+import { confirmReflection, getMobileReflectionState, optimizeReflectionDraft, saveReflectionDraft } from '../../../domain/reflection'
+
+const reflectionState = getMobileReflectionState()
+const reflectionRecord = computed(() => reflectionState.records[0])
+const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
+const selectedEvidenceTitles = computed(() => selectedEvidence.value.map((item) => item.title).join('、'))
 
 const sections = [
   {
@@ -83,10 +89,10 @@ function saveDraft() {
           <view class="head-icon head-icon--clipboard"></view>
           <text class="card-title">草稿来源</text>
         </view>
-        <text class="course-title">《智能制造基础》第 5 次课</text>
-        <text class="source-line">已使用 2 份依据：课堂分析报告、课堂录音</text>
+        <text class="course-title">《{{ reflectionRecord.course }}》{{ reflectionRecord.lesson }}</text>
+        <text class="source-line">已使用 {{ selectedEvidence.length }} 份依据：{{ selectedEvidenceTitles || '暂无依据' }}</text>
         <view class="source-bottom">
-          <text>已结合 2 个反思要点</text>
+          <text>{{ reflectionState.operationMessage || '已结合 2 个反思要点' }}</text>
           <view class="done-pill">
             <view class="spark-small"></view>
             <text>AI 已整理完成</text>
@@ -103,7 +109,7 @@ function saveDraft() {
         <view class="draft-box">
           <view class="summary-block">
             <text class="summary-label">摘要</text>
-            <text class="summary-text">本次《智能制造基础》第 5 次课聚焦“工业互联网与智能工厂架构”主题，通过案例讲解、小组讨论与课堂问答开展教学。整体课堂参与度较高，学生能联系案例表达观点，但在架构层次理解、概念之间的关联迁移以及小组讨论的深度与均衡性方面仍有提升空间。</text>
+            <text class="summary-text">本次《{{ reflectionRecord.course }}》{{ reflectionRecord.lesson }}聚焦“工业互联网与智能工厂架构”主题，通过案例讲解、小组讨论与课堂问答开展教学。整体课堂参与度较高，学生能联系案例表达观点，但在架构层次理解、概念之间的关联迁移以及小组讨论的深度与均衡性方面仍有提升空间。</text>
           </view>
 
           <view v-for="section in sections" :key="section.title" class="draft-section">

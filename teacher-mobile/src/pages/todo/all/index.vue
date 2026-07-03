@@ -29,10 +29,7 @@ function showTodoAction(item: MobileTodoItem) {
   const actionUrl = getTodoActionUrl(item.id)
   if (actionUrl) {
     uni.navigateTo({ url: actionUrl })
-    return
   }
-
-  uni.showToast({ title: item.action, icon: 'none' })
 }
 </script>
 

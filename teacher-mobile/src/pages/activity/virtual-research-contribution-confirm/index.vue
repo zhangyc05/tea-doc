@@ -3,7 +3,7 @@ import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { confirmContribution } from '../../../domain/virtualResearch'
+import { confirmContribution, formatVirtualResearchSourceLine } from '../../../domain/virtualResearch'
 
 const infoRows = [
   { label: '活动名称', value: '智能制造专业课程案例共创会', icon: 'file' },
@@ -25,13 +25,13 @@ const contributions = [
   {
     index: 1,
     title: '提供企业设备调试案例素材',
-    tags: ['阶段材料', '会议纪要'],
+    sourceKeys: ['stage-material', 'meeting-minutes'] as const,
     desc: '你提交的案例素材已被活动纪要引用，用于课程案例共创讨论。',
   },
   {
     index: 2,
     title: '补充设备故障诊断教学建议',
-    tags: ['发言摘录', '会议纪要'],
+    sourceKeys: ['speech-excerpt', 'meeting-minutes'] as const,
     desc: '你在会议讨论中补充了设备故障诊断与调试环节的教学应用建议。',
   },
 ]
@@ -110,7 +110,7 @@ function submitContribution() {
               <text class="recognized-chip">已识别</text>
             </view>
             <view class="tag-row">
-              <text v-for="tag in item.tags" :key="tag" class="source-tag">{{ tag }}</text>
+              <text v-for="tag in formatVirtualResearchSourceLine([...item.sourceKeys]).split('、')" :key="tag" class="source-tag">{{ tag }}</text>
             </view>
             <text class="contribution-desc">{{ item.desc }}</text>
           </view>

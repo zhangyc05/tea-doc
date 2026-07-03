@@ -2,6 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
+import { previewVirtualResearchMaterial, recordMemberProfileAction } from '../../../domain/virtualResearch'
 
 const contributions = [
   {
@@ -49,8 +50,25 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function goProgressTrack() {
+  recordMemberProfileAction('查看贡献归档进度')
+  uni.navigateTo({ url: '/pages/activity/virtual-research-activity-detail-confirm/index?from=member-profile' })
+}
+
+function goResearchRoom() {
+  recordMemberProfileAction('返回我的教研室')
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goContributionDetail() {
+  recordMemberProfileAction('查看提交内容')
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-detail/index?from=member-profile' })
+}
+
+function previewMaterial(fileName: string) {
+  recordMemberProfileAction(`查看材料：${fileName}`)
+  const preview = previewVirtualResearchMaterial(fileName)
+  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
 }
 </script>
 
@@ -58,7 +76,7 @@ function showToast(title: string) {
   <view class="intro-submitted-page">
     <MobileNavbar title="贡献确认已提交" size="compact" @back="goBack">
       <template #right>
-        <button class="track-button" @tap="showToast('进度跟踪')">
+        <button class="track-button" @tap="goProgressTrack">
           <view class="track-icon" aria-hidden="true"></view>
           <text>进度跟踪</text>
         </button>
@@ -121,7 +139,7 @@ function showToast(title: string) {
             v-for="item in contributions"
             :key="item.index"
             class="contribution-item"
-            @tap="showToast(item.title)"
+            @tap="goContributionDetail"
           >
             <text class="index-badge" :class="`index-badge--${item.tone}`">{{ item.index }}</text>
             <view class="contribution-copy">
@@ -146,7 +164,7 @@ function showToast(title: string) {
           <text class="section-title">关联材料（4项）</text>
         </view>
         <view class="file-grid">
-          <button v-for="file in files" :key="file.name" class="file-item" @tap="showToast(file.name)">
+          <button v-for="file in files" :key="file.name" class="file-item" @tap="previewMaterial(file.name)">
             <view class="file-icon" :class="`file-icon--${file.type}`" aria-hidden="true">
               <text>{{ file.type === 'pdf' ? '' : file.type === 'doc' ? 'W' : 'X' }}</text>
             </view>
@@ -185,10 +203,10 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button outline-action" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="action-button outline-action" variant="outline" @tap="goResearchRoom">
         返回教研室
       </MobileActionButton>
-      <MobileActionButton class="action-button primary-action" variant="primary" @tap="showToast('查看提交内容')">
+      <MobileActionButton class="action-button primary-action" variant="primary" @tap="goContributionDetail">
         查看提交内容
       </MobileActionButton>
     </view>

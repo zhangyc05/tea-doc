@@ -5,7 +5,10 @@ import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
+  completePracticeExportTask,
   confirmPracticeArchive,
+  createPracticeExportTask,
+  failPracticeExportTask,
   getPracticeState,
   remindPracticeMaterial,
 } from '@/stores/admin/practiceStore'
@@ -51,6 +54,10 @@ const activeRecord = computed(() => {
   return recordRows.value.find((record) => record.id === activeRecordId.value) ?? recordRows.value[0]
 })
 
+const latestRecordExportTask = computed(() => {
+  return practiceState.exportTasks.find(task => task.type === '企业实践记录')
+})
+
 function resetFilters() {
   selectedDepartment.value = '全部'
   selectedStatus.value = '全部'
@@ -81,7 +88,15 @@ function viewArchive(id: string) {
 }
 
 function exportRecords() {
-  practiceState.operationMessage = `已准备导出 ${filteredRecords.value.length} 条实践记录。`
+  const task = createPracticeExportTask({
+    type: '企业实践记录',
+    recordCount: filteredRecords.value.length,
+  })
+  if (filteredRecords.value.length === 0) {
+    failPracticeExportTask(task.id, '当前筛选结果为空')
+    return
+  }
+  completePracticeExportTask(task.id)
 }
 
 function applyFilters() {
@@ -275,6 +290,10 @@ function applyFilters() {
 
             <div class="selected-summary" v-if="activeRecord">
               当前查看：{{ activeRecord.teacher }}，{{ activeRecord.currentStatus }}，{{ activeRecord.company }}。
+            </div>
+            <div class="export-task" v-if="latestRecordExportTask">
+              最近导出：{{ latestRecordExportTask.status }} ｜ {{ latestRecordExportTask.fileName }} ｜ {{ latestRecordExportTask.recordCount }} 条
+              <span v-if="latestRecordExportTask.failureReason"> ｜ {{ latestRecordExportTask.failureReason }}</span>
             </div>
           </div>
         </div>
@@ -623,6 +642,17 @@ function applyFilters() {
 
 .selected-summary {
   padding-top: 12px;
+}
+
+.export-task {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-admin-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-admin-bg-soft);
+  color: var(--color-admin-text-strong);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 @media (max-width: 1320px) {

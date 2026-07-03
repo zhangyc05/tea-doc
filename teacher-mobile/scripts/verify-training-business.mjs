@@ -22,6 +22,9 @@ const source = (file) => existsSync(file) ? readFileSync(file, 'utf8') : ''
 const mustInclude = (label, text, needle) => {
   if (!text.includes(needle)) failures.push(`${label} missing ${needle}`)
 }
+const mustNotInclude = (label, text, needle) => {
+  if (text.includes(needle)) failures.push(`${label} should not include ${needle}`)
+}
 
 for (const [name, file] of Object.entries(files)) {
   if (!existsSync(file)) failures.push(`${name} file does not exist: ${file}`)
@@ -34,6 +37,7 @@ mustInclude('training domain', trainingDomain, 'approveMobileTrainingApplication
 mustInclude('training domain', trainingDomain, 'rejectMobileTrainingApplication')
 mustInclude('training domain', trainingDomain, 'syncMobileTrainingApplicationResult')
 mustInclude('training domain', trainingDomain, 'submitTrainingArchive')
+mustInclude('training domain', trainingDomain, 'updateTrainingSummaryDraft')
 mustInclude('training domain', trainingDomain, 'submitTrainingDemand')
 mustInclude('training domain', trainingDomain, 'syncMobileTrainingDemandResult')
 mustInclude('training domain', trainingDomain, "adminStoreRefs")
@@ -66,11 +70,18 @@ mustInclude('training application page', trainingApplication, "result === 'rejec
 mustInclude('training application page', trainingApplication, 'goApplicationDetail')
 
 const trainingSummary = source(files.trainingSummary)
+mustInclude('training summary page', trainingSummary, 'getMobileTrainingState')
 mustInclude('training summary page', trainingSummary, 'getTrainingSummaryDraft')
+mustInclude('training summary page', trainingSummary, 'updateTrainingSummaryDraft')
 mustInclude('training summary page', trainingSummary, 'saveTrainingSummaryDraft')
 mustInclude('training summary page', trainingSummary, 'optimizeTrainingSummary')
 mustInclude('training summary page', trainingSummary, 'uploadTrainingMaterial')
 mustInclude('training summary page', trainingSummary, 'submitTrainingArchive')
+mustInclude('training summary page', trainingSummary, 'trainingState.operationMessage')
+mustNotInclude('training summary page', trainingSummary, "uni.showToast({ title: '已进入总结编辑状态'")
+mustNotInclude('training summary page', trainingSummary, "uni.showToast({ title: 'AI 已重新优化'")
+mustNotInclude('training summary page', trainingSummary, "uni.showToast({ title: '培训材料已更新'")
+mustNotInclude('training summary page', trainingSummary, "uni.showToast({ title: '草稿已保存'")
 
 const trainingDemand = source(files.trainingDemand)
 mustInclude('training demand page', trainingDemand, 'submitTrainingDemand')

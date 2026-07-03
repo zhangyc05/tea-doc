@@ -111,6 +111,20 @@ export type TeacherArchiveFact = {
   archiveTime: string
 }
 
+export type TeacherArchiveExportStatus = '已完成' | '生成中' | '失败'
+
+export type TeacherArchiveExportRecord = {
+  id: string
+  teacherId: string
+  teacherName: string
+  cycle: string
+  status: TeacherArchiveExportStatus
+  factCount: number
+  fileName: string
+  createdAt: string
+  operator: string
+}
+
 export type ArchiveQueryStats = {
   totalTeachers: number
   hasArchive: number
@@ -173,5 +187,6 @@ export type ArchiveState = {
   importBatches: ArchiveImportBatch[]
   processingRecords: ArchiveProcessingRecord[]
   teacherArchiveFacts: TeacherArchiveFact[]
+  exportRecords: TeacherArchiveExportRecord[]
   operationMessage: string
 }

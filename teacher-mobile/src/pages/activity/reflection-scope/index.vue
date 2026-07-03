@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { addReflectionMaterial, selectReflectionEvidence } from '../../../domain/reflection'
+import { addReflectionMaterial, getMobileReflectionState, selectReflectionEvidence, selectReflectionLesson } from '../../../domain/reflection'
+
+const reflectionState = getMobileReflectionState()
+const reflectionRecord = computed(() => reflectionState.records[0])
+const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
+const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
+const selectedEvidenceTitles = computed(() => selectedEvidence.value.map((item) => item.title).join('、'))
 
 const scopeOptions = [
   { title: '单次课', active: false },
@@ -70,14 +77,16 @@ function selectEvidence() {
   selectReflectionEvidence('class-analysis-report')
 }
 
+function switchMonth() {
+  selectReflectionLesson('2026 年 3 月教学阶段')
+}
+
 function uploadMaterial() {
   addReflectionMaterial('阶段教学资料', 'material')
-  uni.showToast({ title: '阶段材料已加入依据', icon: 'none' })
 }
 
 function recordAudio() {
   addReflectionMaterial('阶段课堂音频', 'audio')
-  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
 }
 
 function goDirectChat() {
@@ -125,7 +134,7 @@ function goDirectChat() {
             <text class="stage-meta">2026-03-18 至 2026-03-29</text>
             <text class="stage-desc">已找到本月 3 堂课的课堂分析，可自由选择作为反思依据</text>
           </view>
-          <MobileActionButton class="switch-button" variant="outline">切换月份</MobileActionButton>
+          <MobileActionButton class="switch-button" variant="outline" @tap="switchMonth">切换月份</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -169,8 +178,8 @@ function goDirectChat() {
 
     <view class="bottom-actions">
       <view class="selected-copy">
-        <text class="selected-title">已选 <text>3</text> 份依据</text>
-        <text class="selected-desc">第 5 次课堂分析、第 6 次课堂分析、阶段测验分析</text>
+        <text class="selected-title">已选 <text>{{ selectedEvidenceCount }}</text> 份依据</text>
+        <text class="selected-desc">{{ selectedEvidenceTitles || reflectionState.operationMessage }}</text>
       </view>
       <MobileActionButton class="start-button" variant="primary" @tap="goSelfReflection">开始 AI 引导反思</MobileActionButton>
     </view>

@@ -24,8 +24,16 @@ function navigateTo(url: string) {
   uni.navigateTo({ url })
 }
 
-function showUnavailable(action: string) {
-  uni.showToast({ title: `${action}暂未接入，当前仅展示报告内容`, icon: 'none' })
+function showExportNotice() {
+  uni.showModal({
+    title: '报告导出待接入',
+    content: '当前为本地 mock 发展报告，尚未生成真实导出文件；报告依据和画像解读可在页面内查看。',
+    showCancel: false,
+  })
+}
+
+function goAiInterpretation() {
+  navigateTo('/pages/profile/ability-profile/index?from=development-report')
 }
 </script>
 
@@ -43,8 +51,8 @@ function showUnavailable(action: string) {
       </view>
       <text class="hero-desc">报告基于能力画像和已入档记录生成，当前为前台模拟摘要。</text>
       <view class="report-actions">
-        <MobileActionButton class="report-action" variant="outline" @tap="showUnavailable('导出')">导出报告</MobileActionButton>
-        <MobileActionButton class="report-action" variant="outline" @tap="showUnavailable('AI 解读')">AI 解读</MobileActionButton>
+        <MobileActionButton class="report-action" variant="outline" @tap="showExportNotice">导出报告</MobileActionButton>
+        <MobileActionButton class="report-action" variant="outline" @tap="goAiInterpretation">AI 解读</MobileActionButton>
       </view>
     </MobileCard>
 

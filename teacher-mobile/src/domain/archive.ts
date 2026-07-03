@@ -21,6 +21,13 @@ export type ArchiveProcessingQueueTrace = {
   generatedBy: string
 }
 
+export type VirtualResearchArchiveSourceTrace = {
+  name: string
+  materialName: string
+  status: string
+  adminStoreRefs: string[]
+}
+
 export type MobileArchiveRecord = {
   id: string
   title: string
@@ -592,10 +599,17 @@ export function submitArchiveDevelopmentPlanDraft(draftId: string): MobileArchiv
   return record
 }
 
-export function previewArchiveMaterial(material: { name: string; meta: string }) {
+export function previewArchiveMaterial(material: { name: string; meta: string; uploadStatus?: ArchiveCorrectionMaterialUploadStatus }) {
+  const source = material.meta.includes('来源于') ? material.meta.split('来源于').pop() || '档案记录' : '档案记录'
+  const status = material.uploadStatus === 'pending-verify' ? '待核验' : material.uploadStatus === 'pending-upload' ? '待上传' : '已关联'
+  const fallback = '当前为前端材料预览降级入口，真实附件服务后续接入。'
+
   return {
-    title: '材料预览',
-    message: `${material.name} 已关联到当前档案记录。当前为前端材料预览降级入口，真实附件服务后续接入。`,
+    title: material.name,
+    status: status,
+    source: source,
+    fallback: fallback,
+    message: `${material.name}：${status}，来源：${source}。${fallback}`,
   }
 }
 
@@ -771,7 +785,12 @@ export function createTeachingReflectionArchiveRecord(): MobileArchiveRecord {
   return record
 }
 
-export function createVirtualResearchArchiveRecord(): MobileArchiveRecord {
+export function createVirtualResearchArchiveRecord(sourceTraces: VirtualResearchArchiveSourceTrace[] = [
+  { name: '会议纪要', materialName: '会议纪要.pdf', status: '已归档', adminStoreRefs: ['virtualLabStore.records'] },
+  { name: '任务分工', materialName: '任务分工记录.xlsx', status: '已归档', adminStoreRefs: ['virtualLabStore.activities', 'virtualLabStore.records'] },
+  { name: '阶段材料', materialName: '阶段材料.pdf', status: '已关联', adminStoreRefs: ['virtualLabStore.activities'] },
+  { name: '个人贡献', materialName: '个人贡献记录', status: '已确认', adminStoreRefs: ['virtualLabStore.records'] },
+]): MobileArchiveRecord {
   const existingRecord = findArchiveRecordById('virtual-research-archive-pending')
   if (existingRecord) return existingRecord
 
@@ -791,9 +810,13 @@ export function createVirtualResearchArchiveRecord(): MobileArchiveRecord {
       { label: '教研活动', value: '智能制造课程资源共建研讨' },
       { label: '所属教研室', value: '智能制造课程虚拟教研室' },
       { label: '个人贡献', value: '课程案例素材、研讨纪要和阶段材料' },
+      { label: '来源材料', value: sourceTraces.map((trace) => `${trace.name}（${trace.status}）`).join('、') },
       { label: '当前状态', value: '档案待确认' },
     ],
-    materials: [{ name: '虚拟教研归档材料.pdf', meta: 'PDF · 来源于虚拟教研归档' }],
+    materials: sourceTraces.map((trace) => ({
+      name: trace.materialName,
+      meta: `${trace.status} · 来源于${trace.name}`,
+    })),
     usages: ['能力画像：待确认后支撑教研协作证据', '个人发展报告：待确认后计入教研科研记录'],
     sourceSteps: [
       { title: '形成教研记录', desc: '虚拟教研活动记录、阶段材料和个人贡献已汇总。', time: '刚刚' },

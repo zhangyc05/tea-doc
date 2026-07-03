@@ -33,12 +33,20 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function selectFilter(filter: VirtualResearchFilter) {
   setVirtualResearchFilter(filter)
+}
+
+function showAllActivities() {
+  setVirtualResearchFilter('全部')
+}
+
+function showResearchRule() {
+  uni.showModal({
+    title: '贡献识别规则',
+    content: '当前为本地 mock 规则说明：系统根据会议纪要、任务分工和材料来源识别贡献，真实规则服务后续接入。',
+    showCancel: false,
+  })
 }
 
 function goContributionConfirm() {
@@ -105,7 +113,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
   <view class="activity-list-page">
     <MobileNavbar title="虚拟教研" size="compact" @back="goBack">
       <template #right>
-        <button class="filter-button" @tap="showToast('筛选')">
+        <button class="filter-button" @tap="showAllActivities">
           <view class="filter-icon"></view>
           <text>筛选</text>
         </button>
@@ -201,7 +209,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
       <MobileCard class="rule-card">
         <view class="robot-icon"></view>
         <text class="rule-text">系统已从会议纪要、任务分工和成果材料中识别教研贡献，请确认并补充关键材料，形成可归档记录。</text>
-        <button class="rule-link" @tap="showToast('了解规则')">
+        <button class="rule-link" @tap="showResearchRule">
           <text>了解规则</text>
           <view class="link-arrow"></view>
         </button>

@@ -184,6 +184,14 @@ export function saveTrainingSummaryDraft(recordId = 'digital-teaching-record') {
   return record
 }
 
+export function updateTrainingSummaryDraft(recordId = 'digital-teaching-record') {
+  const record = getTrainingSummaryDraft(recordId)
+  record.status = '待总结'
+  record.summaryDraft = `${record.summaryDraft} 已补充培训收获和课堂应用计划。`
+  state.operationMessage = '培训总结草稿已更新。'
+  return record
+}
+
 export function optimizeTrainingSummary(recordId = 'digital-teaching-record') {
   const record = getTrainingSummaryDraft(recordId)
   record.summaryDraft = `${record.summaryDraft} AI 已重新优化表达，保留原学习记录依据。`

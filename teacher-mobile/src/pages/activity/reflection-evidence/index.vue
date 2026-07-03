@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
-import { addReflectionMaterial, selectReflectionEvidence, selectReflectionLesson } from '../../../domain/reflection'
+import { addReflectionMaterial, getMobileReflectionState, selectReflectionEvidence, selectReflectionLesson } from '../../../domain/reflection'
+
+const reflectionState = getMobileReflectionState()
+const reflectionRecord = computed(() => reflectionState.records[0])
+const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
+const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
+const selectedEvidenceTitles = computed(() => selectedEvidence.value.map((item) => item.title).join('、'))
 
 const scopeOptions = [
   { title: '单次课', active: true },
@@ -56,7 +63,6 @@ function goScopeSelect() {
 
 function switchLesson() {
   selectReflectionLesson('第 5 次课')
-  uni.showToast({ title: '已选择当前课次', icon: 'none' })
 }
 
 function addEvidence(rowTitle: string) {
@@ -65,12 +71,10 @@ function addEvidence(rowTitle: string) {
 
 function uploadMaterial() {
   addReflectionMaterial('补充教学资料', 'material')
-  uni.showToast({ title: '教学资料已加入依据', icon: 'none' })
 }
 
 function recordAudio() {
   addReflectionMaterial('课堂录音', 'audio')
-  uni.showToast({ title: '课堂音频已加入依据', icon: 'none' })
 }
 
 function goDirectChat() {
@@ -152,8 +156,8 @@ function goDirectChat() {
 
     <view class="bottom-actions">
       <view class="selected-copy">
-        <text class="selected-title">已选 <text>2</text> 份依据</text>
-        <text class="selected-desc">课堂分析报告、课堂录音</text>
+        <text class="selected-title">已选 <text>{{ selectedEvidenceCount }}</text> 份依据</text>
+        <text class="selected-desc">{{ selectedEvidenceTitles || reflectionState.operationMessage }}</text>
       </view>
       <MobileActionButton class="start-button" variant="primary" @tap="goScopeSelect">开始 AI 引导反思</MobileActionButton>
     </view>

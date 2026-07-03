@@ -151,6 +151,8 @@ const supportDirections = [
 
 export function getAbilityProfileGroupMock(): AbilityProfileGroupMock {
   return {
+    developmentIndex: 68,
+    dataBasis: '静态画像样例',
     schoolRadarData: cloneScores(schoolRadarData),
     abilityDimensions: cloneDimensions(groupAbilityDimensions),
     developmentDirections: developmentDirections.map(item => ({ ...item })),
@@ -158,6 +160,81 @@ export function getAbilityProfileGroupMock(): AbilityProfileGroupMock {
     focusData: Object.fromEntries(
       Object.entries(focusData).map(([key, value]) => [key, value.map(item => ({ ...item }))]),
     ),
+  }
+}
+
+export function calculateAbilityProfileGroup(
+  archiveFacts: TeacherArchiveFact[],
+  executionIndicators: AbilityIndicator[],
+): AbilityProfileGroupMock {
+  const teacherProfiles = teachers.map(teacher => ({
+    teacher,
+    profile: calculateTeacherAbilityProfile(teacher.name, archiveFacts, executionIndicators),
+  }))
+  const dimensions = ['教学能力', '教研能力', '实践能力', '服务能力']
+  const abilityDimensions = dimensions.map((dimension) => {
+    const dimensionScores = teacherProfiles.map(({ profile }) =>
+      profile.radarData.find(item => item.label === dimension)?.value ?? 0,
+    )
+    const relatedIndicators = executionIndicators.filter(indicator =>
+      mapIndicatorToAbility(indicator.name, indicator.basisLabel) === dimension,
+    )
+    return {
+      dimension,
+      index: average(dimensionScores),
+      composition: relatedIndicators.length > 0
+        ? relatedIndicators.map(indicator => indicator.name).join('、')
+        : `${dimension}执行版指标待补充`,
+      distribution: buildScoreDistribution(dimensionScores),
+    }
+  })
+  const schoolRadarData = abilityDimensions.map(item => ({ label: item.dimension, value: item.index }))
+  const teacherScores = teacherProfiles.map(({ teacher, profile }) => ({
+    teacher,
+    score: profile.developmentIndex.score,
+    weakestDimension: getWeakestDimension(profile.radarData),
+  }))
+  const collegeScores = Array.from(new Set(teacherScores.map(item => item.teacher.college)))
+    .map((college) => {
+      const members = teacherScores.filter(item => item.teacher.college === college)
+      return {
+        name: college,
+        score: average(members.map(item => item.score)),
+        weakestDimension: members[0]?.weakestDimension ?? '教学能力',
+      }
+    })
+    .sort((a, b) => a.score - b.score)
+  const lowScoreTeachers = teacherScores
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3)
+
+  return {
+    developmentIndex: average(teacherScores.map(item => item.score)),
+    dataBasis: '教师画像 + 正式档案事实 + 执行版能力清单',
+    schoolRadarData,
+    abilityDimensions,
+    developmentDirections: buildDevelopmentDirections(abilityDimensions, archiveFacts.length),
+    focusTabs: focusTabs.map(item => ({ ...item })),
+    focusData: {
+      院系: collegeScores.slice(0, 4).map(item => ({
+        name: item.name,
+        type: item.score < 70 ? '重点支持' : '持续观察',
+        dimension: item.weakestDimension,
+        reason: `教师平均指数 ${item.score}，${item.weakestDimension}需继续补证据`,
+      })),
+      专业: lowScoreTeachers.slice(0, 2).map(item => ({
+        name: item.teacher.teacherType,
+        type: item.score < 70 ? '重点支持' : '持续观察',
+        dimension: item.weakestDimension,
+        reason: `${item.teacher.college}${item.teacher.name}画像指数 ${item.score}，建议按类型聚合支持`,
+      })),
+      教师: lowScoreTeachers.map(item => ({
+        name: item.teacher.name,
+        type: item.score < 70 ? '重点支持' : '持续观察',
+        dimension: item.weakestDimension,
+        reason: `个人画像指数 ${item.score}，${item.weakestDimension}证据不足`,
+      })),
+    },
   }
 }
 
@@ -263,6 +340,46 @@ function cloneDimensions(dimensions: AbilityProfileDimension[]) {
     ...item,
     distribution: item.distribution?.map(distribution => ({ ...distribution })),
   }))
+}
+
+function average(values: number[]) {
+  if (values.length === 0) return 0
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)
+}
+
+function buildScoreDistribution(scores: number[]) {
+  const buckets = [
+    { label: '新手', count: 0 },
+    { label: '胜任', count: 0 },
+    { label: '骨干', count: 0 },
+    { label: '名师', count: 0 },
+  ]
+  scores.forEach((score) => {
+    if (score < 65) buckets[0].count += 1
+    else if (score < 75) buckets[1].count += 1
+    else if (score < 85) buckets[2].count += 1
+    else buckets[3].count += 1
+  })
+  return buckets.map(bucket => ({
+    label: bucket.label,
+    percentage: scores.length === 0 ? 0 : Math.round((bucket.count / scores.length) * 100),
+  }))
+}
+
+function getWeakestDimension(scores: AbilityProfileScore[]) {
+  return [...scores].sort((a, b) => a.value - b.value)[0]?.label ?? '教学能力'
+}
+
+function buildDevelopmentDirections(dimensions: AbilityProfileDimension[], factCount: number) {
+  return dimensions
+    .slice()
+    .sort((a, b) => a.index - b.index)
+    .map((dimension) => ({
+      title: `${dimension.dimension}支持`,
+      observation: `观察：${dimension.dimension}指数 ${dimension.index}，当前聚合 ${factCount} 条正式档案事实。`,
+      keyDimension: dimension.dimension,
+    }))
+    .slice(0, 4)
 }
 
 function mapArchiveDimensionToAbility(dimension: string): string {

@@ -2,7 +2,7 @@
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
-import { confirmContribution } from '../../../domain/virtualResearch'
+import { confirmContribution, formatVirtualResearchSourceLine, previewVirtualResearchMaterial } from '../../../domain/virtualResearch'
 
 const organizeItems = [
   { title: '会议纪要', status: '已生成', tone: 'blue', icon: 'doc' },
@@ -14,21 +14,21 @@ const contributions = [
   {
     index: '1',
     title: '提供企业设备调试案例素材',
-    source: '阶段材料、会议纪要',
+    sourceKeys: ['stage-material', 'meeting-minutes'] as const,
     desc: '你提交的案例素材被用于课程案例共创讨论。',
     tag: '',
   },
   {
     index: '2',
     title: '补充设备故障诊断教学建议',
-    source: '发言摘录、会议纪要',
+    sourceKeys: ['speech-excerpt', 'meeting-minutes'] as const,
     desc: '你补充了设备故障诊断与调试环节的教学应用建议。',
     tag: '',
   },
   {
     index: '3',
     title: '参与课程案例结构讨论',
-    source: '会议纪要、发言摘录、阶段材料、任务分工',
+    sourceKeys: ['meeting-minutes', 'speech-excerpt', 'stage-material', 'task-assignment'] as const,
     desc: '你参与了课程案例结构讨论，并补充了案例在课堂导入、问题分析和实训任务中的使用建议。',
     tag: '新补充',
   },
@@ -45,12 +45,25 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function goSupplementContribution() {
   uni.navigateTo({ url: '/pages/activity/virtual-research-supplement-material/index' })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
+}
+
+function goContributionDetail() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-detail/index' })
+}
+
+function previewMaterial(name: string) {
+  const preview = previewVirtualResearchMaterial(name)
+  uni.showModal({
+    title: preview.title,
+    content: preview.message,
+    showCancel: false,
+  })
 }
 
 function submitContribution() {
@@ -63,7 +76,7 @@ function submitContribution() {
   <view class="confirm-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack">
       <template #right>
-        <button class="more-button" @tap="showToast('更多')">
+        <button class="more-button" @tap="goContributionConfirm">
           <view class="more-dot"></view>
           <view class="more-dot"></view>
           <view class="more-dot"></view>
@@ -133,14 +146,14 @@ function submitContribution() {
       <MobileCard class="contribution-card">
         <text class="block-title">待确认贡献 <text class="block-subtitle">（请确认以下内容是否完整准确）</text></text>
         <view class="contribution-list">
-          <view v-for="item in contributions" :key="item.index" class="contribution-item" @tap="showToast(item.title)">
+          <view v-for="item in contributions" :key="item.index" class="contribution-item" @tap="goContributionDetail">
             <view class="number-badge">{{ item.index }}</view>
             <view class="contribution-copy">
               <view class="contribution-head">
                 <text class="contribution-title">{{ item.title }}</text>
                 <text v-if="item.tag" class="new-tag">{{ item.tag }}</text>
               </view>
-              <text class="source-line">来源：{{ item.source }}</text>
+              <text class="source-line">来源：{{ formatVirtualResearchSourceLine([...item.sourceKeys]) }}</text>
               <text class="contribution-desc">说明：{{ item.desc }}</text>
             </view>
             <text class="data-chip">已关联依据</text>
@@ -152,14 +165,14 @@ function submitContribution() {
       <MobileCard class="file-card">
         <view class="file-head">
           <text class="block-title">已有材料 <text class="block-subtitle">（可用于归档）</text></text>
-          <button class="view-all" @tap="showToast('查看全部')">
+          <button class="view-all" @tap="goContributionConfirm">
             <text>查看全部</text>
             <view class="link-arrow"></view>
           </button>
         </view>
         <scroll-view class="file-scroll" scroll-x>
           <view class="file-list">
-            <view v-for="file in files" :key="file.name" class="file-item" @tap="showToast(file.name)">
+            <view v-for="file in files" :key="file.name" class="file-item" @tap="previewMaterial(file.name)">
               <view class="file-icon" :class="`file-icon--${file.tone}`">
                 <text>{{ file.type }}</text>
               </view>

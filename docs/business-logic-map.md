@@ -123,6 +123,7 @@
 | 处理记录 | 待确认、待补充、待核验、异常、拟退中的档案记录 | `frontend/src/pages/admin/archive/ArchiveProcessingPage.vue`、`archiveStore.ts` |
 | 教师档案 | 教师个人成长档案详情 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` |
 | 来源记录 | 档案详情中某条事实的来源追溯 | `ArchiveTeacherDetailPage.vue` |
+| 档案导出记录 | 管理端触发成长档案导出后的本地任务记录 | `archiveStore.exportRecords` |
 
 ### 4.2 状态口径
 
@@ -133,6 +134,7 @@
 | 识别结果 | 待确认、待补充、待核验、异常、重复 | `ArchiveRecognitionResult` | 确认后可生成处理记录 |
 | 处理记录 | 待确认、待检验、待补充、异常待处理、拟退中、已入档 | `archiveStore.processingRecords` | 已完成确认入档、退回补充、标记异常和处理历史本地闭环 |
 | 教师档案事实 | 草稿、待确认、已入档、已更正、已退回 | `archiveStore.teacherArchiveFacts` 已在确认入档时写入，并由档案详情页读取 | 已完成已入档事实本地闭环，其余状态待后续细化 |
+| 档案导出 | 生成中、已完成、失败 | `archiveStore.exportRecords` 当前生成本地已完成导出记录，并保留教师、周期、事实数量、文件名和操作人 | 已从纯前端示例升级为本地可追溯导出记录；真实导出服务后续替换 |
 
 ### 4.3 主流程
 
@@ -161,12 +163,13 @@
 | 档案处理 | 确认入档、再次退回、标记异常、查看补充说明 | 修改 `archiveStore.processingRecords`，确认入档写入 `teacherArchiveFacts` | 已完成本地闭环 |
 | 档案查阅 | 查看教师档案 | `router.push('/admin/archive/teacher/:teacherId')` | 已闭环到页面 |
 | 档案详情 | 来源详情抽屉 | 页面内打开抽屉；栏目入口按当前栏目合并 `archiveStore.teacherArchiveFacts` 来源记录，已入档事实卡片入口按当前点击的 `fact.id` 精确过滤来源记录 | 已完成本地事实来源过滤 |
+| 档案详情 | 导出 PDF | 调用 `createTeacherArchiveExportRecord()` 写入 `archiveStore.exportRecords`，并继续生成本地 mock 文本文件 | 已形成本地导出记录闭环，不再只是前端降级示例 |
 
 ### 4.5 第一批修复顺序
 
 成长档案主链本地闭环已完成。后续工程重构阶段再处理：
 
-1. 档案处理详情面板“确认入档 / 再次退回 / 标记异常 / 查看补充说明”、导入资料上传页“选择文件 / 从本地文件夹导入 / 删除 / 取消 / 开始识别资料”、导入批次详情底部“返回档案处理 / 取消本次任务 / 刷新状态 / 查看上传文件 / 确认识别结果”、档案查阅页“搜索 / 重置 / 查看成长档案”和教师档案详情页“返回档案查询 / 打印 / 导出 PDF / 关闭 / 查看来源记录 / 查看记录详情”已按 F4 迁入公共 `Button`，确认入档、退回、异常处理、补充说明展示、上传资料选择与删除、创建导入批次、批次识别状态流转、档案筛选、教师档案详情跳转、来源过滤和记录详情反馈仍由现有 store、路由和页面函数承接；导出 PDF 仍是前端降级示例，不标记为正式导出闭环。
+1. 档案处理详情面板“确认入档 / 再次退回 / 标记异常 / 查看补充说明”、导入资料上传页“选择文件 / 从本地文件夹导入 / 删除 / 取消 / 开始识别资料”、导入批次详情底部“返回档案处理 / 取消本次任务 / 刷新状态 / 查看上传文件 / 确认识别结果”、档案查阅页“搜索 / 重置 / 查看成长档案”和教师档案详情页“返回档案查询 / 打印 / 导出 PDF / 关闭 / 查看来源记录 / 查看记录详情”已按 F4 迁入公共 `Button`，确认入档、退回、异常处理、补充说明展示、上传资料选择与删除、创建导入批次、批次识别状态流转、档案筛选、教师档案详情跳转、来源过滤、导出记录和记录详情反馈仍由现有 store、路由和页面函数承接；导出 PDF 当前生成本地导出记录和 mock 文本文件，真实导出服务后续替换。
 2. 教师档案事实的更正、退回、草稿状态留到后续业务审计细化。
 
 ## 5. 管理端：培训管理
@@ -260,6 +263,7 @@
 | 群体画像 | 查看完整建议 | 跳转 `/admin/ability-profile/teacher?focus=重点支持` | 已闭环到教师画像列表筛选 |
 | 群体画像 | 查看教师画像 | 教师对象跳转 `/admin/ability-profile/teacher/:teacherId` | 已闭环到教师画像详情 |
 | 群体画像 | 查看院系/专业画像 | 不新增独立画像页，保留在群体画像重点关注对象筛选态内定位当前对象 | 已闭环为页面内筛选态，不再提示降级 |
+| 群体画像 | 聚合画像数据 | `calculateAbilityProfileGroup()` 基于教师画像、`archiveStore.teacherArchiveFacts` 和 `abilityListStore.executionIndicators` 生成综合指数、雷达、维度分布和关注对象 | 已从固定静态 mock 升级为本地聚合口径 |
 | 教师画像列表 | 搜索、学院、职称、类型、关注筛选、分页 | 本页计算 `filteredTeachers`、`paginatedTeachers` 和页码状态 | 页面内闭环 |
 | 教师画像列表 | 进入画像 | `router.push('/admin/ability-profile/teacher/:teacherId')` | 已闭环到详情 |
 | 教师画像详情 | 按档案事实和执行版口径计算画像 | `calculateTeacherAbilityProfile()` 读取 `archiveStore.teacherArchiveFacts` 和 `abilityListStore.executionIndicators`，生成发展指数、雷达分、维度说明和支持方向证据 | 已补第一版真实计算关系 |
@@ -267,7 +271,7 @@
 
 ### 6.4 后续审计点
 
-1. 教师画像详情已通过 `calculateTeacherAbilityProfile()` 建立第一版计算口径：正式档案事实提供证据，能力清单执行版指标提供维度构成；群体画像仍使用 mock 聚合数据，后续可沿用同一计算函数扩展。
+1. 教师画像详情已通过 `calculateTeacherAbilityProfile()` 建立第一版计算口径：正式档案事实提供证据，能力清单执行版指标提供维度构成；群体画像已通过 `calculateAbilityProfileGroup()` 聚合教师画像、正式档案事实和执行版指标。
 2. 群体画像的院系/专业画像已决定保留为群体画像内筛选态；后续如需独立页，需先补真实院系/专业画像模型，不复用当前提示态。
 
 ## 7. 管理端：教学反思
@@ -324,6 +328,7 @@
 | 年度实践跟踪 | 教师年度 30 天实践完成情况、当前进展和最近动作 | `frontend/src/pages/admin/practice/PracticeTrackingPage.vue`、`practiceStore.ts` |
 | 实践记录 | 已开始或已结束的企业实践记录，包含材料状态和归档状态 | `frontend/src/pages/admin/practice/PracticeRecordPage.vue`、`practiceStore.ts` |
 | 档案待确认记录 | 企业实践归档后生成的成长档案待确认记录 | `frontend/src/stores/admin/archiveStore.ts` |
+| 实践导出任务 | 管理端导出年度实践跟踪名单或企业实践记录后的本地模拟任务 | `practiceStore.exportTasks` |
 
 ### 8.2 主流程
 
@@ -347,15 +352,18 @@
 | 申请处理 | 查看记录 | 已同意申请按 `applicationId` 跳转 `/admin/practice/records?recordId=...` | 已闭环到实践记录 |
 | 年度实践跟踪 | 提醒申请 | 调用 `remindPracticeApplication()` | 页面内闭环，保留完成天数不变 |
 | 年度实践跟踪 | 查看申请/记录 | 查看记录按教师跳转 `/admin/practice/records?recordId=...` | 已闭环到实践记录 |
+| 年度实践跟踪 | 导出名单 | 调用 `createPracticeExportTask()` 创建本地模拟导出任务，并按筛选结果完成或失败 | 已从纯提示升级为可追踪导出任务；真实导出服务后续替换 |
 | 实践记录 | 提醒补材料 | 调用 `remindPracticeMaterial()` | 页面内闭环 |
 | 实践记录 | 确认归档 | 调用 `confirmPracticeArchive()` | 已同步年度天数，并生成成长档案待确认处理记录；来源记录包含企业、实践周期、天数和岗位 |
 | 实践记录 | 查看档案 | 跳转 `/admin/archive/processing?recordId=practice-...`，档案处理页读取 `recordId` 选中待确认记录 | 已闭环到成长档案处理工作台 |
+| 实践记录 | 导出记录 | 调用 `createPracticeExportTask()` 创建本地模拟导出任务，并按筛选结果完成或失败 | 已展示导出中、已完成、失败状态；真实导出服务后续替换 |
 
 ### 8.4 后续审计点
 
 1. 当前企业实践记录归档后生成成长档案待确认记录，不直接入档，和培训管理口径保持一致。
 2. “查看档案”当前进入成长档案处理工作台待确认记录；管理端确认入档后，`teacherArchiveFacts.sourceRecordId` 可通过 `getArchiveSourceRecordsForFact()` 回到企业实践来源记录，来源字段已包含企业、实践周期、天数和岗位。
 3. 企业实践三页查看/定位类动作，以及同意、退回、提醒、确认归档和查看档案等动作均已按 F4 迁入公共 `Button`。
+4. 年度实践跟踪和实践记录导出已接入 `practiceStore.exportTasks` 本地模拟任务；页面展示最近导出状态、文件名、条数和失败原因，后续接真实导出服务时替换任务状态回写。
 
 ## 9. 管理端：虚拟教研
 
@@ -543,9 +551,9 @@
 | 页面 | 动作 | 当前实现 | 闭环判断 |
 | --- | --- | --- | --- |
 | 待办首页 | 查看全部待办 | `uni.navigateTo('/pages/todo/all/index')` | 已闭环到页面 |
-| 待办首页 | 去确认 | 读取 `getHomeTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；待核验/已入档/已移出后不再出现在待办列表 |
+| 待办首页 | 待办行动按钮 | 读取 `getHomeTodoItems()` 和 `getTodoActionUrl()`，按待办 `actionUrl` 进入证书详情、活动补充或反思草稿等页面 | 已闭环到对应业务入口；不再回退到 action 文案 toast；待核验/已入档/已移出后不再出现在待办列表 |
 | 待办首页 | 查看全部动态 | `uni.navigateTo('/pages/todo/dynamics/index')` | 已闭环到动态页 |
-| 全部待办 | 去确认 | 读取 `getVisibleTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；确认后进入待核验并从待办列表移出 |
+| 全部待办 | 待办行动按钮 | 读取 `getVisibleTodoItems()` 和 `getTodoActionUrl()`，按待办 `actionUrl` 进入证书详情、活动补充或反思草稿等页面 | 已闭环到对应业务入口；不再回退到 action 文案 toast；确认后进入待核验并从待办列表移出 |
 | 证书详情 | 信息有误，修改一下 | `uni.navigateTo('/pages/todo/certificate-edit/index')` | 已闭环到编辑页 |
 | 证书详情 | 确认是我的 | 调用 `confirmTodoCertificate()` 后进入 `certificate-archive-success` | 已完成证书确认到待核验的本地状态闭环，不直接入档 |
 | 证书详情 | 不是我的 | 调用 `removeTodoCertificate()` 后进入 `certificate-removed` | 已完成移出状态和移出原因记录；是否恢复按“联系部门重新核验”处理 |
@@ -559,17 +567,17 @@
 | 管理端确认入档同步 | 同步正式已入档 | `confirmTodoCertificateArchivedByAdmin()` 将待办和证书状态改为 `archived`，材料状态改为 `confirmed`，并生成“入档确认”动态 | 已明确只有管理端确认后才能进入已入档 |
 | 已移出待确认 | 返回待办 | `uni.navigateTo('/pages/todo/index')` | 已闭环到待办首页 |
 | 已移出待确认 | 查看其他待确认记录 | `uni.navigateTo('/pages/todo/all/index')` | 已闭环到全部待办 |
-| 全部动态 | 筛选动态 | `uni.navigateTo('/pages/todo/dynamics-filter/index')` | 已闭环到筛选页 |
-| 全部动态 | 查看动态 | 读取 `todoStore.todoDynamics` 分组展示 | 已由确认、修改、移出和材料动作生成 |
+| 全部动态 | 筛选动态 | 动态页和独立筛选页共享 `todoStore.dynamicFilter`，通过 `setTodoDynamicFilter()`、`resetTodoDynamicFilter()` 和 `getFilteredTodoDynamics()` 更新筛选结果 | 已闭环到本地筛选状态；时间、类型、分类筛选不再停留在 toast |
+| 全部动态 | 查看动态 | 读取 `getFilteredTodoDynamics()` 分组展示 | 已由确认、修改、移出和材料动作生成，并支持共享筛选结果 |
 
 ### 11.5 后续审计点
 
-1. 待办模块 9 张效果图和 9 个注册页面已基本对应；证书确认主链已由 `todoStore` 串起同一条待办记录，企业实践补充、培训证书补充、教学反思草稿和企业实践总结草稿已通过 `actionUrl` 接入跨模块待办入口。
+1. 待办模块 9 张效果图和 9 个注册页面已基本对应；证书确认主链已由 `todoStore` 串起同一条待办记录，企业实践补充、培训证书补充、教学反思草稿和企业实践总结草稿已通过 `actionUrl` 接入跨模块待办入口；待办首页和全部待办的行动按钮不再用 action 文案 toast 兜底。
 2. “确认是我的”当前进入 `certificate-archive-success` 兼容旧路由名，但状态已统一为 `pending-verify`；正式已入档只能由管理端确认后产生。
 3. “不是我的”当前已同步为 `removed` 并进入 `certificate-removed`，移出原因写入 `removeReason`；恢复口径为管理端复核后重新生成待确认记录。
 4. 编辑页提交后已同步为 `pending-verify` 并进入提交结果页；字段输入写回 `editableInfo`，提交记录写入 `submissionRecords`。
 5. 确认结果页的“查看待核验记录”当前进入统一记录详情页第一版；个人发展分类页已由统一分类页承接。
-6. 动态列表读取共享 `todoDynamics`，确认、提交修改、材料预览 / 更换、移出和管理端确认入档动作都会生成动态。
+6. 动态列表读取共享 `todoDynamics`，确认、提交修改、材料预览 / 更换、移出和管理端确认入档动作都会生成动态；动态页和筛选页共享 `dynamicFilter`，筛选、重置、查看结果均为真实本地状态动作。
 7. 手机端待办与管理端 `archiveStore.processingRecords` 的本地对齐口径已覆盖待确认、待核验、已入档、已移出；真实接口接入时应保留现有状态枚举和 `confirmTodoCertificateArchivedByAdmin()` 这一类管理端结果同步动作。
 
 ## 12. 教师手机端：档案
@@ -594,7 +602,7 @@
 | 档案记录 | 已入档、待确认、待核验、需补充、已移出、已更正 | `teacher-mobile/src/domain/archive.ts` 已统一 `archived`、`pending-verify`、`need-supplement`、`removed` 状态，首页、分类页、列表页、待确认列表和详情页按 `recordId` 读取同源数据 | 手机端档案真实状态回写已接入本地 domain；仍待真实接口同步 |
 | 档案分类 | 有记录、无记录、最近更新、需补充 | 分类卡片、分类概览页和记录列表页已从 `domain/archive.ts` 读取分类摘要和记录；首页统计由 `getArchiveOverviewStats()` 计算 | 已有分类到列表到详情的本地同源闭环，分类数量随记录状态计算 |
 | 档案查询 | 有结果、无结果、按分类筛选、关键词搜索 | 查询页调用 `searchArchiveRecords(queryText, selectedFilter)`，支持关键词、分类和无结果态 | 已接入真实搜索参数的本地实现 |
-| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；材料点击调用 `previewArchiveMaterial()` 展示真实附件服务未接入的降级提示；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写，材料预览已有明确降级入口 |
+| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；材料点击调用 `previewArchiveMaterial()` 返回标题、状态、来源和降级说明；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写，材料预览已有统一降级模型 |
 | 档案草稿 | 草稿、已提交核验 | `ArchiveDevelopmentPlanDraft` 由 `getArchiveDraftRecords()`、`saveArchiveDevelopmentPlanDraft()` 和 `submitArchiveDevelopmentPlanDraft()` 维护 | 已补发展计划草稿编辑第一版；提交后生成 `pending-verify` 档案记录，不直接入档 |
 | 入档结果 | 等待确认、待核验、已入档、归档失败、需补充 | 培训、待办证书和企业实践均为“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实 | 手机端归档结果已统一为先进入 `archiveStore.processingRecords`，管理端确认后才产生正式已入档 |
 | 档案更正 | 更正申请中、需补充、已通过、未通过 | 更正申请调用 `submitArchiveCorrection()` 生成真实更正记录；进度和结果页按 `correctionId` 读取，需补充会回写档案记录状态，补充材料调用 `submitArchiveCorrectionSupplement()` 并写入材料 `uploadStatus` | 已接入更正记录、补充材料上传状态和待核验状态；真实附件服务后续替换 |
@@ -650,7 +658,7 @@
 | 档案查询 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
 | 基本信息详情 | 查看来源记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=basic-info-teacher-profile')` | 已闭环到统一记录详情页，可查看同一档案事实的来源、材料和引用用途 |
 | 基本信息详情 | 申请更正 | `uni.navigateTo('/pages/archive/correction/apply/index?recordId=basic-info-teacher-profile')` | 已闭环到更正申请页第一版，后续生成待核验更正记录 |
-| 档案详情 / 基本信息详情 | 预览材料 | 调用 `previewArchiveMaterial(material)` 后 `uni.showToast` 展示降级说明 | 档案材料预览降级入口已补；真实附件服务后续替换 |
+| 档案详情 / 基本信息详情 | 预览材料 | 调用 `previewArchiveMaterial(material)` 后按 `title`、`status`、`source`、`fallback` 统一展示降级说明 | 档案材料预览统一降级模型已补；真实附件服务后续替换 |
 | 发展计划编辑 | 保存草稿 | 调用 `saveArchiveDevelopmentPlanDraft()` | 已写回本地草稿状态，不生成正式档案事实 |
 | 发展计划编辑 | 提交核验 | 调用 `submitArchiveDevelopmentPlanDraft()` 后进入 `/pages/archive/record-detail/index?recordId=...` | 已生成个人发展维度 `pending-verify` 档案记录，追溯 `archiveStore.processingRecords` |
 | 发展计划编辑 | 返回草稿 | `uni.navigateTo('/pages/archive/draft-list/index')` | 已闭环回草稿 / 待确认列表 |
@@ -692,7 +700,7 @@
 
 ### 12.6 后续审计点
 
-1. 档案 54 张效果图不是当前 13 个档案页面能覆盖的“一页多状态”；分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，档案材料预览降级入口已补，后续重点转为真实附件服务、真实接口和剩余来源详情。
+1. 档案 54 张效果图不是当前 13 个档案页面能覆盖的“一页多状态”；分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，档案材料预览统一降级模型已补，后续重点转为真实附件服务、真实接口和剩余来源详情。
 2. 当前档案首页的 8 个分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档直达统一记录详情；首页、分类、列表、待确认和详情已读取 `teacher-mobile/src/domain/archive.ts` 同源记录，后续重点转为接管理端 `archiveStore` 或真实接口。
 3. 当前档案查询页已读取 `domain/archive.ts`，支持本页筛选、清空关键词、无结果态和按 `recordId` 进入统一记录详情页第一版；搜索参数由 `searchArchiveRecords()` 承接。
 4. 待办证书、培训、企业实践、虚拟教研和 AI 助手补充档案的结果页已按 `recordId` 接入统一记录详情页第一版；AI 助手补充档案会生成 / 定位本地 `pending-verify` 记录，并通过 `processingQueueTrace` 明确追溯到 `archiveStore.processingRecords` 档案处理队列，培训归档也会先生成 / 定位本地 `pending-verify` 记录；后续替换为真实管理端接口。
@@ -719,9 +727,9 @@
 | --- | --- | --- |
 | 能力画像 | 前台模拟只读数据，展示发展指数、胜任级、维度分布、短板和推荐方向 | 已补我的主页到画像详情闭环；后续接真实画像计算 |
 | 画像用到的记录 | 前台模拟记录，证据强度分为强证据、一般证据、待补证据 | 已补画像记录到统一档案详情的下钻入口，不在本页修改档案事实 |
-| 个人发展报告 | 草稿已生成；导出和 AI 解读未接入真实能力 | 已补明确降级提示，不表现为空点击或已完成 |
+| 个人发展报告 | 草稿已生成；导出未接入真实文件能力，AI 解读进入能力画像 | 导出已补明确降级提示，不表现为空点击或已完成；AI 解读已闭环到能力画像页 |
 | 目标岗位对照 | 前台模拟专业带头人后备岗位匹配结果 | 已补从画像和报告进入，证据入口跳画像记录或档案详情 |
-| 聘期要求对照 | 前台模拟 2025-2027 聘期完成度和风险 | 已补从画像和报告进入；补充材料 / 去完成未接真实业务入口时给明确降级提示 |
+| 聘期要求对照 | 前台模拟 2025-2027 聘期完成度和风险 | 已补从画像和报告进入；补充材料 / 去完成按行动进入企业实践材料、虚拟教研活动或目标岗位对照 |
 
 #### 12.7.3 主流程
 
@@ -738,7 +746,7 @@
 → 查看个人发展报告
 → 查看依据记录
 → 进入目标岗位对照或聘期要求对照
-→ 未实现的导出 / AI 解读展示降级提示
+→ 导出报告展示明确降级提示，AI 解读进入能力画像
 ```
 
 #### 12.7.4 当前页面动作
@@ -751,10 +759,11 @@
 | 能力画像 | 查看目标岗位 / 聘期要求 / 发展报告 | 分别进入 `target-position`、`tenure-requirement`、`development-report` | 已闭环到对应页面 |
 | 画像用到的记录 | 查看档案详情 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一档案详情页 |
 | 个人发展报告 | 查看依据记录 | 进入画像记录页或统一档案详情页 | 已闭环到依据记录 |
-| 个人发展报告 | 导出报告 / AI 解读 | `uni.showToast()` 提示暂未接入 | 已明确降级，不标记为业务完成 |
+| 个人发展报告 | 导出报告 | `uni.showModal()` 展示本地报告暂未生成真实导出文件 | 已明确降级，不标记为业务完成 |
+| 个人发展报告 | AI 解读 | 进入 `/pages/profile/ability-profile/index?from=development-report` | 已闭环到能力画像解读入口 |
 | 目标岗位对照 | 查看证据 | 进入画像记录页或统一档案详情页 | 已闭环到证据入口 |
 | 聘期要求对照 | 查看证据 | 进入画像记录页或统一档案详情页 | 已闭环到证据入口 |
-| 聘期要求对照 | 补充材料 / 去完成 | `uni.showToast()` 提示暂未接入真实业务入口 | 已明确降级，不标记为业务完成 |
+| 聘期要求对照 | 补充材料 / 去完成 | 按行动进入 `/pages/activity/enterprise-advanced-search/index`、`/pages/activity/virtual-research-activity-list/index` 或 `/pages/profile/target-position/index?from=tenure-requirement` | 已闭环到对应材料补充、活动提交或风险对照入口 |
 
 ## 13. 教师手机端：培训活动
 
@@ -779,7 +788,7 @@
 | 推荐培训 | 可直接学习、需申请、已申请、已加入我的培训 | `teacher-mobile/src/domain/training.ts` 统一提供推荐资源，首页和列表读取同源数据 | 手机端培训活动闭环已接入；当前为对齐管理端 store 口径的本地 domain/store |
 | 我的培训 | 学习中、已结束、待总结、归档确认中、已入档 | `training.records` 驱动首页和列表；申请同意后可进入我的培训 | 已接入同一培训参与状态；“已入档”仍只允许档案确认后产生 |
 | 培训申请 | 已提交、业务部门确认中、已通过、未通过、已取消 | `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取状态；`syncMobileTrainingApplicationResult()` 承接管理端同意 / 未同意回写 | 已对齐 `trainingStore.applications` 待处理、已同意、未同意口径 |
-| 培训总结 | 草稿、材料待补、可提交归档、已提交归档 | 总结页读取 `training.records`，保存草稿、AI 优化、更换 / 上传材料均更新同一记录 | 已接入草稿和材料状态 |
+| 培训总结 | 草稿、材料待补、可提交归档、已提交归档 | 总结页读取 `training.records`，修改总结调用 `updateTrainingSummaryDraft()`，保存草稿、AI 优化、更换 / 上传材料均更新同一记录并回显 `operationMessage` | 已接入草稿和材料状态 |
 | 培训归档 | 材料已提交、归档确认中、已入档、需补充、未通过 | `submitTrainingArchive()` 先更新培训记录材料状态，再生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录 | 已保持“待确认 / 待核验”口径，对齐 `archiveStore.processingRecords`，不直接写成正式入档 |
 | 培训需求 | 待匹配、已匹配、暂不处理、已转培训申请 | `submitTrainingDemand()` 生成 `待匹配` 需求，两个结果页按 `demandId` 读取状态；`syncMobileTrainingDemandResult()` 承接管理端匹配 / 暂不处理 / 转申请回写 | 已对齐 `trainingStore.demands` 待匹配、已匹配、暂不处理和已转培训申请口径 |
 
@@ -834,9 +843,9 @@
 | 培训申请结果 | 返回培训进修 | `uni.navigateTo('/pages/activity/training-list/index')` | 已闭环到培训列表 |
 | 培训申请结果 | 返回活动首页 | `uni.redirectTo('/pages/activity/index')` | 已闭环到活动首页 |
 | 培训总结 | 查看原学习记录 | 提示原学习记录已用于当前总结 | 明确降级入口，不再是空操作 |
-| 培训总结 | 修改总结 / 让 AI 再优化 | 调用 `saveTrainingSummaryDraft()` / `optimizeTrainingSummary()` | 已接入草稿和 AI 优化状态 |
+| 培训总结 | 修改总结 / 让 AI 再优化 | 调用 `updateTrainingSummaryDraft()` / `optimizeTrainingSummary()`，页面读取 `trainingState.operationMessage` 回显状态 | 已接入草稿内容和 AI 优化状态 |
 | 培训总结 | 更换材料 / 上传材料 | 调用 `uploadTrainingMaterial()` | 已接入材料上传状态 |
-| 培训总结 | 保存草稿 | 调用 `saveTrainingSummaryDraft()` | 已接入草稿状态 |
+| 培训总结 | 保存草稿 | 调用 `saveTrainingSummaryDraft()`，页面读取 `trainingState.operationMessage` 回显状态 | 已接入草稿状态 |
 | 培训总结 | 提交归档 | 调用 `submitTrainingArchive()`，携带档案 `recordId` 进入 `/pages/activity/training-archive-result/index` | 已先更新培训记录材料状态，再生成本地待核验档案记录 |
 | 培训归档结果 | 返回培训进修 | `uni.navigateTo('/pages/activity/training/index')` | 已闭环到培训首页 |
 | 培训归档结果 | 查看提交内容 | 按 `recordId` 进入 `/pages/archive/record-detail/index` | 已闭环到统一记录详情页第一版，保持待确认状态 |
@@ -855,7 +864,7 @@
 | 推荐培训 | `trainingStore.resources` / 培训资源 | 手机端 `training.resources[*].adminStoreRefs` 标记 `trainingStore.resources`，页面读取同一 domain 数据 |
 | 培训申请 | `trainingStore.applications` / 培训申请 | 手机端提交生成 `待处理` 申请，`syncMobileTrainingApplicationResult()` 承接管理端同意 / 未同意状态回写 |
 | 我的培训 | `trainingStore.plans` / 培训计划参与名单 | `approveMobileTrainingApplication()` 会生成我的培训记录，用于模拟管理端同意后的手机端状态 |
-| 培训总结和证书材料 | `trainingStore.records` / 培训记录材料 | 总结草稿、AI 优化、材料上传和提交归档均更新同一培训记录 |
+| 培训总结和证书材料 | `trainingStore.records` / 培训记录材料 | 修改总结、总结草稿、AI 优化、材料上传和提交归档均更新同一培训记录 |
 | 培训归档结果 | `archiveStore.processingRecords` / 成长档案待确认记录 | `submitTrainingArchive()` 生成 `archiveTraces`，状态为 `待确认`，不直接进入 `teacherArchiveFacts` |
 | 培训需求 | `trainingStore.demands` / 培训需求 | 手机端需求提交生成 `待匹配` 需求，`syncMobileTrainingDemandResult()` 承接管理端匹配 / 暂不处理 / 转申请回写 |
 
@@ -886,7 +895,7 @@
 | 对象 | 应有状态 | 当前前端状态 | 判断 |
 | --- | --- | --- | --- |
 | 反思记录 | 草稿、AI 整理中、待确认、已确认、可补充、待入档确认 | `teacher-mobile/src/domain/reflection.ts` 统一维护记录状态 | 手机端教学反思闭环已接入第一版：确认后写入 `reflectionStore.records` 对齐引用 |
-| 反思依据 | 已发现、已选择、已补充、已解析、已移除 | 课程、课次、阶段和自主反思页调用 `selectReflectionEvidence()` / `addReflectionMaterial()` | 已形成共享依据集合，真实上传和解析状态后续接接口 |
+| 反思依据 | 已发现、已选择、已补充、已解析、已移除 | 课程、课次、阶段、自主反思和 AI 对话页调用 `selectReflectionEvidence()` / `addReflectionMaterial()`，草稿页读取同一依据集合 | 已形成共享依据集合，真实上传和解析状态后续接接口 |
 | AI 会话 | 进行中、已整理线索、已生成草稿 | 引导页和自主对话页调用 `startReflectionAiSession()`，生成草稿前调用 `saveReflectionDraft()` | 已持久化到本地反思 domain |
 | 反思草稿 | 已生成、已修改、已保存、已确认 | 草稿页修改、补充想法、AI 优化、保存和确认均写入 domain | 主草稿动作已闭环 |
 | 档案沉淀 | 待沉淀、待确认、已入档 | `confirmReflection()` 调用 `createTeachingReflectionArchiveRecord()` 生成带 `processingQueueTrace` 的 `pending-verify` 档案记录 | 已生成 `archiveStore.processingRecords` 待确认记录，不直接入档 |
@@ -929,18 +938,19 @@
 | 反思开始 | 录制课堂音频 / 上传教学资料 / 直接与 AI 对话 | 分别调用 `startReflection('audio'|'material'|'chat')` | 已写入开始方式和材料状态 |
 | 反思开始 | 最近草稿继续完善 | 进入 `reflection-draft` | 已闭环 |
 | 学期课程范围 | 开始 AI 引导反思 | 调用 `selectReflectionCourse()` 后进入依据页 | 已写入课程状态 |
-| 学期课程范围 | 切换课程 | 调用 `selectReflectionCourse()` 并提示当前课程 | 已接本地选择状态 |
-| 学期课程范围 | 上传教学资料 / 录制课堂音频 / 直接与 AI 对话 | 调用 `addReflectionMaterial()` 或进入 AI 对话 | 已接材料 / 会话状态 |
+| 学期课程范围 | 切换课程 | 调用 `selectReflectionCourse()` 并在底部状态区回显 | 已接本地选择状态 |
+| 学期课程范围 | 上传教学资料 / 录制课堂音频 / 直接与 AI 对话 | 调用 `addReflectionMaterial()` 或进入 AI 对话，依据数量读取同一反思记录 | 已接材料 / 会话状态 |
 | 单次课依据 | 开始 AI 引导反思 | 调用 `selectReflectionLesson()` 和 `selectReflectionEvidence()` 后进入阶段范围页 | 已写入课次和依据 |
 | 单次课依据 | 切换课次 | 调用 `selectReflectionLesson()` | 已接本地选择状态 |
-| 单次课依据 | 上传教学资料 / 录制课堂音频 / 直接与 AI 对话 | 调用 `addReflectionMaterial()` 或进入 AI 对话 | 已接材料 / 会话状态 |
-| 阶段范围 | 开始 AI 引导反思 | 调用 `selectReflectionEvidence()` 后进入自主反思页 | 已写入阶段依据；页面承接关系后续仍需重整 |
+| 单次课依据 | 上传教学资料 / 录制课堂音频 / 直接与 AI 对话 | 调用 `addReflectionMaterial()` 或进入 AI 对话，依据数量读取同一反思记录 | 已接材料 / 会话状态 |
+| 阶段范围 | 开始 AI 引导反思 | 调用 `selectReflectionEvidence()` 后进入自主反思页 | 已写入阶段依据 |
+| 阶段范围 | 切换月份 / 上传教学资料 / 录制课堂音频 | 调用 `selectReflectionLesson()` / `addReflectionMaterial()`，依据数量读取同一反思记录 | 已接阶段范围和材料状态 |
 | 自主反思 | 开始 AI 对话 | 调用 `startReflectionAiSession()` 后进入 AI 对话 | 已闭环到会话状态 |
-| 自主反思 | 上传材料 / 关联课程 / 补充资料 | 补充材料调用 `addReflectionMaterial()` | 已接本地材料集合 |
+| 自主反思 | 上传材料 / 关联课程 / 补充资料 | 补充材料调用 `addReflectionMaterial()`，关联课程调用 `selectReflectionCourse()`，底部材料数读取同一依据集合 | 已接本地材料集合 |
 | AI 引导会话 | 生成反思草稿 | 调用 `startReflectionAiSession()` 和 `saveReflectionDraft()` 后进入草稿页 | 已闭环到草稿页 |
 | AI 引导会话 | 查看 / 添加依据 | 无 `@tap` 绑定 | 仅视觉态 |
 | 自主 AI 对话 | 生成反思草稿 | 调用 `startReflectionAiSession()` 和 `saveReflectionDraft()` 后进入草稿页 | 已闭环到草稿页 |
-| 自主 AI 对话 | 更换关联课程 / 继续输入 | 可补充材料，课程更换仍为后续项 | 部分闭环 |
+| 自主 AI 对话 | 更换关联课程 / 补充材料 | 分别调用 `selectReflectionCourse()` / `addReflectionMaterial()`，页面回显已添加材料数 | 已接课程和材料状态 |
 | 草稿编辑 | 确认反思 | 调用 `confirmReflection()` 后进入成功页 | 已生成反思记录和档案待确认 |
 | 草稿编辑 | 修改草稿 / 补充一句想法 / 重新让 AI 优化 | 调用 `saveReflectionDraft()` / `optimizeReflectionDraft()` | 已闭环 |
 | 草稿编辑 | 保存草稿 | 调用 `saveReflectionDraft()` | 已闭环 |
@@ -991,7 +1001,7 @@
 | 实践计划 | 草稿、待审核、已同意、退回修改 | 计划提交、确认、编辑页调用 `teacher-mobile/src/domain/enterprise.ts` | 手机端企业实践闭环已接入第一版：提交生成 `practiceStore.applications` 待审核申请 |
 | 企业实践记录 | 进行中、待归档、归档确认中、需补充、已归档 | 概览 / 列表筛选读取 `filteredEnterpriseRecords()`，操作入口按状态跳转 | 已接入同一记录状态，归档和补充会写入 `practiceStore.records` 追踪引用 |
 | 实践日志 | 草稿、已保存、已归档 | 日志记录页保存草稿 / 保存日志调用 `saveEnterpriseLogDraft()`、`saveEnterpriseLog()` | 已写入同一实践记录，后续仍需补日志列表数据源 |
-| 证明材料 | 待上传、已上传、待补充、已退回补充、已确认 | 补充材料重新提交调用 `submitEnterpriseSupplement()`，写入 `MobileEnterpriseMaterial.uploadStatus` 和 `verificationStatus` | 企业实践补充材料对象和核验历史已接入本地 domain；真实附件上传服务后续替换 |
+| 证明材料 | 待上传、已上传、待补充、已退回补充、已确认 | 上传 / 补充材料调用 `addEnterpriseSupplementMaterial()`，补充材料重新提交调用 `submitEnterpriseSupplement()`，写入 `MobileEnterpriseMaterial.uploadStatus` 和 `verificationStatus` | 企业实践补充材料对象和核验历史已接入本地 domain；真实附件上传服务后续替换 |
 | 归档提交 | 待确认、需补充、已入档、已归档 | 总结与材料确认、归档编辑调用 `submitEnterpriseArchive()` | 已生成 `archiveStore.processingRecords` 待确认记录，不直接变成正式入档事实 |
 | 历史实践补录 | 草稿、待确认、需补充、已确认 | 历史补录保存草稿 / 提交确认调用 `submitEnterpriseHistory()`，结果页可回列表和档案详情 | 已接入实践记录和档案待确认记录，管理端确认后才计入正式档案事实 |
 
@@ -1040,10 +1050,12 @@
 | 实践计划退回 / 编辑 | 修改计划并重新提交、保存草稿、重新提交、补充资料 | 退回页进入编辑页；编辑页保存草稿 / 重新提交调用统一计划动作 | 主状态流转已补 |
 | 实践进行中详情 | 去记录、查看详情、查看全部、补充资料 | 页面展示入口，未见真实跳转；`enterprise-workflow-config` 承接已归档日志详情，不作为管理端工作流配置页 | 日志详情兼容路由名边界已核对；进行中详情入口后续继续补真实跳转 |
 | 日志记录 | 保存草稿、保存日志 | 调用 `saveEnterpriseLogDraft()`、`saveEnterpriseLog()` | 已补日志状态写入 |
-| 总结与材料确认 | 查看日志、修改草稿、重新整理、补充资料、保存草稿、提交归档 | 保存草稿 / 提交归档调用 `saveEnterpriseArchiveDraft()`、`submitEnterpriseArchive()` | 主归档动作已补 |
+| 总结与材料确认 | 查看日志、修改草稿、重新整理、补充资料、保存草稿、提交归档 | 查看日志进入 `enterprise-workflow-config` 日志详情；修改 / 重新整理 / 保存调用 `saveEnterpriseArchiveDraft()`；补充资料调用 `addEnterpriseSupplementMaterial()`；提交归档调用 `submitEnterpriseArchive()` | 归档前材料和草稿动作已补 |
+| 日志详情 | 附件查看 / 返回实践日志 | 附件查看为本地附件服务降级提示；返回实践日志调用 `uni.navigateBack()` | 已补真实返回入口 |
 | 归档提交结果 | 返回实践列表、查看档案待确认、查看提交内容 | `enterprise-archive-result` 生成 / 定位 `pending-verify` 档案记录，可进入档案记录详情和档案待确认列表 | 已补本地档案待确认闭环，并由企业实践 domain 同步实践记录状态 |
 | 等待入档确认结果 | 返回首页、查看档案待确认、查看提交内容 | 返回活动首页；查看档案待确认进入 `pages/archive/draft-list/index`；查看提交内容进入 `pages/archive/record-detail/index` | 已闭环到活动首页、档案待确认列表和统一记录详情页第一版，不直接写真实实践档案事实 |
-| 需补充材料 | 去补充材料、重新提交 | 重新提交调用 `submitEnterpriseSupplement()`，结果页可进入档案记录详情和档案待确认列表 | 已补材料对象、待核验状态和处理历史写入 |
+| 需补充材料 | 上传证明、稍后处理、提交补充 | 上传调用 `addEnterpriseSupplementMaterial()`；稍后处理调用 `saveEnterpriseArchiveDraft()` 后返回；提交补充调用 `submitEnterpriseSupplement()`，结果页可进入档案记录详情和档案待确认列表 | 已补材料对象、待核验状态和处理历史写入 |
+| 档案草稿编辑 | 修改字段、去补充材料、返回草稿、保存修改 | 修改字段和返回草稿调用 `saveEnterpriseArchiveDraft()`；去补充材料进入 `enterprise-advanced-search`；保存修改调用 `submitEnterpriseArchive()` | 已补草稿修改和补充入口 |
 | 历史实践补录 | 保存草稿、提交确认 | 调用 `saveEnterpriseArchiveDraft()`、`submitEnterpriseHistory()` | 已补本地提交状态 |
 | 历史实践已确认 | 返回实践列表、查看企业实践档案 | 分别进入企业实践列表和统一档案详情页 | 已补真实入口 |
 
@@ -1064,7 +1076,7 @@
 1. 手机端企业实践闭环已接入第一版；新增 `teacher-mobile/src/domain/enterprise.ts`，用手机端 domain 对齐 `practiceStore.applications`、`practiceStore.records` 和 `archiveStore.processingRecords`，不直接复用管理端 Vue store。
 2. 计划提交、计划通过/退回、日志保存、归档草稿、提交归档、补充材料和历史补录已形成本地状态流转；后续需要把本地 domain 替换为真实接口。
 3. 归档等待确认和补充提交结果会生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录；仍坚持管理端确认后才产生正式 `teacherArchiveFacts`。
-4. 企业实践补充材料对象和核验历史已接入本地 domain；补充提交会建立 / 更新 `MobileEnterpriseMaterial`，写入待核验状态并追加处理历史，后续只需替换真实附件上传和管理端核验接口。
+4. 企业实践补充材料对象和核验历史已接入本地 domain；上传材料调用 `addEnterpriseSupplementMaterial()` 只写入实践记录材料和处理历史，补充提交调用 `submitEnterpriseSupplement()` 生成待确认档案记录，后续只需替换真实附件上传和管理端核验接口。
 5. 企业实践兼容路由名边界已核对：`enterprise-import-export` 当前承接“实践计划已提交 / 学院确认中”结果态，`enterprise-workflow-config` 当前承接“日志详情 / 归档说明”详情态；本轮不重命名路由，避免破坏 `pages.json` 注册和既有入口，后续若做路由重命名需同步旧入口跳转、台账和验证脚本。
 
 ## 16. 教师手机端：虚拟教研
@@ -1091,12 +1103,12 @@
 | 教研室邀请 | 待确认、已加入、暂不加入、已失效 | 邀请页调用 `confirmResearchInvitation()` / `declineResearchInvitation()` | 手机端虚拟教研闭环已接入第一版：邀请状态写入 `virtualLabStore.rooms` 对齐口径 |
 | 教研室成员关系 | 已加入、待退出、已退出 | “我的教研室”读取 `getMobileVirtualResearchState()` | 已用本地成员状态承接，后续替换为真实成员接口 |
 | 教研活动 | 进行中、待确认贡献、需补充、等待归档、已归档 | 活动列表读取 `filteredResearchActivities()`，筛选调用 `setVirtualResearchFilter()` | 已接入活动筛选和状态入口，对齐 `virtualLabStore.activities` |
-| 阶段材料 | 草稿、待提交、已提交、需补充、已归档 | 阶段材料页调用 `addStageMaterial()`、`saveStageMaterialDraft()` / `submitStageMaterial()` | 上传 / 拍照已写入阶段材料集合，保存和提交会同步材料状态，真实上传进度仍为后续接口项 |
+| 阶段材料 | 草稿、待提交、已提交、需补充、已归档 | 阶段材料页调用 `addStageMaterial()`、`saveStageMaterialDraft()` / `submitStageMaterial()` | 上传 / 拍照 / 语音已写入阶段或补充材料集合，保存和提交会同步材料状态，真实上传进度仍为后续接口项 |
 | 个人贡献 | 待识别、待确认、已确认、已提交、被退回、已归档 | 贡献确认页调用 `confirmContribution()` / `rejectContribution()`，多个效果图页通过 `contributionPageStateMap` 映射到同一贡献确认状态机 | 虚拟教研贡献确认页状态机已明确，对齐 `virtualLabStore.records` |
-| 活动 / 贡献材料预览 | 可预览、附件服务待接入 | `previewVirtualResearchMaterial()` | 虚拟教研材料预览降级入口已接入活动详情和贡献详情；真实附件服务后续替换 |
-| 归档 | 等待归档、需补充、已归档、已生成档案待确认 | 归档结果页调用 `submitVirtualResearchArchive()` | 先形成 `virtualLabStore.records` 教研记录，再生成带 `processingQueueTrace` 的 `archiveStore.processingRecords` 待确认记录 |
+| 活动 / 贡献材料预览 | 可预览、附件服务待接入 | `previewVirtualResearchMaterial()`；来源由 `VirtualResearchEvidenceSourceKey` / `VirtualResearchSourceTrace` 统一标记 | 虚拟教研材料预览降级入口和材料来源模型已补；真实附件服务后续替换 |
+| 归档 | 等待归档、需补充、已归档、已生成档案待确认 | 归档结果页调用 `submitVirtualResearchArchive()`，并把 `getVirtualResearchSourceTraces()` 写入档案待确认记录 | 先形成 `virtualLabStore.records` 教研记录，再生成带 `processingQueueTrace` 和来源材料追溯的 `archiveStore.processingRecords` 待确认记录 |
 | 教研记录 | 已形成记录、未形成记录、记录异常 | 结果页可进入统一档案记录详情页 | 已补查看入口，正式档案事实仍需管理端确认后产生 |
-| 虚拟教研成员资料 | 虚拟教研成员资料、我的资料 | `domain/virtualResearch.ts` 通过 `memberProfileScope` 标记虚拟教研成员资料归属 | 虚拟教研成员资料归属已判定：成员资料只服务教研室成员展示、邀请和贡献确认，不直接写入成长档案正式事实；年度发展报告归属我的资料 |
+| 虚拟教研成员资料 | 虚拟教研成员资料、我的资料 | `domain/virtualResearch.ts` 通过 `memberProfileScope` 标记归属，并用 `recordMemberProfileAction()` 记录成员资料页动作 | 虚拟教研成员资料归属和动作边界已判定：成员资料只服务教研室成员展示、邀请、贡献确认和材料查看，不直接写入成长档案正式事实；年度发展报告归属我的资料 |
 
 ### 16.3 主流程
 
@@ -1133,19 +1145,19 @@
 | 页面 | 动作 | 当前实现 | 当前判断 |
 | --- | --- | --- | --- |
 | 我的教研室 | 查看邀请、确认贡献、进入教研室、全部教研活动 | `virtual-research-role-assignment` 和 `virtual-research-position-management` 分别进入邀请、贡献确认、教研室状态和活动列表页；我的教研室看板状态页入口已接真实路由 | 主入口已闭环 |
-| 教研室邀请 | 确认加入、暂不加入、查看近期活动 | 确认 / 暂不加入写入邀请状态并跳转 | 已形成成员关系状态 |
+| 教研室邀请 | 确认加入、暂不加入、查看近期活动、贡献待确认 | 确认 / 暂不加入写入邀请状态并跳转；近期活动进入活动列表；贡献待确认进入贡献确认页 | 已形成成员关系状态和真实入口 |
 | 已加入教研室 | 返回我的教研室、去确认贡献、待确认贡献卡片 | 进入 `/pages/activity/virtual-research-room/index` 和 `/pages/activity/virtual-research-confirm-contribution/index` | 已加入教研室返回和待确认贡献入口已接真实路由 |
-| 教研活动列表 | 筛选、去确认、确认贡献、查看详情、补充材料、查看记录 | 筛选写入状态，动作进入贡献确认、进行中详情、补充材料或档案详情 | 主列表动作已闭环 |
+| 教研活动列表 | 筛选、了解规则、去确认、确认贡献、查看详情、补充材料、查看记录 | 筛选写入状态；了解规则展示本地规则降级说明；动作进入贡献确认、进行中详情、补充材料或档案详情 | 主列表动作已闭环 |
 | 活动进行中详情 | 进入会议、返回教研室、提交阶段材料 | 进入会议调用 `openVirtualResearchMeeting()` 定位活动会议入口并保留 `virtualLabStore.activities` 追溯，当前为真实会议 SDK 待接入的统一降级说明；返回教研室和提交材料为真实路由 | 主操作已闭环 |
 | 阶段材料提交 | 上传、拍照、保存草稿、提交材料 | 上传 / 拍照调用 `addStageMaterial()` 写入阶段材料集合；保存草稿 / 提交材料写入阶段材料状态 | 已生成阶段材料集合和状态 |
 | 阶段材料已提交 | 返回教研室、查看活动详情 | 进入我的教研室和活动详情 | 已闭环 |
-| 贡献确认页 | 补充遗漏、不是我的、确认贡献 | `virtual-research-confirm-contribution` 承接待确认动作页，`virtual-research-contribution-confirm` 承接待确认详情页，`virtual-research-activity-detail-confirm` 承接完整贡献确认页；待确认详情页和完整贡献确认页已接同一贡献确认状态机，补充进入补充材料页，确认调用 `confirmContribution()`；补充遗漏贡献页已接补充材料集合、草稿和提交状态 | 虚拟教研贡献确认页状态机已明确，暂保留多页承接不同效果图 |
+| 贡献确认页 | 语音 / 拍照 / 上传、补充遗漏、不是我的、确认贡献、查看全部、材料项 | `virtual-research-confirm-contribution` 承接待确认动作页，语音 / 拍照 / 上传调用 `addSupplementMaterial()`；`virtual-research-contribution-confirm` 承接待确认详情页；`virtual-research-activity-detail-confirm` 承接完整贡献确认页，贡献项进入贡献详情，材料项调用 `previewVirtualResearchMaterial()` 降级预览；贡献来源用 `sourceKeys` 和 `formatVirtualResearchSourceLine()` 展示；补充进入补充材料页，确认调用 `confirmContribution()`；补充遗漏贡献页已接补充材料集合、草稿和提交状态 | 虚拟教研贡献确认页状态机和材料来源模型已明确，暂保留多页承接不同效果图 |
 | 贡献确认已提交 | 返回教研室、查看提交内容 | 进入我的教研室和贡献详情 | 已闭环 |
-| 补充材料页 | 上传资料、拍照、保存草稿、重新提交 | 补充材料上传 / 拍照调用 `addSupplementMaterial()` 写入补充材料集合；保存草稿 / 重新提交写入补充材料状态 | 已生成补充材料集合和补充提交状态 |
-| 归档结果页 | 返回教研室、查看教研记录、查看成长档案去向 | 调用 `submitVirtualResearchArchive()`，并进入教研室或统一档案详情页 | 已按“先教研记录、后档案待确认”闭环 |
+| 补充材料页 | 上传资料、拍照、语音、保存草稿、重新提交 | 补充材料上传 / 拍照调用 `addSupplementMaterial()` 写入补充材料集合；语音同样调用 `addSupplementMaterial()` 写入补充材料集合；保存草稿 / 重新提交写入补充材料状态 | 已生成补充材料集合和补充提交状态 |
+| 归档结果页 | 返回教研室、查看教研记录、查看成长档案去向 | 调用 `submitVirtualResearchArchive()`，并进入教研室或统一档案详情页；归档待确认记录写入“来源材料”和来源材料附件列表 | 已按“先教研记录、后档案待确认”闭环，并可追溯会议纪要、任务分工、发言摘录、阶段材料和个人贡献 |
 | 已归档确认页 | 返回教研室、查看教研记录 | 进入我的教研室和统一档案详情页 | 已闭环 |
 | 贡献详情 / 记录详情 | 查看材料、返回教研记录 | 材料调用 `previewVirtualResearchMaterial()` 降级预览，返回进入 `/pages/archive/record-detail/index?recordId=virtual-research-course-case-meeting` | 贡献详情和记录详情材料预览及返回教研记录已接真实入口 |
-| 资料归属页 | 成员资料展示、贡献详情、补充遗漏、我的教研室、年度发展报告 | 页面显示“虚拟教研成员资料”或“我的资料 / 个人发展报告”归属标签 | 已判定归属；不把个人发展报告并入虚拟教研主流程，也不把虚拟教研成员资料直接写成档案事实 |
+| 资料归属页 | 成员资料展示、贡献详情、补充遗漏、我的教研室、年度发展报告 | 页面显示“虚拟教研成员资料”或“我的资料 / 个人发展报告”归属标签；成员资料页动作调用 `recordMemberProfileAction()`、真实路由或 `previewVirtualResearchMaterial()` | 已判定归属并补动作边界；不把个人发展报告并入虚拟教研主流程，也不把虚拟教研成员资料直接写成档案事实 |
 
 ### 16.5 跨端对齐口径
 
@@ -1163,11 +1175,11 @@
 ### 16.6 后续审计点
 
 1. 手机端虚拟教研闭环已接入第一版；新增 `teacher-mobile/src/domain/virtualResearch.ts`，对齐 `virtualLabStore.rooms`、`virtualLabStore.activities`、`virtualLabStore.records` 和 `archiveStore.processingRecords`，不直接复用管理端 Vue store。
-2. “我的教研室”、邀请确认、活动列表筛选、活动会议入口、阶段材料、贡献确认、补充材料、归档结果和已归档确认页已补主操作状态和真实跳转 / 统一降级入口。
+2. “我的教研室”、邀请确认、近期活动、活动列表筛选、活动规则说明、活动会议入口、阶段材料、贡献确认、语音 / 拍照 / 上传补充材料、贡献材料预览、归档结果和已归档确认页已补主操作状态和真实跳转 / 统一降级入口。
 3. 归档结果已统一为先形成教研记录，再生成带 `processingQueueTrace` 的成长档案待确认记录，管理端确认后才成为正式档案事实。
 4. 虚拟教研贡献确认页状态机已明确：`virtual-research-confirm-contribution` 为待确认动作页，`virtual-research-contribution-confirm` 为待确认详情页，`virtual-research-activity-detail-confirm` 为完整贡献确认页；三者暂不合并路由，均映射到同一贡献确认状态机和 `virtualLabStore.records`，其中待确认详情页和完整贡献确认页已接同一贡献确认状态机动作。
-5. 虚拟教研材料预览降级入口已接入活动进行中详情和贡献详情；阶段材料、会议纪要、任务分工、发言摘录和个人贡献之间尚未形成统一来源模型，真实附件服务后续替换。
-6. 虚拟教研成员资料归属已判定：`virtual-research-profile-intro-edit`、`virtual-research-position-management`、`virtual-research-work-experience-management`、`virtual-research-skill-management`、`virtual-research-role-assignment` 归属虚拟教研成员资料；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告。后续重命名路由时需同步 `pages.json`、入口、台账和守卫。
+5. 虚拟教研材料来源模型已补：`VirtualResearchEvidenceSourceKey` 覆盖会议纪要、任务分工、发言摘录、阶段材料和个人贡献，贡献确认和归档结果页面通过 `sourceKeys` / `formatVirtualResearchSourceLine()` 展示同一来源口径，归档待确认记录通过 `getVirtualResearchSourceTraces()` 写入来源材料和附件追溯；真实附件服务后续替换。
+6. 虚拟教研成员资料归属和动作边界已判定：`virtual-research-profile-intro-edit`、`virtual-research-position-management`、`virtual-research-work-experience-management`、`virtual-research-skill-management`、`virtual-research-role-assignment` 归属虚拟教研成员资料，动作只写 `memberProfileLastAction`、进入虚拟教研路由或走材料预览降级；`virtual-research-advanced-settings` 归属我的资料 / 个人发展报告。后续重命名路由时需同步 `pages.json`、入口、台账和守卫。
 
 ## 17. 手机端与管理端数据关系统一口径
 

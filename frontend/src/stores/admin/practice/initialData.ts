@@ -1,4 +1,4 @@
-import type { PracticeApplication, PracticeRecord, PracticeState, PracticeTracking } from '@/domain/admin/practice'
+import type { PracticeApplication, PracticeExportTask, PracticeRecord, PracticeState, PracticeTracking } from '@/domain/admin/practice'
 
 export const initialApplications: PracticeApplication[] = [
   {
@@ -213,6 +213,7 @@ export function createInitialPracticeState(): PracticeState {
     applications: cloneApplications(initialApplications),
     trackings: cloneTrackings(initialTrackings),
     records: cloneRecords(initialRecords),
+    exportTasks: [],
     operationMessage: '',
   }
 }
@@ -227,4 +228,8 @@ export function cloneTrackings(trackings: PracticeTracking[]) {
 
 export function cloneRecords(records: PracticeRecord[]) {
   return records.map(item => ({ ...item }))
+}
+
+export function cloneExportTasks(tasks: PracticeExportTask[]) {
+  return tasks.map(item => ({ ...item }))
 }

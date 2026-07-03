@@ -17,6 +17,10 @@ function goBack() {
 function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
+
+function goEnterpriseLogList() {
+  uni.navigateBack()
+}
 </script>
 
 <template>
@@ -131,7 +135,7 @@ function showToast(title: string) {
         </text>
       </MobileCard>
 
-      <MobileActionButton class="return-button" variant="primary" @tap="showToast('返回实践日志')">
+      <MobileActionButton class="return-button" variant="primary" @tap="goEnterpriseLogList">
         返回实践日志
       </MobileActionButton>
     </view>

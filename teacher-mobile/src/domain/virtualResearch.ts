@@ -6,9 +6,23 @@ export type VirtualResearchFilter = '全部' | VirtualResearchActivityStatus
 export type VirtualResearchInvitationStatus = '待确认' | '已加入' | '暂不加入'
 export type VirtualResearchContributionStatus = '待确认' | '已确认' | '不是我的' | '需补充' | '已提交'
 export type VirtualResearchMaterialStatus = '草稿' | '已提交' | '需补充'
-export type VirtualResearchStageMaterialSource = '上传' | '拍照'
+export type VirtualResearchStageMaterialSource = '上传' | '拍照' | '语音'
+export type VirtualResearchEvidenceSourceKey =
+  | 'meeting-minutes'
+  | 'task-assignment'
+  | 'speech-excerpt'
+  | 'stage-material'
+  | 'personal-contribution'
 export type VirtualResearchMemberProfileScope = '虚拟教研成员资料' | '我的资料'
 export type VirtualResearchContributionPageState = '待确认动作页' | '待确认详情页' | '完整贡献确认页'
+
+export type VirtualResearchSourceTrace = {
+  key: VirtualResearchEvidenceSourceKey
+  name: string
+  materialName: string
+  status: '已同步' | '已关联' | '已确认' | '已归档'
+  adminStoreRefs: string[]
+}
 
 export type VirtualResearchActivity = {
   id: string
@@ -23,6 +37,7 @@ export type VirtualResearchContribution = {
   activityId: string
   title: string
   status: VirtualResearchContributionStatus
+  sourceKeys: VirtualResearchEvidenceSourceKey[]
   adminStoreRefs: string[]
 }
 
@@ -42,6 +57,7 @@ export type MobileVirtualResearchState = {
   roomAdminStoreRefs: string[]
   memberProfileScope: VirtualResearchMemberProfileScope
   memberProfileScopeNote: string
+  memberProfileLastAction: string
   materialStatus: VirtualResearchMaterialStatus
   stageMaterials: VirtualResearchStageMaterial[]
   supplementMaterials: VirtualResearchStageMaterial[]
@@ -68,6 +84,44 @@ export const contributionPageStateMap: Record<string, VirtualResearchContributio
   'virtual-research-activity-detail-confirm': '完整贡献确认页',
 }
 
+export const virtualResearchSourceTraceMap: Record<VirtualResearchEvidenceSourceKey, VirtualResearchSourceTrace> = {
+  'meeting-minutes': {
+    key: 'meeting-minutes',
+    name: '会议纪要',
+    materialName: '会议纪要.pdf',
+    status: '已归档',
+    adminStoreRefs: ['virtualLabStore.records'],
+  },
+  'task-assignment': {
+    key: 'task-assignment',
+    name: '任务分工',
+    materialName: '任务分工记录.xlsx',
+    status: '已归档',
+    adminStoreRefs: ['virtualLabStore.activities', 'virtualLabStore.records'],
+  },
+  'speech-excerpt': {
+    key: 'speech-excerpt',
+    name: '发言摘录',
+    materialName: '发言摘录.docx',
+    status: '已归档',
+    adminStoreRefs: ['virtualLabStore.records'],
+  },
+  'stage-material': {
+    key: 'stage-material',
+    name: '阶段材料',
+    materialName: '阶段材料.pdf',
+    status: '已关联',
+    adminStoreRefs: ['virtualLabStore.activities'],
+  },
+  'personal-contribution': {
+    key: 'personal-contribution',
+    name: '个人贡献',
+    materialName: '个人贡献记录',
+    status: '已确认',
+    adminStoreRefs: ['virtualLabStore.records'],
+  },
+}
+
 const defaultActivityId = 'virtual-research-course-resource'
 const defaultContributionId = 'virtual-research-course-resource-contribution'
 
@@ -78,6 +132,7 @@ const state = reactive<MobileVirtualResearchState>({
   roomAdminStoreRefs: ['virtualLabStore.rooms'],
   memberProfileScope: '虚拟教研成员资料',
   memberProfileScopeNote: '虚拟教研成员资料只服务教研室成员展示、邀请和贡献确认，不直接写入成长档案正式事实；个人发展报告归属我的资料。',
+  memberProfileLastAction: '',
   materialStatus: '草稿',
   stageMaterials: [
     {
@@ -126,6 +181,7 @@ const state = reactive<MobileVirtualResearchState>({
       activityId: defaultActivityId,
       title: '设备调试案例整理',
       status: '待确认',
+      sourceKeys: ['stage-material', 'meeting-minutes'],
       adminStoreRefs: ['virtualLabStore.records'],
     },
   ],
@@ -134,6 +190,20 @@ const state = reactive<MobileVirtualResearchState>({
 
 export function getMobileVirtualResearchState(): MobileVirtualResearchState {
   return state
+}
+
+export function recordMemberProfileAction(action: string): string {
+  state.memberProfileLastAction = action
+  state.operationMessage = `虚拟教研成员资料已记录：${action}`
+  return state.memberProfileLastAction
+}
+
+export function getVirtualResearchSourceTraces(sourceKeys: VirtualResearchEvidenceSourceKey[]): VirtualResearchSourceTrace[] {
+  return sourceKeys.map((key) => virtualResearchSourceTraceMap[key])
+}
+
+export function formatVirtualResearchSourceLine(sourceKeys: VirtualResearchEvidenceSourceKey[]): string {
+  return getVirtualResearchSourceTraces(sourceKeys).map((trace) => trace.name).join('、')
 }
 
 export function setVirtualResearchFilter(filter: VirtualResearchFilter): VirtualResearchFilter {
@@ -181,9 +251,9 @@ export function submitStageMaterial(activityId = defaultActivityId): VirtualRese
 
 export function addStageMaterial(source: VirtualResearchStageMaterialSource): VirtualResearchStageMaterial {
   const material: VirtualResearchStageMaterial = {
-    id: `stage-material-${source === '拍照' ? 'photo' : 'upload'}-${state.stageMaterials.length + 1}`,
-    name: source === '拍照' ? '现场材料照片.jpg' : '补充阶段材料.pdf',
-    meta: source === '拍照' ? 'JPG · 待上传' : 'PDF · 待上传',
+    id: `stage-material-${getMaterialSourceKey(source)}-${state.stageMaterials.length + 1}`,
+    name: getMaterialName(source, '阶段'),
+    meta: getMaterialMeta(source),
     source,
     status: '草稿',
     adminStoreRefs: ['virtualLabStore.activities'],
@@ -196,9 +266,9 @@ export function addStageMaterial(source: VirtualResearchStageMaterialSource): Vi
 
 export function addSupplementMaterial(source: VirtualResearchStageMaterialSource): VirtualResearchStageMaterial {
   const material: VirtualResearchStageMaterial = {
-    id: `supplement-material-${source === '拍照' ? 'photo' : 'upload'}-${state.supplementMaterials.length + 1}`,
-    name: source === '拍照' ? '补充材料照片.jpg' : '补充贡献材料.pdf',
-    meta: source === '拍照' ? 'JPG · 待上传' : 'PDF · 待上传',
+    id: `supplement-material-${getMaterialSourceKey(source)}-${state.supplementMaterials.length + 1}`,
+    name: getMaterialName(source, '补充'),
+    meta: getMaterialMeta(source),
     source,
     status: '草稿',
     adminStoreRefs: ['virtualLabStore.activities', 'virtualLabStore.records'],
@@ -207,6 +277,24 @@ export function addSupplementMaterial(source: VirtualResearchStageMaterialSource
   state.supplementMaterials.push(material)
   state.operationMessage = `${source}补充材料已加入补充材料集合`
   return material
+}
+
+function getMaterialSourceKey(source: VirtualResearchStageMaterialSource): string {
+  if (source === '拍照') return 'photo'
+  if (source === '语音') return 'voice'
+  return 'upload'
+}
+
+function getMaterialName(source: VirtualResearchStageMaterialSource, prefix: '阶段' | '补充'): string {
+  if (source === '拍照') return `${prefix}材料照片.jpg`
+  if (source === '语音') return `${prefix}说明语音.m4a`
+  return prefix === '阶段' ? '补充阶段材料.pdf' : '补充贡献材料.pdf'
+}
+
+function getMaterialMeta(source: VirtualResearchStageMaterialSource): string {
+  if (source === '拍照') return 'JPG · 待上传'
+  if (source === '语音') return 'M4A · 待上传'
+  return 'PDF · 待上传'
 }
 
 export function confirmContribution(contributionId = defaultContributionId): VirtualResearchContribution {
@@ -251,12 +339,13 @@ export function submitSupplementMaterial(activityId = 'virtual-research-industry
 export function submitVirtualResearchArchive(): MobileArchiveRecord {
   const activity = ensureActivity(defaultActivityId)
   const contribution = ensureContribution(defaultContributionId)
+  const sourceTraces = getVirtualResearchSourceTraces(['meeting-minutes', 'task-assignment', 'speech-excerpt', 'stage-material', 'personal-contribution'])
   activity.status = '已归档'
   contribution.status = '已提交'
   activity.adminStoreRefs = ['virtualLabStore.records', 'archiveStore.processingRecords']
   contribution.adminStoreRefs = ['virtualLabStore.records']
   state.operationMessage = '教研记录已形成，等待成长档案确认'
-  return createVirtualResearchArchiveRecord()
+  return createVirtualResearchArchiveRecord(sourceTraces)
 }
 
 export function previewVirtualResearchMaterial(materialName: string): VirtualResearchMaterialPreview {
@@ -302,6 +391,7 @@ function ensureContribution(contributionId: string): VirtualResearchContribution
     activityId: defaultActivityId,
     title: '设备调试案例整理',
     status: '待确认',
+    sourceKeys: ['stage-material', 'meeting-minutes'],
     adminStoreRefs: ['virtualLabStore.records'],
   }
   state.contributions.unshift(contribution)

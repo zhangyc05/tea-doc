@@ -1,10 +1,14 @@
 export const practiceApplicationStatuses = ['待审核', '已同意', '退回修改', '已撤回'] as const
 export const practiceProgressStatuses = ['未启动申请', '待审核申请', '实践中', '已完成'] as const
 export const practiceRecordStatuses = ['实践中', '待提交总结', '待企业评价', '待归档确认', '已归档'] as const
+export const practiceExportTaskTypes = ['教师实践跟踪名单', '企业实践记录'] as const
+export const practiceExportTaskStatuses = ['导出中', '已完成', '失败'] as const
 
 export type PracticeApplicationStatus = typeof practiceApplicationStatuses[number]
 export type PracticeProgressStatus = typeof practiceProgressStatuses[number]
 export type PracticeRecordStatus = typeof practiceRecordStatuses[number]
+export type PracticeExportTaskType = typeof practiceExportTaskTypes[number]
+export type PracticeExportTaskStatus = typeof practiceExportTaskStatuses[number]
 
 export const practiceApplicationStatusClassMap: Record<PracticeApplicationStatus, string> = {
   待审核: '待审核',
@@ -83,9 +87,21 @@ export type PracticeRecord = {
   recentAction: string
 }
 
+export type PracticeExportTask = {
+  id: string
+  type: PracticeExportTaskType
+  status: PracticeExportTaskStatus
+  recordCount: number
+  fileName: string
+  createdAt: string
+  operator: string
+  failureReason?: string
+}
+
 export type PracticeState = {
   applications: PracticeApplication[]
   trackings: PracticeTracking[]
   records: PracticeRecord[]
+  exportTasks: PracticeExportTask[]
   operationMessage: string
 }
