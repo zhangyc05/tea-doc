@@ -39,18 +39,6 @@ function goBack() {
 <template>
   <AdminLayout active-key="ability-list-execution">
     <div class="page-root">
-      <div class="page-breadcrumb">
-        <span>能力清单</span>
-        <i>/</i>
-        <span>执行版</span>
-        <i>/</i>
-        <strong>发布确认</strong>
-      </div>
-      <div class="page-description">
-        确认发布执行版。发布后将作为当前周期运行口径，用于后续发展活动、档案归类、岗位/聘期对照和画像报告。
-        <span v-if="operationMessage" class="operation-message">{{ operationMessage }}</span>
-      </div>
-
       <section class="admin-hero">
         <div class="hero-icon">▤</div>
         <div class="hero-content">

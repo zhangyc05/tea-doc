@@ -13,6 +13,14 @@ export type ConcreteArchiveCategoryKey = Exclude<ArchiveCategoryKey, 'all'>
 
 export type MobileArchiveRecordStatus = 'archived' | 'pending-verify' | 'need-supplement' | 'removed'
 
+export type ArchiveProcessingQueueTrace = {
+  store: 'archiveStore.processingRecords'
+  status: '待核验' | '待确认'
+  recordId: string
+  title: string
+  generatedBy: string
+}
+
 export type MobileArchiveRecord = {
   id: string
   title: string
@@ -30,6 +38,7 @@ export type MobileArchiveRecord = {
   usages: string[]
   sourceSteps: Array<{ title: string; desc: string; time: string }>
   adminStoreRefs?: string[]
+  processingQueueTrace?: ArchiveProcessingQueueTrace
 }
 
 export type ArchiveCategorySummary = {
@@ -567,6 +576,27 @@ export function submitArchiveDevelopmentPlanDraft(draftId: string): MobileArchiv
   return record
 }
 
+export function previewArchiveMaterial(material: { name: string; meta: string }) {
+  return {
+    title: '材料预览',
+    message: `${material.name} 已关联到当前档案记录。当前为前端材料预览降级入口，真实附件服务后续接入。`,
+  }
+}
+
+export function createArchiveProcessingQueueTrace(
+  record: Pick<MobileArchiveRecord, 'id' | 'title'>,
+  generatedBy = 'AI 助手补充档案',
+  status: ArchiveProcessingQueueTrace['status'] = '待核验',
+): ArchiveProcessingQueueTrace {
+  return {
+    store: 'archiveStore.processingRecords',
+    status,
+    recordId: record.id,
+    title: record.title,
+    generatedBy,
+  }
+}
+
 export function createArchiveSupplementRecord(): MobileArchiveRecord {
   const existingRecord = findArchiveRecordById('ai-archive-supplement')
   if (existingRecord) return existingRecord
@@ -596,6 +626,10 @@ export function createArchiveSupplementRecord(): MobileArchiveRecord {
       { title: '写入档案', desc: '核验通过后进入对应成长档案维度。', time: '待完成' },
     ],
     adminStoreRefs: ['archiveStore.processingRecords', 'teacherArchiveFacts'],
+    processingQueueTrace: createArchiveProcessingQueueTrace({
+      id: 'ai-archive-supplement',
+      title: 'AI 助手补充档案材料',
+    }, 'AI 助手补充档案'),
   }
 
   archiveRecords.unshift(record)
@@ -628,6 +662,10 @@ export function createTrainingArchiveRecord(): MobileArchiveRecord {
     usages: ['个人发展报告：计入培训进修记录', '能力画像：支撑数字化教学能力证据'],
     sourceSteps: pendingVerifySteps,
     adminStoreRefs: ['archiveStore.processingRecords'],
+    processingQueueTrace: createArchiveProcessingQueueTrace({
+      id: 'training-digital-teaching-archive',
+      title: '数字化教学能力提升培训归档',
+    }, '培训归档', '待确认'),
   }
 
   archiveRecords.unshift(record)
@@ -667,6 +705,10 @@ export function createEnterprisePracticeArchiveRecord(): MobileArchiveRecord {
       { title: '写入档案', desc: '核验通过后进入成长档案企业实践维度。', time: '待完成' },
     ],
     adminStoreRefs: ['archiveStore.processingRecords'],
+    processingQueueTrace: createArchiveProcessingQueueTrace({
+      id: 'enterprise-practice-smart-equipment-archive',
+      title: '山东某智能装备有限公司企业实践归档',
+    }, '企业实践归档', '待确认'),
   }
 
   archiveRecords.unshift(record)
@@ -703,6 +745,50 @@ export function createTeachingReflectionArchiveRecord(): MobileArchiveRecord {
       { title: '写入档案', desc: '管理端确认后成为正式档案事实。', time: '待完成' },
     ],
     adminStoreRefs: ['archiveStore.processingRecords'],
+    processingQueueTrace: createArchiveProcessingQueueTrace({
+      id: 'teaching-reflection-smart-manufacturing-lesson-5',
+      title: '《智能制造基础》第 5 次课后反思',
+    }, '教学反思确认', '待确认'),
+  }
+
+  archiveRecords.unshift(record)
+  return record
+}
+
+export function createVirtualResearchArchiveRecord(): MobileArchiveRecord {
+  const existingRecord = findArchiveRecordById('virtual-research-archive-pending')
+  if (existingRecord) return existingRecord
+
+  const record: MobileArchiveRecord = {
+    id: 'virtual-research-archive-pending',
+    title: '智能制造课程资源共建研讨归档',
+    category: 'research',
+    categoryName: '教研科研',
+    type: '虚拟教研',
+    date: '刚刚',
+    updatedAt: '刚刚',
+    source: '虚拟教研归档',
+    owner: '林老师 ｜ 智能制造学院',
+    status: 'pending-verify',
+    summary: '虚拟教研活动记录和个人贡献材料已形成教研记录，当前等待管理端确认后再进入成长档案教研科研维度。',
+    fields: [
+      { label: '教研活动', value: '智能制造课程资源共建研讨' },
+      { label: '所属教研室', value: '智能制造课程虚拟教研室' },
+      { label: '个人贡献', value: '课程案例素材、研讨纪要和阶段材料' },
+      { label: '当前状态', value: '档案待确认' },
+    ],
+    materials: [{ name: '虚拟教研归档材料.pdf', meta: 'PDF · 来源于虚拟教研归档' }],
+    usages: ['能力画像：待确认后支撑教研协作证据', '个人发展报告：待确认后计入教研科研记录'],
+    sourceSteps: [
+      { title: '形成教研记录', desc: '虚拟教研活动记录、阶段材料和个人贡献已汇总。', time: '刚刚' },
+      { title: '生成档案待确认', desc: '记录进入成长档案教研科研维度待确认队列。', time: '进行中' },
+      { title: '写入档案', desc: '管理端确认后成为正式档案事实。', time: '待完成' },
+    ],
+    adminStoreRefs: ['archiveStore.processingRecords'],
+    processingQueueTrace: createArchiveProcessingQueueTrace({
+      id: 'virtual-research-archive-pending',
+      title: '智能制造课程资源共建研讨归档',
+    }, '虚拟教研归档', '待确认'),
   }
 
   archiveRecords.unshift(record)

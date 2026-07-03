@@ -45,6 +45,8 @@ mustInclude('reflection domain', domain, 'archiveStore.processingRecords')
 
 const archiveDomain = source(files.archiveDomain)
 mustInclude('archive domain', archiveDomain, 'createTeachingReflectionArchiveRecord')
+mustInclude('archive domain', archiveDomain, 'createArchiveProcessingQueueTrace')
+mustInclude('archive domain', archiveDomain, "}, '教学反思确认', '待确认')")
 
 const start = source(files.start)
 mustInclude('reflection start page', start, 'startReflection')

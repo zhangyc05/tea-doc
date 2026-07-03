@@ -360,7 +360,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 分组 | 效果图数 | 当前源码/路由状态 | 当前判定 |
 | --- | ---: | --- | --- |
 | 根目录档案通用页 | 17 | `pages/archive/index` 可覆盖“教师端手机｜档案｜档案首页”；`pages/archive/record-query` 可覆盖“教师端手机｜档案｜档案记录查询”；搜索无结果、个人成长记录、档案草稿、职称聘用详情、发展计划编辑、分类/访问/角色/会话/绩效/反馈/活动管理等未见独立档案路由 | 仅入口和查询页已明确映射；其余多为缺页或未注册管理类页面 |
-| 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历和来源追溯 | 基本信息详情页第一版已落地；后续只剩真实接口和附件预览深化 |
+| 基本信息 | 4 | `pages/archive/category/index` 承接基本信息档案页；`pages/archive/basic-info-detail/index` 已注册并读取 `basic-info-teacher-profile` 档案事实，展示任职信息、教育背景、工作经历、来源追溯和材料预览降级入口 | 基本信息详情页第一版已落地；档案材料预览降级入口已补，后续只剩真实接口和真实附件服务深化 |
 | 教学工作 | 6 | `pages/archive/record-query` 有教学工作搜索结果；未见教学工作概览、列表、教学评价记录详情独立路由 | 查询结果局部覆盖；概览/列表/详情缺页 |
 | 教研科研 | 6 | `pages/archive/record-query` 有教研科研搜索结果；虚拟教研活动页有“成长档案 · 教研科研”归档结果，但不属于档案模块路由 | 查询结果和活动归档结果局部承接；档案概览/分类/详情缺页 |
 | 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
@@ -848,13 +848,13 @@ AI 助手效果图共 2 张，已补 AI 助手首页、补充档案页和提交�
 
 | 效果图/状态 | 当前源码/路由状态 | 当前判定 |
 | --- | --- | --- |
-| 补充档案 | `pages/assistant/archive-supplement/index` 已注册，AI 助手首页可进入 | 已补；提交时调用 `createArchiveSupplementRecord()` 生成 `pending-verify` 档案记录 |
-| 补充档案已提交 | `pages/assistant/archive-supplement-submitted/index` 已注册 | 已补；读取 `recordId`，可进入待核验记录详情、档案待确认列表或返回 AI 助手 |
+| 补充档案 | `pages/assistant/archive-supplement/index` 已注册，AI 助手首页可进入 | 已补；提交时调用 `createArchiveSupplementRecord()` 生成 `pending-verify` 档案记录，并挂载 `processingQueueTrace` 追溯 `archiveStore.processingRecords` |
+| 补充档案已提交 | `pages/assistant/archive-supplement-submitted/index` 已注册 | 已补；读取 `recordId`，展示 `processingQueueTrace` 队列状态，可进入待核验记录详情、档案待确认列表或返回 AI 助手 |
 
 当前结论：
 
 - AI 助手缺页风险已由 M-10 到 M-12 补齐；底部导航、页面注册和补充档案提交结果已形成最小闭环。
-- AI 助手补充档案会生成 `domain/archive.ts` 中的待核验 / 待确认记录，不直接写正式档案事实。
+- AI 助手补充档案会生成 `domain/archive.ts` 中的待核验 / 待确认记录，并通过 `processingQueueTrace` 对齐 `archiveStore.processingRecords` 档案处理队列，不直接写正式档案事实。
 - 后续重点从缺页转为跨端同步：AI 会话、管理端确认结果和真实附件上传需要接入统一接口。
 
 #### M-09 AI 助手一级入口策略
@@ -948,7 +948,7 @@ M-12 验证：
 | 优先级 | 问题 | 位置 | 建议 |
 | --- | --- | --- | --- |
 | P0 | 手机端效果图 142 张，但注册页面 86 个 | `teacher-mobile/src/pages` | 逐图判断“一页多状态”还是未覆盖 |
-| P0 | 档案模块效果图 54 张，当前已有 13 个档案模块注册页面，分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版，但真实附件预览和管理端接口仍待深化 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实附件 / 管理端接口和剩余来源详情，避免重复补分类 / 列表模板 |
+| P0 | 档案模块效果图 54 张，当前已有 13 个档案模块注册页面，分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果、补充材料和材料预览降级入口已有第一版，但真实附件服务和管理端接口仍待深化 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实附件服务 / 管理端接口和剩余来源详情，避免重复补分类 / 列表模板 |
 | P1 | 活动模块页面数量与效果图基本一致，但业务流是否跨页闭环尚未审计 | `teacher-mobile/src/pages/activity` | 下一步建立教学反思、培训、企业实践、虚拟教研手机端业务地图 |
 | P1 | 我的模块 6 张效果图当前只有 1 个综合页承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 明确能力画像、发展报告、岗位/聘期对照是否补独立页面 |
 | P1 | AI 助手缺页已补，补充档案可生成本地待核验记录，但仍缺真实 AI 会话和管理端同步 | `teacher-mobile/src/pages/assistant/*`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 后续从本地数据闭环转入接口、附件上传和管理端确认结果同步 |
@@ -990,19 +990,19 @@ M-12 验证：
 | G9-01 | 梳理培训活动首页到培训列表入口 | 记录页面、路由和培训对象 |
 | G9-02 | 梳理培训申请提交链路 | 已补：申请培训调用 `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取同一申请并提供详情入口 |
 | G9-03 | 梳理培训总结提交链路 | 已补：总结页读取同一培训记录，保存草稿、AI 优化、上传 / 更换材料和提交归档均更新培训记录状态 |
-| G9-04 | 梳理培训归档结果链路 | 已补：提交归档生成 / 定位 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
+| G9-04 | 梳理培训归档结果链路 | 已补：提交归档生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G9-05 | 梳理培训需求提交链路 | 已补：两类需求提交均调用 `submitTrainingDemand()` 生成 `待匹配` 需求，结果页按 `demandId` 展示后续匹配状态 |
 | G9-06 | 梳理培训推荐命中结果链路 | 已补：推荐培训读取 `getMobileTrainingState()`，直接学习进入总结 / 学习记录承接页，需申请培训生成待处理申请 |
 | G10-01 | 梳理教学反思开始方式 | 已补：报告、录音、上传资料、直接对话和最近草稿分别写入开始方式或进入草稿 / 会话 |
 | G10-02 | 梳理课程选择和依据选择 | 已补：课程、课次、依据材料和上传 / 录音材料写入同一反思记录 |
 | G10-03 | 梳理反思范围和自主反思内容 | 已补：草稿保存、补充想法、AI 优化和确认反思写入本地状态 |
 | G10-04 | 梳理 AI 对话反思链路 | 已补：AI 引导和自主对话均启动会话并生成反思草稿 |
-| G10-05 | 对齐管理端教学反思列表 | 已补：手机端确认后对齐 `reflectionStore.records`，并生成 `archiveStore.processingRecords` 待确认记录 |
+| G10-05 | 对齐管理端教学反思列表 | 已补：手机端确认后对齐 `reflectionStore.records`，并生成带 `processingQueueTrace` 的 `archiveStore.processingRecords` 待确认记录 |
 | G11-01 | 梳理企业实践年度概览入口 | 已补：概览 / 列表读取 `getMobileEnterpriseState()`，筛选状态由 `setEnterpriseFilter()` 统一维护 |
 | G11-02 | 梳理企业实践计划提交链路 | 已补：计划保存、提交、确认、退回和重新提交接入 `practiceStore.applications` 对齐口径 |
 | G11-03 | 梳理企业实践进行中记录链路 | 已补：继续记录、日志草稿和保存日志写入 `practiceStore.records` 对齐口径 |
 | G11-04 | 梳理企业实践补充材料链路 | 已补：补充重新提交和历史补录接入实践记录材料状态和档案待确认记录 |
-| G11-05 | 梳理企业实践归档链路 | 已补：总结归档和编辑归档调用企业实践 domain，等待确认和补充提交结果生成 / 定位 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
+| G11-05 | 梳理企业实践归档链路 | 已补：总结归档和编辑归档调用企业实践 domain，等待确认和补充提交结果生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录，结果页进入记录详情和档案待确认列表 |
 | G11-06 | 对齐管理端企业实践 store | 已补：手机端企业实践闭环对齐 `practiceStore.applications`、`practiceStore.records`、`archiveStore.processingRecords`，管理端确认后才进入正式档案事实 |
 | G12-01 | 梳理虚拟教研室入口 | 已补：我的教研室进入邀请、贡献确认、教研室状态和活动列表 |
 | G12-02 | 梳理虚拟教研活动详情链路 | 已补：活动列表筛选和详情 / 补充 / 记录入口接入状态 |
@@ -1032,7 +1032,7 @@ M-12 验证：
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
 | M-12 | 补 AI 助手“补充档案已提交”页面 | 结果页能返回对应档案或待办上下文 |
 | M-13 | 补待办证书共享状态 | 已补：`todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、等待入档确认和移出结果，并由 `test:todo-business` 验证 |
-| M-14 | 补 AI 助手补充档案待核验记录 | 已补：`createArchiveSupplementRecord()` 生成 `pending-verify`，结果页进入记录详情和档案待确认列表，并由 `test:assistant-archive` 验证 |
+| M-14 | 补 AI 助手补充档案待核验记录 | 已补：`createArchiveSupplementRecord()` 生成 `pending-verify` 并挂载 `processingQueueTrace`，结果页展示 `archiveStore.processingRecords` 队列状态、进入记录详情和档案待确认列表，并由 `test:assistant-archive` 验证 |
 
 ### P1：管理端工程重构任务
 
@@ -1194,7 +1194,7 @@ M-12 验证：
 | --- | --- | --- |
 | V-01 | 手机端页面补齐后验证注册关系 | `teacher-mobile/src/pages.json` 与页面文件一一对应 |
 | V-02 | 手机端业务地图更新后自检入口 | 每个新增页面都能从现有入口进入或明确为待接入口 |
-| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
+| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面、材料预览降级入口和入口存在 |
 | V-03 | 手机端类型检查 | 执行 `cd teacher-mobile && npm run typecheck` |
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |

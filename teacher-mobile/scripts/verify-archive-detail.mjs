@@ -156,6 +156,14 @@ if (existsSync(archiveDomainFile)) {
     failures.push('archive domain does not expose development plan draft submit action')
   }
 
+  if (!archiveDomainSource.includes('previewArchiveMaterial')) {
+    failures.push('archive domain does not expose archive material preview action')
+  }
+
+  if (!archiveDomainSource.includes('真实附件服务后续接入')) {
+    failures.push('archive domain does not define material preview fallback copy')
+  }
+
   if (!archiveDomainSource.includes("record.status === 'pending-verify'")) {
     failures.push('archive domain does not filter pending verification records')
   }
@@ -169,6 +177,14 @@ if (existsSync(pageFile)) {
 
   if (!detailSource.includes('findArchiveRecordById')) {
     failures.push('archive record detail page does not read records from archive domain by recordId')
+  }
+
+  if (!detailSource.includes('previewArchiveMaterial')) {
+    failures.push('archive record detail page does not expose material preview action')
+  }
+
+  if (!detailSource.includes('@tap=\"previewMaterial(material)\"')) {
+    failures.push('archive record detail page material rows do not trigger preview action')
   }
 
   if (!detailSource.includes('/pages/archive/correction/apply/index')) {
@@ -220,6 +236,14 @@ if (existsSync(basicInfoDetailPageFile)) {
 
   if (!basicInfoDetailSource.includes('basic-info-teacher-profile')) {
     failures.push('archive basic-info detail page does not use the basic information archive fact record')
+  }
+
+  if (!basicInfoDetailSource.includes('previewArchiveMaterial')) {
+    failures.push('archive basic-info detail page does not expose material preview action')
+  }
+
+  if (!basicInfoDetailSource.includes('@tap=\"previewMaterial(material)\"')) {
+    failures.push('archive basic-info detail page material rows do not trigger preview action')
   }
 
   if (!basicInfoDetailSource.includes('/pages/archive/record-detail/index')) {
@@ -472,6 +496,10 @@ if (!ledgerSource.includes('基本信息详情页第一版已落地')) {
 
 if (!ledgerSource.includes('发展计划草稿编辑页第一版已落地')) {
   failures.push('coverage ledger does not mark the development plan draft edit page as implemented')
+}
+
+if (!ledgerSource.includes('档案材料预览降级入口已补')) {
+  failures.push('coverage ledger does not mark archive material preview fallback as implemented')
 }
 
 if (!completedTaskList.includes('V-02a')) {

@@ -11,6 +11,7 @@ import {
   findArchiveRecordById,
   findArchiveRecordByTitle,
   getArchiveRecordStatusLabel,
+  previewArchiveMaterial,
 } from '../../../domain/archive'
 
 type DetailQuery = {
@@ -135,6 +136,11 @@ function requestCorrection() {
     url: `/pages/archive/correction/apply/index?recordId=${record.value.id}`,
   })
 }
+
+function previewMaterial(material: { name: string; meta: string }) {
+  const preview = previewArchiveMaterial(material)
+  uni.showToast({ title: preview.message, icon: 'none' })
+}
 </script>
 
 <template>
@@ -192,12 +198,18 @@ function requestCorrection() {
 
     <MobileCard class="section-card">
       <text class="section-title">关联材料</text>
-      <view v-for="material in record.materials" :key="material.name" class="material-row">
+      <view
+        v-for="material in record.materials"
+        :key="material.name"
+        class="material-row"
+        @tap="previewMaterial(material)"
+      >
         <view class="material-icon"></view>
         <view class="material-body">
           <text class="material-name">{{ material.name }}</text>
           <text class="material-meta">{{ material.meta }}</text>
         </view>
+        <text class="material-action">预览</text>
       </view>
     </MobileCard>
 
@@ -460,6 +472,13 @@ function requestCorrection() {
 .material-name {
   color: #17233d;
   font-size: 27rpx;
+  font-weight: 900;
+}
+
+.material-action {
+  flex: 0 0 auto;
+  color: #1677ff;
+  font-size: 24rpx;
   font-weight: 900;
 }
 

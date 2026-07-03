@@ -591,7 +591,7 @@
 | 档案记录 | 已入档、待确认、待核验、需补充、已移出、已更正 | `teacher-mobile/src/domain/archive.ts` 已统一 `archived`、`pending-verify`、`need-supplement`、`removed` 状态，首页、分类页、列表页、待确认列表和详情页按 `recordId` 读取同源数据 | 手机端档案真实状态回写已接入本地 domain；仍待真实接口同步 |
 | 档案分类 | 有记录、无记录、最近更新、需补充 | 分类卡片、分类概览页和记录列表页已从 `domain/archive.ts` 读取分类摘要和记录；首页统计由 `getArchiveOverviewStats()` 计算 | 已有分类到列表到详情的本地同源闭环，分类数量随记录状态计算 |
 | 档案查询 | 有结果、无结果、按分类筛选、关键词搜索 | 查询页调用 `searchArchiveRecords(queryText, selectedFilter)`，支持关键词、分类和无结果态 | 已接入真实搜索参数的本地实现 |
-| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写 |
+| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；材料点击调用 `previewArchiveMaterial()` 展示真实附件服务未接入的降级提示；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写，材料预览已有明确降级入口 |
 | 档案草稿 | 草稿、已提交核验 | `ArchiveDevelopmentPlanDraft` 由 `getArchiveDraftRecords()`、`saveArchiveDevelopmentPlanDraft()` 和 `submitArchiveDevelopmentPlanDraft()` 维护 | 已补发展计划草稿编辑第一版；提交后生成 `pending-verify` 档案记录，不直接入档 |
 | 入档结果 | 等待确认、待核验、已入档、归档失败、需补充 | 培训、待办证书和企业实践均为“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实 | 手机端归档结果已统一为先进入 `archiveStore.processingRecords`，管理端确认后才产生正式已入档 |
 | 档案更正 | 更正申请中、需补充、已通过、未通过 | 更正申请调用 `submitArchiveCorrection()` 生成真实更正记录；进度和结果页按 `correctionId` 读取，需补充会回写档案记录状态，补充材料调用 `submitArchiveCorrectionSupplement()` | 已接入更正记录、补充材料状态和待核验状态；仍待真实附件上传 |
@@ -647,6 +647,7 @@
 | 档案查询 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
 | 基本信息详情 | 查看来源记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=basic-info-teacher-profile')` | 已闭环到统一记录详情页，可查看同一档案事实的来源、材料和引用用途 |
 | 基本信息详情 | 申请更正 | `uni.navigateTo('/pages/archive/correction/apply/index?recordId=basic-info-teacher-profile')` | 已闭环到更正申请页第一版，后续生成待核验更正记录 |
+| 档案详情 / 基本信息详情 | 预览材料 | 调用 `previewArchiveMaterial(material)` 后 `uni.showToast` 展示降级说明 | 档案材料预览降级入口已补；真实附件服务后续替换 |
 | 发展计划编辑 | 保存草稿 | 调用 `saveArchiveDevelopmentPlanDraft()` | 已写回本地草稿状态，不生成正式档案事实 |
 | 发展计划编辑 | 提交核验 | 调用 `submitArchiveDevelopmentPlanDraft()` 后进入 `/pages/archive/record-detail/index?recordId=...` | 已生成个人发展维度 `pending-verify` 档案记录，追溯 `archiveStore.processingRecords` |
 | 发展计划编辑 | 返回草稿 | `uni.navigateTo('/pages/archive/draft-list/index')` | 已闭环回草稿 / 待确认列表 |
@@ -688,10 +689,10 @@
 
 ### 12.6 后续审计点
 
-1. 档案 54 张效果图不是当前 13 个档案页面能覆盖的“一页多状态”；分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，后续重点转为真实附件预览、真实接口和剩余来源详情。
+1. 档案 54 张效果图不是当前 13 个档案页面能覆盖的“一页多状态”；分类概览、基本信息详情、草稿编辑、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，档案材料预览降级入口已补，后续重点转为真实附件服务、真实接口和剩余来源详情。
 2. 当前档案首页的 8 个分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档直达统一记录详情；首页、分类、列表、待确认和详情已读取 `teacher-mobile/src/domain/archive.ts` 同源记录，后续重点转为接管理端 `archiveStore` 或真实接口。
 3. 当前档案查询页已读取 `domain/archive.ts`，支持本页筛选、清空关键词、无结果态和按 `recordId` 进入统一记录详情页第一版；搜索参数由 `searchArchiveRecords()` 承接。
-4. 待办证书、培训、企业实践、虚拟教研和 AI 助手补充档案的结果页已按 `recordId` 接入统一记录详情页第一版；AI 助手补充档案和培训归档会先生成 / 定位本地 `pending-verify` 记录，首页数量和分类统计已按本地状态计算，后续仍需写回真实管理端 `archiveStore.processingRecords`。
+4. 待办证书、培训、企业实践、虚拟教研和 AI 助手补充档案的结果页已按 `recordId` 接入统一记录详情页第一版；AI 助手补充档案会生成 / 定位本地 `pending-verify` 记录，并通过 `processingQueueTrace` 明确追溯到 `archiveStore.processingRecords` 档案处理队列，培训归档也会先生成 / 定位本地 `pending-verify` 记录；后续替换为真实管理端接口。
 5. 入档口径继续收敛：培训、待办证书和企业实践已保持“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实；正式已入档仍只能来自管理端确认。
 6. “个人发展”证书、“教研科研”“企业实践”等结果页已可查看统一详情，分类记录列表已有第一版；仍缺真实详情数据和跨来源状态同步。
 7. 统一记录详情页已展示引用用途和来源追溯第一版，并可进入更正申请、待核验结果页、进度页、处理结果页和补充材料页；更正提交记录和状态回写已接入本地 domain，后续需接真实附件上传、来源记录和管理端 `archiveStore.processingRecords` / `teacherArchiveFacts`。
@@ -720,7 +721,7 @@
 | 我的培训 | 学习中、已结束、待总结、归档确认中、已入档 | `training.records` 驱动首页和列表；申请同意后可进入我的培训 | 已接入同一培训参与状态；“已入档”仍只允许档案确认后产生 |
 | 培训申请 | 已提交、业务部门确认中、已通过、未通过、已取消 | `submitTrainingApplication()` 生成 `待处理` 申请，结果页按 `applicationId` 读取状态 | 已对齐 `trainingStore.applications` 待处理口径，保留同意 / 未同意回写函数 |
 | 培训总结 | 草稿、材料待补、可提交归档、已提交归档 | 总结页读取 `training.records`，保存草稿、AI 优化、更换 / 上传材料均更新同一记录 | 已接入草稿和材料状态 |
-| 培训归档 | 材料已提交、归档确认中、已入档、需补充、未通过 | `submitTrainingArchive()` 先更新培训记录材料状态，再生成 / 定位 `pending-verify` 档案记录 | 已保持“待确认 / 待核验”口径，不直接写成正式入档 |
+| 培训归档 | 材料已提交、归档确认中、已入档、需补充、未通过 | `submitTrainingArchive()` 先更新培训记录材料状态，再生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录 | 已保持“待确认 / 待核验”口径，对齐 `archiveStore.processingRecords`，不直接写成正式入档 |
 | 培训需求 | 待匹配、已匹配、暂不处理、已转培训申请 | `submitTrainingDemand()` 生成 `待匹配` 需求，两个结果页按 `demandId` 读取状态 | 已对齐 `trainingStore.demands` 待匹配口径 |
 
 ### 13.3 主流程
@@ -827,7 +828,7 @@
 | 反思依据 | 已发现、已选择、已补充、已解析、已移除 | 课程、课次、阶段和自主反思页调用 `selectReflectionEvidence()` / `addReflectionMaterial()` | 已形成共享依据集合，真实上传和解析状态后续接接口 |
 | AI 会话 | 进行中、已整理线索、已生成草稿 | 引导页和自主对话页调用 `startReflectionAiSession()`，生成草稿前调用 `saveReflectionDraft()` | 已持久化到本地反思 domain |
 | 反思草稿 | 已生成、已修改、已保存、已确认 | 草稿页修改、补充想法、AI 优化、保存和确认均写入 domain | 主草稿动作已闭环 |
-| 档案沉淀 | 待沉淀、待确认、已入档 | `confirmReflection()` 调用 `createTeachingReflectionArchiveRecord()` 生成 `pending-verify` 档案记录 | 已生成 `archiveStore.processingRecords` 待确认记录，不直接入档 |
+| 档案沉淀 | 待沉淀、待确认、已入档 | `confirmReflection()` 调用 `createTeachingReflectionArchiveRecord()` 生成带 `processingQueueTrace` 的 `pending-verify` 档案记录 | 已生成 `archiveStore.processingRecords` 待确认记录，不直接入档 |
 
 ### 14.3 主流程
 
@@ -993,7 +994,7 @@
 | 实践计划 | `practiceStore.applications` / 企业实践申请 | 手机端提交计划应生成管理端待审核申请 |
 | 计划确认结果 | 管理端企业实践申请处理结果 | 管理端同意后手机端进入实践中，退回后进入计划修改 |
 | 实践记录和日志 | `practiceStore.records` / 企业实践记录 | 手机端日志、材料和总结应更新同一实践记录 |
-| 归档提交 | `archiveStore.processingRecords` / 成长档案待确认记录 | 手机端当前通过 `createEnterprisePracticeArchiveRecord()` 生成 / 定位本地 `pending-verify` 记录；正式接口应写入管理端成长档案待确认处理记录 |
+| 归档提交 | `archiveStore.processingRecords` / 成长档案待确认记录 | 手机端当前通过 `createEnterprisePracticeArchiveRecord()` 生成 / 定位带 `processingQueueTrace` 的本地 `pending-verify` 记录；正式接口应写入管理端成长档案待确认处理记录 |
 | 已入档事实 | `archiveStore.teacherArchiveFacts` / 教师档案事实 | 只有管理端确认入档后才应成为正式档案事实 |
 | 历史实践补录 | `practiceStore.records` 或 `archiveStore.processingRecords` | 需先经管理端确认，再计入年度天数和档案事实 |
 
@@ -1001,7 +1002,7 @@
 
 1. 手机端企业实践闭环已接入第一版；新增 `teacher-mobile/src/domain/enterprise.ts`，用手机端 domain 对齐 `practiceStore.applications`、`practiceStore.records` 和 `archiveStore.processingRecords`，不直接复用管理端 Vue store。
 2. 计划提交、计划通过/退回、日志保存、归档草稿、提交归档、补充材料和历史补录已形成本地状态流转；后续需要把本地 domain 替换为真实接口。
-3. 归档等待确认和补充提交结果会生成 / 定位 `pending-verify` 档案记录；仍坚持管理端确认后才产生正式 `teacherArchiveFacts`。
+3. 归档等待确认和补充提交结果会生成 / 定位带 `processingQueueTrace` 的 `pending-verify` 档案记录；仍坚持管理端确认后才产生正式 `teacherArchiveFacts`。
 4. 补充材料链路已随实践记录写入材料状态，但材料对象、上传进度、核验历史仍需后续接真实接口。
 5. `enterprise-import-export`、`enterprise-workflow-config` 等页面命名偏管理端语义，后续补路由和重构时应按手机端业务名重新核对边界。
 
@@ -1124,7 +1125,7 @@
 | --- | --- | --- | --- |
 | 待办证书修改 | 待核验 | `archiveStore.processingRecords` | 教师修改字段或材料后，应回到档案处理流程等待部门核验 |
 | 待办证书确认本人 | 待核验 | `archiveStore.processingRecords` | 教师确认本人记录后只生成 / 更新档案处理记录，管理端确认后才写入 `teacherArchiveFacts` |
-| AI 助手补充档案 | 待核验 | `archiveStore.processingRecords` | 手机端当前用 `createArchiveSupplementRecord()` 生成本地 `pending-verify` 记录；正式接口应进入管理端档案待确认处理 |
+| AI 助手补充档案 | 待核验 | `archiveStore.processingRecords` | 手机端当前用 `createArchiveSupplementRecord()` 生成本地 `pending-verify` 记录，并挂载 `processingQueueTrace` 对齐管理端档案处理队列；正式接口替换该 trace 写入 |
 | 培训申请 | 待处理 | `trainingStore.applications` | 管理端同意后进入培训计划参与名单，未同意形成明确结果 |
 | 培训总结和证书材料 | 归档确认中 | `trainingStore.records`、`archiveStore.processingRecords` | 手机端当前用 `createTrainingArchiveRecord()` 生成 / 定位本地 `pending-verify`；正式接口应先更新培训记录材料状态，记录完整后生成成长档案待确认 |
 | 培训需求 | 待匹配 | `trainingStore.demands` | 管理端匹配资源、暂不处理或转培训计划 |

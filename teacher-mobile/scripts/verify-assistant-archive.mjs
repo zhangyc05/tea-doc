@@ -8,6 +8,7 @@ const files = {
   submitted: resolve(root, 'src/pages/assistant/archive-supplement-submitted/index.vue'),
   draftList: resolve(root, 'src/pages/archive/draft-list/index.vue'),
   detail: resolve(root, 'src/pages/archive/record-detail/index.vue'),
+  docsBusinessMap: resolve(root, '../docs/business-logic-map.md'),
   docsLedger: resolve(root, '../docs/page-coverage-ledger.md'),
 }
 
@@ -37,6 +38,18 @@ if (!archiveDomainSource.includes('archiveRecords.unshift')) {
   failures.push('archive supplement record is not inserted into archiveRecords')
 }
 
+if (!archiveDomainSource.includes('ArchiveProcessingQueueTrace')) {
+  failures.push('archive domain does not define a management processing queue trace')
+}
+
+if (!archiveDomainSource.includes('createArchiveProcessingQueueTrace')) {
+  failures.push('archive domain does not create an archiveStore.processingRecords queue trace')
+}
+
+if (!archiveDomainSource.includes('processingQueueTrace: createArchiveProcessingQueueTrace')) {
+  failures.push('archive supplement record does not attach a management processing queue trace')
+}
+
 const supplementSource = source(files.supplement)
 if (!supplementSource.includes('createArchiveSupplementRecord')) {
   failures.push('archive supplement page does not create a pending archive record')
@@ -63,10 +76,27 @@ if (!submittedSource.includes('/pages/archive/draft-list/index')) {
   failures.push('archive supplement submitted page does not expose archive pending list entry')
 }
 
+if (!submittedSource.includes('processingQueueTrace')) {
+  failures.push('archive supplement submitted page does not display management processing queue trace')
+}
+
+if (!submittedSource.includes('archiveStore.processingRecords')) {
+  failures.push('archive supplement submitted page does not show archiveStore.processingRecords destination')
+}
+
+const businessMap = source(files.docsBusinessMap)
 const ledgerDoc = source(files.docsLedger)
 const completedTaskList = ledgerDoc.split('### 已完成任务编号')[1] || ''
 if (!ledgerDoc.includes('| M-14 | 补 AI 助手补充档案待核验记录 | 已补：')) {
   failures.push('coverage ledger does not mark M-14 assistant archive pending record as implemented')
+}
+
+if (!businessMap.includes('AI 助手补充档案') || !businessMap.includes('processingQueueTrace')) {
+  failures.push('business map does not document assistant archive processing queue trace')
+}
+
+if (!ledgerDoc.includes('processingQueueTrace')) {
+  failures.push('coverage ledger does not document assistant archive processing queue trace')
 }
 
 if (!completedTaskList.includes('M-14')) {

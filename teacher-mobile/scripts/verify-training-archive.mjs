@@ -30,6 +30,14 @@ if (!archiveDomainSource.includes("status: 'pending-verify'")) {
   failures.push('training archive record is not pending verification')
 }
 
+if (!archiveDomainSource.includes('createArchiveProcessingQueueTrace')) {
+  failures.push('archive domain does not expose archive processing queue trace helper')
+}
+
+if (!archiveDomainSource.includes("}, '培训归档', '待确认')")) {
+  failures.push('training archive record does not attach a training archive queue trace')
+}
+
 const summarySource = source(files.trainingSummary)
 if (!summarySource.includes('submitTrainingArchive')) {
   failures.push('training summary submit does not update training record and create archive trace')

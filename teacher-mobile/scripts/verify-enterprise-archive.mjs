@@ -33,6 +33,14 @@ if (!archiveDomainSource.includes("status: 'pending-verify'")) {
   failures.push('enterprise archive record is not pending verification')
 }
 
+if (!archiveDomainSource.includes('createArchiveProcessingQueueTrace')) {
+  failures.push('archive domain does not expose archive processing queue trace helper')
+}
+
+if (!archiveDomainSource.includes("}, '企业实践归档', '待确认')")) {
+  failures.push('enterprise archive record does not attach an enterprise archive queue trace')
+}
+
 for (const [label, file] of [
   ['enterprise archive result', files.archiveResult],
   ['enterprise supplement submitted', files.supplementSubmitted],

@@ -5,6 +5,7 @@ const root = resolve(import.meta.dirname, '..')
 const projectRoot = resolve(root, '..')
 const files = {
   domain: resolve(root, 'src/domain/virtualResearch.ts'),
+  archiveDomain: resolve(root, 'src/domain/archive.ts'),
   room: resolve(root, 'src/pages/activity/virtual-research-room/index.vue'),
   invitation: resolve(root, 'src/pages/activity/virtual-research-invitation/index.vue'),
   activityList: resolve(root, 'src/pages/activity/virtual-research-activity-list/index.vue'),
@@ -33,6 +34,7 @@ for (const [name, file] of Object.entries(files)) {
 }
 
 const domain = source(files.domain)
+const archiveDomain = source(files.archiveDomain)
 mustInclude('virtual research domain', domain, 'getMobileVirtualResearchState')
 mustInclude('virtual research domain', domain, 'setVirtualResearchFilter')
 mustInclude('virtual research domain', domain, 'confirmResearchInvitation')
@@ -44,10 +46,13 @@ mustInclude('virtual research domain', domain, 'rejectContribution')
 mustInclude('virtual research domain', domain, 'saveSupplementDraft')
 mustInclude('virtual research domain', domain, 'submitSupplementMaterial')
 mustInclude('virtual research domain', domain, 'submitVirtualResearchArchive')
+mustInclude('virtual research domain', domain, 'createVirtualResearchArchiveRecord')
 mustInclude('virtual research domain', domain, 'virtualLabStore.rooms')
 mustInclude('virtual research domain', domain, 'virtualLabStore.activities')
 mustInclude('virtual research domain', domain, 'virtualLabStore.records')
 mustInclude('virtual research domain', domain, 'archiveStore.processingRecords')
+mustInclude('archive domain', archiveDomain, 'createVirtualResearchArchiveRecord')
+mustInclude('archive domain', archiveDomain, "}, '虚拟教研归档', '待确认')")
 
 const room = source(files.room)
 mustInclude('room page', room, 'getMobileVirtualResearchState')
