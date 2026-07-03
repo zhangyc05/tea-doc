@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { EmptyState, PageReviewPanel, StatusBadge } from '@/components/common'
+import { EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
-import { abilityListBaseOptimizationPageReview } from './AbilityListBaseOptimizationPage.review'
 import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
 import {
@@ -27,7 +26,6 @@ const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
-const reviewPanelOpen = ref(route.query.review === '1')
 const operationMessage = useOperationMessage()
 
 const suggestions = computed(() => abilityListState.optimizationSuggestions)
@@ -133,10 +131,6 @@ function viewVersionHistory() {
     path: '/admin/ability-list/base',
     query: { versionHistory: '1' },
   })
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -352,21 +346,6 @@ function toggleReviewPanel() {
           </div>
         </aside>
       </div>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="abilityListBaseOptimizationPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -797,33 +776,6 @@ function toggleReviewPanel() {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-admin-card-gap);
   padding: 22px 26px 26px;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 

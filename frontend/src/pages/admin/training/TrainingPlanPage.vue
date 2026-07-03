@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, DetailSheet, EmptyState, InsightSidebar, PageReviewPanel, StatusBadge } from '@/components/common'
+import { CompactFilterBar, DetailSheet, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -10,7 +10,6 @@ import {
   createTrainingPlan,
   getTrainingState,
 } from '@/stores/admin/trainingStore'
-import { trainingPlanPageReview } from './TrainingPlanPage.review'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,7 +17,6 @@ const trainingState = getTrainingState()
 
 // 新建计划抽屉控制
 const showDrawer = ref(false)
-const reviewPanelOpen = ref(route.query.review === '1')
 
 // 筛选条件
 const selectedOrganization = ref('全校')
@@ -53,10 +51,6 @@ function openDrawer() {
 
 function closeDrawer() {
   showDrawer.value = false
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 
 function viewDetail(id: string) {
@@ -392,21 +386,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
           <Button class="flex-1" @click="saveAndPublish">保存并发布</Button>
         </template>
       </DetailSheet>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="trainingPlanPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -890,33 +869,6 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   font-size: 14px;
   color: var(--color-admin-text-title);
   cursor: pointer;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1300px) {

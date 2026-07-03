@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { PageReviewPanel } from '@/components/common'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -13,12 +12,10 @@ import {
   getVirtualLabMaterialsByActivity,
   getVirtualLabState,
 } from '@/stores/admin/virtualLabStore'
-import { virtualLabActivityDetailPageReview } from './VirtualLabActivityDetailPage.review'
 
 const router = useRouter()
 const route = useRoute()
 const virtualLabState = getVirtualLabState()
-const reviewPanelOpen = ref(route.query.review === '1')
 
 const activityId = computed(() => String(route.params.activityId ?? 'smart-line-seminar'))
 const operationMessage = useOperationMessage()
@@ -97,10 +94,6 @@ function viewRecord() {
 
 function goBack() {
   router.back()
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -335,21 +328,6 @@ function toggleReviewPanel() {
           </div>
         </div>
       </section>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="virtualLabActivityDetailPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -867,33 +845,6 @@ function toggleReviewPanel() {
 
 .timeline-item time {
   color: #8a98ad;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1360px) {

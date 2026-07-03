@@ -1,6 +1,6 @@
 # 教师手机端设计系统指南
 
-本指南记录 `teacher-mobile/` 的稳定移动端设计规则。页面完成清单、逐图覆盖和业务闭环状态统一记录在 `docs/page-coverage-ledger.md`，不写入本文件。
+本指南记录 `teacher-mobile/` 的稳定移动端设计规则。逐页精修以当前目标效果图、页面源码和实际运行效果为准。
 
 ## 工程边界
 
@@ -109,7 +109,7 @@ teacher-mobile/src/components/MobileTabBar.vue
 - 局部业务状态允许使用模块色，但不得改写全局按钮体系。
 - 使用 UniApp `button` 时必须清理默认 `margin`、`padding` 和 `::after` 边框。
 - 页面中不要出现看起来可点击但没有业务意义的额外按钮。
-- 视觉态入口必须在 `docs/page-coverage-ledger.md` 标记为待业务闭环。
+- 视觉态入口必须在本次交付说明中明确，不能描述为业务完成。
 
 状态标签基准色：
 
@@ -140,7 +140,6 @@ Wot Design Uni 优先用于：
 
 ```bash
 cd teacher-mobile
-npm run test:archive-detail
 npm run typecheck
 npm run build:h5
 npm run build:mp-weixin

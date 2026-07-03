@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DetailSheet, PageReviewPanel, StatusBadge } from '@/components/common'
+import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListExecutionMock } from '@/services/mock/ability-list'
-import { abilityListExecutionPageReview } from './AbilityListExecutionPage.review'
 import {
   deriveNextExecutionVersion,
   getAbilityListState,
@@ -34,7 +33,6 @@ const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
 // 编辑抽屉状态
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const showVersionDrawer = ref(false)
-const reviewPanelOpen = ref(route.query.review === '1')
 const selectedAbility = ref('teaching-implementation')
 
 // 打开编辑抽屉
@@ -126,10 +124,6 @@ function openVersionDrawer() {
 
 function closeVersionDrawer() {
   showVersionDrawer.value = false
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -300,21 +294,6 @@ function toggleReviewPanel() {
           </article>
         </div>
       </DetailSheet>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="abilityListExecutionPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -640,33 +619,6 @@ function toggleReviewPanel() {
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 800;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 /* 响应式 */

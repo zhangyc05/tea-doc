@@ -1,13 +1,12 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
 	import { useRoute } from 'vue-router'
-	import { DetailSheet, EmptyState, PageReviewPanel, StatusBadge } from '@/components/common'
+	import { DetailSheet, EmptyState, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
 	import { useOperationMessage } from '@/lib/operationMessage'
 	import { getAbilityListRequirementMappingMock } from '@/services/mock/ability-list'
-	import { abilityListRequirementMappingPageReview } from './AbilityListRequirementMappingPage.review'
 	import {
 		confirmRequirementMapping,
 		deleteRequirementMapping,
@@ -45,7 +44,6 @@
 
 	// 编辑抽屉状态
 	const editingMapping = ref<RequirementMapping | null>(null)
-	const reviewPanelOpen = ref(route.query.review === '1')
 	const operationMessage = useOperationMessage()
 
 	// 统计数据
@@ -146,10 +144,6 @@
 
 	function getStatusLabel(status: RequirementMappingStatus) {
 		return getRequirementMappingStatusLabel(status)
-	}
-
-	function toggleReviewPanel() {
-		reviewPanelOpen.value = !reviewPanelOpen.value
 	}
 </script>
 
@@ -509,21 +503,6 @@
 				</div>
 			</template>
 		</DetailSheet>
-
-			<PageReviewPanel
-				:open="reviewPanelOpen"
-				:review="abilityListRequirementMappingPageReview"
-			/>
-
-			<button
-				class="review-floating-button"
-				:class="{ shifted: reviewPanelOpen }"
-				type="button"
-				:aria-pressed="reviewPanelOpen"
-				@click="toggleReviewPanel"
-			>
-				{{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-			</button>
 		</div>
 	</AdminLayout>
 </template>
@@ -960,33 +939,6 @@
 	.drawer-actions-right {
 		display: flex;
 		gap: var(--space-admin-md);
-	}
-
-	.review-floating-button {
-		position: fixed;
-		top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-		right: var(--space-admin-2xl);
-		z-index: 31;
-		min-width: 104px;
-		min-height: 42px;
-		border: 1px solid var(--color-admin-primary);
-		border-radius: var(--radius-full);
-		background: var(--color-admin-primary);
-		box-shadow: var(--shadow-admin-primary-action);
-		color: var(--color-card-bg);
-		cursor: pointer;
-		font: inherit;
-		font-size: 14px;
-		font-weight: 900;
-		padding: 0 var(--space-admin-lg);
-	}
-
-	.review-floating-button:hover {
-		background: var(--color-admin-primary-hover);
-	}
-
-	.review-floating-button.shifted {
-		right: min(460px, calc(100vw - 132px));
 	}
 
 	@media (max-width: 768px) {

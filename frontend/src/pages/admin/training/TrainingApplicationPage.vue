@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { CompactFilterBar, EmptyState, InsightSidebar, PageReviewPanel, StatusBadge } from '@/components/common'
+import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { trainingApplicationPageReview } from './TrainingApplicationPage.review'
 import {
   approveTrainingApplication,
   getTrainingState,
@@ -30,7 +29,6 @@ const selectedYear = ref('2026 年度')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeApplicationId = ref('1')
-const reviewPanelOpen = ref(route.query.review === '1')
 
 const filteredApplications = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -88,10 +86,6 @@ function showPendingApplications() {
 function rejectCurrentApplication() {
   if (!activeApplication.value || activeApplication.value.status !== '待处理') return
   rejectTrainingApplication(activeApplication.value.id)
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 </script>
 
@@ -319,21 +313,6 @@ function toggleReviewPanel() {
           </div>
         </div>
       </section>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="trainingApplicationPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -770,33 +749,6 @@ function toggleReviewPanel() {
 .full-width {
   width: 100%;
   margin-top: var(--space-admin-lg);
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1320px) {

@@ -47,5 +47,4 @@ npm run build:mp-weixin
 
 ```txt
 teacher-mobile/docs/mobile-design-system-guide.md
-../docs/page-coverage-ledger.md
 ```

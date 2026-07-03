@@ -8,7 +8,6 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:page-actions": "node ../scripts/verify-page-action-closure.mjs",
     "test:stores": "vitest run src/stores/admin",
     "typecheck": "vue-tsc --noEmit"
   },

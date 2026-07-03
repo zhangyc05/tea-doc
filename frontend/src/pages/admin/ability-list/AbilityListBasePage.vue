@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DetailSheet, PageReviewPanel } from '@/components/common'
+import { DetailSheet } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { getAbilityListBaseMock } from '@/services/mock/ability-list'
-import { abilityListBasePageReview } from './AbilityListBasePage.review'
 import {
   confirmBaseTemplateChanges,
   deriveNextExecutionVersion,
@@ -40,7 +39,6 @@ const selectedIndicator = ref<AbilityIndicator | null>(null)
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
-const reviewPanelOpen = ref(route.query.review === '1')
 const expandedAbilityKeys = ref<Set<string>>(new Set(['teaching']))
 
 // 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
@@ -176,10 +174,6 @@ function closeVersionDrawer() {
 
 function confirmTemplateChanges() {
   confirmBaseTemplateChanges()
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 
 function deriveExecutionVersion() {
@@ -380,21 +374,6 @@ function deriveExecutionVersion() {
           <Button @click="confirmTemplateChanges">确认生成新版本</Button>
         </template>
       </DetailSheet>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="abilityListBasePageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -819,33 +798,6 @@ function deriveExecutionVersion() {
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 800;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1280px) {

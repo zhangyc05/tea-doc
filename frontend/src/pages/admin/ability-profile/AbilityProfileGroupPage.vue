@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { PageReviewPanel } from '@/components/common'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { Button } from '@/components/ui'
@@ -27,12 +26,10 @@ import { useOperationMessage } from '@/lib/operationMessage'
 import { calculateAbilityProfileGroup } from '@/services/mock/ability-profile'
 import { getAbilityListState } from '@/stores/admin/abilityListStore'
 import { getArchiveState } from '@/stores/admin/archiveStore'
-import { abilityProfileGroupPageReview } from './AbilityProfileGroupPage.review'
 
 const router = useRouter()
 const route = useRoute()
 const operationMessage = useOperationMessage()
-const reviewPanelOpen = ref(route.query.review === '1')
 const groupProfile = calculateAbilityProfileGroup(
   getArchiveState().teacherArchiveFacts,
   getAbilityListState().executionIndicators,
@@ -104,10 +101,6 @@ function viewProfile(name: string) {
 
 function viewMoreObjects() {
   operationMessage.set('更多关注对象暂未拆独立列表，当前保留为群体画像表格内展示。')
-}
-
-function toggleReviewPanel() {
-  reviewPanelOpen.value = !reviewPanelOpen.value
 }
 
 function getDimensionMeta(dimension: string) {
@@ -334,21 +327,6 @@ function getDistributionTone(index: number) {
           <button class="more-btn" @click="viewMoreObjects">查看更多对象 ↓</button>
         </article>
       </section>
-
-      <PageReviewPanel
-        :open="reviewPanelOpen"
-        :review="abilityProfileGroupPageReview"
-      />
-
-      <button
-        class="review-floating-button"
-        :class="{ shifted: reviewPanelOpen }"
-        type="button"
-        :aria-pressed="reviewPanelOpen"
-        @click="toggleReviewPanel"
-      >
-        {{ reviewPanelOpen ? '关闭说明' : '页面说明' }}
-      </button>
     </div>
   </AdminLayout>
 </template>
@@ -951,33 +929,6 @@ function getDistributionTone(index: number) {
   color: var(--color-primary);
   font-size: 13px;
   font-weight: 950;
-}
-
-.review-floating-button {
-  position: fixed;
-  top: calc(var(--admin-topbar-height) + var(--space-admin-md-lg));
-  right: var(--space-admin-2xl);
-  z-index: 31;
-  min-width: 104px;
-  min-height: 42px;
-  border: 1px solid var(--color-admin-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-admin-primary);
-  box-shadow: var(--shadow-admin-primary-action);
-  color: var(--color-card-bg);
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  padding: 0 var(--space-admin-lg);
-}
-
-.review-floating-button:hover {
-  background: var(--color-admin-primary-hover);
-}
-
-.review-floating-button.shifted {
-  right: min(460px, calc(100vw - 132px));
 }
 
 @media (max-width: 1440px) {
