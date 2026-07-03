@@ -140,6 +140,7 @@ Wot Design Uni 优先用于：
 
 ```bash
 cd teacher-mobile
+npm run test:archive-detail
 npm run typecheck
 npm run build:h5
 npm run build:mp-weixin

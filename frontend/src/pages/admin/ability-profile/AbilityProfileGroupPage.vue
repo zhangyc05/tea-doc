@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
+import { Button } from '@/components/ui'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityProfileGroupMock } from '@/services/mock/ability-profile'
 
@@ -212,7 +213,9 @@ function getDistributionTone(index: number) {
             </div>
           </div>
           <div class="direction-actions">
-            <button class="btn-primary" @click="viewFullAdvice">查看完整建议 <span>→</span></button>
+            <Button variant="outline" @click="viewFullAdvice">
+              查看完整建议 <span>→</span>
+            </Button>
           </div>
           <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
         </article>
@@ -260,7 +263,7 @@ function getDistributionTone(index: number) {
                 <td>{{ item.dimension }}</td>
                 <td>{{ item.reason }}</td>
                 <td>
-                  <button class="btn-link" @click="viewProfile(item.name)">查看画像</button>
+                  <Button variant="ghost" size="sm" @click="viewProfile(item.name)">查看画像</Button>
                 </td>
               </tr>
             </tbody>
@@ -772,21 +775,6 @@ function getDistributionTone(index: number) {
   margin-top: 14px;
 }
 
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 34px;
-  border: 1px solid var(--color-primary);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--color-primary);
-  padding: 0 18px;
-  font-size: 13px;
-  font-weight: 950;
-}
-
 .focus-head {
   display: flex;
   align-items: center;
@@ -845,16 +833,6 @@ function getDistributionTone(index: number) {
 .focus-type.attention {
   background: #eef4ff;
   color: #375be8;
-}
-
-.btn-link {
-  border: 0;
-  background: transparent;
-  color: var(--color-primary);
-  padding: 0;
-  font-size: 13px;
-  font-weight: 950;
-  white-space: nowrap;
 }
 
 .more-btn {

@@ -2,33 +2,54 @@
 import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
+import {
+  getArchiveCategorySummary,
+  getArchiveRecordStatusLabel,
+  getPendingArchiveRecords,
+  getRecentArchiveRecords,
+  type ConcreteArchiveCategoryKey,
+} from '../../domain/archive'
 
 type CategoryIcon = 'id' | 'book' | 'lab' | 'briefcase' | 'heart' | 'cup' | 'growth' | 'check'
 
 const categories: Array<{
+  key: ConcreteArchiveCategoryKey
   name: string
-  count: string
-  updated: string
   icon: CategoryIcon
 }> = [
-  { name: '基本信息', count: '5 条已入档', updated: '最近更新 06.14', icon: 'id' },
-  { name: '教学工作', count: '18 条已入档', updated: '最近更新 06.14', icon: 'book' },
-  { name: '教研科研', count: '9 条已入档', updated: '最近更新 06.12', icon: 'lab' },
-  { name: '企业实践', count: '3 条已入档', updated: '最近更新 06.10', icon: 'briefcase' },
-  { name: '社会服务', count: '2 条已入档', updated: '最近更新 06.08', icon: 'heart' },
-  { name: '成果荣誉', count: '6 条已入档', updated: '最近更新 06.08', icon: 'cup' },
-  { name: '个人发展', count: '7 条已入档', updated: '最近更新 06.11', icon: 'growth' },
-  { name: '考核评价', count: '2 条已入档', updated: '最近更新 06.05', icon: 'check' },
+  { key: 'basic-info', name: '基本信息', icon: 'id' },
+  { key: 'teaching', name: '教学工作', icon: 'book' },
+  { key: 'research', name: '教研科研', icon: 'lab' },
+  { key: 'enterprise-practice', name: '企业实践', icon: 'briefcase' },
+  { key: 'social-service', name: '社会服务', icon: 'heart' },
+  { key: 'honor', name: '成果荣誉', icon: 'cup' },
+  { key: 'personal-development', name: '个人发展', icon: 'growth' },
+  { key: 'assessment', name: '考核评价', icon: 'check' },
 ]
 
-const recentRecords = [
-  { title: '2026 年校级教学成果奖', meta: '成果荣誉 ｜ 06.14' },
-  { title: '智能制造专业群虚拟教研活动记录', meta: '教研科研 ｜ 06.12' },
-  { title: '企业实践阶段总结', meta: '企业实践 ｜ 06.10' },
-]
+const recentRecords = getRecentArchiveRecords()
+const pendingRecords = getPendingArchiveRecords()
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function goArchiveQuery() {
+  uni.navigateTo({ url: '/pages/archive/record-query/index' })
+}
+
+function goArchiveCategory(category: ConcreteArchiveCategoryKey) {
+  uni.navigateTo({ url: `/pages/archive/category/index?category=${category}` })
+}
+
+function goArchiveList() {
+  uni.navigateTo({ url: '/pages/archive/record-list/index?category=all' })
+}
+
+function goArchiveDraftList() {
+  uni.navigateTo({ url: '/pages/archive/draft-list/index' })
+}
+
+function goArchiveRecord(record: { id: string }) {
+  uni.navigateTo({
+    url: `/pages/archive/record-detail/index?recordId=${record.id}`,
+  })
 }
 </script>
 
@@ -48,7 +69,7 @@ function showToast(title: string) {
         <text class="page-head__title">档案</text>
         <text class="page-head__subtitle">系统已帮你整理个人成长记录</text>
       </view>
-      <button class="notice-button" aria-label="消息通知" @tap="showToast('消息通知')">
+      <button class="notice-button" aria-label="消息通知" @tap="goArchiveQuery">
         <view class="notice-button__bell">
           <view class="notice-button__badge">5</view>
         </view>
@@ -56,7 +77,7 @@ function showToast(title: string) {
       <view class="leaf-ghost" aria-hidden="true"></view>
     </view>
 
-    <view class="search-card" @tap="showToast('搜索档案')">
+    <view class="search-card" @tap="goArchiveQuery">
       <view class="search-icon"></view>
       <text class="search-placeholder">输入关键词，或点右侧麦克风语音搜索</text>
       <view class="mic-icon"></view>
@@ -79,11 +100,11 @@ function showToast(title: string) {
             <text class="metric-label">类档案</text>
           </view>
         </view>
-        <view class="overview-item overview-item--date">
+        <view class="overview-item overview-item--date" @tap="goArchiveDraftList">
           <view class="metric-icon metric-icon--clock"></view>
           <view class="metric-copy">
-            <text class="metric-label">最近更新</text>
-            <text class="metric-number metric-number--date">06.14</text>
+            <text class="metric-label">待确认</text>
+            <text class="metric-number metric-number--date">{{ pendingRecords.length }}</text>
           </view>
         </view>
       </view>
@@ -95,17 +116,17 @@ function showToast(title: string) {
       <view class="category-grid">
         <view
           v-for="item in categories"
-          :key="item.name"
+          :key="item.key"
           class="category-item"
-          @tap="showToast(item.name)"
+          @tap="goArchiveCategory(item.key)"
         >
           <view class="category-icon" :class="`category-icon--${item.icon}`"></view>
           <view class="category-title-line">
-            <text class="category-name">{{ item.name }}</text>
+          <text class="category-name">{{ item.name }}</text>
             <view class="chevron"></view>
           </view>
-          <text class="category-count">{{ item.count }}</text>
-          <text class="category-updated">{{ item.updated }}</text>
+          <text class="category-count">{{ getArchiveCategorySummary(item.key).count }} 条已入档</text>
+          <text class="category-updated">最近更新 {{ getArchiveCategorySummary(item.key).updated }}</text>
         </view>
       </view>
     </MobileCard>
@@ -113,7 +134,7 @@ function showToast(title: string) {
     <MobileCard class="section-card recent-card">
       <view class="section-head">
         <text class="section-title">最近入档</text>
-        <MobileActionButton class="all-link" variant="link" arrow @tap="showToast('查看全部')">
+        <MobileActionButton class="all-link" variant="link" arrow @tap="goArchiveList">
           查看全部
         </MobileActionButton>
       </view>
@@ -121,12 +142,12 @@ function showToast(title: string) {
         v-for="record in recentRecords"
         :key="record.title"
         class="record-row"
-        @tap="showToast(record.title)"
+        @tap="goArchiveRecord(record)"
       >
         <view class="record-icon"></view>
         <view class="record-body">
           <text class="record-title">{{ record.title }}</text>
-          <text class="record-meta">{{ record.meta }}</text>
+          <text class="record-meta">{{ record.categoryName }} ｜ {{ record.date }} ｜ {{ getArchiveRecordStatusLabel(record.status) }}</text>
         </view>
         <view class="record-arrow"></view>
       </view>

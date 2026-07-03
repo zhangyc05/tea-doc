@@ -1,82 +1,65 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
 import MobilePageShell from '../../../components/MobilePageShell.vue'
+import {
+  archiveRecords,
+  getArchiveRecordStatusLabel,
+  type ConcreteArchiveCategoryKey,
+  type MobileArchiveRecord,
+} from '../../../domain/archive'
 
 type Tone = 'green' | 'teal' | 'orange' | 'purple' | 'blue'
 type IconType = 'calendar' | 'file' | 'chart' | 'book' | 'lab' | 'cup' | 'person' | 'briefcase'
 
-const filters = ['全部', '教学工作', '教研科研', '企业实践', '成果荣誉']
+const filters = ['全部', '教学工作', '教研科研', '企业实践', '成果荣誉', '个人发展']
 
-const records: Array<{
-  tag: string
-  title: string
-  meta: string
+const categoryVisuals: Record<ConcreteArchiveCategoryKey, {
   tone: Tone
   icon: IconType
-}> = [
-  {
-    tag: '教学工作',
-    title: 'Java程序设计课程表',
-    meta: '2024-2025学年第1学期 ｜ 计算机2023级1班',
-    tone: 'green',
-    icon: 'calendar',
-  },
-  {
-    tag: '教学工作',
-    title: 'Java程序设计第1次课教案',
-    meta: '课程教学 ｜ 2024.09',
-    tone: 'green',
-    icon: 'file',
-  },
-  {
-    tag: '教学工作',
-    title: 'Java程序设计教学质量评价',
-    meta: '学生评分 95.5 ｜ 综合评价 优秀',
-    tone: 'green',
-    icon: 'chart',
-  },
-  {
-    tag: '教研科研',
-    title: 'Java程序设计省级精品在线开放课程',
-    meta: '省级 ｜ 课程负责人 ｜ 2022.06立项',
-    tone: 'teal',
-    icon: 'book',
-  },
-  {
-    tag: '教研科研',
-    title: 'Java程序设计教学改革项目',
-    meta: '校级教改项目 ｜ 2023.03结题',
-    tone: 'teal',
-    icon: 'lab',
-  },
-  {
-    tag: '成果荣誉',
-    title: 'Java程序设计课程教学设计获奖',
-    meta: '教学能力大赛 ｜ 一等奖 ｜ 2024',
-    tone: 'orange',
-    icon: 'cup',
-  },
-  {
-    tag: '个人发展',
-    title: 'Java程序设计课程培训记录',
-    meta: '课程建设培训 ｜ 2023.11',
-    tone: 'purple',
-    icon: 'person',
-  },
-  {
-    tag: '企业实践',
-    title: 'Java程序设计企业案例开发实践',
-    meta: '企业实践 ｜ 软件案例共建 ｜ 2023.07',
-    tone: 'blue',
-    icon: 'briefcase',
-  },
-]
+}> = {
+  'basic-info': { tone: 'green', icon: 'person' },
+  teaching: { tone: 'green', icon: 'calendar' },
+  research: { tone: 'teal', icon: 'lab' },
+  'enterprise-practice': { tone: 'blue', icon: 'briefcase' },
+  'social-service': { tone: 'green', icon: 'file' },
+  honor: { tone: 'orange', icon: 'cup' },
+  'personal-development': { tone: 'purple', icon: 'person' },
+  assessment: { tone: 'green', icon: 'chart' },
+}
+
+const selectedFilter = ref(filters[0])
+const queryText = ref('成长记录')
+
+const filteredRecords = computed(() => {
+  if (selectedFilter.value === '全部') {
+    return archiveRecords
+  }
+
+  return archiveRecords.filter((record) => record.categoryName === selectedFilter.value)
+})
 
 function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function clearQuery() {
+  queryText.value = ''
+  selectedFilter.value = filters[0]
+}
+
+function selectFilter(filter: string) {
+  selectedFilter.value = filter
+}
+
+function getRecordMeta(record: MobileArchiveRecord) {
+  return `${record.type} ｜ ${record.updatedAt} ｜ ${getArchiveRecordStatusLabel(record.status)}`
+}
+
+function showRecord(recordId: string) {
+  uni.navigateTo({
+    url: `/pages/archive/record-detail/index?recordId=${recordId}`,
+  })
 }
 </script>
 
@@ -97,35 +80,35 @@ function showToast(title: string) {
       </button>
       <view class="search-box">
         <view class="search-icon"></view>
-        <text class="query-text">Java程序设计</text>
-        <button class="clear-button" aria-label="清除关键词" @tap="showToast('清除关键词')">×</button>
+        <text class="query-text">{{ queryText || '输入关键词' }}</text>
+        <button class="clear-button" aria-label="清除关键词" @tap="clearQuery">×</button>
         <view class="mic-icon"></view>
       </view>
     </view>
 
-    <text class="result-count">找到 8 条相关记录</text>
+    <text class="result-count">找到 {{ filteredRecords.length }} 条相关记录</text>
 
     <view class="filter-tabs">
       <button
         v-for="(filter, index) in filters"
         :key="filter"
         class="filter-tab"
-        :class="{ 'filter-tab--active': index === 0 }"
-        @tap="showToast(filter)"
+        :class="{ 'filter-tab--active': selectedFilter === filter }"
+        @tap="selectFilter(filter)"
       >
         {{ filter }}
       </button>
     </view>
 
     <view class="record-list">
-      <view v-for="record in records" :key="record.title" class="record-card" @tap="showToast(record.title)">
-        <view class="record-icon" :class="[`record-icon--${record.tone}`, `record-icon--${record.icon}`]">
+      <view v-for="record in filteredRecords" :key="record.id" class="record-card" @tap="showRecord(record.id)">
+        <view class="record-icon" :class="[`record-icon--${categoryVisuals[record.category].tone}`, `record-icon--${categoryVisuals[record.category].icon}`]">
           <view class="record-icon__glyph"></view>
         </view>
         <view class="record-body">
-          <text class="record-tag" :class="`record-tag--${record.tone}`">{{ record.tag }}</text>
+          <text class="record-tag" :class="`record-tag--${categoryVisuals[record.category].tone}`">{{ record.categoryName }}</text>
           <text class="record-title">{{ record.title }}</text>
-          <text class="record-meta">{{ record.meta }}</text>
+          <text class="record-meta">{{ getRecordMeta(record) }}</text>
         </view>
         <view class="record-arrow"></view>
       </view>

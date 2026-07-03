@@ -18,8 +18,10 @@ function goTodo() {
   uni.navigateTo({ url: '/pages/todo/index' })
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function goArchiveRecord() {
+  uni.navigateTo({
+    url: '/pages/archive/record-detail/index?recordId=certificate-digital-literacy&category=personal-development',
+  })
 }
 </script>
 
@@ -64,7 +66,7 @@ function showToast(title: string) {
         v-for="item in nextItems"
         :key="item.text"
         class="next-row"
-        @tap="showToast(item.text)"
+        @tap="goArchiveRecord"
       >
         <view class="next-icon" :class="`next-icon--${item.icon}`"></view>
         <text class="next-text">{{ item.text }}</text>
@@ -73,7 +75,7 @@ function showToast(title: string) {
     </MobileCard>
 
     <view class="footer-actions">
-      <MobileActionButton class="footer-button" variant="primary" @tap="showToast('查看个人发展')">
+      <MobileActionButton class="footer-button" variant="primary" @tap="goArchiveRecord">
         查看个人发展
       </MobileActionButton>
       <MobileActionButton class="footer-button" variant="outline" @tap="goTodo">

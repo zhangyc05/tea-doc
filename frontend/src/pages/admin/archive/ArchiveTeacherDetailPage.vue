@@ -142,7 +142,7 @@ function isFactInDrawerType(dimension: string, type: string) {
       <!-- 顶部栏 -->
       <section class="top-bar">
         <div class="top-bar-content">
-          <Button class="btn-back" variant="ghost" @click="goBack">
+          <Button class="archive-back-action" variant="ghost" @click="goBack">
             <span>←</span>
             <span>返回档案查询</span>
           </Button>
@@ -153,9 +153,9 @@ function isFactInDrawerType(dimension: string, type: string) {
           </div>
 
           <div class="top-bar-actions">
-            <Button class="btn-action" variant="outline" @click="printArchive">打印</Button>
-            <Button class="btn-action" variant="outline" @click="exportPdf">导出 PDF</Button>
-            <Button class="btn-action" variant="outline" @click="goBack">关闭</Button>
+            <Button class="archive-toolbar-action" variant="outline" @click="printArchive">打印</Button>
+            <Button class="archive-toolbar-action" variant="outline" @click="exportPdf">导出 PDF</Button>
+            <Button class="archive-toolbar-action" variant="outline" @click="goBack">关闭</Button>
           </div>
         </div>
       </section>
@@ -243,7 +243,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                       <span class="info-value">2024-07-01</span>
                     </div>
                   </div>
-                  <Button class="btn-source" variant="ghost" @click="openDrawer('基本信息')">
+                  <Button class="source-record-action" variant="ghost" @click="openDrawer('基本信息')">
                     查看来源记录
                   </Button>
                 </div>
@@ -299,7 +299,7 @@ function isFactInDrawerType(dimension: string, type: string) {
               </div>
 
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('教学工作')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('教学工作')">
                   查看来源记录
                 </Button>
               </div>
@@ -324,7 +324,7 @@ function isFactInDrawerType(dimension: string, type: string) {
               </div>
 
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('教研科研')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('教研科研')">
                   查看来源记录
                 </Button>
               </div>
@@ -341,7 +341,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('企业实践')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('企业实践')">
                   查看来源记录
                 </Button>
               </div>
@@ -358,7 +358,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('社会服务')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('社会服务')">
                   查看来源记录
                 </Button>
               </div>
@@ -375,7 +375,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('成果荣誉')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('成果荣誉')">
                   查看来源记录
                 </Button>
               </div>
@@ -392,7 +392,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('个人发展')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('个人发展')">
                   查看来源记录
                 </Button>
               </div>
@@ -409,7 +409,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </p>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('考核评价')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('考核评价')">
                   查看来源记录
                 </Button>
               </div>
@@ -435,7 +435,7 @@ function isFactInDrawerType(dimension: string, type: string) {
                 </div>
               </div>
               <div class="info-sidebar">
-                <Button class="btn-source" variant="ghost" @click="openDrawer('教学工作')">
+                <Button class="source-record-action" variant="ghost" @click="openDrawer('教学工作')">
                   查看来源记录
                 </Button>
               </div>
@@ -523,7 +523,7 @@ function isFactInDrawerType(dimension: string, type: string) {
             <span class="meta-item">入档时间：{{ record.archiveTime }}</span>
           </div>
           <p class="record-content"><strong>对应正文：</strong>{{ record.content }}</p>
-          <Button class="btn-detail" variant="outline" size="sm" @click="viewRecordDetail(record)">
+          <Button class="source-record-detail-action" variant="outline" size="sm" @click="viewRecordDetail(record)">
             {{ record.buttonText }}
             <span>›</span>
           </Button>
@@ -574,7 +574,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   gap: 16px;
 }
 
-.btn-back {
+.archive-back-action {
   width: fit-content;
   padding: 8px 0;
   color: #12346c;
@@ -582,7 +582,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   font-weight: 600;
 }
 
-.btn-back span:first-child {
+.archive-back-action span:first-child {
   font-size: 22px;
   line-height: 1;
 }
@@ -611,7 +611,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   gap: 10px;
 }
 
-.btn-action {
+.archive-toolbar-action {
   height: 38px;
   min-width: 88px;
   padding: 0 16px;
@@ -619,8 +619,8 @@ function isFactInDrawerType(dimension: string, type: string) {
   font-weight: 600;
 }
 
-.btn-source:hover,
-.btn-detail:hover {
+.source-record-action:hover,
+.source-record-detail-action:hover {
   color: #0f5eef;
 }
 
@@ -932,7 +932,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   font-weight: 600;
 }
 
-.btn-source {
+.source-record-action {
   align-self: flex-end;
   min-width: 132px;
   height: 34px;
@@ -943,7 +943,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   font-weight: 700;
 }
 
-.btn-source::after {
+.source-record-action::after {
   content: '›';
   font-size: 22px;
   line-height: 1;
@@ -1250,7 +1250,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   color: #17315f;
 }
 
-.btn-detail {
+.source-record-detail-action {
   margin-left: auto;
   min-width: 126px;
   height: 32px;

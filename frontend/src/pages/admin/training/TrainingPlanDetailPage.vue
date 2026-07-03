@@ -66,7 +66,7 @@ function handleApplication(teacherId: string) {
               <span class="current">计划详情</span>
             </div>
           </div>
-          <button class="btn-back" @click="goBack">‹ 返回列表</button>
+          <Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>
 
           <!-- 标题卡 -->
           <div class="title-card">
@@ -429,21 +429,17 @@ function handleApplication(teacherId: string) {
   font-weight: 800;
 }
 
-.btn-back {
+.detail-back-action {
   display: inline-flex;
   align-items: center;
   margin-bottom: 14px;
   padding: 0;
-  background: transparent;
-  border: 0;
   color: #0f5eef;
   font-size: 14px;
   font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
 }
 
-.btn-back:hover {
+.detail-back-action:hover {
   color: #0c4fd0;
 }
 

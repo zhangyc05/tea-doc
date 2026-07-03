@@ -337,21 +337,6 @@ function viewRelatedRecord(recordId: string) {
   font-weight: 800;
 }
 
-.btn-back {
-  padding: 0;
-  background: transparent;
-  border: 0;
-  color: #0f5eef;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-back:hover {
-  color: #0c4fd0;
-}
-
 .title-card {
   display: flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import abilityListBasePage from '@/pages/admin/ability-list/AbilityListBasePage.vue?raw'
 import abilityListExecutionPage from '@/pages/admin/ability-list/AbilityListExecutionPage.vue?raw'
+import abilityListBaseOptimizationPage from '@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue?raw'
 import abilityListPublishConfirmPage from '@/pages/admin/ability-list/AbilityListPublishConfirmPage.vue?raw'
 import abilityListRequirementMappingPage from '@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
 import abilityProfileGroupPage from '@/pages/admin/ability-profile/AbilityProfileGroupPage.vue?raw'
@@ -143,6 +144,52 @@ describe('admin visual action guardrails', () => {
     expect(abilityListPublishConfirmPage).not.toContain('class="btn-primary"')
   })
 
+  it('uses the shared Button component for ability list requirement mapping actions', () => {
+    expect(abilityListRequirementMappingPage).toContain('<Button @click="addNewMapping">新增要求项</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="ghost" size="sm" @click.stop="openEditDrawer(mapping)">编辑</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" size="sm" @click.stop="selectMapping(mapping); deleteMapping()">删除</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button @click="openEditDrawer(selectedMapping)">编辑映射</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" @click="deleteMapping">删除</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="secondary" @click="confirmMapping">确认配置</Button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-primary" @click="addNewMapping">新增要求项</button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-link" @click.stop="openEditDrawer(mapping)">编辑</button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-link danger" @click.stop="selectMapping(mapping); deleteMapping()">删除</button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-primary" @click="openEditDrawer(selectedMapping)">编辑映射</button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-outline danger-outline" @click="deleteMapping">删除</button>')
+    expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-secondary" @click="confirmMapping">确认配置</button>')
+  })
+
+  it('uses the shared Button component for ability list base optimization actions', () => {
+    expect(abilityListBaseOptimizationPage).toContain('import { Button } from \'@/components/ui\'')
+    expect(abilityListBaseOptimizationPage).toContain('<Button @click="uploadPolicy">⇧ 上传制度文件</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button variant="secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button')
+    expect(abilityListBaseOptimizationPage).toContain(':disabled="pendingApplicationCount === 0"')
+    expect(abilityListBaseOptimizationPage).toContain('@click="applyToBaseTemplate"')
+    expect(abilityListBaseOptimizationPage).toContain('<Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button variant="ghost" size="sm" @click.stop="handleAction(\'view\', suggestion)">查看详情</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="suggestion.status === \'pending\'" size="sm" @click.stop="handleAction(\'adopt\', suggestion)">采纳</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="suggestion.status === \'pending\'" variant="secondary" size="sm" @click.stop="handleAction(\'defer\', suggestion)">暂缓</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="suggestion.status === \'pending\'" variant="danger" size="sm" @click.stop="handleAction(\'reject\', suggestion)">弃用</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="suggestion.status === \'adopted\'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>')
+    expect(abilityListBaseOptimizationPage).toContain('@click="handleAction(\'adopt\', selectedSuggestion)"')
+    expect(abilityListBaseOptimizationPage).toContain('@click="handleAction(\'defer\', selectedSuggestion)"')
+    expect(abilityListBaseOptimizationPage).not.toContain('<button class="btn-primary" @click="uploadPolicy">⇧ 上传制度文件</button>')
+    expect(abilityListBaseOptimizationPage).not.toContain('<button class="btn-secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</button>')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="btn-link-large"')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="btn-link"')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="btn-primary"')
+    expect(abilityListBaseOptimizationPage).not.toContain('class="btn-secondary"')
+  })
+
+  it('uses the shared Button component for ability profile group actions', () => {
+    expect(abilityProfileGroupPage).toContain('import { Button } from \'@/components/ui\'')
+    expect(abilityProfileGroupPage).toContain('<Button variant="outline" @click="viewFullAdvice">')
+    expect(abilityProfileGroupPage).toContain('<Button variant="ghost" size="sm" @click="viewProfile(item.name)">查看画像</Button>')
+    expect(abilityProfileGroupPage).not.toContain('<button class="btn-primary" @click="viewFullAdvice">')
+    expect(abilityProfileGroupPage).not.toContain('<button class="btn-link" @click="viewProfile(item.name)">查看画像</button>')
+  })
+
   it('uses DetailSheet for the ability list base edit drawer shell', () => {
     expect(abilityListBasePage).toContain('DetailSheet')
     expect(abilityListBasePage).toContain('<DetailSheet')
@@ -182,19 +229,27 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for archive teacher detail actions', () => {
     expect(archiveTeacherDetailPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-back" variant="ghost" @click="goBack">')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-action" variant="outline" @click="printArchive">打印</Button>')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-action" variant="outline" @click="exportPdf">导出 PDF</Button>')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-action" variant="outline" @click="goBack">关闭</Button>')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-source" variant="ghost" @click="openDrawer(\'基本信息\')">')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-source" variant="ghost" @click="openDrawer(\'教学工作\')">')
-    expect(archiveTeacherDetailPage).toContain('<Button class="btn-detail" variant="outline" size="sm" @click="viewRecordDetail(record)">')
+    expect(archiveTeacherDetailPage).toContain('<Button class="archive-back-action" variant="ghost" @click="goBack">')
+    expect(archiveTeacherDetailPage).toContain('<Button class="archive-toolbar-action" variant="outline" @click="printArchive">打印</Button>')
+    expect(archiveTeacherDetailPage).toContain('<Button class="archive-toolbar-action" variant="outline" @click="exportPdf">导出 PDF</Button>')
+    expect(archiveTeacherDetailPage).toContain('<Button class="archive-toolbar-action" variant="outline" @click="goBack">关闭</Button>')
+    expect(archiveTeacherDetailPage).toContain('<Button class="source-record-action" variant="ghost" @click="openDrawer(\'基本信息\')">')
+    expect(archiveTeacherDetailPage).toContain('<Button class="source-record-action" variant="ghost" @click="openDrawer(\'教学工作\')">')
+    expect(archiveTeacherDetailPage).toContain('<Button class="source-record-detail-action" variant="outline" size="sm" @click="viewRecordDetail(record)">')
+    expect(archiveTeacherDetailPage).not.toContain('class="btn-back"')
+    expect(archiveTeacherDetailPage).not.toContain('class="btn-action"')
+    expect(archiveTeacherDetailPage).not.toContain('class="btn-source"')
+    expect(archiveTeacherDetailPage).not.toContain('class="btn-detail"')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-back" @click="goBack">')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-action" @click="printArchive">打印</button>')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-action" @click="exportPdf">导出 PDF</button>')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-action" @click="goBack">关闭</button>')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-source" @click="openDrawer')
     expect(archiveTeacherDetailPage).not.toContain('<button class="btn-detail" @click="viewRecordDetail(record)">')
+  })
+
+  it('does not keep legacy btn-prefixed structural classes in archive processing styles', () => {
+    expect(archiveProcessingPage).not.toContain('.btn-icon')
   })
 
   it('uses DetailSheet for the training plan create drawer shell', () => {
@@ -220,7 +275,7 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for training filter and create actions', () => {
     expect(trainingPlanPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(trainingPlanPage).toContain('<Button class="btn-create" @click="openDrawer">新建培训计划 ＋</Button>')
+    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>')
     expect(trainingPlanPage).toContain('<Button variant="outline" @click="resetFilters">重置</Button>')
     expect(trainingPlanPage).not.toContain('<button class="btn-reset" @click="resetFilters">重置</button>')
     expect(trainingPlanPage).not.toContain('<button class="btn-primary btn-create" @click="openDrawer">新建培训计划 ＋</button>')
@@ -287,6 +342,38 @@ describe('admin visual action guardrails', () => {
     expect(practiceTrackingPage).toContain('size="sm"')
     expect(practiceTrackingPage).toContain('@click="viewRecord(tracking.id)"')
     expect(practiceTrackingPage).not.toContain('class="btn-view"\n                        @click="viewRecord(tracking.id)"')
+  })
+
+  it('uses the shared Button component for practice export actions', () => {
+    expect(practiceRecordPage).toContain('<Button @click="exportRecords">⇩ 导出记录</Button>')
+    expect(practiceRecordPage).not.toContain('<button class="btn-primary" @click="exportRecords">⇩ 导出记录</button>')
+
+    expect(practiceTrackingPage).toContain('<Button @click="exportList">⇧ 导出名单</Button>')
+    expect(practiceTrackingPage).not.toContain('<button class="btn-primary" @click="exportList">⇧ 导出名单</button>')
+  })
+
+  it('uses the shared Button component for practice state-changing row actions', () => {
+    expect(practiceApplicationPage).toContain('class="row-action-group"')
+    expect(practiceApplicationPage).toContain('<Button size="sm" @click="approveApplication(app.id)">同意</Button>')
+    expect(practiceApplicationPage).toContain('<Button variant="danger" size="sm" @click="returnApplication(app.id)">')
+    expect(practiceApplicationPage).not.toContain('class="btn-action-group"')
+    expect(practiceApplicationPage).not.toContain('class="btn-approve"')
+    expect(practiceApplicationPage).not.toContain('class="btn-return"')
+
+    expect(practiceRecordPage).toContain('class="row-action-group"')
+    expect(practiceRecordPage).toContain('variant="secondary"')
+    expect(practiceRecordPage).toContain('size="sm"')
+    expect(practiceRecordPage).toContain('@click="remindMaterial(record.id)"')
+    expect(practiceRecordPage).toContain('<Button')
+    expect(practiceRecordPage).toContain('@click="confirmArchive(record.id)"')
+    expect(practiceRecordPage).not.toContain('class="btn-action-group"')
+    expect(practiceRecordPage).not.toContain('class="btn-remind"')
+    expect(practiceRecordPage).not.toContain('class="btn-confirm"')
+
+    expect(practiceTrackingPage).toContain('v-if="tracking.currentProgress === \'未启动申请\'"')
+    expect(practiceTrackingPage).toContain('variant="secondary"')
+    expect(practiceTrackingPage).toContain('@click="remindApply(tracking.id)"')
+    expect(practiceTrackingPage).not.toContain('class="btn-remind"')
   })
 
   it('uses the shared Button component for virtual lab room detail actions', () => {
@@ -365,10 +452,14 @@ describe('admin visual action guardrails', () => {
     expect(reflectionOverviewPage).not.toContain('<button class="btn-view-related" @click="viewRelatedRecords">')
 
     expect(reflectionDetailPage).toContain('import { Button } from \'@/components/ui\'')
+    expect(reflectionDetailPage).toContain('<Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>')
     expect(reflectionDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedDetail(related.id)">')
     expect(reflectionDetailPage).toContain('<Button variant="ghost" @click="viewMoreRelated">')
+    expect(reflectionDetailPage).toContain('<Button class="source-data-action" variant="outline" size="lg" @click="viewSourceData">')
+    expect(reflectionDetailPage).not.toContain('<button class="btn-back" @click="goBack">‹ 返回列表</button>')
     expect(reflectionDetailPage).not.toContain('<button class="btn-view" @click="viewRelatedDetail(related.id)">')
     expect(reflectionDetailPage).not.toContain('<button class="btn-link" @click="viewMoreRelated">')
+    expect(reflectionDetailPage).not.toContain('<button class="btn-source" @click="viewSourceData">')
   })
 
   it('uses the shared Button component for training plan table row actions', () => {
@@ -376,8 +467,21 @@ describe('admin visual action guardrails', () => {
     expect(trainingPlanPage).not.toContain('<button class="btn-view" @click="viewDetail(plan.id)">')
   })
 
+  it('does not keep remaining btn-prefixed report and training plan action classes', () => {
+    expect(reportCenterPage).toContain('<Button')
+    expect(reportCenterPage).toContain('class="report-card-action"')
+    expect(reportCenterPage).toContain('@click="handleCardAction(report.id, button)"')
+    expect(reportCenterPage).not.toContain('class="btn-action"')
+    expect(reportCenterPage).not.toContain('.btn-action')
+
+    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>')
+    expect(trainingPlanPage).not.toContain('class="btn-create"')
+    expect(trainingPlanPage).not.toContain('.btn-create')
+  })
+
   it('uses the shared Button component for training plan detail participant actions', () => {
     expect(trainingPlanDetailPage).toContain('import { Button } from \'@/components/ui\'')
+    expect(trainingPlanDetailPage).toContain('<Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>')
     expect(trainingPlanDetailPage).toContain('variant="ghost"')
     expect(trainingPlanDetailPage).toContain('@click="viewTeacherDetail(participant.id)"')
     expect(trainingPlanDetailPage).toContain('<Button')
@@ -385,6 +489,7 @@ describe('admin visual action guardrails', () => {
     expect(trainingPlanDetailPage).toContain('variant="secondary"')
     expect(trainingPlanDetailPage).toContain('size="sm"')
     expect(trainingPlanDetailPage).toContain('@click="handleApplication(participant.id)"')
+    expect(trainingPlanDetailPage).not.toContain('<button class="btn-back" @click="goBack">‹ 返回列表</button>')
     expect(trainingPlanDetailPage).not.toContain('class="btn-view"\n                          @click="viewTeacherDetail(participant.id)"')
     expect(trainingPlanDetailPage).not.toContain('class="btn-handle"\n                          @click="handleApplication(participant.id)"')
   })
@@ -398,6 +503,7 @@ describe('admin visual action guardrails', () => {
     expect(trainingRecordDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(trainingRecordDetailPage).toContain('<Button size="sm" @click="uploadMaterial">')
     expect(trainingRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedRecord(related.id)">')
+    expect(trainingRecordDetailPage).not.toContain('.btn-back')
     expect(trainingRecordDetailPage).not.toContain('<button class="btn-upload" @click="uploadMaterial">')
     expect(trainingRecordDetailPage).not.toContain('class="btn-view"\n                          @click="viewRelatedRecord(related.id)"')
   })

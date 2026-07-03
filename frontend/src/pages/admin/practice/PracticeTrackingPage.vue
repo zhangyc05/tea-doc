@@ -157,7 +157,7 @@ function applyFilters() {
         <div class="content-card">
           <div class="card-header">
             <h2 class="table-title">教师实践跟踪</h2>
-            <button class="btn-primary" @click="exportList">⇧ 导出名单</button>
+            <Button @click="exportList">⇧ 导出名单</Button>
           </div>
           <!-- 筛选区 -->
           <div class="filter-section">
@@ -259,13 +259,14 @@ function applyFilters() {
                     </td>
                     <td>{{ tracking.recentAction }}</td>
                     <td>
-                      <button
+                      <Button
                         v-if="tracking.currentProgress === '未启动申请'"
-                        class="btn-remind"
+                        variant="secondary"
+                        size="sm"
                         @click="remindApply(tracking.id)"
                       >
                         提醒申请
-                      </button>
+                      </Button>
                       <Button
                         v-else-if="tracking.currentProgress === '待审核申请'"
                         variant="ghost"
@@ -562,26 +563,6 @@ function applyFilters() {
   border-color: var(--color-admin-primary);
 }
 
-.btn-primary {
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: var(--color-admin-primary);
-  border: 1px solid var(--color-admin-primary);
-  color: #fff;
-  box-shadow: var(--shadow-admin-primary-action);
-}
-
-.btn-primary:hover {
-  background: #0d57d4;
-}
-
 .operation-message,
 .selected-summary {
   color: var(--color-admin-primary);
@@ -702,16 +683,6 @@ function applyFilters() {
   background: #dff8ec;
   color: #18a663;
   border: 1px solid #bdeed7;
-}
-
-.btn-remind {
-  padding: 0 8px;
-  background: transparent;
-  color: var(--color-admin-primary);
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .selected-summary {

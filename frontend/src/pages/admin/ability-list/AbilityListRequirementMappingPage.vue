@@ -250,7 +250,7 @@
 				<div class="admin-card">
 					<div class="admin-card-header">
 						<h3 class="admin-card-title">{{ getSelectedGroupLabel() }}｜要求项映射</h3>
-						<button class="btn-primary" @click="addNewMapping">新增要求项</button>
+						<Button @click="addNewMapping">新增要求项</Button>
 					</div>
 
 					<div class="admin-table-container">
@@ -282,8 +282,8 @@
 									</td>
 									<td>
 										<div class="row-actions">
-											<button class="btn-link" @click.stop="openEditDrawer(mapping)">编辑</button>
-											<button class="btn-link danger" @click.stop="selectMapping(mapping); deleteMapping()">删除</button>
+											<Button variant="ghost" size="sm" @click.stop="openEditDrawer(mapping)">编辑</Button>
+											<Button variant="danger" size="sm" @click.stop="selectMapping(mapping); deleteMapping()">删除</Button>
 										</div>
 									</td>
 								</tr>
@@ -352,9 +352,9 @@
 					</div>
 
 					<div class="detail-actions">
-						<button class="btn-primary" @click="openEditDrawer(selectedMapping)">编辑映射</button>
-						<button class="btn-outline danger-outline" @click="deleteMapping">删除</button>
-						<button class="btn-secondary" @click="confirmMapping">确认配置</button>
+						<Button @click="openEditDrawer(selectedMapping)">编辑映射</Button>
+						<Button variant="danger" @click="deleteMapping">删除</Button>
+						<Button variant="secondary" @click="confirmMapping">确认配置</Button>
 					</div>
 				</div>
 			</div>
@@ -827,19 +827,6 @@
 		gap: 10px;
 	}
 
-	.btn-link {
-		border: 0;
-		background: transparent;
-		color: var(--color-admin-primary);
-		font-size: 13px;
-		font-weight: 800;
-		cursor: pointer;
-	}
-
-	.btn-link.danger {
-		color: #d92d20;
-	}
-
 	/* 编辑抽屉样式 */
 	.edit-drawer-overlay {
 		position: fixed;
@@ -1015,24 +1002,6 @@
 	.drawer-actions-right {
 		display: flex;
 		gap: 12px;
-	}
-
-	.btn-danger {
-		padding: 10px 16px;
-		border: 1px solid #dc2626;
-		border-radius: 8px;
-		background: white;
-		color: #dc2626;
-		font-size: 14px;
-		font-weight: 700;
-		cursor: pointer;
-		transition: all 0.16s ease;
-		font-family: inherit;
-	}
-
-	.btn-danger:hover {
-		background: #dc2626;
-		color: white;
 	}
 
 	@media (max-width: 768px) {

@@ -49,7 +49,7 @@ function viewMoreRelated() {
               <span class="current">反思详情</span>
             </div>
           </div>
-          <button class="btn-back" @click="goBack">‹ 返回列表</button>
+          <Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>
 
           <div class="title-card">
             <div class="title-icon" aria-hidden="true"></div>
@@ -187,9 +187,9 @@ function viewMoreRelated() {
                   </div>
                 </div>
               </div>
-              <button class="btn-source" @click="viewSourceData">
+              <Button class="source-data-action" variant="outline" size="lg" @click="viewSourceData">
                 查看来源数据
-              </button>
+              </Button>
               <p v-if="sourceMessage" class="source-message">{{ sourceMessage }}</p>
             </div>
 
@@ -262,21 +262,17 @@ function viewMoreRelated() {
   font-weight: 800;
 }
 
-.btn-back {
+.detail-back-action {
   display: inline-flex;
   align-items: center;
   margin-bottom: 16px;
   padding: 0;
-  background: transparent;
-  border: 0;
   color: #0f5eef;
   font-size: 14px;
   font-weight: 700;
-  cursor: pointer;
-  transition: all 0.16s ease;
 }
 
-.btn-back:hover {
+.detail-back-action:hover {
   color: #0c4fd0;
 }
 
@@ -557,22 +553,9 @@ function viewMoreRelated() {
   margin-bottom: 0;
 }
 
-.btn-source {
+.source-data-action {
   width: 220px;
-  height: 44px;
-  padding: 0 16px;
-  background: white;
-  border: 1px solid #0f5eef;
-  border-radius: 6px;
-  color: #0f5eef;
-  font-size: 14px;
   font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.btn-source:hover {
-  background: #f4f8ff;
 }
 
 .source-message {

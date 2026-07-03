@@ -163,14 +163,15 @@ function openAiAssistant() {
               </div>
             </div>
             <div class="card-footer">
-              <button
+              <Button
                 v-for="button in report.buttons"
                 :key="button"
-                class="btn-action"
+                class="report-card-action"
+                variant="outline"
                 @click="handleCardAction(report.id, button)"
               >
                 {{ button }}
-              </button>
+              </Button>
             </div>
           </article>
           <EmptyState
@@ -384,7 +385,7 @@ function openAiAssistant() {
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
 }
 
-.btn-action,
+.report-card-action,
 .ai-assistant {
   border-radius: 6px;
   font-size: 13px;
@@ -490,16 +491,14 @@ function openAiAssistant() {
   flex-wrap: wrap;
 }
 
-.btn-action {
+.report-card-action {
   min-width: 92px;
   height: 40px;
   padding: 0 18px;
-  border: 1px solid var(--color-admin-primary);
-  background: #fff;
   color: var(--color-admin-primary);
 }
 
-.btn-action:hover {
+.report-card-action:hover {
   border-color: var(--color-admin-primary);
   background: var(--color-admin-primary);
   color: #fff;

@@ -142,7 +142,7 @@ function applyFilters() {
         <div class="content-card">
           <div class="card-header">
             <h2 class="table-title">记录列表</h2>
-            <button class="btn-primary" @click="exportRecords">⇩ 导出记录</button>
+            <Button @click="exportRecords">⇩ 导出记录</Button>
           </div>
           <!-- 筛选区 -->
           <div class="filter-section">
@@ -229,24 +229,25 @@ function applyFilters() {
                     <td>{{ record.countedDays }}</td>
                     <td>{{ record.recentAction }}</td>
                     <td>
-                      <div class="btn-action-group">
+                      <div class="row-action-group">
                         <Button variant="ghost" size="sm" @click="viewDetail(record.id)">
                           查看详情
                         </Button>
-                        <button
+                        <Button
                           v-if="record.currentStatus === '待提交总结' || record.currentStatus === '待企业评价' || record.currentStatus === '实践中'"
-                          class="btn-remind"
+                          variant="secondary"
+                          size="sm"
                           @click="remindMaterial(record.id)"
                         >
                           提醒补材料
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           v-if="record.currentStatus === '待归档确认'"
-                          class="btn-confirm"
+                          size="sm"
                           @click="confirmArchive(record.id)"
                         >
                           确认归档
-                        </button>
+                        </Button>
                         <Button
                           v-if="record.currentStatus === '已归档'"
                           variant="ghost"
@@ -513,22 +514,6 @@ function applyFilters() {
   border-color: var(--color-admin-primary);
 }
 
-.btn-primary {
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: var(--color-admin-primary);
-  border: 1px solid var(--color-admin-primary);
-  color: #fff;
-  box-shadow: var(--shadow-admin-primary-action);
-}
-
 .operation-message,
 .selected-summary {
   color: var(--color-admin-primary);
@@ -640,27 +625,11 @@ function applyFilters() {
   font-size: 12px;
 }
 
-.btn-action-group {
+.row-action-group {
   display: flex;
   justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.btn-remind,
-.btn-confirm {
-  padding: 0;
-  background: transparent;
-  border: none;
-  color: var(--color-admin-primary);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-remind,
-.btn-confirm {
-  color: var(--color-admin-primary);
 }
 
 .selected-summary {

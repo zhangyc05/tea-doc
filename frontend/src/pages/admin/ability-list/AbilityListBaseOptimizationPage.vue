@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { EmptyState, StatusBadge } from '@/components/common'
+import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListOptimizationMock } from '@/services/mock/ability-list'
@@ -187,16 +188,16 @@ function viewVersionHistory() {
             </div>
           </div>
           <div class="hero-actions">
-            <button class="btn-primary" @click="uploadPolicy">⇧ 上传制度文件</button>
-            <button class="btn-secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</button>
-            <button
-              class="btn-secondary"
+            <Button @click="uploadPolicy">⇧ 上传制度文件</Button>
+            <Button variant="secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</Button>
+            <Button
+              variant="secondary"
               :disabled="pendingApplicationCount === 0"
               @click="applyToBaseTemplate"
             >
               应用到基准模板（{{ pendingApplicationCount }}）
-            </button>
-            <button class="btn-link-large" @click="viewVersionHistory">查看版本记录 ›</button>
+            </Button>
+            <Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>
           </div>
         </div>
         <div class="hero-art" aria-hidden="true">
@@ -272,11 +273,11 @@ function viewVersionHistory() {
                   </td>
                   <td>
                     <div class="action-buttons">
-                      <button class="btn-link" @click.stop="handleAction('view', suggestion)">查看详情</button>
-                      <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('adopt', suggestion)">采纳</button>
-                      <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('defer', suggestion)">暂缓</button>
-                      <button v-if="suggestion.status === 'pending'" class="btn-link" @click.stop="handleAction('reject', suggestion)">弃用</button>
-                      <button v-if="suggestion.status === 'adopted'" class="btn-link" @click.stop="applyToBaseTemplate">应用</button>
+                      <Button variant="ghost" size="sm" @click.stop="handleAction('view', suggestion)">查看详情</Button>
+                      <Button v-if="suggestion.status === 'pending'" size="sm" @click.stop="handleAction('adopt', suggestion)">采纳</Button>
+                      <Button v-if="suggestion.status === 'pending'" variant="secondary" size="sm" @click.stop="handleAction('defer', suggestion)">暂缓</Button>
+                      <Button v-if="suggestion.status === 'pending'" variant="danger" size="sm" @click.stop="handleAction('reject', suggestion)">弃用</Button>
+                      <Button v-if="suggestion.status === 'adopted'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>
                     </div>
                   </td>
                 </tr>
@@ -324,27 +325,25 @@ function viewVersionHistory() {
           </div>
 
           <div v-if="selectedSuggestion" class="detail-actions">
-            <button
+            <Button
               v-if="selectedSuggestion.status === 'pending'"
-              class="btn-primary"
               @click="handleAction('adopt', selectedSuggestion)"
             >
               采纳建议
-            </button>
-            <button
+            </Button>
+            <Button
               v-if="selectedSuggestion.status === 'adopted'"
-              class="btn-primary"
               @click="applyToBaseTemplate"
             >
               应用到基准模板
-            </button>
-            <button
+            </Button>
+            <Button
               v-if="selectedSuggestion.status === 'pending'"
-              class="btn-secondary"
+              variant="secondary"
               @click="handleAction('defer', selectedSuggestion)"
             >
               暂缓处理
-            </button>
+            </Button>
           </div>
         </aside>
       </div>
@@ -696,15 +695,6 @@ function viewVersionHistory() {
   flex-wrap: wrap;
 }
 
-.btn-link {
-  border: 0;
-  background: transparent;
-  color: var(--color-admin-primary);
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .detail-panel {
   min-height: 620px;
 }
@@ -745,44 +735,6 @@ function viewVersionHistory() {
   padding: 22px 26px 26px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-link-large {
-  height: 44px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  padding: 0 24px;
-  border: 1px solid var(--color-admin-primary);
-  background: var(--color-admin-primary);
-  color: #fff;
-}
-
-.btn-secondary {
-  padding: 0 24px;
-  border: 1px solid #cfdcf0;
-  background: #fff;
-  color: #263b63;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  border-color: #0d55d8;
-  background: #0d55d8;
-  color: #fff;
-}
-
-.btn-link-large {
-  border: 0;
-  background: transparent;
-  color: var(--color-admin-primary);
-}
 
 @media (max-width: 1360px) {
   .admin-hero {

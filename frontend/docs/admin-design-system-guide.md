@@ -349,7 +349,7 @@ F4-31 试点迁移：
 F4-32 试点迁移：
 
 - 教师档案详情页“返回档案查询 / 打印 / 导出 PDF / 关闭 / 查看来源记录 / 查看记录详情”已迁移到公共 `Button`。
-- 返回和来源入口使用 `ghost`，打印、导出、关闭和记录详情使用 `outline`；页面保留 `btn-back`、`btn-action`、`btn-source`、`btn-detail` 结构类承接档案阅读页的宽度、箭头和局部排版。
+- 返回和来源入口使用 `ghost`，打印、导出、关闭和记录详情使用 `outline`；页面保留 `archive-back-action`、`archive-toolbar-action`、`source-record-action`、`source-record-detail-action` 结构类承接档案阅读页的宽度、箭头和局部排版。
 - 该批次只替换教师档案详情和来源抽屉中的真实动作按钮，不改变 `goBack()`、`printArchive()`、`exportPdf()`、`openDrawer(type)`、`viewRecordDetail(record)` 的路由、打印、导出降级示例和来源过滤反馈行为；来源抽屉 tab 仍按分段筛选控件保留。
 
 F4-33 试点迁移：
@@ -369,6 +369,61 @@ F4-35 试点迁移：
 - 能力清单发布确认页底部“返回修改 / 确认发布”已迁移到公共 `Button`。
 - “返回修改”使用 `outline`，“确认发布”使用默认主按钮并保留发布后禁用态；页面移除局部 `.btn-primary` / `.btn-secondary` 按钮样式。
 - 该批次只替换发布确认页底部真实动作按钮，不改变 `goBack()`、`handlePublish()` 的返回执行版和发布执行版状态流转行为。
+
+F4-36 试点迁移：
+
+- 能力清单岗位/聘期要求映射页“新增要求项 / 编辑 / 删除 / 编辑映射 / 确认配置”已迁移到公共 `Button`。
+- 表格行内“编辑”使用 `ghost size="sm"`，删除类动作使用 `danger`，确认配置使用 `secondary`；页面移除局部 `.btn-link` 和遗留 `.btn-danger` 样式。
+- 该批次只替换要求映射页中表格、右侧详情和抽屉外的真实动作按钮，不改变 `addNewMapping()`、`openEditDrawer(mapping)`、`deleteMapping()`、`confirmMapping()` 的新增、编辑、删除和确认配置 store 行为。
+
+F4-37 试点迁移：
+
+- 能力清单基准模板优化建议页“上传制度文件 / 重新分析运行反馈 / 应用到基准模板 / 查看版本记录 / 查看详情 / 采纳 / 暂缓 / 弃用 / 应用”已迁移到公共 `Button`。
+- Hero 主动作使用默认和 `secondary`，版本记录使用 `ghost`，表格行内动作使用 `ghost`、默认、`secondary`、`danger` 的 `sm` 尺寸；页面移除局部 `.btn-primary` / `.btn-secondary` / `.btn-link` / `.btn-link-large` 按钮样式。
+- 该批次只替换优化建议页真实动作按钮，不改变 `uploadPolicy()`、`rerunAnalysis()`、`applyToBaseTemplate()`、`viewVersionHistory()`、`handleAction()` 的上传制度来源、重新分析、应用建议、版本记录跳转和建议状态流转行为。
+
+F4-38 试点迁移：
+
+- 能力画像群体页“查看完整建议”和重点关注对象表格行内“查看画像”已迁移到公共 `Button`。
+- “查看完整建议”使用 `outline`，保持跳转教师画像并携带重点支持筛选；表格行内“查看画像”使用 `ghost size="sm"`，教师对象保持详情跳转，院系 / 专业对象仍给出明确降级提示。
+- 该批次只替换群体画像页真实动作按钮，不改变 `viewFullAdvice()`、`viewProfile(item.name)` 和 `viewMoreObjects()` 的业务行为；“查看更多对象”仍是明确降级提示入口，不标记为独立列表完成。
+
+F4-39 试点迁移：
+
+- 企业实践记录页“导出记录”和年度实践跟踪页“导出名单”已迁移到公共 `Button` 默认主按钮。
+- 两个导出入口仍调用页面内 `exportRecords()` / `exportList()`，按当前筛选结果给出导出准备反馈；页面移除对应局部 `.btn-primary` 样式。
+- 该批次只替换企业实践列表页顶部导出主动作，不改变筛选、表格定位、材料提醒、确认归档或实践申请状态流转。
+
+F4-40 试点迁移：
+
+- 教学反思详情页“查看来源数据”已迁移到公共 `Button variant="outline" size="lg"`。
+- 该按钮保留 `source-data-action` 结构类承接 220px 宽度，点击后仍展示当前反思关联的课堂、评价和画像数据反馈。
+- 该批次只替换来源数据查看动作，不改变反思详情、相关反思跳转、查看更多相关记录或来源数据展示口径。
+
+F4-41 结构类清理：
+
+- 教师档案详情页已将共享 `Button` 上残留的 `btn-back`、`btn-action`、`btn-source`、`btn-detail` 结构类改为语义化结构类。
+- 档案处理页移除未使用的 `.btn-icon` 样式，避免后续按钮扫描把非按钮图标样式误判为待迁移按钮。
+- 该批次只清理结构类命名和无用样式，不改变档案详情来源抽屉、打印导出、返回关闭或档案处理状态动作。
+
+F4-42 试点迁移：
+
+- 教学反思详情页和培训计划详情页“返回列表”已迁移到公共 `Button variant="ghost"`，并使用 `detail-back-action` 承接详情页返回入口的局部间距和字重。
+- 培训记录详情页没有返回按钮，仅删除未使用的 `.btn-back` 样式。
+- 该批次只替换详情页返回入口和死样式，不改变 `goBack()` 的路由目标、培训参与处理或教学反思来源数据行为。
+
+F4-43 试点迁移：
+
+- 企业实践申请页“同意”已迁移到公共 `Button size="sm"`，“退回修改”已迁移到 `Button variant="danger" size="sm"`，保留申请审核和退回状态流转。
+- 企业实践记录页“提醒补材料”已迁移到 `Button variant="secondary" size="sm"`，“确认归档”已迁移到 `Button size="sm"`，保留提醒和归档确认反馈。
+- 年度实践跟踪页“提醒申请”已迁移到 `Button variant="secondary" size="sm"`，保留未启动教师的提醒流转。
+- 三页行内操作容器统一使用 `row-action-group` 承接表格操作列布局，删除本地 `.btn-approve`、`.btn-return`、`.btn-remind`、`.btn-confirm` 样式。
+
+F4-44 收尾迁移：
+
+- 报告中心卡片动作已从本地 `.btn-action` 按钮迁移到公共 `Button variant="outline"`，并用 `report-card-action` 承接卡片底部操作尺寸和 hover 效果。
+- 培训计划主入口“新建培训计划”已将共享 `Button` 上的结构类从 `btn-create` 改为 `create-plan-action`。
+- 本批次后 `frontend/src/pages/admin/**/*.vue` 范围内不再保留 `btn-*` 页面级按钮类；后续新增页面动作默认使用公共 `Button` 和语义化结构类。
 
 ### 状态徽章
 

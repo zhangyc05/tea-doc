@@ -178,7 +178,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
               <!-- 筛选和操作区 -->
               <div class="card-header">
                 <h2 class="card-title">培训计划</h2>
-                <Button class="btn-create" @click="openDrawer">新建培训计划 ＋</Button>
+                <Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>
               </div>
               <CompactFilterBar>
                 <template #fields>
@@ -450,7 +450,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   color: #405985;
 }
 
-.btn-create {
+.create-plan-action {
   margin-left: 0;
   min-width: 138px;
 }

@@ -578,10 +578,6 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   background: #28a38a;
 }
 
-.btn-icon {
-  font-size: 16px;
-}
-
 /* 中间记录列表 */
 .records-list {
   background: white;

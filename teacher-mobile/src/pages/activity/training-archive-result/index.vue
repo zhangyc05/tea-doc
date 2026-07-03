@@ -23,6 +23,12 @@ function goHome() {
   uni.switchTab?.({ url: '/pages/activity/index' })
   uni.redirectTo({ url: '/pages/activity/index' })
 }
+
+function goArchiveRecord() {
+  uni.navigateTo({
+    url: '/pages/archive/record-detail/index?recordId=training-digital-teaching-archive',
+  })
+}
 </script>
 
 <template>
@@ -103,7 +109,7 @@ function goHome() {
 
       <view class="page-actions">
         <MobileActionButton class="primary-action" variant="primary" @tap="goTraining">返回培训进修</MobileActionButton>
-        <MobileActionButton class="outline-action" variant="outline">查看提交内容</MobileActionButton>
+        <MobileActionButton class="outline-action" variant="outline" @tap="goArchiveRecord">查看提交内容</MobileActionButton>
         <button class="home-link" @tap="goHome">返回活动首页</button>
       </view>
     </view>

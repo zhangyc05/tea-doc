@@ -227,25 +227,17 @@ function applyFilters() {
                     <td>
                       <div
                         v-if="app.status === '待审核'"
-                        class="btn-action-group"
+                        class="row-action-group"
                       >
                         <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
                           查看申请
                         </Button>
-                        <button
-                          class="btn-approve"
-                          @click="approveApplication(app.id)"
-                        >
-                          同意
-                        </button>
-                        <button
-                          class="btn-return"
-                          @click="returnApplication(app.id)"
-                        >
+                        <Button size="sm" @click="approveApplication(app.id)">同意</Button>
+                        <Button variant="danger" size="sm" @click="returnApplication(app.id)">
                           退回修改
-                        </button>
+                        </Button>
                       </div>
-                      <div v-else class="btn-action-group">
+                      <div v-else class="row-action-group">
                         <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
                           查看申请
                         </Button>
@@ -627,27 +619,12 @@ function applyFilters() {
   font-weight: 700;
 }
 
-.btn-action-group {
+.row-action-group {
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.btn-approve,
-.btn-return {
-  padding: 0;
-  background: transparent;
-  border: none;
-  color: var(--color-admin-primary);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-return {
-  color: #f26a16;
 }
 
 .pagination-section {
@@ -723,7 +700,7 @@ function applyFilters() {
     grid-template-columns: 1fr;
   }
 
-  .btn-action-group {
+  .row-action-group {
     flex-direction: column;
   }
 

@@ -19,6 +19,16 @@ const usageItems = [
 function goBack() {
   uni.navigateBack()
 }
+
+function goActivityHome() {
+  uni.navigateTo({ url: '/pages/activity/index' })
+}
+
+function goArchiveRecord() {
+  uni.navigateTo({
+    url: '/pages/archive/record-detail/index?recordId=enterprise-practice-shandong-software',
+  })
+}
 </script>
 
 <template>
@@ -108,8 +118,8 @@ function goBack() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="action-button action-button--home" variant="outline">返回首页</MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary">查看档案详情</MobileActionButton>
+      <MobileActionButton class="action-button action-button--home" variant="outline" @tap="goActivityHome">返回首页</MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="goArchiveRecord">查看档案详情</MobileActionButton>
     </view>
   </view>
 </template>
