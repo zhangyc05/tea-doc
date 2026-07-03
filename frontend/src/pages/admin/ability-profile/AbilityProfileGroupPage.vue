@@ -726,7 +726,7 @@ function getDistributionTone(index: number) {
   min-height: 122px;
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-admin-panel);
-  padding: 14px 12px;
+  padding: var(--space-admin-md-lg) var(--space-admin-md);
   text-align: center;
 }
 

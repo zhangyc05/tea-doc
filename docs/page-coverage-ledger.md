@@ -153,8 +153,9 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-02 | 手机端企业实践页面已覆盖，但计划、日志、补充材料、归档和入档结果缺少统一状态 | `teacher-mobile/src/domain/enterprise.ts`、`teacher-mobile/src/pages/activity/enterprise*` | 手机端企业实践闭环已补第一版；新增企业实践 domain/store，计划提交生成 `practiceStore.applications` 待审核申请，日志 / 草稿 / 补充 / 归档写入 `practiceStore.records`，归档和历史补录生成 `archiveStore.processingRecords` 待确认记录，不直接写成正式入档 |
 | 2026-07-03 | 手机端虚拟教研页面已覆盖，但邀请、活动、贡献确认、阶段材料、归档和档案沉淀缺少统一状态 | `teacher-mobile/src/domain/virtualResearch.ts`、`teacher-mobile/src/pages/activity/virtual-research*` | 手机端虚拟教研闭环已补第一版；新增虚拟教研 domain/store，邀请和成员对齐 `virtualLabStore.rooms`，活动 / 阶段材料对齐 `virtualLabStore.activities`，贡献和教研记录对齐 `virtualLabStore.records`，归档生成 `archiveStore.processingRecords` 待确认记录 |
 | 2026-07-03 | 手机端各模块“提交成功 / 归档成功 / 已入档”口径不一致 | `docs/business-logic-map.md` | 已补第 17 节，统一待办、档案、培训、反思、企业实践、虚拟教研到管理端对象映射、材料提交、审批结果和入档结果口径 |
-| 2026-07-03 | 手机端档案首页和待办证书结果页仍有入口停留在 toast 或无动作 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/todo/certificate-*` | 档案首页搜索进入查询页，分类进入分类概览，最近入档和查看全部进入记录详情 / 列表；档案查询页支持本页清空和分类筛选；证书详情确认 / 移出分别进入入档成功和已移出结果页；入档成功“查看个人发展”按 `recordId` 进入详情页 |
-| 2026-07-03 | 手机端档案记录详情缺少统一承接页，导致查询结果和个人发展入档结果只能停在查询页 | `teacher-mobile/src/pages/archive/record-detail/index.vue`、`teacher-mobile/src/pages.json` | 已新增 `pages/archive/record-detail/index` 并注册路由；档案查询记录点击、待办证书入档成功和活动归档结果页均按 `recordId` 进入详情页；新增 `npm run test:archive-detail` 守卫路由、入口和同源记录 |
+| 2026-07-03 | 手机端档案首页和待办证书结果页仍有入口停留在 toast 或无动作 | `teacher-mobile/src/pages/archive/*`、`teacher-mobile/src/pages/todo/certificate-*` | 档案首页搜索进入查询页，分类进入分类概览，最近入档和查看全部进入记录详情 / 列表；档案查询页支持本页清空和分类筛选；证书详情确认 / 移出分别进入等待入档确认和已移出结果页；确认结果“查看待核验记录”按 `recordId` 进入详情页 |
+| 2026-07-03 | 手机端档案记录详情缺少统一承接页，导致查询结果和个人发展入档结果只能停在查询页 | `teacher-mobile/src/pages/archive/record-detail/index.vue`、`teacher-mobile/src/pages.json` | 已新增 `pages/archive/record-detail/index` 并注册路由；档案查询记录点击、待办证书确认结果和活动归档结果页均按 `recordId` 进入详情页；新增 `npm run test:archive-detail` 守卫路由、入口和同源记录 |
+| 2026-07-03 | 待办证书确认本人后不应直接显示正式已入档 | `teacher-mobile/src/stores/todoStore.ts`、`teacher-mobile/src/pages/todo/certificate-archive-success/index.vue`、`teacher-mobile/src/domain/archive.ts`、`docs/business-logic-map.md` | 已补：`confirmTodoCertificate()` 改为 `pending-verify`，确认结果页展示等待入档确认，档案记录 `certificate-digital-literacy` 进入待核验并追溯 `archiveStore.processingRecords` / `teacherArchiveFacts`；`test:todo-business` 已新增防直入档 guardrail |
 | 2026-07-03 | 手机端培训、企业实践、虚拟教研结果页仍没有统一档案详情入口 | `teacher-mobile/src/pages/activity/*archive*`、`teacher-mobile/src/pages/archive/record-detail/index.vue` | 培训归档结果、企业实践已入档、虚拟教研归档结果和 V1 归档结果均已接入 `pages/archive/record-detail/index`；详情页支持 `pending-verify` 归档确认中状态；`test:archive-detail` 已纳入这些入口守卫 |
 | 2026-07-03 | 手机端档案 54 张效果图缺少逐图补页、合并和移出判定 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive/*` | 已补 M-01 档案 54 张效果图补页清单，明确 2 张保留已有、18 张合并状态、27 张补页、7 张移出教师端 |
 | 2026-07-03 | 手机端档案 27 个补页项如果逐图建页会造成页面膨胀 | `docs/page-coverage-ledger.md` | 已补 M-02 档案统一路由命名草案，将 27 个补页项收敛为 12 个新增路由和 2 个保留路由 |
@@ -232,6 +233,9 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 卡片方向性 `margin-*: 18px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-32；页面和组件样式中的方向性 `margin-*: 18px` 已替换为 `margin-*: var(--space-admin-card-gap)`，单值、多值和响应式 margin 不纳入本批；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 42 个用例通过 |
 | 2026-07-03 | 方向性 margin 常用 token 档位收敛后，需要判断剩余硬编码是否继续新增 token | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-33；当前剩余方向性 `margin-*` 已无 `8/10/12/16/18/20/24px` 常用 token 档位硬编码；`2/3/4/5/6/7/9/11/13px` 归为局部微调，`22/28/30/34/48/54px` 归为单页版式特例，暂不新增 token；`14px` 高频但不在现有体系内，后续结合目标效果图页面级复核 |
 | 2026-07-03 | 14px 间距复核后需要先收敛低风险 gap 系列 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-34；新增 `--space-admin-md-lg: 14px`，非响应式 `gap: 14px`、`row-gap: 14px` 已替换为 token，并把 `column-gap: 12px`、`row-gap: 18px` 纳入现有 token guardrail；padding、margin、定位和字体中的 14px 保留页面级复核；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 43 个用例通过 |
+| 2026-07-03 | 14px 单值 padding 可以复用中大间距 token | `frontend/src/components/business/training/TrainingResourceDetailSheet.vue`、`frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-35；两个单值 `padding: 14px` 已替换为 `padding: var(--space-admin-md-lg)`，并补 token guardrail；多值 padding、margin、定位和字体中的 14px 仍保留页面级复核；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 44 个用例通过 |
+| 2026-07-03 | 14px 12px 双值 padding 可以映射到中大 / 中等间距 token | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue`、`frontend/src/pages/admin/practice/*`、`frontend/src/pages/admin/training/TrainingDemandPage.vue`、`frontend/src/pages/admin/virtual-lab/*`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-36；六处 `padding: 14px 12px` 已替换为 `padding: var(--space-admin-md-lg) var(--space-admin-md)`，并补 token guardrail；其他多值 padding、margin、定位和字体中的 14px 仍保留页面级复核；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 45 个用例通过 |
+| 2026-07-03 | 14px 16px 双值 padding 可以映射到中大 / 大间距 token | `frontend/src/pages/admin/ability-profile/AbilityProfileTeacherPage.vue`、`frontend/src/pages/admin/practice/PracticeTrackingPage.vue`、`frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-37；三处 `padding: 14px 16px` 已替换为 `padding: var(--space-admin-md-lg) var(--space-admin-lg)`，并补 token guardrail；其他多值 padding、margin、定位和字体中的 14px 仍保留页面级复核；`npm run test -- src/styles/tokens.test.ts` 1 个测试文件 / 46 个用例通过 |
 | 2026-07-03 | 管理端按钮等级需要先形成规则，再逐页迁移局部 `.btn-*` | `frontend/src/components/ui/button.ts`、`frontend/src/pages/admin/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F4-01/F4-44；公共 `Button` 已有 `default`、`secondary`、`outline`、`ghost`、`danger` variant；第一轮扫描高频项为 `.btn-primary` 27 处、`.btn-secondary` 22 处、`.btn-view` 18 处、`.btn-link` 16 处、`.btn-reset` 11 处、`.btn-source` 10 处；能力清单三处编辑抽屉底部、基准模板页顶部优化/版本/派生入口、基准模板优化建议页上传/分析/应用/版本/建议处理动作、执行版页顶部派生/历史版本入口、发布确认页返回/确认发布动作、要求映射页新增/编辑/删除/确认配置动作、能力画像群体页查看完整建议和查看画像动作、培训计划新建抽屉底部、培训计划主入口、右侧筛选动作、筛选重置和表格行内查看、培训计划详情参与教师查看/处理、培训记录筛选重置、行内查看、详情页上传材料/相关记录查看和侧栏主动作、培训资源行内查看和侧栏筛选入口及筛选重置、培训需求行内查看和匹配资源及侧栏筛选入口和筛选重置、培训申请行内查看和处理、培训申请筛选重置和右侧处理提醒动作、培训资源/需求/申请筛选区查询、培训资源/需求新增动作、档案处理详情确认入档/退回/异常/补充说明动作、导入资料上传页选择文件/从文件夹导入/删除/取消/开始识别动作、导入批次详情底部批次状态动作、档案查阅搜索/重置/查看档案动作、教师档案详情返回/打印/导出/关闭/来源/记录详情动作、教师档案详情结构类去 `btn-*` 前缀、教学反思/培训计划详情返回入口、虚拟教研室列表筛选重置和查看详情入口、虚拟教研室详情页主次动作和行内查看/移出动作、虚拟教研活动详情页查看/形成记录动作、虚拟教研记录详情页来源/入档动作、企业实践申请/跟踪/记录筛选重置和查询、企业实践记录/跟踪导出动作、企业实践三页状态动作、报告中心卡片动作和培训计划新建入口、教学反思总览隐藏重置、详情来源数据、总览/详情查看类动作、分析报告中心查询和重置、企业实践三页查看类动作已迁移到公共 `Button`，并补 `adminVisualActions.test.ts` guardrail；当前 `frontend/src/pages/admin/**/*.vue` 已无 `btn-*` 页面级按钮类 |
 | 2026-07-03 | 管理端状态徽章需要把 `StatusBadge` 的 tone、文案和业务状态边界写清楚 | `frontend/src/components/common/StatusBadge.vue`、`frontend/src/components/common/status-badge.ts`、`frontend/src/components/common/StatusBadge.test.ts`、`frontend/src/domain/admin/domainTypes.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F5-01；`StatusBadge` 的管理端/教师端文案和 tone 已拆到共享 `status-badge.ts` registry，common 入口导出 `adminStatusRegistry`、`teacherStatusRegistry` 和 `getStatusBadgeMeta`；已补入 `导出中`、`处理中`、`失败`、`同步失败`、`重新同步中`、`归档`、`停用`、`待沉淀`、`已生成待确认档案` 等新增管理端流程状态，并用 `StatusBadge.test.ts` 验证新增状态必须进入共享 registry；设计规则文档已明确 tone 语义、覆盖规则和展示型 tone 边界 |
 | 2026-07-03 | StatusBadge 需要从字符串 registry 评估为强类型状态集合 | `frontend/src/components/common/status-badge.ts`、`frontend/src/components/common/StatusBadge.test.ts`、`frontend/src/components/common/index.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F5-02；管理端和教师端状态 registry 改为 `as const satisfies Record<string, StatusBadgeMeta>`，导出 `AdminStatus`、`TeacherStatus`、`adminStatusKeys`、`teacherStatusKeys`，保留 `getStatusBadgeMeta(status: string)` 兜底未知后端字符串；`npm run test -- src/components/common/StatusBadge.test.ts` 1 个测试文件 / 3 个用例通过，`npm run typecheck` 通过 |
@@ -332,7 +336,7 @@ frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue
 
 | 模块 | 效果图数 | 当前页面状态 | 结论 |
 | --- | ---: | --- | --- |
-| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 手机端待办闭环已补第一版；证书确认、修改待核验、材料预览 / 更换、移出原因、提交记录、待办动态和跨模块待办入口均接入共享 store，后续替换真实附件上传和管理端接口 |
+| 待办 | 9 | 待办首页、全部待办、动态、证书详情/编辑/提交结果页面数量与效果图基本一致；证书主链已接入 `teacher-mobile/src/stores/todoStore.ts` | 手机端待办闭环已补第一版；证书确认后进入待核验而非正式入档，修改待核验、材料预览 / 更换、移出原因、提交记录、待办动态和跨模块待办入口均接入共享 store，后续替换真实附件上传和管理端接口 |
 | 档案 | 54 | `pages/archive/index`、`pages/archive/record-query` 已注册；部分企业实践、培训证书、虚拟教研入档结果由活动/待办页面承接 | 高风险；已建立第一版逐图缺口判断，档案主体详情页明显不足 |
 | 活动 | 71 | 教学反思、培训进修、企业实践、虚拟教研和活动首页页面数量与效果图分组基本一致 | 已建立第一版逐图分组映射；缺页风险低，下一步重点审计业务流闭环 |
 | 我的 | 6 | 当前仅有 `pages/profile/index` 综合页 | 高风险；我的主页可覆盖，能力画像、用到的记录、发展报告、岗位/聘期对照缺独立页面 |
@@ -361,7 +365,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 教研科研 | 6 | `pages/archive/record-query` 有教研科研搜索结果；虚拟教研活动页有“成长档案 · 教研科研”归档结果，但不属于档案模块路由 | 查询结果和活动归档结果局部承接；档案概览/分类/详情缺页 |
 | 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
 | 成果荣誉 | 4 | `pages/archive/index` 有成果荣誉分类和最近入档；未见成果荣誉概览、列表、教学成果奖详情独立路由 | 缺页 |
-| 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；待办培训证书入档成功页提示可查看个人发展 | 待办结果页局部承接；个人发展档案页、最近入档详情缺页 |
+| 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；待办培训证书等待入档确认页提示可查看个人发展 | 待办结果页局部承接；个人发展档案页、最近入档详情缺页 |
 | 职称聘用 | 8 | 更正申请、提交结果、进度页和结果页已有第一版；补充材料、详情仍未见独立路由 | 高风险缺页 |
 | 社会服务 | 1 | `pages/archive/index` 有社会服务分类卡片 | 仅分类入口，详情缺页 |
 | 考核评价 | 1 | `pages/archive/index` 有考核评价分类卡片 | 仅分类入口，详情缺页 |
@@ -598,13 +602,13 @@ M-03 后续实现顺序：
 | 待确认记录详情｜培训证书 | `pages/todo/certificate-detail` | 已映射 |
 | 编辑待确认记录 | `pages/todo/certificate-edit` | 已映射 |
 | 修改已提交｜培训证书 | `pages/todo/certificate-submit` | 已映射 |
-| 入档成功｜培训证书 | `pages/todo/certificate-archive-success` | 已映射 |
+| 等待入档确认｜培训证书 | `pages/todo/certificate-archive-success` | 已映射 |
 | 已移出待确认页 | `pages/todo/certificate-removed` | 已映射 |
 
 第一版结论：
 
 - 待办模块缺页风险低，9 张效果图与 9 个注册页面数量和命名基本一致。
-- 后续重点进入 G7 手机端待办业务地图：确认“证书详情 -> 编辑/确认/移出 -> 提交核验/入档成功”的状态流是否闭环，并明确入档成功后与档案个人发展维度的关系。
+- 后续重点进入 G7 手机端待办业务地图：确认“证书详情 -> 编辑/确认/移出 -> 提交核验/等待入档确认”的状态流是否闭环，并明确管理端确认后与档案个人发展维度的关系。
 
 ### 逐图台账：我的模块
 
@@ -960,7 +964,7 @@ M-12 验证：
 | 编号 | 任务 | 完成标准 |
 | --- | --- | --- |
 | G7-01 | 梳理待办首页到培训证书详情的入口 | 已补：入口、跳转方式和待确认记录对象写入业务地图 |
-| G7-02 | 梳理培训证书详情的确认入档动作 | 已补：确认后记录状态、结果页和档案个人发展维度关系已对齐 |
+| G7-02 | 梳理培训证书详情的确认入档动作 | 已补：确认后记录进入 `pending-verify`，结果页展示等待入档确认，正式已入档只能由管理端确认产生 |
 | G7-03 | 梳理培训证书详情的编辑动作 | 已补：详情页、编辑页、提交页之间的数据流写回 `todoStore.certificate` |
 | G7-04 | 梳理培训证书提交核验后的状态 | 已补：提交后进入 `pending-verify`，生成 `submissionRecords` 并追溯 `archiveStore.processingRecords` |
 | G7-05 | 梳理培训证书移出待确认动作 | 已补：移出后记录原因，不入档；恢复口径为联系部门重新核验 |
@@ -1027,8 +1031,8 @@ M-12 验证：
 | M-10 | 修正 AI 助手 TabBar 入口 | 若确定独立页面，则 `MobileTabBar.vue` 不再指向 `/pages/activity/index` |
 | M-11 | 补 AI 助手“补充档案”页面 | 路由、页面和状态与效果图对应 |
 | M-12 | 补 AI 助手“补充档案已提交”页面 | 结果页能返回对应档案或待办上下文 |
-| M-13 | 补待办证书共享状态 | `todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、入档成功和移出结果 |
-| M-14 | 补 AI 助手补充档案待核验记录 | `createArchiveSupplementRecord()` 生成 `pending-verify`，结果页进入记录详情和档案待确认列表 |
+| M-13 | 补待办证书共享状态 | 已补：`todoStore` 串起首页、全部待办、证书详情、编辑、提交结果、等待入档确认和移出结果，并由 `test:todo-business` 验证 |
+| M-14 | 补 AI 助手补充档案待核验记录 | 已补：`createArchiveSupplementRecord()` 生成 `pending-verify`，结果页进入记录详情和档案待确认列表，并由 `test:assistant-archive` 验证 |
 
 ### P1：管理端工程重构任务
 
@@ -1113,6 +1117,9 @@ M-12 验证：
 | F3-32 | 替换卡片方向性 margin 硬编码 | 已替换方向性 `margin-*: 18px` 为对应 `var(--space-admin-card-gap)`，补扫描测试防回退；单值、多值和响应式 margin 不纳入本批 |
 | F3-33 | 审计剩余方向性 margin | 已确认常用 token 档位方向性 margin 无残留；剩余微调值和版式特例暂不新增 token，`14px` 留待页面级视觉复核 |
 | F3-34 | 收敛 14px gap 系列 | 已新增 `--space-admin-md-lg`，非响应式 `gap: 14px` 和 `row-gap: 14px` 改用 token；padding、margin、定位和字体暂不纳入本批 |
+| F3-35 | 收敛 14px 单值 padding | 已将两个单值 `padding: 14px` 改用 `--space-admin-md-lg`，多值 padding 仍按页面级密度复核 |
+| F3-36 | 收敛 14px 12px 双值 padding | 已将六处 `padding: 14px 12px` 改用 `--space-admin-md-lg --space-admin-md`，其他多值 padding 仍按页面级密度复核 |
+| F3-37 | 收敛 14px 16px 双值 padding | 已将三处 `padding: 14px 16px` 改用 `--space-admin-md-lg --space-admin-lg`，其他多值 padding 仍按页面级密度复核 |
 | F4-01 | 整理按钮等级规则 | 已在 `frontend/docs/admin-design-system-guide.md` 明确主按钮、次按钮、轮廓按钮、文本按钮、危险按钮和图标按钮使用场景 |
 | F4-02 | 扫描按钮等级混用 | 已完成第一轮扫描，输出公共 `Button` variant 现状和局部 `.btn-*` 高频类；后续按低风险区域逐页迁移 |
 | F4-03 | 迁移能力清单抽屉底部按钮试点 | 已将能力清单基准模板、执行版、要求映射三个编辑抽屉底部按钮迁移到公共 `Button`，并补源码 guardrail |
@@ -1187,7 +1194,7 @@ M-12 验证：
 | --- | --- | --- |
 | V-01 | 手机端页面补齐后验证注册关系 | `teacher-mobile/src/pages.json` 与页面文件一一对应 |
 | V-02 | 手机端业务地图更新后自检入口 | 每个新增页面都能从现有入口进入或明确为待接入口 |
-| V-02a | 手机端档案入口守卫 | 执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
+| V-02a | 手机端档案入口守卫 | 已补：执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
 | V-03 | 手机端类型检查 | 执行 `cd teacher-mobile && npm run typecheck` |
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |
@@ -1269,12 +1276,53 @@ F3-31
 F3-32
 F3-33
 F3-34
+F3-35
+F3-36
+F3-37
 F4-01
 F4-02
 F4-03
 F4-04
 F4-05
 F4-06
+F4-07
+F4-08
+F4-09
+F4-10
+F4-11
+F4-12
+F4-13
+F4-14
+F4-15
+F4-16
+F4-17
+F4-18
+F4-19
+F4-20
+F4-21
+F4-22
+F4-23
+F4-24
+F4-25
+F4-26
+F4-27
+F4-28
+F4-29
+F4-30
+F4-31
+F4-32
+F4-33
+F4-34
+F4-35
+F4-36
+F4-37
+F4-38
+F4-39
+F4-40
+F4-41
+F4-42
+F4-43
+F4-44
 F5-01
 F5-02
 F6-01
@@ -1294,11 +1342,14 @@ E12-08
 E13-01
 E13-02
 E13-03
+E13-04
+E13-05
 E14-01
 E14-02
 E14-03
 E14-04
 E14-05
+E14-06
 M-01
 M-02
 M-03
@@ -1311,8 +1362,11 @@ M-09
 M-10
 M-11
 M-12
+M-13
+M-14
 V-01
 V-02
+V-02a
 V-03
 V-04
 V-05

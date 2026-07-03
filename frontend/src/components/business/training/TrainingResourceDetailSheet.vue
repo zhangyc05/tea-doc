@@ -198,7 +198,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 }
 
 .detail-field {
-  padding: 14px;
+  padding: var(--space-admin-md-lg);
 }
 
 .detail-field span,

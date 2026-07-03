@@ -618,7 +618,7 @@ function viewRecord(id: string) {
   grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-admin-lg);
-  padding: 14px 16px;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
   border: 1px solid #e4ebf5;
   border-radius: var(--radius-admin-panel);
   background: #fbfdff;

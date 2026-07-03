@@ -110,6 +110,12 @@ F3-33 已完成剩余方向性外边距审计：当前剩余方向性 `margin-*`
 
 F3-34 已完成 `gap` 系列 14px 收敛：新增 `--space-admin-md-lg: 14px`，页面和组件样式中的非响应式 `gap: 14px`、`row-gap: 14px` 已替换为该 token；同步将此前未覆盖的 `column-gap: 12px`、`row-gap: 18px` 分别纳入 `--space-admin-md` 和 `--space-admin-card-gap`。本批不处理 padding、margin、定位或字体里的 14px。
 
+F3-35 已完成单值 `padding: 14px` 收敛：培训资源详情抽屉和成长档案教师详情来源卡片中的单值 padding 已替换为 `--space-admin-md-lg`。本批不处理 `padding: 14px 12px`、`padding: 14px 16px`、`padding: 14px 22px` 等多值 padding，它们继续按表格密度或页面级视觉复核处理。
+
+F3-36 已完成双值 `padding: 14px 12px` 收敛：能力画像、企业实践、培训需求和虚拟教研中用于紧凑信息块的该组合已替换为 `--space-admin-md-lg --space-admin-md`。本批不处理 `14px 16px`、`14px 18px`、`14px 22px` 等其他多值 padding。
+
+F3-37 已完成双值 `padding: 14px 16px` 收敛：教师画像列表、企业实践跟踪和虚拟教研室详情中用于列表卡片/分页块的该组合已替换为 `--space-admin-md-lg --space-admin-lg`。本批不处理 `14px 18px`、`14px 22px`、`14px 36px` 等其他多值 padding。
+
 高频颜色候选：
 
 | 现有值 | 出现次数 | 建议归并 |
@@ -162,6 +168,9 @@ F3-34 已完成 `gap` 系列 14px 收敛：新增 `--space-admin-md-lg: 14px`，
 | `padding: 18px` | 11 | F3-22 已替换单值 padding 为 `--space-admin-card-gap`；双值、四值和响应式 padding 分后续批次处理 |
 | `padding: 16px` | 12 | F3-23 已替换单值 padding 为 `--space-admin-lg`；双值、四值和响应式 padding 分后续批次处理 |
 | `padding: 12px` | 3 | F3-24 已替换单值 padding 为 `--space-admin-md`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 14px` | 2 | F3-35 已替换单值 padding 为 `--space-admin-md-lg`；双值、四值和响应式 padding 分后续批次处理 |
+| `padding: 14px 12px` | 6 | F3-36 已替换为 `--space-admin-md-lg --space-admin-md`；其他多值 padding 分后续页面级复核 |
+| `padding: 14px 16px` | 3 | F3-37 已替换为 `--space-admin-md-lg --space-admin-lg`；其他多值 padding 分后续页面级复核 |
 | `margin: 20px` | 1 | F3-25 已替换单值 margin 为 `--space-admin-xl`；方向性、多值和响应式 margin 分后续批次处理 |
 | `margin-*: 8px` | 27 | F3-26 已替换方向性 margin 为 `--space-admin-xs`；单值、多值和响应式 margin 分后续批次处理 |
 | `margin-*: 10px` | 22 | F3-27 已替换方向性 margin 为 `--space-admin-sm`；单值、多值和响应式 margin 分后续批次处理 |
@@ -176,7 +185,7 @@ F3-34 已完成 `gap` 系列 14px 收敛：新增 `--space-admin-md-lg: 14px`，
 | 剩余值 | 出现次数 | 处理口径 |
 | --- | ---: | --- |
 | `2px`、`3px`、`4px`、`5px`、`6px`、`7px`、`9px`、`11px`、`13px` | 23 | 低频微调值，主要服务图标、文字基线、紧凑列表和局部对齐；暂不新增 token |
-| `14px` | 19 | `gap` 系列已在 F3-34 收敛为 `--space-admin-md-lg`；剩余 padding、margin、定位和字体值继续结合目标效果图做页面级复核 |
+| `14px` | 19 | `gap` 系列已在 F3-34 收敛为 `--space-admin-md-lg`，单值 padding 已在 F3-35 收敛，`14px 12px` 和 `14px 16px` 双值 padding 已在 F3-36/F3-37 收敛；剩余其他多值 padding、margin、定位和字体值继续结合目标效果图做页面级复核 |
 | `22px`、`28px`、`30px`、`34px`、`48px`、`54px` | 12 | 单页版式特例或大段落错位控制；暂不纳入通用 spacing token |
 
 收敛顺序：

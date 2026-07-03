@@ -30,6 +30,7 @@ const trainingArchiveResultFile = resolve(root, 'src/pages/activity/training-arc
 const enterpriseArchiveSuccessFile = resolve(root, 'src/pages/activity/enterprise-archive-success/index.vue')
 const virtualArchiveResultFile = resolve(root, 'src/pages/activity/virtual-research-archive-result/index.vue')
 const virtualArchiveResultV1File = resolve(root, 'src/pages/activity/virtual-research-archive-result-v1/index.vue')
+const docsLedgerFile = resolve(root, '../docs/page-coverage-ledger.md')
 
 const failures = []
 
@@ -355,6 +356,16 @@ for (const [file, label] of archiveEntryFiles) {
   if (!source.includes('recordId=')) {
     failures.push(`${label} does not navigate to record-detail by recordId`)
   }
+}
+
+const ledgerSource = readFileSync(docsLedgerFile, 'utf8')
+const completedTaskList = ledgerSource.split('### 已完成任务编号')[1] || ''
+if (!ledgerSource.includes('| V-02a | 手机端档案入口守卫 | 已补：')) {
+  failures.push('coverage ledger does not mark V-02a archive entry guard as implemented')
+}
+
+if (!completedTaskList.includes('V-02a')) {
+  failures.push('coverage ledger completed task list does not include V-02a')
 }
 
 if (failures.length > 0) {

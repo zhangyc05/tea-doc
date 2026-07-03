@@ -299,21 +299,21 @@ export function confirmTodoCertificate(todoId = certificateTodoId) {
   const todo = getTodoById(todoId)
   if (!todo) return null
 
-  todo.tag = '已入档'
-  todo.state = '已入档'
-  todo.action = '查看档案'
-  todo.tone = 'green'
-  todo.status = 'archived'
-  state.certificate.status = 'archived'
-  state.certificate.material.status = 'confirmed'
-  state.certificate.history = ['教师确认本人记录', ...state.certificate.history]
+  todo.tag = '待核验'
+  todo.state = '等待入档确认'
+  todo.action = '查看进度'
+  todo.tone = 'orange'
+  todo.status = 'pending-verify'
+  state.certificate.status = 'pending-verify'
+  state.certificate.material.status = 'pending-verify'
+  state.certificate.history = ['教师确认本人记录，等待管理端入档确认', ...state.certificate.history]
   addTodoDynamic({
     id: 'dynamic-certificate-confirmed',
     title: '已确认一条培训证书',
-    desc: `${state.certificate.title} 已完成本人确认`,
+    desc: `${state.certificate.title} 已进入入档核验`,
     category: '培训与研修',
     type: '记录确认',
-    tone: 'green',
+    tone: 'orange',
     icon: 'check',
     relatedTodoId: todoId,
   })

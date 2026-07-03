@@ -162,8 +162,8 @@ export const archiveRecords: MobileArchiveRecord[] = [
     updatedAt: '2026.06.14',
     source: '待办确认',
     owner: '林老师 ｜ 智能制造学院',
-    status: 'archived',
-    summary: '系统识别培训证书后由教师确认，已沉淀到个人发展维度，可作为能力画像和个人发展报告依据。',
+    status: 'pending-verify',
+    summary: '系统识别培训证书后由教师确认，当前等待管理端入档确认。确认通过后才会沉淀到个人发展维度。',
     fields: [
       { label: '培训项目', value: '教师数字素养提升专项培训' },
       { label: '发证单位', value: '全国职业院校教师培训中心' },
@@ -173,11 +173,12 @@ export const archiveRecords: MobileArchiveRecord[] = [
     ],
     materials: [{ name: '培训证书.jpg', meta: 'JPG · 1.2MB · 来源于待办确认' }],
     usages: [
-      '能力画像：支撑数字素养相关能力证据',
-      '个人发展报告：计入培训进修记录',
-      '岗位/聘期对照：作为继续教育学时依据',
+      '能力画像：待管理端确认后支撑数字素养相关能力证据',
+      '个人发展报告：待管理端确认后计入培训进修记录',
+      '岗位/聘期对照：待管理端确认后作为继续教育学时依据',
     ],
-    sourceSteps: archivedTrainingSteps,
+    sourceSteps: pendingVerifySteps,
+    adminStoreRefs: ['archiveStore.processingRecords', 'teacherArchiveFacts'],
   },
   {
     id: 'virtual-research-smart-manufacturing',

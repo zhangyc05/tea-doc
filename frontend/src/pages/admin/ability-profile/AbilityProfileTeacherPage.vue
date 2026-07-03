@@ -618,7 +618,7 @@ function getAvatarTone(index: number): string {
   align-items: center;
   gap: var(--space-admin-lg);
   min-height: 92px;
-  padding: 14px 16px;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
   border: 1px solid #e5ebf3;
   border-radius: var(--radius-md);
   background: #ffffff;

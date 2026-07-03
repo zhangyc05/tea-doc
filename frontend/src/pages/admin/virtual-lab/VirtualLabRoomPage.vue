@@ -688,7 +688,7 @@ function viewDetail(roomId: string) {
 
 .room-table th,
 .room-table td {
-  padding: 14px 12px;
+  padding: var(--space-admin-md-lg) var(--space-admin-md);
   border-bottom: 1px solid #e8eef7;
   text-align: left;
   vertical-align: middle;

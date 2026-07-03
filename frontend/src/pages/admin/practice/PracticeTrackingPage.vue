@@ -404,7 +404,7 @@ function applyFilters() {
   align-items: center;
   gap: var(--space-admin-sm);
   min-height: 110px;
-  padding: 14px 12px;
+  padding: var(--space-admin-md-lg) var(--space-admin-md);
   background: #fff;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-admin-border);
@@ -580,7 +580,7 @@ function applyFilters() {
 }
 
 .tracking-table th {
-  padding: 14px 16px;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
   text-align: left;
   font-size: 13px;
   font-weight: 600;

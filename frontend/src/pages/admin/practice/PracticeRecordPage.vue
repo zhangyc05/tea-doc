@@ -537,7 +537,7 @@ function applyFilters() {
 }
 
 .record-table td {
-  padding: 14px 12px;
+  padding: var(--space-admin-md-lg) var(--space-admin-md);
   font-size: 13px;
   line-height: 1.6;
   color: #24314c;

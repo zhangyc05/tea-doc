@@ -350,6 +350,39 @@ describe('admin design tokens', () => {
     expect(hardcodedMediumPaddingFiles).toEqual([])
   })
 
+  it('keeps medium-large single-value padding behind the medium-large spacing token', () => {
+    const hardcodedMediumLargePaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '14px'
+      })
+    })
+
+    expect(hardcodedMediumLargePaddingFiles).toEqual([])
+  })
+
+  it('keeps medium-large by medium padding pairs behind spacing tokens', () => {
+    const hardcodedMediumLargeByMediumPaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '14px 12px'
+      })
+    })
+
+    expect(hardcodedMediumLargeByMediumPaddingFiles).toEqual([])
+  })
+
+  it('keeps medium-large by large padding pairs behind spacing tokens', () => {
+    const hardcodedMediumLargeByLargePaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectPaddingValues(content).some((value) => {
+        return value.trim() === '14px 16px'
+      })
+    })
+
+    expect(hardcodedMediumLargeByLargePaddingFiles).toEqual([])
+  })
+
   it('keeps card single-value padding behind the card gap spacing token', () => {
     const hardcodedCardPaddingFiles = collectStyleFiles(srcRoot).filter((filePath) => {
       const content = readFileSync(filePath, 'utf8')

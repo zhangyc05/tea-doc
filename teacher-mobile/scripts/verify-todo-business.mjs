@@ -79,6 +79,15 @@ if (!storeSource.includes("'removed'")) {
   failures.push('todo store does not represent removed status')
 }
 
+const confirmTodoCertificateBlock = storeSource.match(/export function confirmTodoCertificate[\s\S]*?export function submitTodoCertificateCorrection/)?.[0] || ''
+if (!confirmTodoCertificateBlock.includes("todo.status = 'pending-verify'")) {
+  failures.push('certificate confirmation should move the todo to pending verification instead of direct archive')
+}
+
+if (confirmTodoCertificateBlock.includes("todo.status = 'archived'") || confirmTodoCertificateBlock.includes("state.certificate.status = 'archived'")) {
+  failures.push('certificate confirmation still marks mobile todo or certificate as archived before admin confirmation')
+}
+
 const pagesThatMustReadStore = [
   ['todo index', files.todoIndex],
   ['todo all', files.todoAll],
@@ -124,6 +133,11 @@ if (!source(files.submit).includes('submissionRecords')) {
   failures.push('certificate submit result does not show traceable submission records')
 }
 
+const archiveSuccessSource = source(files.archiveSuccess)
+if (archiveSuccessSource.includes('已入档成功') || archiveSuccessSource.includes('系统已入档')) {
+  failures.push('certificate confirmation result page still presents teacher confirmation as formal archive success')
+}
+
 if (!source(files.removed).includes('removeReason')) {
   failures.push('certificate removed result does not show removal reason')
 }
@@ -157,9 +171,22 @@ if (!businessDoc.includes('archiveStore.processingRecords')) {
   failures.push('business map does not document todo alignment with archiveStore.processingRecords')
 }
 
+if (businessDoc.includes('教师本人确认后直接入档口径') || businessDoc.includes('同步为 `archived`')) {
+  failures.push('business map still documents direct mobile confirmation to archived status')
+}
+
 const ledgerDoc = source(files.docsLedger)
+const completedTaskList = ledgerDoc.split('### 已完成任务编号')[1] || ''
 if (!ledgerDoc.includes('手机端待办闭环已补第一版')) {
   failures.push('coverage ledger does not mark mobile todo closure implementation status')
+}
+
+if (!ledgerDoc.includes('| M-13 | 补待办证书共享状态 | 已补：')) {
+  failures.push('coverage ledger does not mark M-13 todo certificate shared state as implemented')
+}
+
+if (!completedTaskList.includes('M-13')) {
+  failures.push('coverage ledger completed task list does not include M-13')
 }
 
 if (failures.length > 0) {

@@ -10,8 +10,8 @@ const todoState = getTodoState()
 const certificate = computed(() => todoState.certificate)
 
 const nextItems = [
-  { icon: 'folder', text: '可在「个人发展」中查看这条记录' },
-  { icon: 'chart', text: '后续可用于个人成长档案沉淀' },
+  { icon: 'folder', text: '可在「档案待确认」中查看这条记录' },
+  { icon: 'chart', text: '管理端确认后才会沉淀到成长档案' },
   { icon: 'shield', text: '如信息有误，可在档案详情中申请更正' },
 ]
 
@@ -32,7 +32,7 @@ function goArchiveRecord() {
 
 <template>
   <MobilePageShell class="archive-success-page" active="todo">
-    <MobileNavbar title="入档成功" size="compact" @back="goBack" />
+    <MobileNavbar title="等待确认" size="compact" @back="goBack" />
 
     <MobileCard class="hero-card">
       <view class="hero-art">
@@ -46,8 +46,8 @@ function goArchiveRecord() {
         <view class="spark spark--two"></view>
       </view>
       <view class="hero-copy">
-        <text class="hero-title">已入档成功</text>
-        <text class="hero-desc">你已确认这条培训证书属于本人，系统已入档到「个人发展」。</text>
+        <text class="hero-title">已确认，等待入档</text>
+        <text class="hero-desc">你已确认这条培训证书属于本人，记录已进入管理端入档核验。</text>
       </view>
     </MobileCard>
 
@@ -59,8 +59,8 @@ function goArchiveRecord() {
         </view>
         <view class="record-copy">
           <text class="record-title">{{ certificate.title }}</text>
-          <text class="record-meta">{{ certificate.category }} ｜ 已入档 ｜ 06.14</text>
-          <text class="record-desc">系统识别并由你确认后，已进入成长档案。</text>
+          <text class="record-meta">{{ certificate.category }} ｜ 待核验 ｜ 06.14</text>
+          <text class="record-desc">系统识别并由你确认后，先进入档案待确认队列。</text>
         </view>
       </view>
     </MobileCard>
@@ -81,7 +81,7 @@ function goArchiveRecord() {
 
     <view class="footer-actions">
       <MobileActionButton class="footer-button" variant="primary" @tap="goArchiveRecord">
-        查看个人发展
+        查看待核验记录
       </MobileActionButton>
       <MobileActionButton class="footer-button" variant="outline" @tap="goTodo">
         返回待办

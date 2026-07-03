@@ -8,6 +8,7 @@ const files = {
   submitted: resolve(root, 'src/pages/assistant/archive-supplement-submitted/index.vue'),
   draftList: resolve(root, 'src/pages/archive/draft-list/index.vue'),
   detail: resolve(root, 'src/pages/archive/record-detail/index.vue'),
+  docsLedger: resolve(root, '../docs/page-coverage-ledger.md'),
 }
 
 const failures = []
@@ -60,6 +61,16 @@ if (!submittedSource.includes('/pages/archive/record-detail/index?recordId=')) {
 
 if (!submittedSource.includes('/pages/archive/draft-list/index')) {
   failures.push('archive supplement submitted page does not expose archive pending list entry')
+}
+
+const ledgerDoc = source(files.docsLedger)
+const completedTaskList = ledgerDoc.split('### 已完成任务编号')[1] || ''
+if (!ledgerDoc.includes('| M-14 | 补 AI 助手补充档案待核验记录 | 已补：')) {
+  failures.push('coverage ledger does not mark M-14 assistant archive pending record as implemented')
+}
+
+if (!completedTaskList.includes('M-14')) {
+  failures.push('coverage ledger completed task list does not include M-14')
 }
 
 if (failures.length > 0) {

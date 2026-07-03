@@ -530,7 +530,7 @@ function matchDemand(id: string) {
 }
 
 .demand-table th {
-  padding: 14px 12px;
+  padding: var(--space-admin-md-lg) var(--space-admin-md);
   text-align: left;
   font-size: 13px;
   font-weight: 600;

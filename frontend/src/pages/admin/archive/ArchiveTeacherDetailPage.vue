@@ -1011,7 +1011,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .content-card {
   min-height: 112px;
-  padding: 14px;
+  padding: var(--space-admin-md-lg);
   border: 1px solid #d8e4f5;
   border-radius: 7px;
   background: var(--color-admin-bg-soft);

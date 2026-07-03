@@ -485,7 +485,7 @@
 | 待确认档案记录 | 系统识别后需要教师确认是否属于本人的档案记录 | `teacher-mobile/src/stores/todoStore.ts`、`teacher-mobile/src/pages/todo/certificate-detail/index.vue` |
 | 培训证书材料 | 待确认档案记录关联的证书图片和证书字段 | `todoStore.ts`、`certificate-detail/index.vue`、`certificate-edit/index.vue` |
 | 修改提交记录 | 教师修改证书字段后提交给部门核验的记录 | `teacher-mobile/src/pages/todo/certificate-submit/index.vue` |
-| 入档结果 | 教师确认后进入个人发展维度的结果态 | `teacher-mobile/src/pages/todo/certificate-archive-success/index.vue` |
+| 入档确认结果 | 教师确认本人记录后的待核验结果态 | `teacher-mobile/src/pages/todo/certificate-archive-success/index.vue` |
 | 移出结果 | 教师判断记录不属于本人后从待确认列表移出的结果态 | `teacher-mobile/src/pages/todo/certificate-removed/index.vue` |
 | 跨模块待办 | 企业实践补充、培训证书补充、教学反思草稿等手机端任务 | `todoStore.todos.actionUrl` 对齐 activity / archive 页面入口 |
 
@@ -493,11 +493,11 @@
 
 | 对象 | 应有状态 | 当前前端状态 | 判断 |
 | --- | --- | --- | --- |
-| 待办记录 | 待确认、待补充、可完善、待核验、已入档、已移出 | `todoStore.todos` 共享 `pending-confirm`、`pending-supplement`、`improvable`、`pending-verify`、`archived`、`removed` | 手机端待办闭环已补第一版；培训证书、企业实践补充、培训证书补充、教学反思草稿和企业实践总结草稿均有统一入口 |
-| 待确认档案记录 | 待确认、待核验、已入档、已移出 | `todoStore.certificate.status`，对齐 `archiveStore.processingRecords` | 证书详情确认、修改提交、移出会同步同一条记录状态 |
+| 待办记录 | 待确认、待补充、可完善、待核验、已入档、已移出 | `todoStore.todos` 共享 `pending-confirm`、`pending-supplement`、`improvable`、`pending-verify`、`archived`、`removed` | 手机端待办闭环已补第一版；培训证书确认先进入待核验，管理端确认后才允许成为已入档 |
+| 待确认档案记录 | 待确认、待核验、已入档、已移出 | `todoStore.certificate.status`，对齐 `archiveStore.processingRecords` | 证书详情确认、修改提交、移出会同步同一条记录状态；已入档只能来自管理端确认 |
 | 培训证书材料 | 原始识别、已预览、已更换、待核验、已确认 | `todoStore.certificate.keyInfo`、`editableInfo`、`changes`、`material.status` | 证书详情可预览材料，编辑页更换材料写入上传状态 |
 | 待办动态 | 记录确认、材料更新、草稿保存、其他 | `todoStore.todoDynamics` | 确认、修改、移出、材料预览 / 更换会写入共享动态，首页和动态页同源读取 |
-| 入档结果 | 入档成功、可查看个人发展、可申请更正 | 入档成功页展示结果，“查看个人发展”进入统一档案详情页 | 已接入档案详情页第一版，个人发展分类列表仍缺页 |
+| 入档确认结果 | 待核验、可查看待核验记录、可申请更正 | 确认结果页展示“等待入档”，进入统一档案详情页查看待核验记录 | 已接入档案详情页第一版，个人发展分类列表仍缺页；不直接写正式档案事实 |
 | 移出结果 | 已移出、可查看其他待确认记录 | 详情页“不是我的”进入移出结果页；移出结果页可返回待办或全部待办 | 页面链路已接上，缺移出原因和恢复口径 |
 
 ### 11.3 主流程
@@ -506,8 +506,9 @@
 待办首页 / 全部待办
 → 进入待确认培训证书详情
 → 教师确认记录属于本人
-→ `confirmTodoCertificate()` 标记已入档
-→ 入档成功页提示可查看个人发展
+→ `confirmTodoCertificate()` 标记待核验并追溯 `archiveStore.processingRecords`
+→ 确认结果页提示等待管理端入档确认
+→ 管理端确认后才可进入正式已入档事实
 ```
 
 ```txt
@@ -540,19 +541,19 @@
 | 页面 | 动作 | 当前实现 | 闭环判断 |
 | --- | --- | --- | --- |
 | 待办首页 | 查看全部待办 | `uni.navigateTo('/pages/todo/all/index')` | 已闭环到页面 |
-| 待办首页 | 去确认 | 读取 `getHomeTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；已入档/待核验/已移出后不再出现在待办列表 |
+| 待办首页 | 去确认 | 读取 `getHomeTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；待核验/已入档/已移出后不再出现在待办列表 |
 | 待办首页 | 查看全部动态 | `uni.navigateTo('/pages/todo/dynamics/index')` | 已闭环到动态页 |
-| 全部待办 | 去确认 | 读取 `getVisibleTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；筛选数量读取共享状态 |
+| 全部待办 | 去确认 | 读取 `getVisibleTodoItems()`，证书待办进入 `certificate-detail` | 已闭环到证书详情页；确认后进入待核验并从待办列表移出 |
 | 证书详情 | 信息有误，修改一下 | `uni.navigateTo('/pages/todo/certificate-edit/index')` | 已闭环到编辑页 |
-| 证书详情 | 确认是我的 | 调用 `confirmTodoCertificate()` 后进入 `certificate-archive-success` | 已完成证书待办本地状态闭环 |
+| 证书详情 | 确认是我的 | 调用 `confirmTodoCertificate()` 后进入 `certificate-archive-success` | 已完成证书确认到待核验的本地状态闭环，不直接入档 |
 | 证书详情 | 不是我的 | 调用 `removeTodoCertificate()` 后进入 `certificate-removed` | 已完成移出状态和移出原因记录；是否恢复按“联系部门重新核验”处理 |
 | 证书详情 | 查看材料 | 调用 `previewTodoCertificateMaterial()` 后进入统一档案详情材料承接页 | 已闭环到材料预览降级入口 |
 | 证书编辑 | 提交修改 | 调用 `submitTodoCertificateCorrection()` 后进入 `certificate-submit` | 已完成待核验状态闭环，字段输入写回 `editableInfo` |
 | 证书编辑 | 更换材料 | 调用 `replaceTodoCertificateMaterial()`，材料状态改为 `replaced` | 已接入本地上传状态，后续可替换为真实附件服务 |
 | 证书提交结果 | 查看提交记录 | 读取 `certificate.submissionRecords` | 已形成可追踪提交记录，并标明 `archiveStore.processingRecords` |
 | 证书提交结果 | 返回待办 | `uni.navigateTo('/pages/todo/index')` | 已闭环到待办首页 |
-| 入档成功 | 查看个人发展 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=certificate-digital-literacy&category=personal-development')` | 已闭环到统一记录详情页第一版；缺个人发展分类列表 |
-| 入档成功 | 返回待办 | `uni.navigateTo('/pages/todo/index')` | 已闭环到待办首页 |
+| 确认结果 | 查看待核验记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=certificate-digital-literacy&category=personal-development')` | 已闭环到统一记录详情页第一版，展示待核验 / 归档确认中口径 |
+| 确认结果 | 返回待办 | `uni.navigateTo('/pages/todo/index')` | 已闭环到待办首页 |
 | 已移出待确认 | 返回待办 | `uni.navigateTo('/pages/todo/index')` | 已闭环到待办首页 |
 | 已移出待确认 | 查看其他待确认记录 | `uni.navigateTo('/pages/todo/all/index')` | 已闭环到全部待办 |
 | 全部动态 | 筛选动态 | `uni.navigateTo('/pages/todo/dynamics-filter/index')` | 已闭环到筛选页 |
@@ -561,10 +562,10 @@
 ### 11.5 后续审计点
 
 1. 待办模块 9 张效果图和 9 个注册页面已基本对应；证书确认主链已由 `todoStore` 串起同一条待办记录，后续重点扩展企业实践补充、培训证书补充、教学反思草稿等其它待办类型。
-2. “确认是我的”当前按效果图进入 `certificate-archive-success` 并同步为 `archived`；该路径为教师本人确认后直接入档口径，后续如产品改为部门复核，应统一改为 `pending-verify`。
+2. “确认是我的”当前进入 `certificate-archive-success` 兼容旧路由名，但状态已统一为 `pending-verify`；正式已入档只能由管理端确认后产生。
 3. “不是我的”当前已同步为 `removed` 并进入 `certificate-removed`，后续需定义是否需要记录移出原因、是否允许部门重新核验。
 4. 编辑页提交后已同步为 `pending-verify` 并进入提交结果页；字段输入仍是展示态，后续需接真实表单值和提交记录列表。
-5. 入档成功页的“查看个人发展”当前先进入统一记录详情页第一版，仍依赖个人发展分类列表和真实档案事实模型补齐。
+5. 确认结果页的“查看待核验记录”当前先进入统一记录详情页第一版，仍依赖个人发展分类列表和真实档案事实模型补齐。
 6. 动态列表当前是只读静态时间线，后续应由确认、提交修改、入档、移出等动作生成。
 7. 手机端待办如果要和管理端闭环，应继续与管理端 `archiveStore.processingRecords` 对齐：待确认、待核验、已入档、已移出；当前 `todoStore` 是手机端本地第一版状态边界。
 
@@ -580,7 +581,7 @@
 | 档案记录详情 | 单条档案事实的详情、来源、材料、用途和更正入口 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/record-detail/index.vue` |
 | 档案来源 | 待办确认、培训归档、企业实践核验、虚拟教研归档等形成档案事实的来源 | `teacher-mobile/src/pages/todo/*`、`teacher-mobile/src/pages/activity/*` |
 | 档案更正 | 教师发现入档事实有误后发起更正、补充材料并查看处理进度 | `teacher-mobile/src/pages/archive/correction/apply/index.vue`、`teacher-mobile/src/pages/archive/correction/submitted/index.vue`、`teacher-mobile/src/pages/archive/correction/progress/index.vue`、`teacher-mobile/src/pages/archive/correction/result/index.vue` 和 `teacher-mobile/src/pages/archive/correction/supplement/index.vue` 已接入；`profile/index.vue` 的“信息更正进度”已进入进度页 |
-| 入档结果 | 业务流程完成后提示已入档或等待归档确认的结果态 | `certificate-archive-success`、`training-archive-result`、`enterprise-archive-success`、`virtual-research-archive-result` 等 |
+| 入档结果 | 业务流程完成后提示等待归档确认、待核验或管理端确认后的已入档结果态 | `certificate-archive-success`、`training-archive-result`、`enterprise-archive-success`、`virtual-research-archive-result` 等 |
 
 ### 12.2 状态口径
 
@@ -590,7 +591,7 @@
 | 档案分类 | 有记录、无记录、最近更新、需补充 | 分类卡片、分类概览页和记录列表页已从 `domain/archive.ts` 读取分类摘要和记录；首页统计由 `getArchiveOverviewStats()` 计算 | 已有分类到列表到详情的本地同源闭环，分类数量随记录状态计算 |
 | 档案查询 | 有结果、无结果、按分类筛选、关键词搜索 | 查询页调用 `searchArchiveRecords(queryText, selectedFilter)`，支持关键词、分类和无结果态 | 已接入真实搜索参数的本地实现 |
 | 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；“申请更正”按 `recordId` 进入更正申请页 | 详情页读取同源档案事实模型，更正状态由 correction 记录回写 |
-| 入档结果 | 等待确认、已入档、归档失败、需补充 | 培训为“归档确认中”，企业实践/待办证书为“已入档”，虚拟教研为“已归档” | 结果页存在，但口径不统一 |
+| 入档结果 | 等待确认、待核验、已入档、归档失败、需补充 | 培训和待办证书均为“归档确认中 / 待核验”，虚拟教研为“已归档”，企业实践旧成功页仍需继续统一到待确认口径 | 待办证书已不直接入档；企业实践遗留结果页后续继续收敛 |
 | 档案更正 | 更正申请中、需补充、已通过、未通过 | 更正申请调用 `submitArchiveCorrection()` 生成真实更正记录；进度和结果页按 `correctionId` 读取，需补充会回写档案记录状态，补充材料调用 `submitArchiveCorrectionSupplement()` | 已接入更正记录、补充材料状态和待核验状态；仍待真实附件上传 |
 
 ### 12.3 主流程
@@ -607,9 +608,9 @@
 
 ```txt
 待办 / 活动流程提交材料
-→ 形成待确认、待核验或已入档记录
+→ 形成待确认、待核验或已归档记录
 → 写入对应档案分类
-→ 档案首页更新数量和最近入档
+→ 管理端确认后才更新正式已入档数量和最近入档
 → 档案查询页可检索到记录
 → 档案详情可追溯来源
 ```
@@ -649,7 +650,7 @@
 | 更正进度 | 查看处理结果 | 调用 `updateArchiveCorrectionStatus(correctionId, 'need-supplement')` 后进入结果页 | 已回写需补充状态，不伪造已通过 |
 | 更正结果 | 查看原档案 / 补充材料 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')`、`uni.navigateTo('/pages/archive/correction/supplement/index?recordId=...&correctionId=...')` | 已保留结果后的上下文；需补充状态进入补充材料页第一版 |
 | 补充材料 | 查看原档案 / 提交补充 | 调用 `submitArchiveCorrectionSupplement()` 后进入更正进度已补充态 | 已闭环到已补充进度态；真实附件上传仍待接口 |
-| 待办入档成功 | 查看个人发展 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=certificate-digital-literacy')` | 已闭环到统一记录详情页第一版 |
+| 待办确认结果 | 查看待核验记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=certificate-digital-literacy')` | 已闭环到统一记录详情页第一版，记录保持待核验状态 |
 | 培训归档提交结果 | 返回培训进修 | `uni.navigateTo('/pages/activity/training/index')` | 已闭环到活动页 |
 | 培训归档提交结果 | 查看提交内容 | 培训总结页调用 `createTrainingArchiveRecord()` 后传入 `recordId`，结果页进入 `/pages/archive/record-detail/index?recordId=...` | 已生成 / 定位本地待核验档案记录，并保持“归档确认中”口径 |
 | 培训归档提交结果 | 查看档案待确认 | `uni.navigateTo('/pages/archive/draft-list/index')` | 已闭环到待确认 / 待核验列表 |
@@ -680,7 +681,7 @@
 2. 当前档案首页的 8 个分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档直达统一记录详情；首页、分类、列表、待确认和详情已读取 `teacher-mobile/src/domain/archive.ts` 同源记录，后续重点转为接管理端 `archiveStore` 或真实接口。
 3. 当前档案查询页已读取 `domain/archive.ts`，支持本页筛选、清空关键词、无结果态和按 `recordId` 进入统一记录详情页第一版；搜索参数由 `searchArchiveRecords()` 承接。
 4. 待办证书、培训、企业实践、虚拟教研和 AI 助手补充档案的结果页已按 `recordId` 接入统一记录详情页第一版；AI 助手补充档案和培训归档会先生成 / 定位本地 `pending-verify` 记录，首页数量和分类统计已按本地状态计算，后续仍需写回真实管理端 `archiveStore.processingRecords`。
-5. 入档口径需要统一：培训页面是“归档确认中”，企业实践和待办证书是“已入档”，虚拟教研是“已归档”；后续应明确哪些需要管理端确认，哪些可直接成为正式档案事实。
+5. 入档口径继续收敛：培训和待办证书已保持“归档确认中 / 待核验”，虚拟教研为“已归档”但不直接写正式档案事实；企业实践旧成功页仍需统一到待确认口径。
 6. “个人发展”证书、“教研科研”“企业实践”等结果页已可查看统一详情，分类记录列表已有第一版；仍缺真实详情数据和跨来源状态同步。
 7. 统一记录详情页已展示引用用途和来源追溯第一版，并可进入更正申请、待核验结果页、进度页、处理结果页和补充材料页；更正提交记录和状态回写已接入本地 domain，后续需接真实附件上传、来源记录和管理端 `archiveStore.processingRecords` / `teacherArchiveFacts`。
 
@@ -1111,7 +1112,7 @@
 | 提交类型 | 手机端提交后状态 | 管理端承接对象 | 说明 |
 | --- | --- | --- | --- |
 | 待办证书修改 | 待核验 | `archiveStore.processingRecords` | 教师修改字段或材料后，应回到档案处理流程等待部门核验 |
-| 待办证书确认本人 | 待确认或已入档，需按来源决定 | `archiveStore.processingRecords` / `archiveStore.teacherArchiveFacts` | 若来源已完成部门核验，可确认后入档；若仍需部门复核，应进入待核验 |
+| 待办证书确认本人 | 待核验 | `archiveStore.processingRecords` | 教师确认本人记录后只生成 / 更新档案处理记录，管理端确认后才写入 `teacherArchiveFacts` |
 | AI 助手补充档案 | 待核验 | `archiveStore.processingRecords` | 手机端当前用 `createArchiveSupplementRecord()` 生成本地 `pending-verify` 记录；正式接口应进入管理端档案待确认处理 |
 | 培训申请 | 待处理 | `trainingStore.applications` | 管理端同意后进入培训计划参与名单，未同意形成明确结果 |
 | 培训总结和证书材料 | 归档确认中 | `trainingStore.records`、`archiveStore.processingRecords` | 手机端当前用 `createTrainingArchiveRecord()` 生成 / 定位本地 `pending-verify`；正式接口应先更新培训记录材料状态，记录完整后生成成长档案待确认 |
