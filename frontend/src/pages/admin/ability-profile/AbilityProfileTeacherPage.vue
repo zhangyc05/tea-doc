@@ -231,7 +231,7 @@ function getAvatarTone(index: number): string {
 .breadcrumb-line {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   height: 48px;
   font-size: 14px;
   color: #8a96a8;
@@ -260,7 +260,7 @@ function getAvatarTone(index: number): string {
   gap: 14px;
   align-items: center;
   padding: 18px 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .search-control {
@@ -270,7 +270,7 @@ function getAvatarTone(index: number): string {
   height: 40px;
   padding-left: 10px;
   border: 1px solid #dfe6ef;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #f9fbfe;
 }
 
@@ -310,11 +310,11 @@ function getAvatarTone(index: number): string {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   height: 40px;
   padding: 0 12px;
   border: 1px solid #dfe6ef;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #ffffff;
 }
 
@@ -334,7 +334,7 @@ function getAvatarTone(index: number): string {
 .list-shell {
   margin-top: 16px;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .section-head {
@@ -360,14 +360,14 @@ function getAvatarTone(index: number): string {
 
 .view-toggle {
   display: inline-flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .view-toggle button {
   height: 36px;
   padding: 0 16px;
   border: 1px solid #d6dfeb;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #ffffff;
   color: #526176;
   cursor: pointer;
@@ -383,7 +383,7 @@ function getAvatarTone(index: number): string {
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .teacher-card {
@@ -391,7 +391,7 @@ function getAvatarTone(index: number): string {
   min-height: 258px;
   padding: 20px;
   border: 1px solid #e4eaf3;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: #ffffff;
 }
 
@@ -444,7 +444,7 @@ function getAvatarTone(index: number): string {
   top: 10px;
   width: 30px;
   height: 22px;
-  border-radius: 18px 18px 10px 10px;
+  border-radius: 18px 18px var(--radius-md) var(--radius-md);
   background: #334155;
 }
 
@@ -510,7 +510,7 @@ function getAvatarTone(index: number): string {
 
 .card-metrics {
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   margin-top: 18px;
 }
 
@@ -519,7 +519,7 @@ function getAvatarTone(index: number): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .card-metrics span,
@@ -559,7 +559,7 @@ function getAvatarTone(index: number): string {
 .row-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .tag-row {
@@ -596,18 +596,18 @@ function getAvatarTone(index: number): string {
 
 .teacher-table {
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .teacher-row {
   display: grid;
   grid-template-columns: minmax(210px, 1.35fr) 142px 132px 116px minmax(210px, 1.4fr) 84px 84px;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-height: 92px;
   padding: 14px 16px;
   border: 1px solid #e5ebf3;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: #ffffff;
 }
 
@@ -621,7 +621,7 @@ function getAvatarTone(index: number): string {
 .row-metric {
   display: grid;
   justify-content: start;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .row-metric.score strong {
@@ -641,10 +641,10 @@ function getAvatarTone(index: number): string {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-top: 16px;
   padding: 14px 18px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   color: #64748b;
   font-size: 13px;
 }
@@ -653,7 +653,7 @@ function getAvatarTone(index: number): string {
 .pagination-bar button {
   height: 30px;
   border: 1px solid #dfe6ef;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #ffffff;
   color: #526176;
 }

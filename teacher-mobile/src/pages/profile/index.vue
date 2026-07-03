@@ -11,9 +11,15 @@ const abilityItems = [
 ]
 
 const archiveMenus = [
-  { title: '已入档记录', desc: '查看已确认并入档的个人记录', tone: 'green', icon: 'file' },
-  { title: '信息更正进度', desc: '查看已提交更正的处理进度', tone: 'blue', icon: 'clock' },
-  { title: '这些记录会怎么用', desc: '了解画像、聘期要求和报告会如何使用记录', tone: 'orange', icon: 'help' },
+  { title: '已入档记录', desc: '查看已确认并入档的个人记录', tone: 'green', icon: 'file', route: '/pages/archive/index' },
+  {
+    title: '信息更正进度',
+    desc: '查看已提交更正的处理进度',
+    tone: 'blue',
+    icon: 'clock',
+    route: '/pages/archive/correction/progress/index?recordId=certificate-digital-literacy&status=pending-verify',
+  },
+  { title: '这些记录会怎么用', desc: '了解画像、聘期要求和报告会如何使用记录', tone: 'orange', icon: 'help', route: '/pages/archive/record-query/index' },
 ]
 
 const serviceMenus = [
@@ -22,6 +28,10 @@ const serviceMenus = [
   { title: '帮助与反馈', tone: 'blue', icon: 'service' },
   { title: '关于平台', tone: 'gray', icon: 'info' },
 ]
+
+function goArchiveMenu(route: string) {
+  uni.navigateTo({ url: route })
+}
 </script>
 
 <template>
@@ -103,7 +113,7 @@ const serviceMenus = [
 
     <MobileCard class="menu-card">
       <text class="section-title">档案记录</text>
-      <view v-for="item in archiveMenus" :key="item.title" class="menu-row">
+      <view v-for="item in archiveMenus" :key="item.title" class="menu-row" @tap="goArchiveMenu(item.route)">
         <view class="menu-icon" :class="`menu-icon--${item.tone} menu-icon--${item.icon}`"></view>
         <view class="menu-row__body">
           <text class="menu-row__title">{{ item.title }}</text>

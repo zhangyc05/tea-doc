@@ -8,13 +8,22 @@ const categoryRoute = 'pages/archive/category/index'
 const recordListRoute = 'pages/archive/record-list/index'
 const draftListRoute = 'pages/archive/draft-list/index'
 const correctionApplyRoute = 'pages/archive/correction/apply/index'
+const correctionSubmittedRoute = 'pages/archive/correction/submitted/index'
+const correctionProgressRoute = 'pages/archive/correction/progress/index'
+const correctionResultRoute = 'pages/archive/correction/result/index'
+const correctionSupplementRoute = 'pages/archive/correction/supplement/index'
 const pageFile = resolve(root, 'src/pages/archive/record-detail/index.vue')
 const categoryPageFile = resolve(root, 'src/pages/archive/category/index.vue')
 const recordListPageFile = resolve(root, 'src/pages/archive/record-list/index.vue')
 const draftListPageFile = resolve(root, 'src/pages/archive/draft-list/index.vue')
 const correctionApplyPageFile = resolve(root, 'src/pages/archive/correction/apply/index.vue')
+const correctionSubmittedPageFile = resolve(root, 'src/pages/archive/correction/submitted/index.vue')
+const correctionProgressPageFile = resolve(root, 'src/pages/archive/correction/progress/index.vue')
+const correctionResultPageFile = resolve(root, 'src/pages/archive/correction/result/index.vue')
+const correctionSupplementPageFile = resolve(root, 'src/pages/archive/correction/supplement/index.vue')
 const archiveIndexFile = resolve(root, 'src/pages/archive/index.vue')
 const queryFile = resolve(root, 'src/pages/archive/record-query/index.vue')
+const profileFile = resolve(root, 'src/pages/profile/index.vue')
 const archiveDomainFile = resolve(root, 'src/domain/archive.ts')
 const successFile = resolve(root, 'src/pages/todo/certificate-archive-success/index.vue')
 const trainingArchiveResultFile = resolve(root, 'src/pages/activity/training-archive-result/index.vue')
@@ -44,6 +53,22 @@ if (!pagesJson.pages.some((page) => page.path === correctionApplyRoute)) {
   failures.push(`${correctionApplyRoute} is not registered in src/pages.json`)
 }
 
+if (!pagesJson.pages.some((page) => page.path === correctionSubmittedRoute)) {
+  failures.push(`${correctionSubmittedRoute} is not registered in src/pages.json`)
+}
+
+if (!pagesJson.pages.some((page) => page.path === correctionProgressRoute)) {
+  failures.push(`${correctionProgressRoute} is not registered in src/pages.json`)
+}
+
+if (!pagesJson.pages.some((page) => page.path === correctionResultRoute)) {
+  failures.push(`${correctionResultRoute} is not registered in src/pages.json`)
+}
+
+if (!pagesJson.pages.some((page) => page.path === correctionSupplementRoute)) {
+  failures.push(`${correctionSupplementRoute} is not registered in src/pages.json`)
+}
+
 if (!existsSync(pageFile)) {
   failures.push(`${route}.vue does not exist`)
 }
@@ -62,6 +87,22 @@ if (!existsSync(draftListPageFile)) {
 
 if (!existsSync(correctionApplyPageFile)) {
   failures.push(`${correctionApplyRoute}.vue does not exist`)
+}
+
+if (!existsSync(correctionSubmittedPageFile)) {
+  failures.push(`${correctionSubmittedRoute}.vue does not exist`)
+}
+
+if (!existsSync(correctionProgressPageFile)) {
+  failures.push(`${correctionProgressRoute}.vue does not exist`)
+}
+
+if (!existsSync(correctionResultPageFile)) {
+  failures.push(`${correctionResultRoute}.vue does not exist`)
+}
+
+if (!existsSync(correctionSupplementPageFile)) {
+  failures.push(`${correctionSupplementRoute}.vue does not exist`)
 }
 
 if (!existsSync(archiveDomainFile)) {
@@ -169,6 +210,111 @@ if (existsSync(correctionApplyPageFile)) {
   if (!correctionApplySource.includes('recordId=')) {
     failures.push('archive correction apply page does not preserve recordId in navigation')
   }
+
+  if (!correctionApplySource.includes('/pages/archive/correction/submitted/index')) {
+    failures.push('archive correction apply page does not navigate to correction submitted page')
+  }
+}
+
+if (existsSync(correctionSubmittedPageFile)) {
+  const correctionSubmittedSource = readFileSync(correctionSubmittedPageFile, 'utf8')
+  if (!correctionSubmittedSource.includes('domain/archive')) {
+    failures.push('archive correction submitted page does not read archive records from shared domain')
+  }
+
+  if (!correctionSubmittedSource.includes('findArchiveRecordById')) {
+    failures.push('archive correction submitted page does not locate records by recordId')
+  }
+
+  if (!correctionSubmittedSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive correction submitted page does not navigate back to record-detail')
+  }
+
+  if (!correctionSubmittedSource.includes('/pages/archive/correction/progress/index')) {
+    failures.push('archive correction submitted page does not navigate to correction progress page')
+  }
+
+  if (!correctionSubmittedSource.includes('recordId=')) {
+    failures.push('archive correction submitted page does not preserve recordId in navigation')
+  }
+}
+
+if (existsSync(correctionProgressPageFile)) {
+  const correctionProgressSource = readFileSync(correctionProgressPageFile, 'utf8')
+  if (!correctionProgressSource.includes('domain/archive')) {
+    failures.push('archive correction progress page does not read archive records from shared domain')
+  }
+
+  if (!correctionProgressSource.includes('findArchiveRecordById')) {
+    failures.push('archive correction progress page does not locate records by recordId')
+  }
+
+  if (!correctionProgressSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive correction progress page does not navigate back to record-detail')
+  }
+
+  if (!correctionProgressSource.includes('/pages/archive/correction/result/index')) {
+    failures.push('archive correction progress page does not navigate to correction result page')
+  }
+
+  if (!correctionProgressSource.includes('recordId=')) {
+    failures.push('archive correction progress page does not preserve recordId in navigation')
+  }
+}
+
+if (existsSync(correctionResultPageFile)) {
+  const correctionResultSource = readFileSync(correctionResultPageFile, 'utf8')
+  if (!correctionResultSource.includes('domain/archive')) {
+    failures.push('archive correction result page does not read archive records from shared domain')
+  }
+
+  if (!correctionResultSource.includes('findArchiveRecordById')) {
+    failures.push('archive correction result page does not locate records by recordId')
+  }
+
+  if (!correctionResultSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive correction result page does not navigate back to record-detail')
+  }
+
+  if (!correctionResultSource.includes('/pages/archive/correction/progress/index')) {
+    failures.push('archive correction result page does not navigate back to correction progress')
+  }
+
+  if (!correctionResultSource.includes('/pages/archive/correction/supplement/index')) {
+    failures.push('archive correction result page does not navigate to correction supplement page')
+  }
+
+  if (!correctionResultSource.includes('recordId=')) {
+    failures.push('archive correction result page does not preserve recordId in navigation')
+  }
+}
+
+if (existsSync(correctionSupplementPageFile)) {
+  const correctionSupplementSource = readFileSync(correctionSupplementPageFile, 'utf8')
+  if (!correctionSupplementSource.includes('domain/archive')) {
+    failures.push('archive correction supplement page does not read archive records from shared domain')
+  }
+
+  if (!correctionSupplementSource.includes('findArchiveRecordById')) {
+    failures.push('archive correction supplement page does not locate records by recordId')
+  }
+
+  if (!correctionSupplementSource.includes('/pages/archive/correction/progress/index')) {
+    failures.push('archive correction supplement page does not navigate back to correction progress')
+  }
+
+  if (!correctionSupplementSource.includes('/pages/archive/record-detail/index')) {
+    failures.push('archive correction supplement page does not navigate back to record-detail')
+  }
+
+  if (!correctionSupplementSource.includes('recordId=')) {
+    failures.push('archive correction supplement page does not preserve recordId in navigation')
+  }
+}
+
+const profileSource = readFileSync(profileFile, 'utf8')
+if (!profileSource.includes('/pages/archive/correction/progress/index')) {
+  failures.push('profile page does not navigate information correction progress to correction progress page')
 }
 
 const querySource = readFileSync(queryFile, 'utf8')

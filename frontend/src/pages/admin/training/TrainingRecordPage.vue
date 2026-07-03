@@ -271,7 +271,7 @@ const filteredRecords = computed(() => {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-bottom: 20px;
   font-size: 14px;
   color: var(--color-admin-text-title);
@@ -284,7 +284,7 @@ const filteredRecords = computed(() => {
 }
 
 .breadcrumb .current {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .page-title {
@@ -315,7 +315,7 @@ const filteredRecords = computed(() => {
   min-height: 150px;
   padding: 26px 28px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
 }
@@ -334,7 +334,7 @@ const filteredRecords = computed(() => {
   position: absolute;
   inset: 18px 21px;
   border-radius: 4px;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .stat-teacher .stat-icon {
@@ -367,7 +367,7 @@ const filteredRecords = computed(() => {
   font-size: 34px;
   line-height: 1;
   font-weight: 900;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   margin-bottom: 12px;
   white-space: nowrap;
 }
@@ -399,7 +399,7 @@ const filteredRecords = computed(() => {
 
 .stat-desc {
   font-size: 13px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   white-space: nowrap;
 }
 
@@ -421,7 +421,7 @@ const filteredRecords = computed(() => {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-soft);
@@ -441,7 +441,7 @@ const filteredRecords = computed(() => {
 .filter-item {
   display: grid;
   grid-template-columns: auto 136px;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   align-items: center;
 }
 
@@ -456,7 +456,7 @@ const filteredRecords = computed(() => {
   height: 40px;
   padding: 0 34px 0 12px;
   border: 1px solid #d6e2f3;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-admin-text-title);
   background: #fff;
@@ -469,7 +469,7 @@ const filteredRecords = computed(() => {
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d6e2f3;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-admin-text-title);
   outline: none;
@@ -478,12 +478,12 @@ const filteredRecords = computed(() => {
 
 .search-input:focus,
 .filter-select:focus {
-  border-color: #0f5eef;
+  border-color: var(--color-admin-primary-hover);
 }
 
 .filter-message {
   margin: 10px 0 0;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 13px;
   font-weight: 800;
 }
@@ -497,7 +497,7 @@ const filteredRecords = computed(() => {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   overflow: hidden;
   table-layout: fixed;
 }
@@ -554,7 +554,7 @@ const filteredRecords = computed(() => {
   justify-content: flex-end;
   gap: 14px;
   padding: 18px 24px 24px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 14px;
 }
 
@@ -562,8 +562,8 @@ const filteredRecords = computed(() => {
   width: 36px;
   height: 36px;
   border: 0;
-  border-radius: 6px;
-  background: #0f5eef;
+  border-radius: var(--radius-sm);
+  background: var(--color-admin-primary-hover);
   color: #fff;
   font-weight: 900;
 }
@@ -574,7 +574,7 @@ const filteredRecords = computed(() => {
 
 .sidebar-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   padding: 24px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -601,7 +601,7 @@ const filteredRecords = computed(() => {
   padding: 22px 18px;
   background: #fffaf4;
   border: 1px solid #f4dfc5;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .reminder-icon {
@@ -622,7 +622,7 @@ const filteredRecords = computed(() => {
 }
 
 .reminder-icon.warning::after {
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .reminder-content {
@@ -639,7 +639,7 @@ const filteredRecords = computed(() => {
 .reminder-desc {
   font-size: 14px;
   line-height: 1.75;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .full-width {

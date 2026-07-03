@@ -307,7 +307,7 @@ function applyFilters() {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-muted);
 }
@@ -337,10 +337,10 @@ function applyFilters() {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 22px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   box-shadow: var(--shadow-admin-card-subtle);
 }
@@ -433,7 +433,7 @@ function applyFilters() {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -469,7 +469,7 @@ function applyFilters() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .filter-label {
@@ -484,7 +484,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 32px 0 12px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: #1a2944;
   background: #fff;
@@ -494,7 +494,7 @@ function applyFilters() {
 
 .search-row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-items: center;
   margin-top: 10px;
 }
@@ -504,7 +504,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -628,7 +628,7 @@ function applyFilters() {
 .row-action-group {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   flex-wrap: wrap;
 }
 

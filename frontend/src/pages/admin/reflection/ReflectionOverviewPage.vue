@@ -271,8 +271,8 @@ function viewRelatedRecords() {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #0f5eef;
+  gap: var(--space-admin-md);
+  color: var(--color-admin-primary-hover);
   font-size: 14px;
   font-weight: 700;
 }
@@ -304,7 +304,7 @@ function viewRelatedRecords() {
   min-height: 178px;
   padding: 24px 30px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
 }
@@ -317,7 +317,7 @@ function viewRelatedRecords() {
   justify-content: center;
   background: #eaf2ff;
   border-radius: 50%;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   flex-shrink: 0;
 }
 
@@ -340,11 +340,11 @@ function viewRelatedRecords() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .stat-value {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 42px;
   line-height: 1;
   font-weight: 800;
@@ -391,7 +391,7 @@ function viewRelatedRecords() {
 
 .content-card {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-soft);
@@ -418,7 +418,7 @@ function viewRelatedRecords() {
   margin: 0 0 12px;
   padding: 10px 12px;
   border: 1px solid #cfe0ff;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f3f7ff;
   color: #174ea6;
   font-size: 13px;
@@ -437,7 +437,7 @@ function viewRelatedRecords() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .filter-label {
@@ -451,7 +451,7 @@ function viewRelatedRecords() {
   height: 38px;
   padding: 0 36px 0 14px;
   border: 1px solid #d2def0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-admin-text-title);
   background: white;
@@ -474,7 +474,7 @@ function viewRelatedRecords() {
   height: 38px;
   padding: 0 16px;
   border: 1px solid #d2def0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -489,7 +489,7 @@ function viewRelatedRecords() {
   margin: 0 18px 14px;
   overflow: hidden;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .reflection-table {
@@ -546,7 +546,7 @@ function viewRelatedRecords() {
   height: 24px;
   padding: 0 8px;
   background: #eef5ff;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   border-radius: 4px;
   font-size: 12px;
   font-weight: 700;
@@ -559,7 +559,7 @@ function viewRelatedRecords() {
 
 .sidebar-card {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   padding: 28px 22px 22px;
   position: sticky;
@@ -610,7 +610,7 @@ function viewRelatedRecords() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   color: white;
   border-radius: 50%;
   font-size: 15px;
@@ -642,7 +642,7 @@ function viewRelatedRecords() {
 
 .issue-count {
   font-size: 13px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .related-records-action {
@@ -662,7 +662,7 @@ function viewRelatedRecords() {
   }
 
   .stat-card {
-    gap: 12px;
+    gap: var(--space-admin-md);
     min-height: 176px;
     padding: 20px 18px;
   }

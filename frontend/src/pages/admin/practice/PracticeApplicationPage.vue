@@ -317,7 +317,7 @@ function applyFilters() {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-muted);
   margin-bottom: 12px;
@@ -360,7 +360,7 @@ function applyFilters() {
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -442,7 +442,7 @@ function applyFilters() {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -464,7 +464,7 @@ function applyFilters() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .filter-label {
@@ -479,7 +479,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 32px 0 12px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: #1a2944;
   background: #fff;
@@ -490,7 +490,7 @@ function applyFilters() {
 .search-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-top: 10px;
 }
 
@@ -499,7 +499,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -621,7 +621,7 @@ function applyFilters() {
 
 .row-action-group {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -641,7 +641,7 @@ function applyFilters() {
 
 .pagination-controls {
   display: flex;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-items: center;
   color: #52617a;
   font-size: 13px;
@@ -652,7 +652,7 @@ function applyFilters() {
 .page-size {
   height: 34px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--color-admin-text-strong);
 }

@@ -369,7 +369,7 @@ function applyFilters() {
   padding: 22px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -383,18 +383,18 @@ function applyFilters() {
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .stat-card {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   min-height: 110px;
   padding: 14px 12px;
   background: #fff;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-admin-border);
 }
 
@@ -481,7 +481,7 @@ function applyFilters() {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -509,7 +509,7 @@ function applyFilters() {
 .filter-row {
   display: grid;
   grid-template-columns: 150px 190px 220px 190px 190px;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-items: center;
 }
 
@@ -517,7 +517,7 @@ function applyFilters() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   min-width: 0;
 }
 
@@ -533,7 +533,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 32px 0 12px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: #1a2944;
   background: #fff;
@@ -544,7 +544,7 @@ function applyFilters() {
 .search-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-top: 12px;
 }
 
@@ -553,7 +553,7 @@ function applyFilters() {
   height: 40px;
   padding: 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;

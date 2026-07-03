@@ -289,7 +289,7 @@ function viewRecord(id: string) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-muted);
 }
@@ -312,7 +312,7 @@ function viewRecord(id: string) {
 .stat-card {
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-faint);
 }
 
@@ -360,7 +360,7 @@ function viewRecord(id: string) {
   margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px 28px;
+  gap: var(--space-admin-md) 28px;
   color: #4d5d75;
   font-size: 14px;
 }
@@ -393,7 +393,7 @@ function viewRecord(id: string) {
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 18px 22px;
 }
 
@@ -466,7 +466,7 @@ function viewRecord(id: string) {
   margin-top: 20px;
   display: grid;
   grid-template-columns: 0.46fr 0.54fr;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .content-card {
@@ -553,7 +553,7 @@ function viewRecord(id: string) {
 .pager {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .pager button,
@@ -564,7 +564,7 @@ function viewRecord(id: string) {
   align-items: center;
   justify-content: center;
   border: 1px solid #d7e2f2;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: #8a98ad;
 }
@@ -582,7 +582,7 @@ function viewRecord(id: string) {
   align-items: center;
   justify-content: center;
   border: 1px solid #d7e2f2;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
 }
 
@@ -593,7 +593,7 @@ function viewRecord(id: string) {
 .records-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   padding: 18px;
 }
 
@@ -602,10 +602,10 @@ function viewRecord(id: string) {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 14px 16px;
   border: 1px solid #e4ebf5;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fbfdff;
 }
 
@@ -615,7 +615,7 @@ function viewRecord(id: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--color-admin-primary);
   color: #fff;
   font-size: 20px;

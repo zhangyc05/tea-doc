@@ -371,7 +371,7 @@ function viewVersionHistory() {
 .page-breadcrumb {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 700;
@@ -384,7 +384,7 @@ function viewVersionHistory() {
 .page-description {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   color: #263b63;
   font-size: 15px;
   line-height: 1.6;
@@ -534,14 +534,14 @@ function viewVersionHistory() {
 .main-workspace {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 440px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: start;
 }
 
 .admin-card {
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-faint);
   overflow: hidden;
 }
@@ -563,7 +563,7 @@ function viewVersionHistory() {
 
 .source-list {
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   padding: 16px;
 }
 
@@ -577,9 +577,9 @@ function viewVersionHistory() {
   height: 48px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   padding: 0 14px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: #263b63;
   font-size: 14px;
@@ -599,7 +599,7 @@ function viewVersionHistory() {
 .filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   padding: 16px 20px;
 }
 
@@ -607,7 +607,7 @@ function viewVersionHistory() {
   height: 34px;
   padding: 0 16px;
   border: 1px solid #d7e2f2;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f7faff;
   color: #4d5d75;
   font-size: 13px;
@@ -664,7 +664,7 @@ function viewVersionHistory() {
   align-items: center;
   min-height: 24px;
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 800;
 }
@@ -691,7 +691,7 @@ function viewVersionHistory() {
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   flex-wrap: wrap;
 }
 
@@ -712,7 +712,7 @@ function viewVersionHistory() {
 .detail-item {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
   color: #263b63;
   font-size: 14px;
   line-height: 1.7;

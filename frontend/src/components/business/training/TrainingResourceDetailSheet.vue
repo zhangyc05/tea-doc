@@ -121,7 +121,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 .resource-detail {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .detail-hero,
@@ -136,7 +136,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 .detail-hero {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 18px;
   background: linear-gradient(180deg, var(--color-page-bg-soft), var(--color-card-bg));
 }
@@ -194,7 +194,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .detail-field {
@@ -226,7 +226,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 .section-title-row {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-items: center;
   margin-bottom: 10px;
 }
@@ -240,7 +240,7 @@ function statusClass(status: TrainingResourceMockItem['status']) {
 .keyword-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .keyword-list span {

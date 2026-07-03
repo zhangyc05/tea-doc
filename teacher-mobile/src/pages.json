@@ -525,6 +525,30 @@
       }
     },
     {
+      "path": "pages/archive/correction/submitted/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/correction/progress/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/correction/result/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archive/correction/supplement/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/archive/record-detail/index",
       "style": {
         "navigationStyle": "custom"

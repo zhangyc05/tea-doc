@@ -44,28 +44,46 @@ frontend/src/components/layout/AppBreadcrumb.vue
 
 F3-01 已在 `frontend/src/styles/tokens.css` 定义第一批管理端精确别名 token，覆盖高频主色、文本色、边框色、背景色、卡片弱阴影、主按钮阴影和常用间距。
 
-F3-02 已完成第一批主色替换：页面和组件样式中的 `#1268f6` 已改为 `var(--color-admin-primary)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。`#0f5eef` 暂保留为 hover / 辅助主色，后续按独立批次替换为 `--color-admin-primary-hover`。
+F3-02 已完成第一批主色替换：页面和组件样式中的 `#1268f6` 已改为 `var(--color-admin-primary)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
-F3-03 已完成高频文本色替换：页面和组件样式中的 `#17233d`、`#172b55`、`#66758f` 已分别改为 `var(--color-admin-text-strong)`、`var(--color-admin-text-title)`、`var(--color-admin-text-muted)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。`#405985` 暂保留给后续辅助文本 / 图表色批次。
+F3-03 已完成高频文本色替换：页面和组件样式中的 `#17233d`、`#172b55`、`#66758f` 已分别改为 `var(--color-admin-text-strong)`、`var(--color-admin-text-title)`、`var(--color-admin-text-muted)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
 F3-04 已完成高频边框和分割线色替换：页面和组件样式中的 `#dce6f5`、`#d9e5f7`、`#e5edf8` 已分别改为 `var(--color-admin-border)`、`var(--color-admin-border-muted)`、`var(--color-admin-divider)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
 F3-05 已完成高频背景色替换：页面和全局样式中的 `#f6f9ff`、`#f8fbff` 已分别改为 `var(--color-admin-bg)`、`var(--color-admin-bg-soft)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
-F3-06 已先完成胶囊圆角替换：页面、组件和覆盖样式中的 `border-radius: 999px` 已改为 `border-radius: var(--radius-full)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。`8px`、`6px`、`12px` 等卡片和控件圆角仍保留给后续批次，避免一次性影响页面手感。
+F3-06 已先完成胶囊圆角替换：页面、组件和覆盖样式中的 `border-radius: 999px` 已改为 `border-radius: var(--radius-full)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。头像、插画、响应式 `clamp(...)` 和特殊装饰圆角仍保留局部口径。
 
 F3-07 已完成高频阴影替换：页面样式中的卡片弱阴影和主按钮强调阴影已分别改为 `var(--shadow-admin-card-soft)`、`var(--shadow-admin-card-subtle)`、`var(--shadow-admin-card-faint)`、`var(--shadow-admin-primary-action)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-08 已完成辅助主色和辅助文本色替换：页面样式中的 `#0f5eef`、`#405985` 已分别改为 `var(--color-admin-primary-hover)`、`var(--color-admin-text-subtle)`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-09 已完成小控件圆角替换：页面和组件样式中的 `border-radius: 6px` 已改为 `border-radius: var(--radius-sm)`，用于按钮、输入框、小标签和紧凑控件圆角，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-10 已完成大卡片和浮层圆角替换：页面和组件样式中的 `border-radius: 12px` 已改为 `border-radius: var(--radius-lg)`；顶部复合圆角保留为 `var(--radius-lg) var(--radius-lg) 0 0`，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-11 已完成中等面板圆角替换：页面和组件样式中的 `border-radius: 10px` 已改为 `border-radius: var(--radius-md)`；复合圆角保留原角位关系，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-12 已完成管理端默认面板圆角替换：页面和组件样式中的普通 `border-radius: 8px` 和复合 8px 圆角已改为 `var(--radius-admin-panel)`；响应式 `clamp(...)` 和头像/插画等特殊圆角不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-13 已完成紧凑内联间距替换：页面和组件样式中的 `gap: 8px` 已改为 `gap: var(--space-admin-xs)`；`!important` 覆盖样式保留原优先级，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-14 已完成小型内联间距替换：页面和组件样式中的普通和双值 `gap: 10px` 已改为 `gap: var(--space-admin-sm)`；双值 `gap` 保留第二轴间距，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-15 已完成中型内联间距替换：页面和组件样式中的普通和双值 `gap: 12px` 已改为 `gap: var(--space-admin-md)`；双值 `gap` 保留第二轴间距，响应式 `clamp(...)` 和 `column-gap` 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
+
+F3-16 已完成大型内联间距替换：页面和组件样式中的显式 `gap: 16px` 已改为 `gap: var(--space-admin-lg)`；响应式 `clamp(...)`、`column-gap` 和 padding/margin 不纳入本批，并由 `frontend/src/styles/tokens.test.ts` 防止回退。
 
 高频颜色候选：
 
 | 现有值 | 出现次数 | 建议归并 |
 | --- | ---: | --- |
 | `#1268f6` | 147 | F3-02 已替换为 `--color-admin-primary` |
-| `#0f5eef` | 78 | `--color-primary` 或补充 legacy primary alias |
+| `#0f5eef` | 78 | F3-08 已替换为 `--color-admin-primary-hover` |
 | `#17233d` | 108 | F3-03 已替换为 `--color-admin-text-strong` |
 | `#172b55` | 46 | F3-03 已替换为 `--color-admin-text-title` |
 | `#66758f` | 30 | F3-03 已替换为 `--color-admin-text-muted` |
-| `#405985` | 21 | `--color-text-secondary` |
+| `#405985` | 21 | F3-08 已替换为 `--color-admin-text-subtle` |
 | `#dce6f5` | 64 | F3-04 已替换为 `--color-admin-border` |
 | `#d9e5f7` | 43 | F3-04 已替换为 `--color-admin-border-muted` |
 | `#e5edf8` | 24 | F3-04 已替换为 `--color-admin-divider` |
@@ -76,10 +94,10 @@ F3-07 已完成高频阴影替换：页面样式中的卡片弱阴影和主按�
 
 | 现有值 | 出现次数 | 建议归并 |
 | --- | ---: | --- |
-| `8px` | 95 | 卡片、面板默认圆角，优先保留为页面基准 |
-| `6px` | 92 | 按钮、输入框、小标签圆角，对齐 `--radius-sm` |
-| `12px` | 18 | 大卡片或浮层圆角，对齐 `--radius-lg` |
-| `10px` | 13 | 后续评估是否归入 `--radius-md` |
+| `8px` | 95 | F3-12 已替换为 `--radius-admin-panel`；响应式和特殊装饰圆角除外 |
+| `6px` | 92 | F3-09 已替换为 `--radius-sm` |
+| `12px` | 18 | F3-10 已替换为 `--radius-lg` |
+| `10px` | 13 | F3-11 已替换为 `--radius-md` |
 | `999px` | 13 | F3-06 已替换为 `--radius-full` |
 
 高频阴影候选：
@@ -95,11 +113,11 @@ F3-07 已完成高频阴影替换：页面样式中的卡片弱阴影和主按�
 
 | 现有值 | 出现次数 | 建议归并 |
 | --- | ---: | --- |
-| `16px` | 71 | 中等内容间距候选 token |
-| `12px` | 65 | 卡片内部紧凑间距候选 token |
-| `8px` | 63 | 控件内联间距候选 token |
+| `16px` | 71 | F3-16 已替换显式 `gap: 16px` 为 `--space-admin-lg`；响应式 `clamp(...)`、`column-gap`、padding/margin 分后续批次处理 |
+| `12px` | 65 | F3-15 已替换 `gap: 12px` 为 `--space-admin-md`；padding/margin 和 `column-gap` 分后续批次处理 |
+| `8px` | 63 | F3-13 已替换 `gap: 8px` 为 `--space-admin-xs`；padding/margin 分后续批次处理 |
 | `18px` | 45 | 页面块间紧凑间距候选 token |
-| `10px` | 44 | 标签、按钮和筛选项间距候选 token |
+| `10px` | 44 | F3-14 已替换 `gap: 10px` 为 `--space-admin-sm`；padding/margin 分后续批次处理 |
 | `20px` | 35 | 面板内边距候选 token |
 | `24px` | 19 | 页面区块内边距候选 token |
 
@@ -124,6 +142,7 @@ F3-07 已完成高频阴影替换：页面样式中的卡片弱阴影和主按�
 --color-admin-divider
 --color-admin-bg
 --color-admin-bg-soft
+--radius-admin-panel
 --shadow-admin-card-soft
 --shadow-admin-card-subtle
 --shadow-admin-card-faint

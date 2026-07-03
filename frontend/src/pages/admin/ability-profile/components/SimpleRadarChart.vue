@@ -184,7 +184,7 @@ const radarPolygonPoints = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .radar-chart-container svg {
@@ -193,7 +193,7 @@ const radarPolygonPoints = computed(() => {
 
 .radar-legend {
   display: flex;
-  gap: 12px;
+  gap: var(--space-admin-md);
   flex-wrap: wrap;
   justify-content: center;
 }

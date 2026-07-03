@@ -364,7 +364,7 @@ function matchDemand(id: string) {
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -454,7 +454,7 @@ function matchDemand(id: string) {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -488,7 +488,7 @@ function matchDemand(id: string) {
   height: 40px;
   padding: 0 36px 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: #1a2944;
   background: #fff;
@@ -501,7 +501,7 @@ function matchDemand(id: string) {
   height: 40px;
   padding: 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -608,12 +608,12 @@ function matchDemand(id: string) {
 .suggestion-item {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: center;
   min-height: 124px;
   padding: 18px 16px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
 }
 
@@ -660,7 +660,7 @@ function matchDemand(id: string) {
   margin: 14px 0 0;
   padding: 16px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: var(--color-admin-bg-soft);
 }
 

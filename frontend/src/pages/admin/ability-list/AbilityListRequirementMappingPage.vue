@@ -561,7 +561,7 @@
 		line-height: 1.3;
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: var(--space-admin-md);
 	}
 
 	.hero-description {
@@ -577,7 +577,7 @@
 
 	.summary-item {
 		display: flex;
-		gap: 8px;
+		gap: var(--space-admin-xs);
 		font-size: 14px;
 	}
 
@@ -599,14 +599,14 @@
 		padding: 16px 22px;
 		background: #fff;
 		border: 1px solid var(--color-admin-border);
-		border-radius: 8px;
+		border-radius: var(--radius-admin-panel);
 	}
 
 	.stat-card {
 		display: grid;
 		grid-template-columns: 46px minmax(0, 1fr);
 		align-items: center;
-		gap: 12px;
+		gap: var(--space-admin-md);
 		padding: 0 24px;
 		border-left: 1px solid #d7e2f2;
 	}
@@ -631,7 +631,7 @@
 	.main-workspace {
 		display: grid;
 		grid-template-columns: 300px minmax(0, 1fr) 560px;
-		gap: 16px;
+		gap: var(--space-admin-lg);
 		flex: 1;
 		min-height: 0;
 	}
@@ -655,7 +655,7 @@
 		display: flex;
 		align-items: center;
 		padding: 10px 12px;
-		border-radius: 8px;
+		border-radius: var(--radius-admin-panel);
 		cursor: pointer;
 		transition: all 0.16s ease;
 		font-size: 14px;
@@ -724,7 +724,7 @@
 	.mapping-detail {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
+		gap: var(--space-admin-md);
 		padding: 16px;
 		max-height: 500px;
 		overflow-y: auto;
@@ -752,7 +752,7 @@
 	.detail-actions {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1.2fr;
-		gap: 12px;
+		gap: var(--space-admin-md);
 		padding: 16px;
 		padding-top: 0;
 	}
@@ -760,7 +760,7 @@
 	.admin-card {
 		background: #fff;
 		border: 1px solid var(--color-admin-border);
-		border-radius: 8px;
+		border-radius: var(--radius-admin-panel);
 		box-shadow: var(--shadow-admin-card-faint);
 		overflow: hidden;
 	}
@@ -812,7 +812,7 @@
 		min-height: 24px;
 		align-items: center;
 		padding: 3px 8px;
-		border-radius: 6px;
+		border-radius: var(--radius-sm);
 		font-size: 12px;
 		font-weight: 900;
 	}
@@ -824,7 +824,7 @@
 
 	.row-actions {
 		display: flex;
-		gap: 10px;
+		gap: var(--space-admin-sm);
 	}
 
 	/* 编辑抽屉样式 */
@@ -871,7 +871,7 @@
 		align-items: center;
 		justify-content: center;
 		border: 0;
-		border-radius: 6px;
+		border-radius: var(--radius-sm);
 		background: transparent;
 		color: #263b63;
 		cursor: pointer;
@@ -904,7 +904,7 @@
 		margin: 0 0 22px;
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: var(--space-admin-md);
 		font-size: 17px;
 		font-weight: 900;
 		color: var(--color-admin-text-strong);
@@ -916,7 +916,7 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 6px;
+		border-radius: var(--radius-sm);
 		background: var(--color-admin-primary);
 		color: #fff;
 		font-size: 13px;
@@ -927,7 +927,7 @@
 		display: grid;
 		grid-template-columns: 130px minmax(0, 1fr);
 		align-items: start;
-		gap: 16px;
+		gap: var(--space-admin-lg);
 		margin-bottom: 16px;
 	}
 
@@ -949,7 +949,7 @@
 		min-height: 40px;
 		padding: 10px 14px;
 		border: 1px solid #d7e2f2;
-		border-radius: 6px;
+		border-radius: var(--radius-sm);
 		font-size: 14px;
 		color: var(--color-admin-text-strong);
 		background: white;
@@ -978,7 +978,7 @@
 	.radio-option {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-admin-xs);
 		margin-right: 24px;
 		color: #263b63;
 		font-size: 14px;
@@ -993,7 +993,7 @@
 	.drawer-actions {
 		display: flex;
 		justify-content: space-between;
-		gap: 12px;
+		gap: var(--space-admin-md);
 		padding: 20px 28px;
 		border-top: 1px solid var(--color-admin-border);
 		background: #fff;
@@ -1001,7 +1001,7 @@
 
 	.drawer-actions-right {
 		display: flex;
-		gap: 12px;
+		gap: var(--space-admin-md);
 	}
 
 	@media (max-width: 768px) {

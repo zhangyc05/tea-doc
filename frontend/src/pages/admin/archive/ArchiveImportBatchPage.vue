@@ -345,7 +345,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-bottom: 10px;
   font-size: 13px;
   color: #667799;
@@ -364,7 +364,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   overflow: hidden;
   background: #fff;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   box-shadow: 0 8px 22px rgba(40, 88, 150, 0.04);
 }
 
@@ -396,7 +396,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   min-height: 96px;
   padding: 14px 330px 12px 18px;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-admin-panel) var(--radius-admin-panel) 0 0;
   background: linear-gradient(100deg, #fff 0%, #fff 72%, #eaf3ff 100%);
 }
 
@@ -480,7 +480,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   bottom: 28px;
   width: 86px;
   height: 70px;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: linear-gradient(135deg, #6ea6ff, #1264e9);
   box-shadow: 0 12px 24px rgba(12, 93, 226, 0.22);
 }
@@ -493,7 +493,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   width: 72px;
   height: 52px;
   border: 1px solid #cfe0ff;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
 }
 
@@ -525,7 +525,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   width: 32px;
   height: 8px;
   border-radius: var(--radius-full);
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   transform: rotate(42deg);
 }
 
@@ -548,13 +548,13 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .tip-banner {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   margin: 0 24px 12px;
   padding: 7px 16px;
   background: #eef5ff;
   border: 1px solid #d7e5ff;
   border-top: 0;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 var(--radius-admin-panel) var(--radius-admin-panel);
 }
 
 @keyframes pulse {
@@ -583,7 +583,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   color: #fff;
   font-size: 12px;
   font-style: normal;
@@ -608,7 +608,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   padding-top: 12px;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.9fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: start;
 }
 
@@ -616,7 +616,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .batch-right {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-admin-md);
   min-width: 0;
 }
 
@@ -628,7 +628,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .progress-content {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -693,7 +693,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 }
 
 .step-item.processing .step-dot {
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   color: #fff;
   animation: pulse 2s infinite;
 }
@@ -725,7 +725,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 1px 0 9px;
   flex: 1;
 }
@@ -739,7 +739,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .step-status {
   min-width: 58px;
   padding: 5px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f0f3f8;
   color: #60708b;
   font-size: 13px;
@@ -770,7 +770,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .files-content {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   padding: 13px 22px 9px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -779,14 +779,14 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .files-table {
   overflow: hidden;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .file-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 76px 78px 112px;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   min-height: 38px;
   padding: 0 12px;
   border-top: 1px solid var(--color-admin-divider);
@@ -826,7 +826,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   position: relative;
   overflow: hidden;
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -874,14 +874,14 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .result-list {
   overflow: hidden;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .result-row {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   min-height: 37px;
   padding: 0 14px;
   border-top: 1px solid var(--color-admin-divider);
@@ -901,7 +901,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   width: 16px;
   height: 16px;
   border-radius: 4px;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .row-dot.orange {
@@ -935,7 +935,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .instructions-content {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-admin-border-muted);
   padding: 14px 22px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -964,7 +964,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 
 .instruction-item {
   display: flex;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .instruction-item::before {
@@ -974,7 +974,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   height: 6px;
   margin-top: 9px;
   border-radius: 50%;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .instruction-text {
@@ -987,7 +987,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   padding-top: 12px;
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .batch-action {

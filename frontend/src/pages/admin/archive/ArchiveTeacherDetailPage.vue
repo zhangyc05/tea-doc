@@ -9,7 +9,7 @@ import {
   getArchiveDefaultSourceRecords,
   getArchiveTeacherName,
 } from '@/services/mock/archive'
-import type { ArchiveSourceRecord } from '@/domain/admin/archive'
+import type { ArchiveSourceRecord, TeacherArchiveFact } from '@/domain/admin/archive'
 import {
   getArchiveSourceRecordsForFact,
   getTeacherArchiveFacts,
@@ -26,10 +26,27 @@ const teacherArchiveFacts = computed(() => getTeacherArchiveFacts(teacherName.va
 const drawerOpen = ref(false)
 const drawerTitle = ref('')
 const drawerType = ref('')
+const selectedFactId = ref('')
 const operationMessage = useOperationMessage()
 
 // 来源记录数据
 const sourceRecords = computed<ArchiveSourceRecord[]>(() => {
+  const selectedArchivedRecords = getTeacherArchiveFacts(teacherName.value)
+    .filter(fact => fact.id === selectedFactId.value)
+    .flatMap(fact => {
+      return getArchiveSourceRecordsForFact(fact.id).map(record => ({
+        id: fact.id,
+        title: fact.title,
+        source: record.source,
+        status: '已确认入档' as const,
+        archiveTime: fact.archiveTime,
+        content: `${fact.title} 已由档案处理工作台确认入档，来源文件：${record.originalFile}。`,
+        buttonText: '查看记录详情',
+      }))
+    })
+
+  if (selectedFactId.value) return selectedArchivedRecords
+
   const archivedRecords = getTeacherArchiveFacts(teacherName.value)
     .filter(fact => isFactInDrawerType(fact.dimension, drawerType.value))
     .flatMap(fact => {
@@ -82,7 +99,9 @@ function exportPdf() {
 }
 
 function openDrawer(type: string) {
+  selectedFactId.value = ''
   drawerType.value = type
+  activeTab.value = 'all'
   if (type === '基本信息') {
     drawerTitle.value = '基本信息 | 来源记录'
   } else if (type === '教学工作') {
@@ -92,6 +111,14 @@ function openDrawer(type: string) {
   } else {
     drawerTitle.value = `${type} | 来源记录`
   }
+  drawerOpen.value = true
+}
+
+function openDrawerForFact(fact: TeacherArchiveFact) {
+  selectedFactId.value = fact.id
+  drawerType.value = fact.dimension
+  drawerTitle.value = `${fact.title} | 来源记录`
+  activeTab.value = 'all'
   drawerOpen.value = true
 }
 
@@ -431,6 +458,9 @@ function isFactInDrawerType(dimension: string, type: string) {
                   >
                     <h4 class="card-title">{{ fact.title }}</h4>
                     <p class="card-content">{{ fact.dimension }} · {{ fact.archiveTime }} 确认入档</p>
+                    <Button class="source-record-detail-action" variant="outline" size="sm" @click="openDrawerForFact(fact)">
+                      查看此来源
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -562,7 +592,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   z-index: 100;
   border: 1px solid #dbe5f4;
   border-bottom: 0;
-  border-radius: 12px 12px 0 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .top-bar-content {
@@ -571,7 +601,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 330px;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .archive-back-action {
@@ -608,7 +638,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .top-bar-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .archive-toolbar-action {
@@ -621,7 +651,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .source-record-action:hover,
 .source-record-detail-action:hover {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .archive-header {
@@ -719,7 +749,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .profile-badges {
   display: flex;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .profile-badge {
@@ -727,7 +757,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   align-items: center;
   height: 28px;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 700;
 }
@@ -745,7 +775,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .header-background {
   height: 190px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: linear-gradient(90deg, var(--color-admin-bg-soft) 0%, rgba(248, 251, 255, 0.2) 30%, transparent 58%),
     linear-gradient(180deg, #b8d9ff 0%, #eef7ff 52%, #dfeacb 53%, #8fc36f 100%);
 }
@@ -784,12 +814,12 @@ function isFactInDrawerType(dimension: string, type: string) {
 .header-tip {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   margin-top: 10px;
   width: min(660px, 62%);
   padding: 9px 14px;
   border: 1px solid #cfe0fa;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f2f7ff;
   color: #304f82;
   font-size: 13px;
@@ -804,7 +834,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   color: #fff;
   font-size: 12px;
   font-style: normal;
@@ -836,7 +866,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   min-height: 620px;
   border: 1px solid #dbe5f4;
   border-top: 0;
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .content-area {
@@ -856,7 +886,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .section-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin: 0 0 14px;
   color: #07183d;
   font-size: 22px;
@@ -868,8 +898,8 @@ function isFactInDrawerType(dimension: string, type: string) {
   content: '';
   width: 26px;
   height: 26px;
-  border: 2px solid #0f5eef;
-  border-radius: 8px;
+  border: 2px solid var(--color-admin-primary-hover);
+  border-radius: var(--radius-admin-panel);
   background: #eef5ff;
 }
 
@@ -907,13 +937,13 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .info-list {
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .info-item {
   display: grid;
   grid-template-columns: 76px minmax(0, 1fr);
-  gap: 8px;
+  gap: var(--space-admin-xs);
   color: #17315f;
   font-size: 13px;
   line-height: 1.55;
@@ -938,7 +968,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   height: 34px;
   margin-top: 16px;
   padding: 0 10px;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 14px;
   font-weight: 700;
 }
@@ -951,11 +981,11 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .notice-box {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin: 14px 0 14px;
   padding: 9px 12px;
   border: 1px solid #f7d88a;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fffaf0;
 }
 
@@ -975,7 +1005,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .content-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-top: 14px;
 }
 
@@ -989,7 +1019,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .card-title {
   margin: 0 0 10px;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 14px;
   font-weight: 800;
 }
@@ -1113,11 +1143,11 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .nav-item:first-child::before {
   box-shadow: 0 0 0 4px #eaf2ff;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .nav-link {
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
@@ -1125,12 +1155,12 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .nav-link:hover,
 .nav-item:first-child .nav-link {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .drawer-tabs {
   display: flex;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   padding: 0 0 16px;
 }
 
@@ -1138,16 +1168,16 @@ function isFactInDrawerType(dimension: string, type: string) {
   height: 34px;
   padding: 0 14px;
   border: 1px solid #d2def0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 13px;
   font-weight: 700;
 }
 
 .tab-btn.active {
-  border-color: #0f5eef;
-  color: #0f5eef;
+  border-color: var(--color-admin-primary-hover);
+  color: var(--color-admin-primary-hover);
   background: #f1f6ff;
 }
 
@@ -1161,7 +1191,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   margin-bottom: 14px;
   padding: 16px 16px 14px;
   border: 1px solid #d8e4f5;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
 }
 
@@ -1174,7 +1204,7 @@ function isFactInDrawerType(dimension: string, type: string) {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   margin-bottom: 14px;
 }
 
@@ -1184,9 +1214,9 @@ function isFactInDrawerType(dimension: string, type: string) {
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #eaf2ff;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 14px;
   font-weight: 800;
 }
@@ -1206,14 +1236,14 @@ function isFactInDrawerType(dimension: string, type: string) {
 .record-meta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   flex-wrap: wrap;
   margin-bottom: 12px;
   padding-left: 34px;
 }
 
 .meta-item {
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 13px;
   font-weight: 600;
 }
@@ -1241,7 +1271,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 .record-content {
   margin: 0 0 12px;
   padding-left: 34px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 13px;
   line-height: 1.65;
 }
@@ -1266,7 +1296,7 @@ function isFactInDrawerType(dimension: string, type: string) {
 
 .footer-tip {
   margin: 0;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 13px;
 }
 

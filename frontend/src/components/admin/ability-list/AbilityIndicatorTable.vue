@@ -113,7 +113,7 @@ function getStatusText(status: AbilityIndicator['status']) {
 
 .indicator-header {
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-bottom: clamp(12px, 0.9vw, 16px);
 }
 

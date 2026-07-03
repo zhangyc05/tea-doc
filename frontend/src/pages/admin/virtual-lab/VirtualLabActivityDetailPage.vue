@@ -329,7 +329,7 @@ function goBack() {
   width: 34px;
   height: 34px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
   color: var(--color-admin-text-strong);
   font-size: 28px;
@@ -340,7 +340,7 @@ function goBack() {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: var(--color-admin-text-muted);
   font-size: 14px;
   flex-wrap: wrap;
@@ -364,7 +364,7 @@ function goBack() {
 .content-card {
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-faint);
 }
 
@@ -421,7 +421,7 @@ function goBack() {
 }
 
 .copy-button {
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -449,7 +449,7 @@ function goBack() {
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .status-icon {
@@ -458,7 +458,7 @@ function goBack() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   font-size: 25px;
   font-weight: 800;
 }
@@ -507,7 +507,7 @@ function goBack() {
 
 .sync-info {
   display: grid;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .two-column-layout {
@@ -571,7 +571,7 @@ function goBack() {
   margin-bottom: 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   color: #4d5d75;
   font-size: 13px;
 }
@@ -692,7 +692,7 @@ function goBack() {
   margin: 20px;
   padding: 26px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fbfdff;
 }
 
@@ -702,7 +702,7 @@ function goBack() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: linear-gradient(135deg, #6da2ff, var(--color-admin-primary));
   color: #fff;
   font-size: 34px;
@@ -711,7 +711,7 @@ function goBack() {
 .record-title-line {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .record-title-line h3 {
@@ -750,7 +750,7 @@ function goBack() {
   display: grid;
   grid-template-columns: 18px 1fr 0.8fr 0.8fr;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   min-height: 34px;
   color: #4d5d75;
   font-size: 14px;

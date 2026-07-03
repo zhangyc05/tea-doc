@@ -147,7 +147,7 @@ function goBack() {
 .page-breadcrumb {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   color: var(--color-admin-text-muted);
   font-size: 14px;
   font-weight: 700;
@@ -160,7 +160,7 @@ function goBack() {
 .page-description {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   color: #263b63;
   font-size: 15px;
   line-height: 1.6;
@@ -311,7 +311,7 @@ function goBack() {
   padding: 26px 24px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-faint);
 }
 
@@ -369,7 +369,7 @@ function goBack() {
   padding: 22px 28px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .notice-icon {
@@ -408,7 +408,7 @@ function goBack() {
   padding: 0 38px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 @media (max-width: 1360px) {

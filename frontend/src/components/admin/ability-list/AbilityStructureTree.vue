@@ -152,7 +152,7 @@ function handleChildClick(key: string) {
   width: 100%;
   align-items: center;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: transparent;
   color: #263856;
   cursor: pointer;
@@ -165,7 +165,7 @@ function handleChildClick(key: string) {
 
 .ability-node,
 .ability-parent {
-  gap: 10px;
+  gap: var(--space-admin-sm);
   min-height: 40px;
   padding: 8px 10px;
 }
@@ -202,7 +202,7 @@ function handleChildClick(key: string) {
   flex: none;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   color: #8b98aa;
   transition: all 0.16s ease;
 }

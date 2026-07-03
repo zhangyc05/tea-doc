@@ -406,7 +406,7 @@ function closeVersionDrawer() {
   display: inline-flex;
   margin: 8px 0 0;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #ecfdf3;
   color: #18845a;
   font-size: 13px;
@@ -475,7 +475,7 @@ function closeVersionDrawer() {
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #f5f8ff;
   color: #7d899b;
   cursor: pointer;
@@ -509,7 +509,7 @@ function closeVersionDrawer() {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-bottom: 16px;
 }
 
@@ -525,7 +525,7 @@ function closeVersionDrawer() {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   font-size: 14px;
   color: var(--color-text-primary);
   background: white;
@@ -547,7 +547,7 @@ function closeVersionDrawer() {
 .form-switch {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   cursor: pointer;
 }
 
@@ -556,7 +556,7 @@ function closeVersionDrawer() {
   height: 24px;
   appearance: none;
   background: #e1efff;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   position: relative;
   cursor: pointer;
   transition: all 0.16s ease;
@@ -591,7 +591,7 @@ function closeVersionDrawer() {
 .drawer-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-admin-md);
   padding: 16px 24px;
   border-top: 1px solid var(--color-card-border);
   background: #fff;
@@ -611,7 +611,7 @@ function closeVersionDrawer() {
 
 .version-card {
   border: 1px solid #e3ebf6;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 16px;
   background: #fff;
 }
@@ -620,7 +620,7 @@ function closeVersionDrawer() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .version-card-head strong {
@@ -639,7 +639,7 @@ function closeVersionDrawer() {
 .version-card dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin: 0;
 }
 
@@ -684,7 +684,7 @@ function closeVersionDrawer() {
   }
 
   .hero-heading-row {
-    gap: 16px;
+    gap: var(--space-admin-lg);
     margin-bottom: 12px;
   }
 
@@ -705,7 +705,7 @@ function closeVersionDrawer() {
   .hero-heading-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--space-admin-md);
   }
 
   @media (max-width: 768px) {

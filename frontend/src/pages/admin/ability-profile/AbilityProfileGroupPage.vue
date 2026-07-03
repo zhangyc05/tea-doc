@@ -286,7 +286,7 @@ function getDistributionTone(index: number) {
 .page-intro {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .breadcrumb-line {
@@ -339,7 +339,7 @@ function getDistributionTone(index: number) {
 .section-heading {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-bottom: clamp(10px, 0.7vw, 14px);
 }
 
@@ -375,7 +375,7 @@ function getDistributionTone(index: number) {
 .score-display {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin: 8px 0 8px;
 }
 
@@ -404,7 +404,7 @@ function getDistributionTone(index: number) {
 .status-line {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   color: var(--color-text-primary);
   font-size: 15px;
   font-weight: 900;
@@ -461,7 +461,7 @@ function getDistributionTone(index: number) {
   top: -10px;
   width: 78px;
   height: 26px;
-  border-radius: 10px 10px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   background: #a8c9ff;
   content: '';
 }
@@ -577,7 +577,7 @@ function getDistributionTone(index: number) {
   width: 100%;
   overflow: hidden;
   border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -641,7 +641,7 @@ function getDistributionTone(index: number) {
   height: 26px;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: #fff;
   font-size: 14px;
 }
@@ -708,13 +708,13 @@ function getDistributionTone(index: number) {
 .directions-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .direction-card {
   min-height: 122px;
   border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 14px 12px;
   text-align: center;
 }
@@ -730,7 +730,7 @@ function getDistributionTone(index: number) {
   height: 30px;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: var(--color-primary);
   color: #fff;
   font-size: 15px;
@@ -779,7 +779,7 @@ function getDistributionTone(index: number) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-bottom: 10px;
 }
 

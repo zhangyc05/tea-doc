@@ -63,7 +63,7 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜导入批次详情｜识别完成.png` | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue` | `/admin/archive/import/:batchId` | 批次 `status='recognized'` 或 `confirmed`；展示识别结果、查看上传文件、确认识别结果 | 已映射；确认调用 `confirmArchiveBatchRecognition()` 并生成处理记录 |
 | `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜教师档案查阅.png` | `frontend/src/pages/admin/archive/ArchiveQueryPage.vue` | `/admin/archive/query` | 默认查询页，`viewMode='card'`，教师卡片列表 | 已映射；教师卡片、统计和筛选选项已迁入 `frontend/src/services/mock/archive.ts`，页面仅保留搜索、筛选和视图切换状态 |
 | `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜阅读档案详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 从档案查阅页 `viewTeacherDetail()` 进入；档案阅读详情 | 已映射；读取 `archiveStore.teacherArchiveFacts` 展示已入档事实，打印/导出为前端模拟动作；教师名映射已迁入 `frontend/src/services/mock/archive.ts` |
-| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜来源详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 点击档案详情内来源入口触发 `drawerOpen`，展示“来源记录”抽屉 | 已映射为同页抽屉状态；来源记录按当前栏目合并 `archiveStore` 中已入档事实；默认来源记录已迁入 `frontend/src/services/mock/archive.ts` |
+| `效果图/管理PC端/2成长档案/管理端PC｜成长档案｜来源详情.png` | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | `/admin/archive/teacher/:teacherId` | 点击档案详情内来源入口触发 `drawerOpen`，展示“来源记录”抽屉 | 已映射为同页抽屉状态；栏目入口按当前栏目合并 `archiveStore` 中已入档事实，已入档事实卡片入口按当前点击事实精确过滤来源记录；默认来源记录已迁入 `frontend/src/services/mock/archive.ts` |
 
 ### 逐图台账：培训管理
 
@@ -119,8 +119,9 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | 优化基准模板页“上传制度文件 / 重新分析 / 查看版本记录”仍只是提示 | `frontend/src/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue`、`frontend/src/stores/admin/abilityListStore.ts` | 上传制度文件和重新分析已写入 `abilityListStore.optimizationSuggestions`，查看版本记录跳转基准模板并打开版本记录抽屉；已补 store 单测 |
 | 2026-07-02 | 成长档案上传识别、确认结果、处理动作没有跨页面业务状态 | `frontend/src/pages/admin/archive/*` | 新增 `frontend/src/stores/admin/archiveStore.ts`，上传文件、导入批次、识别结果、处理记录、入档事实均接入本地业务状态 |
 | 2026-07-02 | 导入批次“取消本次任务”只返回档案处理页，未形成取消状态 | `frontend/src/pages/admin/archive/ArchiveImportBatchPage.vue`、`frontend/src/stores/admin/archiveStore.ts` | 新增 `cancelled` 批次状态和 `cancelArchiveImportBatch()`，取消后文件状态改为“已取消”，不生成处理记录 |
-| 2026-07-02 | 教师档案详情不读取处理页确认入档事实 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 档案详情读取 `archiveStore.teacherArchiveFacts`，来源抽屉按栏目合并对应事实来源 |
+| 2026-07-02 | 教师档案详情不读取处理页确认入档事实 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue` | 档案详情读取 `archiveStore.teacherArchiveFacts`，来源抽屉支持栏目合并来源，也支持从已入档事实卡片按当前点击事实过滤对应来源 |
 | 2026-07-03 | 成长档案 B 项闭环复核需要对齐台账顶部结论 | `frontend/src/stores/admin/archiveStore.ts`、`frontend/src/pages/admin/archive/*`、`docs/page-coverage-ledger.md` | 已复核 `archiveStore` 上传文件、导入批次、识别结果、处理记录、教师档案事实和来源记录链路；`npm run test -- archiveStore` 1 个测试文件 / 7 个用例通过 |
+| 2026-07-03 | 成长档案来源详情需要按当前点击事实精确过滤，不只按栏目合并来源 | `frontend/src/pages/admin/archive/ArchiveTeacherDetailPage.vue`、`frontend/src/pages/admin/adminVisualActions.test.ts`、`docs/business-logic-map.md` | 已补 B20；资料来源与更正记录中的已入档事实卡片可直接打开该事实来源记录，抽屉按 `fact.id` 过滤 `archiveStore` 来源；待最终验证 |
 | 2026-07-02 | 培训管理资源、需求、计划、申请、记录材料均为页面局部状态 | `frontend/src/pages/admin/training/*` | 新增 `frontend/src/stores/admin/trainingStore.ts`，资源草稿、需求匹配、计划草稿/发布、申请处理、记录材料和成长档案沉淀均接入共享状态 |
 | 2026-07-03 | 培训管理 C 项闭环复核需要同步当前验证结果 | `frontend/src/stores/admin/trainingStore.ts`、`frontend/src/pages/admin/training/*`、`docs/business-logic-map.md` | 已复核 `trainingStore` 资源、需求、计划、申请、记录材料和成长档案待确认处理记录链路；`npm run test -- trainingStore` 1 个测试文件 / 6 个用例通过；业务地图已移除过期的“后续拆 store”表述 |
 | 2026-07-02 | 能力画像群体页存在 `console.log` 空动作 | `frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue` | “查看完整建议”跳教师画像重点支持筛选；教师对象跳画像详情；院系/专业对象给出页面内降级提示 |
@@ -176,12 +177,21 @@ cd teacher-mobile && npm run typecheck && npm run build:h5 && npm run build:mp-w
 | 2026-07-03 | Store 行为需要有独立 Vitest 脚本入口，方便业务闭环重构阶段快速验证 | `frontend/package.json`、`frontend/src/stores/admin/**/*test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 E18；新增 `npm run test:stores`，专门执行 `vitest run src/stores/admin`；E19 的 `npm run test` 和 E20 的 AGENTS 管理端验证命令已存在；`npm run test:stores` 9 个测试文件 / 47 个用例通过，`npm run test` 20 个测试文件 / 125 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 管理端设计系统重构前需要先扫描重复颜色、阴影、圆角和间距 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/docs/admin-design-system-guide.md` | 已补 F1/F2；当前扫描 50 个 `.vue/.css` 文件，颜色高频项为 `#1268f6` 147 次、`#17233d` 108 次、`#0f5eef` 78 次、`#dce6f5` 64 次；阴影高频项为卡片弱阴影 21/16/11 次；圆角高频项为 `8px` 95 次、`6px` 92 次；间距高频项为 `16px` 71 次、`12px` 65 次、`8px` 63 次 |
 | 2026-07-03 | 第一批 CSS variables 需要先落地，作为后续替换硬编码的稳定入口 | `frontend/src/styles/tokens.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-01；新增管理端高频色值、阴影和间距 token，当前只建立变量不替换页面硬编码；新增 `tokens.test.ts` 约束第一批 token 不回退；`npm run test` 21 个测试文件 / 127 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
-| 2026-07-03 | 高频主色硬编码需要先替换为 CSS variable，降低后续主题维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-02；页面和组件样式中的 `#1268f6` 147 处已替换为 `var(--color-admin-primary)`；`tokens.test.ts` 已增加扫描防回退；`#0f5eef` 暂保留给后续 hover / 辅助主色批次；`npm run test` 21 个测试文件 / 128 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
-| 2026-07-03 | 高频文本色硬编码需要先替换为 CSS variable，降低后续文字层级维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-03；页面和组件样式中的 `#17233d` 108 处、`#172b55` 46 处、`#66758f` 30 处已分别替换为 `var(--color-admin-text-strong)`、`var(--color-admin-text-title)`、`var(--color-admin-text-muted)`；`tokens.test.ts` 已增加扫描防回退；`#405985` 暂保留给后续辅助文本 / 图表色批次；`npm run test` 21 个测试文件 / 131 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 高频主色硬编码需要先替换为 CSS variable，降低后续主题维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-02；页面和组件样式中的 `#1268f6` 147 处已替换为 `var(--color-admin-primary)`；`tokens.test.ts` 已增加扫描防回退；辅助主色 `#0f5eef` 已在 F3-08 替换；`npm run test` 21 个测试文件 / 128 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 高频文本色硬编码需要先替换为 CSS variable，降低后续文字层级维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-03；页面和组件样式中的 `#17233d` 108 处、`#172b55` 46 处、`#66758f` 30 处已分别替换为 `var(--color-admin-text-strong)`、`var(--color-admin-text-title)`、`var(--color-admin-text-muted)`；`tokens.test.ts` 已增加扫描防回退；辅助文本色 `#405985` 已在 F3-08 替换；`npm run test` 21 个测试文件 / 131 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 高频边框和分割线色硬编码需要替换为 CSS variable，降低卡片、表格和抽屉层级维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-04；页面和组件样式中的 `#dce6f5` 65 处、`#d9e5f7` 44 处、`#e5edf8` 25 处已分别替换为 `var(--color-admin-border)`、`var(--color-admin-border-muted)`、`var(--color-admin-divider)`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 21 个测试文件 / 134 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 高频背景色硬编码需要替换为 CSS variable，降低页面底色、弱卡片底色和渐变色阶维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-05；页面和全局样式中的 `#f6f9ff` 27 处、`#f8fbff` 19 处已分别替换为 `var(--color-admin-bg)`、`var(--color-admin-bg-soft)`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 21 个测试文件 / 136 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
-| 2026-07-03 | 胶囊标签圆角硬编码需要替换为 CSS variable，先收敛低风险圆角形态 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-06；页面、组件和覆盖样式中的 `border-radius: 999px` 14 处已替换为 `border-radius: var(--radius-full)`；`tokens.test.ts` 已增加扫描防回退；`8px`、`6px`、`12px` 等卡片和控件圆角暂保留给后续批次；`npm run test` 21 个测试文件 / 141 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 胶囊标签圆角硬编码需要替换为 CSS variable，先收敛低风险圆角形态 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-06；页面、组件和覆盖样式中的 `border-radius: 999px` 14 处已替换为 `border-radius: var(--radius-full)`；`tokens.test.ts` 已增加扫描防回退；头像、插画、响应式 `clamp(...)` 和特殊装饰圆角保留局部口径；`npm run test` 21 个测试文件 / 141 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 高频卡片弱阴影和主按钮强调阴影需要替换为 CSS variable，降低页面层级维护成本 | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts` | 已补 F3-07；页面样式中的卡片弱阴影 22/17/12 处和主按钮强调阴影 6 处已分别替换为 `var(--shadow-admin-card-soft)`、`var(--shadow-admin-card-subtle)`、`var(--shadow-admin-card-faint)`、`var(--shadow-admin-primary-action)`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 21 个测试文件 / 140 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 辅助主色和辅助文本色仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-08；页面样式中的 `#0f5eef` 和 `#405985` 已分别替换为 `var(--color-admin-primary-hover)`、`var(--color-admin-text-subtle)`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 24 个测试文件 / 198 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 小控件圆角仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-09；页面样式中的 `border-radius: 6px` 已替换为 `border-radius: var(--radius-sm)`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 24 个测试文件 / 199 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 大卡片和浮层圆角仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-10；页面样式中的 `border-radius: 12px` 已替换为 `border-radius: var(--radius-lg)`，顶部复合圆角改为 `var(--radius-lg) var(--radius-lg) 0 0`；`tokens.test.ts` 已增加扫描防回退；`npm run test` 24 个测试文件 / 200 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 中等面板圆角仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-11；页面样式中的 `border-radius: 10px` 已替换为 `border-radius: var(--radius-md)`，复合圆角保留原角位关系；`tokens.test.ts` 已增加扫描防回退；`npm run test` 24 个测试文件 / 201 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 管理端默认面板圆角仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/styles/tokens.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-12；新增 `--radius-admin-panel: 8px`，页面样式中的普通和复合 `8px` 面板圆角已替换为 `var(--radius-admin-panel)`；响应式 `clamp(...)` 和特殊装饰圆角不纳入本批；`npm run test` 24 个测试文件 / 202 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 紧凑内联 `gap: 8px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-13；页面和组件样式中的 `gap: 8px` 已替换为 `gap: var(--space-admin-xs)`，`!important` 覆盖样式保留原优先级；`npm run test` 24 个测试文件 / 203 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 小型内联 `gap: 10px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-14；页面和组件样式中的普通和双值 `gap: 10px` 已替换为 `gap: var(--space-admin-sm)`，双值 `gap` 保留第二轴间距；`npm run test` 24 个测试文件 / 204 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 中型内联 `gap: 12px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-15；页面和组件样式中的普通和双值 `gap: 12px` 已替换为 `gap: var(--space-admin-md)`，双值 `gap` 保留第二轴间距，响应式 `clamp(...)` 和 `column-gap` 不纳入本批；`npm run test` 24 个测试文件 / 205 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
+| 2026-07-03 | 大型内联 `gap: 16px` 仍有页面硬编码，需要继续收敛到 CSS variable | `frontend/src/**/*.vue`、`frontend/src/**/*.css`、`frontend/src/styles/tokens.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F3-16；页面和组件样式中的显式 `gap: 16px` 已替换为 `gap: var(--space-admin-lg)`，响应式 `clamp(...)`、`column-gap` 和 padding/margin 不纳入本批；`npm run test` 24 个测试文件 / 206 个用例通过，`npm run typecheck` 通过，`npm run build` 通过 |
 | 2026-07-03 | 管理端按钮等级需要先形成规则，再逐页迁移局部 `.btn-*` | `frontend/src/components/ui/button.ts`、`frontend/src/pages/admin/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F4-01/F4-44；公共 `Button` 已有 `default`、`secondary`、`outline`、`ghost`、`danger` variant；第一轮扫描高频项为 `.btn-primary` 27 处、`.btn-secondary` 22 处、`.btn-view` 18 处、`.btn-link` 16 处、`.btn-reset` 11 处、`.btn-source` 10 处；能力清单三处编辑抽屉底部、基准模板页顶部优化/版本/派生入口、基准模板优化建议页上传/分析/应用/版本/建议处理动作、执行版页顶部派生/历史版本入口、发布确认页返回/确认发布动作、要求映射页新增/编辑/删除/确认配置动作、能力画像群体页查看完整建议和查看画像动作、培训计划新建抽屉底部、培训计划主入口、右侧筛选动作、筛选重置和表格行内查看、培训计划详情参与教师查看/处理、培训记录筛选重置、行内查看、详情页上传材料/相关记录查看和侧栏主动作、培训资源行内查看和侧栏筛选入口及筛选重置、培训需求行内查看和匹配资源及侧栏筛选入口和筛选重置、培训申请行内查看和处理、培训申请筛选重置和右侧处理提醒动作、培训资源/需求/申请筛选区查询、培训资源/需求新增动作、档案处理详情确认入档/退回/异常/补充说明动作、导入资料上传页选择文件/从文件夹导入/删除/取消/开始识别动作、导入批次详情底部批次状态动作、档案查阅搜索/重置/查看档案动作、教师档案详情返回/打印/导出/关闭/来源/记录详情动作、教师档案详情结构类去 `btn-*` 前缀、教学反思/培训计划详情返回入口、虚拟教研室列表筛选重置和查看详情入口、虚拟教研室详情页主次动作和行内查看/移出动作、虚拟教研活动详情页查看/形成记录动作、虚拟教研记录详情页来源/入档动作、企业实践申请/跟踪/记录筛选重置和查询、企业实践记录/跟踪导出动作、企业实践三页状态动作、报告中心卡片动作和培训计划新建入口、教学反思总览隐藏重置、详情来源数据、总览/详情查看类动作、分析报告中心查询和重置、企业实践三页查看类动作已迁移到公共 `Button`，并补 `adminVisualActions.test.ts` guardrail；当前 `frontend/src/pages/admin/**/*.vue` 已无 `btn-*` 页面级按钮类 |
 | 2026-07-03 | 管理端状态徽章需要把 `StatusBadge` 的 tone、文案和业务状态边界写清楚 | `frontend/src/components/common/StatusBadge.vue`、`frontend/src/domain/admin/domainTypes.test.ts`、`frontend/docs/admin-design-system-guide.md` | 已补 F5-01；扫描 `StatusBadge` 的 `success`、`warning`、`danger`、`info`、`neutral`、`purple` 六类 tone、管理端/教师端文案映射和页面源码 guardrail 后，已在设计规则文档明确状态 tone 语义、典型状态、覆盖规则和展示型 tone 边界；本轮仅更新文档，不改页面代码 |
 | 2026-07-03 | 管理端表格密度需要先形成三档规则，再逐页抽组件 | `frontend/src/pages/admin/**/*.vue`、`frontend/src/components/**/*.vue`、`frontend/docs/admin-design-system-guide.md` | 已补 F6-01；当前表格相关源码命中约 437 处，现状可归为紧凑关联表、标准业务列表、宽信息列表三档；已在设计规则文档明确表头高度、数据行高度、字号、单元格 padding、操作列和空状态口径；本轮仅更新文档，不改页面代码 |
@@ -306,7 +316,7 @@ teacher-mobile/src/pages/archive/record-query/index.vue
 | 企业实践 | 4 | `pages/archive/index` 有企业实践分类卡片；企业实践活动页覆盖计划、补充、归档结果等流程 | 活动流程承接入档结果；档案首页/概览/列表/详情缺页 |
 | 成果荣誉 | 4 | `pages/archive/index` 有成果荣誉分类和最近入档；未见成果荣誉概览、列表、教学成果奖详情独立路由 | 缺页 |
 | 个人发展 | 3 | `pages/archive/index` 有个人发展分类和最近入档；待办培训证书入档成功页提示可查看个人发展 | 待办结果页局部承接；个人发展档案页、最近入档详情缺页 |
-| 职称聘用 | 8 | `profile/index` 只有“信息更正进度”入口文案；未见职称聘用更正申请、进度、结果、补充材料、详情独立路由 | 高风险缺页 |
+| 职称聘用 | 8 | 更正申请、提交结果、进度页和结果页已有第一版；补充材料、详情仍未见独立路由 | 高风险缺页 |
 | 社会服务 | 1 | `pages/archive/index` 有社会服务分类卡片 | 仅分类入口，详情缺页 |
 | 考核评价 | 1 | `pages/archive/index` 有考核评价分类卡片 | 仅分类入口，详情缺页 |
 
@@ -452,7 +462,7 @@ M-03 组件到路由关系：
 | `pages/archive/draft-list/index` | `ArchiveRecordCard` | 读取 `status`，组织草稿、待确认、待核验列表 |
 | `pages/archive/development-plan-edit/index` | 暂不抽公共组件 | 页面内承接发展计划编辑表单，避免过早泛化 |
 | `pages/archive/correction/apply/index` | `ArchiveCorrectionMaterialBlock` | 组织更正申请表单、材料选择和提交动作 |
-| `pages/archive/correction/submitted/index` | 暂不抽公共组件 | 结果页只承接提交反馈、返回档案和查看进度 |
+| `pages/archive/correction/submitted/index` | 暂不抽公共组件 | 结果页只承接提交反馈、返回档案和查看更正进度 |
 | `pages/archive/correction/detail/index` | `ArchiveCorrectionMaterialBlock`、`ArchiveSourceBlock` | 组织更正详情、来源记录和处理进度入口 |
 | `pages/archive/correction/progress/index` | `ArchiveCorrectionMaterialBlock` | 组织待核验、已补充等进度状态 |
 | `pages/archive/correction/result/index` | `ArchiveCorrectionMaterialBlock` | 组织通过、退回、需补充等结果状态 |
@@ -474,6 +484,42 @@ M-03 后续实现顺序：
 - `teacher-mobile/src/pages.json` 已注册 `pages/archive/category/index`、`pages/archive/record-list/index` 和 `pages/archive/draft-list/index`。
 - `teacher-mobile/src/pages/archive/index.vue` 的分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档按 `recordId` 直达 `pages/archive/record-detail/index`。
 - 查询页、分类页、记录列表页、待确认列表、详情页和活动归档结果入口已读取或定位同一个 `domain/archive.ts` 本地记录源；本轮仍不标记为管理端 / 后端真实档案事实闭环，后续需要对齐 `archiveStore`、分类数量回写、待补充 / 已移出状态和更正链路。
+
+#### M-14 档案更正申请和提交结果第一版
+
+- 新增 `teacher-mobile/src/pages/archive/correction/apply/index.vue`，承接统一档案详情页的“申请更正”入口。
+- 新增 `teacher-mobile/src/pages/archive/correction/submitted/index.vue`，承接更正申请提交后的“待核验”结果态。
+- `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/apply/index` 和 `pages/archive/correction/submitted/index`。
+- `teacher-mobile/src/pages/archive/record-detail/index.vue` 的“申请更正”已按当前档案 `recordId` 跳转更正申请页。
+- 更正申请页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示原档案状态、分类、来源、原材料、原因选项和补充说明；提交后带 `recordId` 和更正原因进入 `correction/submitted`。
+- 提交结果页展示“待核验”口径，可按 `recordId` 回到统一记录详情页，也可进入 `pages/archive/correction/progress/index` 查看进度。
+- 当前仍不生成真实更正记录、不回写档案状态；进度和结果链路见 M-15/M-16，后续仍需补 `correction/supplement` 和真实申请集合。
+
+#### M-15 档案更正进度第一版
+
+- 新增 `teacher-mobile/src/pages/archive/correction/progress/index.vue`，承接“更正进度｜待核验”和“更正进度｜已补充”两个状态。
+- `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/progress/index`。
+- `teacher-mobile/src/pages/archive/correction/submitted/index.vue` 的“查看进度”已按 `recordId`、`status` 和 `reason` 进入进度页。
+- `teacher-mobile/src/pages/profile/index.vue` 的“信息更正进度”已进入 `pages/archive/correction/progress/index` 第一版，不再只是文案入口。
+- 更正进度页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示申请信息、待核验 / 已补充进度和回原档案入口。
+- 当前仍不生成真实更正记录列表、不回写档案状态；结果链路见 M-16，后续仍需补 `correction/supplement` 和真实申请集合。
+
+#### M-16 档案更正结果第一版
+
+- 新增 `teacher-mobile/src/pages/archive/correction/result/index.vue`，承接更正处理结果第一版。
+- `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/result/index`。
+- `teacher-mobile/src/pages/archive/correction/progress/index.vue` 的“查看处理结果”已按 `recordId`、`reason` 和 `result=need-supplement` 进入结果页；当前默认使用“需补充”状态，避免伪造已通过。
+- 更正结果页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，支持 `result=approved|rejected|need-supplement` 三种展示口径，并保留回原档案和回进度页入口。
+- 当前仍不生成真实更正记录、不回写档案状态；补充材料链路见 M-17，后续仍需接真实申请集合。
+
+#### M-17 档案更正补充材料第一版
+
+- 新增 `teacher-mobile/src/pages/archive/correction/supplement/index.vue`，承接更正结果页的“需补充”状态。
+- `teacher-mobile/src/pages.json` 已注册 `pages/archive/correction/supplement/index`。
+- `teacher-mobile/src/pages/archive/correction/result/index.vue` 的“补充材料”已按 `recordId` 和 `reason` 进入补充材料页。
+- 补充材料页读取 `teacher-mobile/src/domain/archive.ts` 的同源档案记录，展示更正原因、补充说明输入、材料占位和原档案入口。
+- “提交补充”进入 `pages/archive/correction/progress/index?status=supplemented`，形成需补充到已补充进度的前端闭环。
+- 当前仍不生成真实更正记录、不回写档案状态、不执行真实附件上传；后续需要接真实申请集合、附件上传状态和管理端审核结果。
 
 ### 逐图台账：活动模块
 
@@ -852,7 +898,7 @@ M-12 验证：
 | 优先级 | 问题 | 位置 | 建议 |
 | --- | --- | --- | --- |
 | P0 | 手机端效果图 142 张，但注册页面 86 个 | `teacher-mobile/src/pages` | 逐图判断“一页多状态”还是未覆盖 |
-| P0 | 档案模块效果图 54 张，当前已有 4 个档案模块注册页面，分类概览、记录列表和统一详情已有第一版，但大量基础信息详情、草稿 / 待确认、更正页仍未见独立路由 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补更正链路和真实档案记录模型，避免重复补分类 / 列表模板 |
+| P0 | 档案模块效果图 54 张，当前已有 11 个档案模块注册页面，分类概览、记录列表、待确认列表、统一详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版，但大量基础信息详情、草稿编辑仍未见独立路由 | `效果图/教师手机端/1档案`、`teacher-mobile/src/pages/archive` | 继续补真实档案记录模型和剩余独立详情页，避免重复补分类 / 列表模板 |
 | P1 | 活动模块页面数量与效果图基本一致，但业务流是否跨页闭环尚未审计 | `teacher-mobile/src/pages/activity` | 下一步建立教学反思、培训、企业实践、虚拟教研手机端业务地图 |
 | P1 | 我的模块 6 张效果图当前只有 1 个综合页承接 | `效果图/教师手机端/3我的`、`teacher-mobile/src/pages/profile/index.vue` | 明确能力画像、发展报告、岗位/聘期对照是否补独立页面 |
 | P1 | AI 助手缺页已补，后续仍需接入真实 AI 会话和档案待核验数据 | `teacher-mobile/src/pages/assistant/*`、`docs/business-logic-map.md` | 后续从缺页修复转入数据闭环和状态同步 |
@@ -980,6 +1026,15 @@ M-12 验证：
 | F3-05 | 替换高频背景色硬编码 | 已替换 `#f6f9ff`、`#f8fbff` 为对应管理端背景色 token，并补扫描测试防回退；测试、类型检查和构建均通过 |
 | F3-06 | 替换高频圆角硬编码 | 已先替换 `border-radius: 999px` 为 `var(--radius-full)`，并补扫描测试防回退；其余卡片和控件圆角分后续批次处理；测试、类型检查和构建均通过 |
 | F3-07 | 替换高频阴影硬编码 | 已替换卡片弱阴影和主按钮强调阴影为对应管理端 shadow token，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-08 | 替换辅助主色和辅助文本色硬编码 | 已替换 `#0f5eef`、`#405985` 为对应管理端 token，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-09 | 替换小控件圆角硬编码 | 已替换 `border-radius: 6px` 为 `var(--radius-sm)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-10 | 替换大卡片和浮层圆角硬编码 | 已替换 `border-radius: 12px` 为 `var(--radius-lg)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-11 | 替换中等面板圆角硬编码 | 已替换 `border-radius: 10px` 为 `var(--radius-md)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-12 | 替换管理端默认面板圆角硬编码 | 已新增 `--radius-admin-panel` 并替换普通和复合 `8px` 面板圆角；测试、类型检查和构建均通过 |
+| F3-13 | 替换紧凑内联 gap 硬编码 | 已替换 `gap: 8px` 为 `var(--space-admin-xs)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-14 | 替换小型内联 gap 硬编码 | 已替换 `gap: 10px` 为 `var(--space-admin-sm)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-15 | 替换中型内联 gap 硬编码 | 已替换 `gap: 12px` 为 `var(--space-admin-md)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
+| F3-16 | 替换大型内联 gap 硬编码 | 已替换显式 `gap: 16px` 为 `var(--space-admin-lg)`，并补扫描测试防回退；测试、类型检查和构建均通过 |
 | F4-01 | 整理按钮等级规则 | 已在 `frontend/docs/admin-design-system-guide.md` 明确主按钮、次按钮、轮廓按钮、文本按钮、危险按钮和图标按钮使用场景 |
 | F4-02 | 扫描按钮等级混用 | 已完成第一轮扫描，输出公共 `Button` variant 现状和局部 `.btn-*` 高频类；后续按低风险区域逐页迁移 |
 | F4-03 | 迁移能力清单抽屉底部按钮试点 | 已将能力清单基准模板、执行版、要求映射三个编辑抽屉底部按钮迁移到公共 `Button`，并补源码 guardrail |
@@ -1052,7 +1107,7 @@ M-12 验证：
 | --- | --- | --- |
 | V-01 | 手机端页面补齐后验证注册关系 | `teacher-mobile/src/pages.json` 与页面文件一一对应 |
 | V-02 | 手机端业务地图更新后自检入口 | 每个新增页面都能从现有入口进入或明确为待接入口 |
-| V-02a | 手机端档案入口守卫 | 执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、记录列表、记录详情路由、页面和入口存在 |
+| V-02a | 手机端档案入口守卫 | 执行 `cd teacher-mobile && npm run test:archive-detail`，验证分类页、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果、补充材料路由、页面和入口存在 |
 | V-03 | 手机端类型检查 | 执行 `cd teacher-mobile && npm run typecheck` |
 | V-04 | 手机端 H5 构建 | 执行 `cd teacher-mobile && npm run build:h5` |
 | V-05 | 手机端微信小程序构建 | 执行 `cd teacher-mobile && npm run build:mp-weixin` |
@@ -1100,6 +1155,15 @@ F3-04
 F3-05
 F3-06
 F3-07
+F3-08
+F3-09
+F3-10
+F3-11
+F3-12
+F3-13
+F3-14
+F3-15
+F3-16
 F4-01
 F4-02
 F4-03

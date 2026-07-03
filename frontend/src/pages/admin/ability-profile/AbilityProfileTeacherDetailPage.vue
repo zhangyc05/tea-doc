@@ -189,14 +189,14 @@ function switchTeacher() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-height: 50px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: #7d8aa0;
   font-size: 14px;
 }
@@ -220,7 +220,7 @@ function switchTeacher() {
   height: 36px;
   padding: 0 14px;
   border: 1px solid #d8e2f0;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #ffffff;
   color: #1677ff;
   cursor: pointer;
@@ -231,7 +231,7 @@ function switchTeacher() {
 .teacher-hero-card,
 .panel {
   border: 1px solid #e1e8f2;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: #ffffff;
   box-shadow: 0 8px 22px rgba(32, 56, 96, 0.035);
 }
@@ -248,7 +248,7 @@ function switchTeacher() {
 .teacher-main {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-width: 0;
 }
 
@@ -274,7 +274,7 @@ function switchTeacher() {
   top: 13px;
   width: 39px;
   height: 29px;
-  border-radius: 20px 20px 12px 12px;
+  border-radius: 20px 20px var(--radius-lg) var(--radius-lg);
   background: #243149;
 }
 
@@ -348,7 +348,7 @@ function switchTeacher() {
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-top: 16px;
 }
 
@@ -388,7 +388,7 @@ function switchTeacher() {
 .score-line {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-bottom: 10px;
 }
 
@@ -414,7 +414,7 @@ dl div {
   display: grid;
   grid-template-columns: 96px 1fr;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 dt,
@@ -438,7 +438,7 @@ dd {
   align-items: center;
   height: 22px;
   padding: 0 9px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
 }
 
@@ -461,7 +461,7 @@ dd {
 
 .baseline-note {
   display: grid;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-content: start;
   padding-left: 4px;
 }
@@ -489,7 +489,7 @@ dd {
 .timeline {
   position: relative;
   display: grid;
-  gap: 12px;
+  gap: var(--space-admin-md);
   padding-left: 16px;
 }
 
@@ -508,7 +508,7 @@ dd {
   display: grid;
   grid-template-columns: 18px 54px 1fr;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: #53637b;
   font-size: 14px;
 }
@@ -544,12 +544,12 @@ dd {
 }
 
 .radar-column :deep(.radar-chart-container) {
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .radar-column :deep(.radar-legend) {
   justify-content: flex-start;
-  gap: 10px 18px;
+  gap: var(--space-admin-sm) 18px;
   margin-top: -6px;
 }
 
@@ -561,7 +561,7 @@ table {
   width: 100%;
   overflow: hidden;
   border: 1px solid #dde6f1;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -618,7 +618,7 @@ td:last-child {
 @media (max-width: 1500px) {
   .teacher-hero-card {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--space-admin-lg);
   }
 
   .hero-meta {

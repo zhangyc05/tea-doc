@@ -208,7 +208,7 @@ function sendToArchive() {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: var(--color-admin-text-muted);
   font-size: 14px;
   flex-wrap: wrap;
@@ -231,7 +231,7 @@ function sendToArchive() {
 .content-card {
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-faint);
 }
 
@@ -347,7 +347,7 @@ function sendToArchive() {
 .task-box {
   padding: 16px 18px;
   border: 1px solid #e4ebf5;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f7faff;
 }
 

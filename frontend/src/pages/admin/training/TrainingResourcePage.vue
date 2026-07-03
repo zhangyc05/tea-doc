@@ -410,7 +410,7 @@ function showIncompleteResources() {
   padding: 0 22px 18px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .stat-card {
@@ -422,7 +422,7 @@ function showIncompleteResources() {
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -491,7 +491,7 @@ function showIncompleteResources() {
 .resource-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: start;
 }
 
@@ -501,7 +501,7 @@ function showIncompleteResources() {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -510,7 +510,7 @@ function showIncompleteResources() {
 .filter-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
+  gap: var(--space-admin-sm);
   align-items: center;
 }
 
@@ -526,7 +526,7 @@ function showIncompleteResources() {
   height: 38px;
   padding: 0 36px 0 14px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: #1a2944;
   background: #fff;
@@ -539,7 +539,7 @@ function showIncompleteResources() {
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -665,7 +665,7 @@ function showIncompleteResources() {
 .page-input {
   height: 34px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--color-admin-text-strong);
 }
@@ -684,7 +684,7 @@ function showIncompleteResources() {
   min-width: 34px;
   height: 34px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-admin-text-strong);
   font-weight: 700;
@@ -701,7 +701,7 @@ function showIncompleteResources() {
 
 .sidebar-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -736,13 +736,13 @@ function showIncompleteResources() {
 .distribution-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .distribution-item {
   display: grid;
   grid-template-columns: 12px minmax(0, 1fr) auto;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
 }
 

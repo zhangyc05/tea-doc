@@ -404,7 +404,7 @@ function handleApplication(teacherId: string) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-title);
   font-weight: 800;
@@ -417,7 +417,7 @@ function handleApplication(teacherId: string) {
 }
 
 .breadcrumb a:hover {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .breadcrumb .separator {
@@ -425,7 +425,7 @@ function handleApplication(teacherId: string) {
 }
 
 .breadcrumb .current {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-weight: 800;
 }
 
@@ -434,7 +434,7 @@ function handleApplication(teacherId: string) {
   align-items: center;
   margin-bottom: 14px;
   padding: 0;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 14px;
   font-weight: 800;
 }
@@ -451,7 +451,7 @@ function handleApplication(teacherId: string) {
   align-items: center;
   min-height: 132px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 24px 28px;
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
@@ -468,19 +468,19 @@ function handleApplication(teacherId: string) {
 .summary-info {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 40px;
+  gap: var(--space-admin-sm) 40px;
 }
 
 .info-item {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
   min-width: 0;
 }
 
 .info-label {
   font-size: 14px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   flex: none;
 }
 
@@ -501,7 +501,7 @@ function handleApplication(teacherId: string) {
   min-height: 86px;
   padding: 18px 22px;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
 }
 
@@ -516,7 +516,7 @@ function handleApplication(teacherId: string) {
 .title-stat-card strong {
   font-size: 26px;
   line-height: 1;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-weight: 900;
 }
 
@@ -536,7 +536,7 @@ function handleApplication(teacherId: string) {
 .detail-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 376px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .main-content {
@@ -554,7 +554,7 @@ function handleApplication(teacherId: string) {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-soft);
@@ -579,12 +579,12 @@ function handleApplication(teacherId: string) {
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px 34px;
+  gap: var(--space-admin-md) 34px;
 }
 
 .info-row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
   min-width: 0;
 }
@@ -601,7 +601,7 @@ function handleApplication(teacherId: string) {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   table-layout: fixed;
 }
@@ -646,7 +646,7 @@ function handleApplication(teacherId: string) {
 .arrangement-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px 36px;
+  gap: var(--space-admin-md) 36px;
 }
 
 .timeline {
@@ -684,7 +684,7 @@ function handleApplication(teacherId: string) {
 }
 
 .timeline-node.active .timeline-dot {
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .timeline-node strong {
@@ -707,7 +707,7 @@ function handleApplication(teacherId: string) {
 
 .action-message {
   margin: 0 0 10px;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 13px;
   font-weight: 800;
 }
@@ -718,13 +718,13 @@ function handleApplication(teacherId: string) {
   grid-row: 1 / 5;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-width: 0;
 }
 
 .sidebar-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   padding: 22px 20px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -747,13 +747,13 @@ function handleApplication(teacherId: string) {
   display: grid;
   grid-template-columns: 112px minmax(0, 1fr);
   align-items: start;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .participation-stat {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-bottom: 10px;
 }
 
@@ -761,7 +761,7 @@ function handleApplication(teacherId: string) {
   font-size: 32px;
   line-height: 1;
   font-weight: 900;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .stat-total {
@@ -780,7 +780,7 @@ function handleApplication(teacherId: string) {
 
 .progress-fill {
   height: 100%;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -794,7 +794,7 @@ function handleApplication(teacherId: string) {
 .material-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .material-item {

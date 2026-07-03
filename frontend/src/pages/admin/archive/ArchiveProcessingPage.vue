@@ -401,13 +401,13 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   padding: 24px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .stat-card {
   padding: 20px;
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   text-align: center;
 }
@@ -459,11 +459,11 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .tip-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   padding: 16px;
   background: #f0f9ff;
   border: 1px solid #bae6fd;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
 }
 
 .tip-icon {
@@ -482,13 +482,13 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   padding: 0 24px 32px;
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 360px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 /* 左侧筛选条件 */
 .filter-sidebar {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: 20px;
 }
@@ -519,7 +519,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.16s ease;
 }
@@ -543,7 +543,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   color: var(--color-text-hint);
   background: #f1f5f9;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 /* 主操作区 */
@@ -562,12 +562,12 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   padding: 12px 20px;
   background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -581,7 +581,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 /* 中间记录列表 */
 .records-list {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: 20px;
   min-width: 0;
@@ -610,7 +610,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--color-card-border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border 0.16s ease;
@@ -624,7 +624,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   margin-bottom: 16px;
   padding: 12px;
   background: #f8fafc;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
 }
 
@@ -685,7 +685,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 /* 右侧记录详情 */
 .record-detail {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: 20px;
   display: flex;
@@ -792,7 +792,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   border-top: 1px solid var(--color-card-border);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 /* 精修版：对齐“档案处理”目标图 */
@@ -905,7 +905,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   align-items: center;
   column-gap: 12px;
   border: 1px solid rgba(213, 226, 245, 0.92);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: rgba(255, 255, 255, 0.86);
   padding: 0 clamp(14px, 1vw, 18px);
   box-shadow: 0 10px 26px rgba(28, 68, 128, 0.06);
@@ -975,7 +975,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .hero-tip {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-top: clamp(16px, 1vw, 20px);
   color: var(--color-text-secondary);
   font-size: 13px;
@@ -1075,7 +1075,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .filter-count {
   min-width: 27px;
   padding: 0 7px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   font-size: 12px;
   font-weight: 800;
   line-height: 20px;
@@ -1088,7 +1088,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 }
 
 .list-header {
-  gap: 16px;
+  gap: var(--space-admin-lg);
   margin-bottom: 14px;
 }
 
@@ -1136,7 +1136,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .filter-summary {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   margin-bottom: 14px;
   padding: 10px 12px;
   background: var(--color-admin-bg-soft);
@@ -1211,7 +1211,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .detail-title {
@@ -1338,7 +1338,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
 .detail-actions {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-top: 8px;
   padding-top: 11px;
 }

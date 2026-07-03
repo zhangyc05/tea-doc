@@ -267,7 +267,7 @@ function openAiAssistant() {
   min-height: 58px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   color: #263b63;
   font-size: 16px;
 }
@@ -334,14 +334,14 @@ function openAiAssistant() {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .filter-item,
 .search-input {
   height: 40px;
   border: 1px solid #d7e2f2;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
 }
 
@@ -349,7 +349,7 @@ function openAiAssistant() {
   min-width: 148px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   padding: 0 12px;
 }
 
@@ -387,7 +387,7 @@ function openAiAssistant() {
 
 .report-card-action,
 .ai-assistant {
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -410,7 +410,7 @@ function openAiAssistant() {
   gap: 0 18px;
   padding: 28px 24px 24px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
   box-shadow: var(--shadow-admin-card-faint);
 }
@@ -425,7 +425,7 @@ function openAiAssistant() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 34px;
   font-weight: 800;
 }
@@ -471,7 +471,7 @@ function openAiAssistant() {
 
 .report-meta {
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: #263b63;
   font-size: 14px;
   line-height: 1.4;
@@ -518,7 +518,7 @@ function openAiAssistant() {
 .detail-panel {
   min-height: 210px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
   box-shadow: var(--shadow-admin-card-faint);
   overflow: hidden;
@@ -544,7 +544,7 @@ function openAiAssistant() {
 .detail-content {
   padding: 20px;
   display: grid;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: #4d5d75;
   font-size: 14px;
   line-height: 1.6;
@@ -562,12 +562,12 @@ function openAiAssistant() {
 .history-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .history-list span {
   padding: 5px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #f1f6ff;
   color: var(--color-admin-primary);
   font-size: 12px;
@@ -577,7 +577,7 @@ function openAiAssistant() {
 .assistant-row {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   justify-content: flex-end;
   margin-top: 34px;
 }
@@ -619,7 +619,7 @@ function openAiAssistant() {
 
   .report-card {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--space-admin-lg);
   }
 
   .card-footer {

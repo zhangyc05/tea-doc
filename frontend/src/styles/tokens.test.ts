@@ -15,6 +15,10 @@ function collectStyleFiles(dir: string): string[] {
   })
 }
 
+function collectGapValues(content: string): string[] {
+  return Array.from(content.matchAll(/(?:^|\n)\s*gap:\s*([^;]+);/g), ([, value]) => value)
+}
+
 describe('admin design tokens', () => {
   it('defines the first batch of admin color tokens from the F1 scan', () => {
     expect(tokensCss).toContain('--color-admin-primary: #1268F6;')
@@ -29,6 +33,7 @@ describe('admin design tokens', () => {
     expect(tokensCss).toContain('--shadow-admin-card-soft: 0 8px 22px rgba(40, 88, 150, 0.035);')
     expect(tokensCss).toContain('--shadow-admin-card-subtle: 0 8px 24px rgba(35, 64, 110, 0.05);')
     expect(tokensCss).toContain('--shadow-admin-primary-action: 0 8px 18px rgba(18, 104, 246, 0.18);')
+    expect(tokensCss).toContain('--radius-admin-panel: 8px;')
     expect(tokensCss).toContain('--radius-full: 999px;')
     expect(tokensCss).toContain('--space-admin-xs: 8px;')
     expect(tokensCss).toContain('--space-admin-sm: 10px;')
@@ -42,6 +47,14 @@ describe('admin design tokens', () => {
     })
 
     expect(hardcodedPrimaryFiles).toEqual([])
+  })
+
+  it('keeps high-frequency primary hover color usage behind the admin primary hover token', () => {
+    const hardcodedPrimaryHoverFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      return /#0f5eef/i.test(readFileSync(filePath, 'utf8'))
+    })
+
+    expect(hardcodedPrimaryHoverFiles).toEqual([])
   })
 
   it('keeps high-frequency strong text color usage behind the admin text token', () => {
@@ -66,6 +79,14 @@ describe('admin design tokens', () => {
     })
 
     expect(hardcodedMutedTextFiles).toEqual([])
+  })
+
+  it('keeps high-frequency subtle text color usage behind the admin subtle text token', () => {
+    const hardcodedSubtleTextFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      return /#405985/i.test(readFileSync(filePath, 'utf8'))
+    })
+
+    expect(hardcodedSubtleTextFiles).toEqual([])
   })
 
   it('keeps high-frequency border color usage behind the admin border token', () => {
@@ -146,5 +167,92 @@ describe('admin design tokens', () => {
     })
 
     expect(hardcodedFullRadiusFiles).toEqual([])
+  })
+
+  it('keeps compact control radius usage behind the small radius token', () => {
+    const hardcodedSmallRadiusFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      return /border-radius:\s*6px/.test(readFileSync(filePath, 'utf8'))
+    })
+
+    expect(hardcodedSmallRadiusFiles).toEqual([])
+  })
+
+  it('keeps large card radius usage behind the large radius token', () => {
+    const hardcodedLargeRadiusFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return content.match(/border-radius:\s*([^;]+);/g)?.some((declaration) => {
+        const value = declaration.replace(/border-radius:\s*/, '').replace(';', '')
+        return !value.includes('clamp(') && /(^|\s)12px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedLargeRadiusFiles).toEqual([])
+  })
+
+  it('keeps medium panel radius usage behind the medium radius token', () => {
+    const hardcodedMediumRadiusFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return content.match(/border-radius:\s*([^;]+);/g)?.some((declaration) => {
+        const value = declaration.replace(/border-radius:\s*/, '').replace(';', '')
+        return !value.includes('clamp(') && /(^|\s)10px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedMediumRadiusFiles).toEqual([])
+  })
+
+  it('keeps admin panel radius usage behind the admin panel radius token', () => {
+    const hardcodedPanelRadiusFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return content.match(/border-radius:\s*([^;]+);/g)?.some((declaration) => {
+        const value = declaration.replace(/border-radius:\s*/, '').replace(';', '')
+        return !value.includes('clamp(') && /(^|\s)8px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedPanelRadiusFiles).toEqual([])
+  })
+
+  it('keeps compact inline gaps behind the extra small spacing token', () => {
+    const hardcodedCompactGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      return collectGapValues(readFileSync(filePath, 'utf8')).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)8px(\s|$|!important)/.test(value)
+      })
+    })
+
+    expect(hardcodedCompactGapFiles).toEqual([])
+  })
+
+  it('keeps small inline gaps behind the small spacing token', () => {
+    const hardcodedSmallGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)10px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedSmallGapFiles).toEqual([])
+  })
+
+  it('keeps medium inline gaps behind the medium spacing token', () => {
+    const hardcodedMediumGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)12px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedMediumGapFiles).toEqual([])
+  })
+
+  it('keeps large inline gaps behind the large spacing token', () => {
+    const hardcodedLargeGapFiles = collectStyleFiles(srcRoot).filter((filePath) => {
+      const content = readFileSync(filePath, 'utf8')
+      return collectGapValues(content).some((value) => {
+        return !value.includes('clamp(') && /(^|\s)16px(\s|$)/.test(value)
+      })
+    })
+
+    expect(hardcodedLargeGapFiles).toEqual([])
   })
 })

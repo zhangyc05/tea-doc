@@ -413,7 +413,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-bottom: 20px;
   font-size: 14px;
   font-weight: 800;
@@ -426,7 +426,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 }
 
 .breadcrumb .current {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .title-row {
@@ -447,7 +447,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .page-subtitle {
   margin: 8px 0 0;
   font-size: 14px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .create-plan-action {
@@ -476,7 +476,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   min-height: 150px;
   padding: 26px 28px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
 }
@@ -495,7 +495,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   position: absolute;
   inset: 19px 21px;
   border-radius: 4px;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .stat-registering .stat-icon {
@@ -539,7 +539,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   font-size: 34px;
   line-height: 1;
   font-weight: 900;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   margin-bottom: 12px;
 }
 
@@ -557,7 +557,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .stat-desc {
   font-size: 13px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   white-space: nowrap;
 }
 
@@ -580,7 +580,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
   overflow: hidden;
@@ -604,7 +604,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .filter-item {
   display: grid;
   grid-template-columns: auto 118px;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   align-items: center;
 }
 
@@ -619,7 +619,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   height: 38px;
   padding: 0 34px 0 12px;
   border: 1px solid #d6e2f3;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-admin-text-title);
   background: #fff;
@@ -632,7 +632,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d6e2f3;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-admin-text-title);
   outline: none;
@@ -641,12 +641,12 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .search-input:focus,
 .filter-select:focus {
-  border-color: #0f5eef;
+  border-color: var(--color-admin-primary-hover);
 }
 
 .plan-notice {
   margin: 12px 0 0;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 13px;
   font-weight: 700;
 }
@@ -662,7 +662,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   min-width: 780px;
   border-collapse: collapse;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   overflow: hidden;
   table-layout: fixed;
 }
@@ -709,7 +709,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .plan-table th:nth-child(8) { width: 8%; }
 
 .plan-table td:first-child {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-weight: 800;
 }
 
@@ -729,7 +729,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   justify-content: center;
   gap: 20px;
   padding: 16px 24px 24px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
   font-size: 13px;
 }
 
@@ -752,13 +752,13 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   flex-direction: column;
   gap: 0;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   overflow: hidden;
 }
 
 .reminder-item {
   display: flex;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: flex-start;
   padding: 22px 18px;
   border-bottom: 1px solid var(--color-admin-border-muted);
@@ -781,7 +781,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   content: '';
   position: absolute;
   inset: 18px 19px;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   border-radius: 4px;
 }
 
@@ -824,7 +824,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .form-label {
@@ -838,7 +838,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .form-textarea {
   padding: 10px 12px;
   border: 1px solid #d6e2f3;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   outline: none;
   transition: border-color 0.16s ease;
@@ -858,13 +858,13 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .checkbox-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-title);
   cursor: pointer;

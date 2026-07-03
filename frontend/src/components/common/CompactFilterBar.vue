@@ -21,14 +21,14 @@
 .compact-filter-bar__fields {
   display: grid;
   grid-template-columns: repeat(4, minmax(132px, 1fr)) minmax(220px, 1.25fr);
-  gap: 10px;
+  gap: var(--space-admin-sm);
   align-items: center;
 }
 
 .compact-filter-bar__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin-top: 10px;
 }
 

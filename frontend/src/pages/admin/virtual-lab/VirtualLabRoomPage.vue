@@ -316,7 +316,7 @@ function viewDetail(roomId: string) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-muted);
 }
@@ -339,7 +339,7 @@ function viewDetail(roomId: string) {
 
 .view-btn {
   height: 34px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -363,11 +363,11 @@ function viewDetail(roomId: string) {
   display: grid;
   grid-template-columns: 66px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   padding: 20px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -450,7 +450,7 @@ function viewDetail(roomId: string) {
 .content-card {
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-faint);
 }
@@ -461,7 +461,7 @@ function viewDetail(roomId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   border-bottom: 1px solid #e4ebf5;
 }
 
@@ -474,7 +474,7 @@ function viewDetail(roomId: string) {
 
 .view-mode-switch {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .view-btn {
@@ -494,11 +494,11 @@ function viewDetail(roomId: string) {
   height: 36px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   padding: 0 10px;
   background: #fff;
   border: 1px solid #d7e2f2;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .filter-label {
@@ -523,7 +523,7 @@ function viewDetail(roomId: string) {
   height: 36px;
   padding: 0 12px;
   border: 1px solid #d7e2f2;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--color-admin-text-strong);
   font-size: 13px;
@@ -548,7 +548,7 @@ function viewDetail(roomId: string) {
 .rooms-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .room-card {
@@ -557,7 +557,7 @@ function viewDetail(roomId: string) {
   flex-direction: column;
   padding: 18px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
 }
 
@@ -569,7 +569,7 @@ function viewDetail(roomId: string) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .room-name,
@@ -595,7 +595,7 @@ function viewDetail(roomId: string) {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 18px;
+  gap: var(--space-admin-sm) 18px;
 }
 
 .room-meta div {
@@ -623,7 +623,7 @@ function viewDetail(roomId: string) {
   margin-top: 14px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .metric-pill {
@@ -651,7 +651,7 @@ function viewDetail(roomId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
   color: var(--color-admin-text-muted);
   font-size: 13px;
 }

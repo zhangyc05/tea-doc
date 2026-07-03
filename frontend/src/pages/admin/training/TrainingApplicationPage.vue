@@ -373,7 +373,7 @@ function rejectCurrentApplication() {
   padding: 22px 30px;
   background: #fff;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   box-shadow: var(--shadow-admin-card-subtle);
 }
 
@@ -460,7 +460,7 @@ function rejectCurrentApplication() {
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -484,7 +484,7 @@ function rejectCurrentApplication() {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   min-width: 0;
   color: #263653;
   font-size: 13px;
@@ -496,7 +496,7 @@ function rejectCurrentApplication() {
   width: 100%;
   height: 40px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: #1a2944;
   font-size: 13px;
@@ -614,7 +614,7 @@ function rejectCurrentApplication() {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-admin-md);
   padding: 16px 20px 20px;
   color: #52617a;
   font-size: 13px;
@@ -624,7 +624,7 @@ function rejectCurrentApplication() {
   min-width: 34px;
   height: 34px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--color-admin-text-strong);
   font-weight: 700;
@@ -640,7 +640,7 @@ function rejectCurrentApplication() {
   width: 104px;
   height: 34px;
   border: 1px solid #d7e2f1;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--color-admin-text-strong);
 }
@@ -651,7 +651,7 @@ function rejectCurrentApplication() {
 
 .sidebar-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   padding: 20px;
   box-shadow: var(--shadow-admin-card-subtle);
@@ -673,12 +673,12 @@ function rejectCurrentApplication() {
 .reminder-item {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: center;
   min-height: 118px;
   padding: 18px 16px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: #fff;
 }
 
@@ -729,7 +729,7 @@ function rejectCurrentApplication() {
   margin-top: 14px;
   padding: 16px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: var(--color-admin-bg-soft);
 }
 
@@ -758,7 +758,7 @@ function rejectCurrentApplication() {
   .sidebar-card {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: var(--space-admin-lg);
   }
 
   .sidebar-title,

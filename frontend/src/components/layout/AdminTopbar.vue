@@ -111,7 +111,7 @@ const breadcrumbItems = computed(() => {
   align-items: center;
   justify-content: space-between;
   border: 1px solid #d6e1f2;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: #fff;
   padding: 0 clamp(14px, 1vw, 20px);
   color: var(--color-text-primary);

@@ -227,6 +227,14 @@ describe('admin visual action guardrails', () => {
     expect(archiveTeacherDetailPage).not.toContain('<div v-if="drawerOpen" class="drawer-overlay"')
   })
 
+  it('opens archive source records from a selected archive fact', () => {
+    expect(archiveTeacherDetailPage).toContain('function openDrawerForFact')
+    expect(archiveTeacherDetailPage).toContain('@click="openDrawerForFact(fact)"')
+    expect(archiveTeacherDetailPage).toContain('selectedFactId')
+    expect(archiveTeacherDetailPage).toContain('fact.id === selectedFactId.value')
+    expect(archiveTeacherDetailPage).toContain('getArchiveSourceRecordsForFact(fact.id)')
+  })
+
   it('uses the shared Button component for archive teacher detail actions', () => {
     expect(archiveTeacherDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(archiveTeacherDetailPage).toContain('<Button class="archive-back-action" variant="ghost" @click="goBack">')

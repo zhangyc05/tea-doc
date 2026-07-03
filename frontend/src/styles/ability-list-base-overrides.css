@@ -23,7 +23,7 @@
   flex: none !important;
   min-width: max-content !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: var(--space-admin-xs) !important;
   background: transparent !important;
   border: 0 !important;
   padding: 0 !important;
@@ -64,7 +64,7 @@
   }
 
   .base-hero .hero-summary-strip {
-    gap: 12px !important;
+    gap: var(--space-admin-md) !important;
     font-size: 12px !important;
   }
 }

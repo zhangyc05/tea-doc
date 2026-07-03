@@ -40,7 +40,9 @@ function selectReason(reason: string) {
 }
 
 function submitCorrection() {
-  uni.showToast({ title: '更正申请已提交', icon: 'none' })
+  uni.redirectTo({
+    url: `/pages/archive/correction/submitted/index?recordId=${record.value.id}&reason=${encodeURIComponent(selectedReason.value)}`,
+  })
 }
 </script>
 

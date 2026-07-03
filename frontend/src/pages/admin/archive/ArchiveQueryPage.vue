@@ -516,13 +516,13 @@ function switchViewMode(mode: string) {
 
 .filter-row {
   display: flex;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: flex-start;
 }
 
 .search-area {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   flex-shrink: 0;
   width: clamp(360px, 28vw, 480px);
 }
@@ -531,7 +531,7 @@ function switchViewMode(mode: string) {
   flex: 1;
   padding: 10px 16px;
   border: 1px solid var(--color-card-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   font-size: 14px;
   outline: none;
   transition: border 0.16s ease;
@@ -549,7 +549,7 @@ function switchViewMode(mode: string) {
 
 .filter-controls {
   display: flex;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: center;
   flex: 1;
   margin-left: auto;
@@ -558,7 +558,7 @@ function switchViewMode(mode: string) {
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .filter-label {
@@ -570,7 +570,7 @@ function switchViewMode(mode: string) {
 .filter-select {
   padding: 8px 12px;
   border: 1px solid var(--color-card-border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   background: white;
   color: var(--color-text-primary);
@@ -612,14 +612,14 @@ function switchViewMode(mode: string) {
 
 .view-toggle {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .view-btn {
   padding: 8px 16px;
   border: 1px solid var(--color-card-border);
   background: white;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -646,12 +646,12 @@ function switchViewMode(mode: string) {
 
 .teacher-card {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   transition: all 0.16s ease;
 }
 
@@ -662,7 +662,7 @@ function switchViewMode(mode: string) {
 
 .card-header {
   display: flex;
-  gap: 12px;
+  gap: var(--space-admin-md);
   align-items: center;
 }
 
@@ -810,7 +810,7 @@ function switchViewMode(mode: string) {
 .teacher-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .tag {
@@ -878,11 +878,11 @@ function switchViewMode(mode: string) {
   }
 
   .hero-stats-cards {
-    gap: 10px;
+    gap: var(--space-admin-sm);
   }
 
   .hero-stat-card {
-    gap: 10px;
+    gap: var(--space-admin-sm);
     padding: clamp(12px, 0.85vw, 16px);
     min-height: 90px;
   }
@@ -912,7 +912,7 @@ function switchViewMode(mode: string) {
 
   .hero-stats-cards {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: var(--space-admin-md);
   }
 
   .hero-stat-card {

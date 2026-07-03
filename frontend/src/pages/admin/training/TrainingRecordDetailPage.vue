@@ -312,7 +312,7 @@ function viewRelatedRecord(recordId: string) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   font-size: 14px;
   color: var(--color-admin-text-title);
   font-weight: 800;
@@ -325,7 +325,7 @@ function viewRelatedRecord(recordId: string) {
 }
 
 .breadcrumb a:hover {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
 }
 
 .breadcrumb .separator {
@@ -333,7 +333,7 @@ function viewRelatedRecord(recordId: string) {
 }
 
 .breadcrumb .current {
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-weight: 800;
 }
 
@@ -343,7 +343,7 @@ function viewRelatedRecord(recordId: string) {
   gap: 22px;
   min-height: 132px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 24px 28px;
   border: 1px solid var(--color-admin-border-muted);
   box-shadow: var(--shadow-admin-card-soft);
@@ -366,7 +366,7 @@ function viewRelatedRecord(recordId: string) {
   width: 24px;
   height: 34px;
   border-radius: 5px;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
 }
 
 .title-content {
@@ -393,19 +393,19 @@ function viewRelatedRecord(recordId: string) {
 .summary-info {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .info-item {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
   flex-wrap: wrap;
 }
 
 .info-label {
   font-size: 14px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .info-value {
@@ -432,19 +432,19 @@ function viewRelatedRecord(recordId: string) {
 .detail-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-width: 0;
 }
 
 .content-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   overflow: hidden;
   box-shadow: var(--shadow-admin-card-soft);
@@ -471,12 +471,12 @@ function viewRelatedRecord(recordId: string) {
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px 36px;
+  gap: var(--space-admin-md) 36px;
 }
 
 .info-row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   align-items: center;
 }
 
@@ -492,7 +492,7 @@ function viewRelatedRecord(recordId: string) {
   padding-top: 12px;
   border-top: 1px solid var(--color-admin-divider);
   font-size: 13px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .submit-label {
@@ -513,7 +513,7 @@ function viewRelatedRecord(recordId: string) {
 .learning-item {
   display: grid;
   grid-template-columns: 110px 1fr 20px;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   align-items: start;
 }
 
@@ -539,7 +539,7 @@ function viewRelatedRecord(recordId: string) {
   height: 9px;
   margin-top: 5px;
   border-radius: 50%;
-  background: #0f5eef;
+  background: var(--color-admin-primary-hover);
   box-shadow: 0 0 0 5px #eaf2ff;
 }
 
@@ -548,7 +548,7 @@ function viewRelatedRecord(recordId: string) {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--color-admin-border-muted);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   table-layout: fixed;
 }
@@ -591,7 +591,7 @@ function viewRelatedRecord(recordId: string) {
 
 .material-message {
   margin: 0 0 10px;
-  color: #0f5eef;
+  color: var(--color-admin-primary-hover);
   font-size: 13px;
   font-weight: 800;
 }
@@ -599,13 +599,13 @@ function viewRelatedRecord(recordId: string) {
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
   min-width: 0;
 }
 
 .sidebar-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border-muted);
   padding: 24px 22px;
   box-shadow: var(--shadow-admin-card-soft);
@@ -621,14 +621,14 @@ function viewRelatedRecord(recordId: string) {
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-admin-lg);
 }
 
 .sidebar .info-row {
   display: grid;
   grid-template-columns: 92px minmax(0, 1fr);
   align-items: start;
-  gap: 10px;
+  gap: var(--space-admin-sm);
 }
 
 .material-status-item {
@@ -641,7 +641,7 @@ function viewRelatedRecord(recordId: string) {
 
 .material-label {
   font-size: 14px;
-  color: #405985;
+  color: var(--color-admin-text-subtle);
 }
 
 .material-value {

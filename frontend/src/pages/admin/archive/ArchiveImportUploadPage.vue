@@ -230,7 +230,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-admin-sm);
   color: #6d7c91;
   font-size: 14px;
 }
@@ -276,7 +276,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .step-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   color: #6c7b92;
 }
 
@@ -325,7 +325,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .instructions-panel,
 .bottom-actions {
   border: 1px solid #dfe8f4;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: #ffffff;
   box-shadow: 0 8px 22px rgba(32, 56, 96, 0.035);
 }
@@ -351,7 +351,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   min-height: 198px;
   padding: 18px;
   border: 1px dashed #b9ccec;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: #fbfdff;
   text-align: center;
   transition: border-color 0.16s ease, background 0.16s ease;
@@ -379,7 +379,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .paper {
   width: 40px;
   height: 42px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(180deg, #e8f2ff, #cfe1ff);
 }
 
@@ -402,7 +402,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   justify-content: center;
   width: 78px;
   height: 40px;
-  border-radius: 10px 10px 8px 8px;
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-admin-panel) var(--radius-admin-panel);
   background: linear-gradient(180deg, #60a5ff, #1f72f2);
   color: #ffffff;
   font-size: 28px;
@@ -440,7 +440,7 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
 .file-card {
   margin-top: 12px;
   border: 1px solid #dfe8f4;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   overflow: hidden;
 }
 

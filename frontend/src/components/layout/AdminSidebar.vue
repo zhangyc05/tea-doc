@@ -324,7 +324,7 @@ function handleParentAction(item: AdminNavItem) {
   display: flex;
   height: var(--admin-topbar-height);
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
   border-bottom: 1px solid var(--color-card-border);
   padding: 0 18px;
 }
@@ -338,7 +338,7 @@ function handleParentAction(item: AdminNavItem) {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .brand-mark {
@@ -396,7 +396,7 @@ function handleParentAction(item: AdminNavItem) {
   width: 48px;
   height: 48px;
   margin: 12px auto 0;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: transparent;
 }
 
@@ -444,7 +444,7 @@ function handleParentAction(item: AdminNavItem) {
   align-items: center;
   justify-content: space-between;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: transparent;
   padding: 0 14px;
   color: #263856;
@@ -470,14 +470,14 @@ function handleParentAction(item: AdminNavItem) {
   height: 44px;
   justify-content: center;
   padding: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .nav-leading {
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .admin-sidebar.collapsed .nav-leading {
@@ -544,7 +544,7 @@ function handleParentAction(item: AdminNavItem) {
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: transparent;
   color: inherit;
   transition: all 0.16s ease;
@@ -574,7 +574,7 @@ function handleParentAction(item: AdminNavItem) {
   position: relative;
   margin: 6px 0 8px 24px;
   padding: 4px 8px 6px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: rgba(246, 249, 255, 0.92);
 }
 
@@ -651,7 +651,7 @@ function handleParentAction(item: AdminNavItem) {
   z-index: 3000;
   display: none;
   transform: translateY(-50%);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   background: rgba(18, 18, 18, 0.94);
   color: #fff;
   padding: 9px 11px;

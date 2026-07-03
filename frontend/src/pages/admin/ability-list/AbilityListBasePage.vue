@@ -436,7 +436,7 @@ function deriveExecutionVersion() {
   max-width: 100%;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 12px 18px;
+  gap: var(--space-admin-md) 18px;
   margin-top: clamp(14px, 0.95vw, 18px);
   overflow: visible;
   border: 0;
@@ -449,7 +449,7 @@ function deriveExecutionVersion() {
   display: inline-flex;
   min-width: 0;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   background: transparent;
   border: 0;
   padding: 0;
@@ -535,7 +535,7 @@ function deriveExecutionVersion() {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-admin-xs);
 }
 
 .form-label {
@@ -547,7 +547,7 @@ function deriveExecutionVersion() {
 .form-input {
   min-height: 38px;
   border: 1px solid var(--color-admin-border);
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 0 12px;
   background: #fff;
   color: var(--color-text-primary);
@@ -575,7 +575,7 @@ function deriveExecutionVersion() {
 
 .version-card {
   border: 1px solid #e3ebf6;
-  border-radius: 8px;
+  border-radius: var(--radius-admin-panel);
   padding: 16px;
   background: #fff;
 }
@@ -584,7 +584,7 @@ function deriveExecutionVersion() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-admin-md);
 }
 
 .version-card-head strong {
@@ -603,7 +603,7 @@ function deriveExecutionVersion() {
 .version-card dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-admin-md);
   margin: 0;
 }
 

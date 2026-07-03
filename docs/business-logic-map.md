@@ -135,7 +135,7 @@
 | 批次详情 | 取消本次任务 | 调用 `cancelArchiveImportBatch()`，批次改为 `cancelled`，文件状态改为“已取消”，不生成处理记录 | 已完成本地闭环 |
 | 档案处理 | 确认入档、再次退回、标记异常、查看补充说明 | 修改 `archiveStore.processingRecords`，确认入档写入 `teacherArchiveFacts` | 已完成本地闭环 |
 | 档案查阅 | 查看教师档案 | `router.push('/admin/archive/teacher/:teacherId')` | 已闭环到页面 |
-| 档案详情 | 来源详情抽屉 | 页面内打开抽屉，并按当前栏目合并 `archiveStore.teacherArchiveFacts` 来源记录 | 已完成本地事实来源过滤 |
+| 档案详情 | 来源详情抽屉 | 页面内打开抽屉；栏目入口按当前栏目合并 `archiveStore.teacherArchiveFacts` 来源记录，已入档事实卡片入口按当前点击的 `fact.id` 精确过滤来源记录 | 已完成本地事实来源过滤 |
 
 ### 4.5 第一批修复顺序
 
@@ -536,7 +536,7 @@
 | 档案记录 | 某一维度下已经入档或可查询的个人成长记录 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/record-list/index.vue`、`teacher-mobile/src/pages/archive/record-query/index.vue` |
 | 档案记录详情 | 单条档案事实的详情、来源、材料、用途和更正入口 | `teacher-mobile/src/domain/archive.ts`、`teacher-mobile/src/pages/archive/record-detail/index.vue` |
 | 档案来源 | 待办确认、培训归档、企业实践核验、虚拟教研归档等形成档案事实的来源 | `teacher-mobile/src/pages/todo/*`、`teacher-mobile/src/pages/activity/*` |
-| 档案更正 | 教师发现入档事实有误后发起更正、补充材料并查看处理进度 | 当前仅 `profile/index.vue` 有“信息更正进度”入口文案 |
+| 档案更正 | 教师发现入档事实有误后发起更正、补充材料并查看处理进度 | `teacher-mobile/src/pages/archive/correction/apply/index.vue`、`teacher-mobile/src/pages/archive/correction/submitted/index.vue`、`teacher-mobile/src/pages/archive/correction/progress/index.vue`、`teacher-mobile/src/pages/archive/correction/result/index.vue` 和 `teacher-mobile/src/pages/archive/correction/supplement/index.vue` 已接入；`profile/index.vue` 的“信息更正进度”已进入进度页 |
 | 入档结果 | 业务流程完成后提示已入档或等待归档确认的结果态 | `certificate-archive-success`、`training-archive-result`、`enterprise-archive-success`、`virtual-research-archive-result` 等 |
 
 ### 12.2 状态口径
@@ -546,9 +546,9 @@
 | 档案记录 | 已入档、待确认、待核验、待补充、已移出、已更正 | `teacher-mobile/src/domain/archive.ts` 已统一 `archived` 和 `pending-verify` 第一版记录，首页、分类页、列表页、待确认列表和详情页按 `recordId` 读取同源数据 | 已有本地 domain 记录模型第一版；仍缺待补充、已移出、已更正和管理端同步 |
 | 档案分类 | 有记录、无记录、最近更新、需补充 | 分类卡片、分类概览页和记录列表页已从 `domain/archive.ts` 读取分类摘要和记录 | 已有分类到列表到详情的本地同源闭环；缺真实分类数量回写和需补充状态 |
 | 档案查询 | 有结果、无结果、按分类筛选、关键词搜索 | 查询页读取 `teacher-mobile/src/domain/archive.ts` 的同源记录，支持本页分类筛选和清空关键词 | 有结果页和筛选态已覆盖；无结果和真实搜索参数未闭环 |
-| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途 | 详情页骨架已落地，仍缺真实档案事实模型和更正链路 |
+| 档案详情 | 可查看来源、可查看材料、可申请更正、可引用到画像/报告 | 已新增统一详情页第一版，展示来源追溯、材料和引用用途；“申请更正”按 `recordId` 进入更正申请页 | 详情页骨架已落地，仍缺真实档案事实模型和更正状态回写 |
 | 入档结果 | 等待确认、已入档、归档失败、需补充 | 培训为“归档确认中”，企业实践/待办证书为“已入档”，虚拟教研为“已归档” | 结果页存在，但口径不统一 |
-| 档案更正 | 更正申请中、待补充、已通过、未通过 | 未见独立页面 | 缺页 |
+| 档案更正 | 更正申请中、待补充、已通过、未通过 | 已新增更正申请页、提交结果页、进度页、处理结果页和补充材料页第一版，读取 `domain/archive.ts` 的档案记录并保留 `recordId`；补充材料提交后回到“已补充”进度态 | 申请到补充后进度查看已闭环；缺真实提交记录、附件上传和状态回写 |
 
 ### 12.3 主流程
 
@@ -597,13 +597,22 @@
 | 档案查询 | 清除关键词 | 清空本页关键词展示并重置筛选 | 已形成本页状态闭环，未接真实搜索参数 |
 | 档案查询 | 分类筛选 | 本页按 `record.categoryName` 过滤 `domain/archive.ts` 记录 | 已形成本页筛选闭环 |
 | 档案查询 | 点击记录 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，并按 domain 记录主键读取 |
+| 档案详情 | 申请更正 | `uni.navigateTo('/pages/archive/correction/apply/index?recordId=...')` | 已闭环到更正申请页第一版 |
+| 更正申请 | 查看原档案 / 返回详情 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已保留原档案上下文 |
+| 更正申请 | 提交申请 | `uni.redirectTo('/pages/archive/correction/submitted/index?recordId=...&reason=...')` | 已闭环到待核验提交结果页第一版；未生成真实更正记录 |
+| 更正已提交 | 查看原档案 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已保留原档案上下文 |
+| 更正已提交 | 查看进度 | `uni.navigateTo('/pages/archive/correction/progress/index?recordId=...&status=pending-verify&reason=...')` | 已闭环到更正进度页第一版 |
+| 更正进度 | 查看原档案 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已保留原档案上下文 |
+| 更正进度 | 查看处理结果 | `uni.navigateTo('/pages/archive/correction/result/index?recordId=...&result=need-supplement&reason=...')` | 已闭环到处理结果页第一版；默认使用需补充状态，不伪造已通过 |
+| 更正结果 | 查看原档案 / 补充材料 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')`、`uni.navigateTo('/pages/archive/correction/supplement/index?recordId=...&reason=...')` | 已保留结果后的上下文；需补充状态进入补充材料页第一版 |
+| 补充材料 | 查看原档案 / 提交补充 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')`、`uni.redirectTo('/pages/archive/correction/progress/index?recordId=...&status=supplemented&reason=...')` | 已闭环到已补充进度态；真实附件上传未闭环 |
 | 待办入档成功 | 查看个人发展 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=certificate-digital-literacy')` | 已闭环到统一记录详情页第一版 |
 | 培训归档提交结果 | 返回培训进修 | `uni.navigateTo('/pages/activity/training/index')` | 已闭环到活动页 |
 | 培训归档提交结果 | 查看提交内容 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=training-digital-teaching-archive')` | 已闭环到统一记录详情页第一版，并按 domain 记录保持“归档确认中”口径 |
 | 企业实践已入档 | 查看档案详情 | `uni.navigateTo('/pages/archive/record-detail/index?recordId=enterprise-practice-shandong-software')` | 已闭环到统一记录详情页第一版 |
 | 企业实践已入档 | 返回首页 | `uni.navigateTo('/pages/activity/index')` | 已闭环到活动首页 |
 | 虚拟教研归档结果 | 目标“成长档案 · 教研科研维度” | `uni.navigateTo('/pages/archive/record-detail/index?recordId=...')` | 已闭环到统一记录详情页第一版，两个归档结果页分别定位对应教研记录 |
-| 我的主页 | 信息更正进度 | 仅入口文案展示 | 未闭环；缺更正进度页 |
+| 我的主页 | 信息更正进度 | `uni.navigateTo('/pages/archive/correction/progress/index?recordId=certificate-digital-literacy&status=pending-verify')` | 已闭环到更正进度页第一版；仍缺真实个人更正申请列表 |
 
 ### 12.5 信息架构建议
 
@@ -615,18 +624,21 @@
 | 档案记录查询 | `pages/archive/record-query/index` | 保留关键词搜索和跨分类结果列表，并读取 `domain/archive.ts` |
 | 待确认列表 | `pages/archive/draft-list/index` | 已新增第一版，承接 `pending-verify` 记录、空状态和确认进度下钻 |
 | 记录详情 | `pages/archive/record-detail/index` | 已新增第一版，统一承接教学评价详情、企业实践详情、培训证书详情、教研记录详情等 |
-| 更正申请 | `pages/archive/correction/index` | 从记录详情发起更正，支持补充说明和材料 |
-| 更正进度 | `pages/archive/correction-progress/index` | 承接 `profile/index` 的“信息更正进度” |
+| 更正申请 | `pages/archive/correction/apply/index` | 已新增第一版，从记录详情按 `recordId` 发起更正，支持选择原因、补充说明和查看原材料 |
+| 更正已提交 | `pages/archive/correction/submitted/index` | 已新增第一版，承接申请提交后的待核验结果，可回原档案或进入更正进度页 |
+| 更正进度 | `pages/archive/correction/progress/index` | 已新增第一版，承接 `profile/index` 的“信息更正进度”和提交结果页的“查看进度”，展示待核验 / 已补充进度态 |
+| 更正结果 | `pages/archive/correction/result/index` | 已新增第一版，承接已通过、未通过、需补充三种处理结果，保留原档案和进度页上下文 |
+| 补充材料 | `pages/archive/correction/supplement/index` | 已新增第一版，承接需补充结果后的说明和材料占位，提交后回到更正进度的已补充状态 |
 
 ### 12.6 后续审计点
 
-1. 档案 54 张效果图不是当前 5 个档案页面能覆盖的“一页多状态”；分类概览、记录列表、待确认列表和记录详情已有第一版模板，更正链路、基础信息详情、草稿编辑等仍需独立补齐。
+1. 档案 54 张效果图不是当前 11 个档案页面能覆盖的“一页多状态”；分类概览、记录列表、待确认列表、记录详情、更正申请、更正已提交、更正进度、更正结果和补充材料已有第一版模板，基础信息详情、草稿编辑等仍需独立补齐。
 2. 当前档案首页的 8 个分类卡片已进入分类概览页，“待确认”进入待确认列表，“查看全部”进入记录列表，最近入档直达统一记录详情；首页、分类、列表、待确认和详情已读取 `teacher-mobile/src/domain/archive.ts` 同源记录，后续重点转为接管理端 `archiveStore` 或真实接口。
 3. 当前档案查询页已读取 `domain/archive.ts`，支持本页筛选、清空关键词和按 `recordId` 进入统一记录详情页第一版；后续仍需真实搜索参数和无结果态。
 4. 待办证书、培训、企业实践、虚拟教研的结果页已按 `recordId` 接入统一记录详情页第一版；仍未统一写回管理端档案处理记录、首页数量和真实分类统计。
 5. 入档口径需要统一：培训页面是“归档确认中”，企业实践和待办证书是“已入档”，虚拟教研是“已归档”；后续应明确哪些需要管理端确认，哪些可直接成为正式档案事实。
 6. “个人发展”证书、“教研科研”“企业实践”等结果页已可查看统一详情，分类记录列表已有第一版；仍缺真实详情数据和跨来源状态同步。
-7. 统一记录详情页已展示引用用途和来源追溯第一版；后续需接入真实档案事实、来源记录和更正状态。
+7. 统一记录详情页已展示引用用途和来源追溯第一版，并可进入更正申请、待核验结果页、进度页、处理结果页和补充材料页；后续需接入真实档案事实、来源记录、更正提交记录、附件上传和状态回写。
 
 ## 13. 教师手机端：培训活动
 
