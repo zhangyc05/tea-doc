@@ -275,13 +275,13 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for ability list base hero actions', () => {
     expect(abilityListBasePage).toContain('<Button class="primary-action" @click="goToOptimization">')
-    expect(abilityListBasePage).toContain('<Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">')
     expect(abilityListBasePage).toContain('<button class="title-link" type="button" @click="goToVersionHistory">')
     expect(abilityListBasePage).toContain('查看版本记录')
+    expect(abilityListBasePage).not.toContain('deriveExecutionVersion')
+    expect(abilityListBasePage).not.toContain('派生执行版')
     expect(abilityListBasePage).not.toContain('<button class="primary-action btn-primary" @click="goToOptimization">')
     expect(abilityListBasePage).not.toContain('<Button class="secondary-action" variant="outline" @click="goToVersionHistory">')
     expect(abilityListBasePage).not.toContain('<button class="secondary-action btn-secondary" @click="goToVersionHistory">')
-    expect(abilityListBasePage).not.toContain('<button class="derive-action" @click="deriveExecutionVersion">')
   })
 
   it('uses the shared Button component for ability list execution hero actions', () => {
@@ -413,9 +413,10 @@ describe('admin visual action guardrails', () => {
   it('uses DetailSheet for the ability list base version history drawer shell', () => {
     expect(abilityListBasePage).toContain('title="基准模板版本记录"')
     expect(abilityListBasePage).toContain('width="history"')
-    expect(abilityListBasePage).toContain(':show-footer="pendingChangeRows.length > 0"')
+    expect(abilityListBasePage).toContain(':show-footer="false"')
     expect(abilityListBasePage).toContain('pendingChangeRows')
-    expect(abilityListBasePage).toContain('确认生成新版本')
+    expect(abilityListBasePage).toContain('发布新版本（{{ pendingChangeRows.length }}）')
+    expect(abilityListBasePage).toContain('@click="publishNewBaseTemplateVersion"')
     expect(abilityListBasePage).toContain('version.versionNo')
     expect(abilityListBasePage).toContain('version.updatedAt')
     expect(abilityListBasePage).toContain('version.changeSummary')

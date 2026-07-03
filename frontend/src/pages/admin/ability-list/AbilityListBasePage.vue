@@ -9,7 +9,6 @@ import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { getAbilityListBaseMock } from '@/services/mock/ability-list'
 import {
   confirmBaseTemplateChanges,
-  deriveNextExecutionVersion,
   getAbilityListState,
   updateBaseTemplateIndicator,
 } from '@/stores/admin/abilityListStore'
@@ -172,13 +171,8 @@ function closeVersionDrawer() {
   showVersionDrawer.value = false
 }
 
-function confirmTemplateChanges() {
+function publishNewBaseTemplateVersion() {
   confirmBaseTemplateChanges()
-}
-
-function deriveExecutionVersion() {
-  deriveNextExecutionVersion()
-  router.push('/admin/ability-list/execution/publish-confirm')
 }
 
 </script>
@@ -207,7 +201,7 @@ function deriveExecutionVersion() {
                 </button>
               </div>
               <p class="hero-subtitle">
-                维护学校长期使用的教师能力标准，用于派生执行版能力清单。
+                维护学校长期使用的教师能力标准，作为年度执行版能力清单的来源。
               </p>
             </div>
 
@@ -222,11 +216,18 @@ function deriveExecutionVersion() {
               <Button class="primary-action" @click="goToOptimization">
                 优化基准板
               </Button>
-              <Button class="derive-action" variant="ghost" @click="deriveExecutionVersion">
-                派生执行版
-                <span aria-hidden="true">›</span>
+              <Button
+                v-if="pendingChangeRows.length > 0"
+                variant="secondary"
+                @click="publishNewBaseTemplateVersion"
+              >
+                发布新版本（{{ pendingChangeRows.length }}）
               </Button>
             </div>
+
+            <p v-if="pendingChangeRows.length > 0" class="hero-revision-note">
+              当前有 {{ pendingChangeRows.length }} 项修订草稿，发布后生成新的基准模板版本。
+            </p>
           </div>
         </div>
 
@@ -315,36 +316,12 @@ function deriveExecutionVersion() {
       <DetailSheet
         :open="showVersionDrawer"
         title="基准模板版本记录"
-        description="展示基准能力清单的正式版本历史；编辑指标会先进入待确认变更，确认后生成新版本。"
+        description="展示基准能力清单的正式版本历史。修订草稿需在页面头部发布后才会生成新版本。"
         width="history"
-        :show-footer="pendingChangeRows.length > 0"
+        :show-footer="false"
         @update:open="value => { if (!value) closeVersionDrawer() }"
         @cancel="closeVersionDrawer"
       >
-        <div v-if="pendingChangeRows.length" class="pending-change-panel">
-          <div class="pending-change-head">
-            <strong>待确认变更</strong>
-            <span>{{ pendingChangeRows.length }} 项</span>
-          </div>
-          <article v-for="change in pendingChangeRows" :key="change.id" class="pending-change-card">
-            <h4>{{ change.indicatorName }}</h4>
-            <dl>
-              <div>
-                <dt>修改时间</dt>
-                <dd>{{ change.changedAt }}</dd>
-              </div>
-              <div>
-                <dt>修改人</dt>
-                <dd>{{ change.operator }}</dd>
-              </div>
-              <div>
-                <dt>变更摘要</dt>
-                <dd>{{ change.before.novice }} / {{ change.before.competent }} → {{ change.after.novice }} / {{ change.after.competent }}</dd>
-              </div>
-            </dl>
-          </article>
-        </div>
-
         <div class="version-list version-list-in-sheet">
           <article v-for="version in versionRows" :key="version.versionNo" class="version-card">
             <div class="version-card-head">
@@ -371,10 +348,6 @@ function deriveExecutionVersion() {
           </article>
         </div>
 
-        <template #footer>
-          <Button variant="outline" @click="closeVersionDrawer">关闭</Button>
-          <Button @click="confirmTemplateChanges">确认生成新版本</Button>
-        </template>
       </DetailSheet>
     </div>
   </AdminLayout>
@@ -392,7 +365,7 @@ function deriveExecutionVersion() {
 .base-hero {
   position: relative;
   overflow: hidden;
-  min-height: clamp(230px, 15.5vw, 270px);
+  min-height: var(--admin-hero-height-default);
 }
 
 .base-hero::before {
@@ -428,9 +401,9 @@ function deriveExecutionVersion() {
 
 .hero-art {
   position: absolute;
-  top: clamp(10px, 0.8vw, 16px);
+  top: 0;
   right: clamp(18px, 1.5vw, 30px);
-  bottom: clamp(10px, 0.8vw, 16px);
+  bottom: 0;
   z-index: 0;
   width: min(48%, 720px);
   background-repeat: no-repeat;
@@ -443,7 +416,7 @@ function deriveExecutionVersion() {
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: clamp(230px, 15.5vw, 270px);
+  min-height: var(--admin-hero-height-default);
   max-width: min(820px, 60%);
   align-items: center;
   gap: clamp(18px, 1.2vw, 26px);
@@ -452,7 +425,7 @@ function deriveExecutionVersion() {
 
 .hero-emblem {
   flex: none;
-  transform: translateY(-44px);
+  transform: translateY(-24px);
 }
 
 .hero-emblem-img {
@@ -560,12 +533,6 @@ function deriveExecutionVersion() {
   white-space: nowrap;
 }
 
-.derive-action {
-  color: var(--color-primary);
-  font-size: 14px;
-  font-weight: 900;
-}
-
 .hero-metrics {
   position: absolute;
   top: 50%;
@@ -574,22 +541,22 @@ function deriveExecutionVersion() {
   display: grid;
   width: clamp(300px, 22vw, 390px);
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-admin-md);
   transform: translateY(-50%);
 }
 
 .hero-metric-card {
   display: flex;
-  min-height: 94px;
+  min-height: 82px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-admin-xs);
   border: 1px solid rgba(89, 143, 230, 0.18);
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(244, 248, 255, 0.72));
   box-shadow: 0 20px 42px rgba(54, 101, 178, 0.08);
-  padding: 16px 18px;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
 }
 
 .hero-metric-card span {
@@ -607,10 +574,6 @@ function deriveExecutionVersion() {
   line-height: 1;
 }
 
-.derive-action:hover {
-  color: var(--color-primary-hover);
-}
-
 .hero-note {
   margin: 10px 0 0;
   max-width: 760px;
@@ -618,6 +581,20 @@ function deriveExecutionVersion() {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.6;
+}
+
+.hero-revision-note {
+  margin: 10px 0 0;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgba(18, 104, 246, 0.14);
+  border-radius: var(--radius-pill);
+  background: rgba(239, 246, 255, 0.78);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.4;
+  padding: 7px 12px;
 }
 
 .operation-message {
@@ -690,68 +667,6 @@ function deriveExecutionVersion() {
   font-size: 12px;
   font-weight: 800;
   line-height: 1.4;
-}
-
-.pending-change-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-admin-md);
-  margin-bottom: var(--space-admin-xl);
-  padding: var(--space-admin-lg);
-  border: 1px solid #d7e7ff;
-  border-radius: var(--radius-admin-panel);
-  background: #f6faff;
-}
-
-.pending-change-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.pending-change-head span {
-  color: var(--color-primary);
-}
-
-.pending-change-card {
-  padding: var(--space-admin-md);
-  border: 1px solid #e3ebf6;
-  border-radius: var(--radius-admin-panel);
-  background: #fff;
-}
-
-.pending-change-card h4 {
-  margin: 0 0 var(--space-admin-sm);
-  color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.pending-change-card dl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-admin-md);
-  margin: 0;
-}
-
-.pending-change-card dt,
-.pending-change-card dd {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.pending-change-card dt {
-  color: var(--color-text-secondary);
-  font-weight: 800;
-}
-
-.pending-change-card dd {
-  color: var(--color-text-primary);
-  font-weight: 800;
 }
 
 .version-list {

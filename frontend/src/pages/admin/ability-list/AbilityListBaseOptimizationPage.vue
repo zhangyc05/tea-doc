@@ -189,12 +189,12 @@ function viewVersionHistory() {
                 :disabled="pendingApplicationCount === 0"
                 @click="applyToBaseTemplate"
               >
-                应用到基准模板（{{ pendingApplicationCount }}）
+                形成修订草稿（{{ pendingApplicationCount }}）
               </Button>
               <Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>
             </div>
             <p class="hero-note">
-              基于制度文件和运行反馈形成优化建议，人工确认后再应用到基准模板。
+              基于制度文件和运行反馈形成优化建议，人工确认后生成修订草稿，发布新版本后生效。
               <span v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</span>
             </p>
           </div>
@@ -334,7 +334,7 @@ function viewVersionHistory() {
               v-if="selectedSuggestion.status === 'adopted'"
               @click="applyToBaseTemplate"
             >
-              应用到基准模板
+              形成修订草稿
             </Button>
             <Button
               v-if="selectedSuggestion.status === 'pending'"

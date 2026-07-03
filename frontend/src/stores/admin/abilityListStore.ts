@@ -60,7 +60,7 @@ export function updateBaseTemplateIndicator(
 ) {
   const target = saveBaseTemplateChangeInState(state, key, patch)
   if (!target) return
-  state.operationMessage = `已保存待确认变更：${target.indicatorName}。`
+  state.operationMessage = `已保存修订草稿：${target.indicatorName}。`
 }
 
 export function confirmBaseTemplateChanges() {
@@ -85,7 +85,7 @@ export function updateOptimizationSuggestionStatus(
 export function adoptOptimizationSuggestion(suggestionId: string) {
   const target = updateOptimizationSuggestionStatusInState(state, suggestionId, 'adopted')
   state.operationMessage = target
-    ? `已采纳建议：${target.issueType}，待应用到基准模板。`
+    ? `已采纳建议：${target.issueType}，可形成基准模板修订草稿。`
     : ''
 }
 

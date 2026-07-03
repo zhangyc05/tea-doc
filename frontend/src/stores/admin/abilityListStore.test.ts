@@ -146,23 +146,44 @@ describe('ability list business state', () => {
     expect(state.pendingTemplateApplications[0]?.targetIndicator.name).toBe('企业实践成果转化')
   })
 
-  it('applies adopted optimization suggestions to the base template indicators', () => {
+  it('applies adopted optimization suggestions as pending base template changes', () => {
     adoptOptimizationSuggestion('suggestion-enterprise-practice')
     const result = applyAdoptedSuggestionsToBaseTemplate()
 
     const state = getAbilityListState()
-    const appliedIndicator = state.baseTemplateIndicators.find(
+    const formalIndicator = state.baseTemplateIndicators.find(
       indicator => indicator.key === 'base-enterprise-practice-output',
+    )
+    const pendingChange = state.pendingBaseTemplateChanges.find(
+      change => change.indicatorKey === 'base-enterprise-practice-output',
     )
     const appliedSuggestion = state.optimizationSuggestions.find(
       suggestion => suggestion.id === 'suggestion-enterprise-practice',
     )
 
     expect(result).toBe(1)
-    expect(appliedIndicator?.name).toBe('企业实践成果转化')
-    expect(appliedIndicator?.status).toBe('draft')
+    expect(formalIndicator).toBeUndefined()
+    expect(pendingChange?.before).toBeUndefined()
+    expect(pendingChange?.after.name).toBe('企业实践成果转化')
+    expect(pendingChange?.after.status).toBe('draft')
     expect(appliedSuggestion?.status).toBe('applied')
     expect(state.pendingTemplateApplications).toHaveLength(0)
+  })
+
+  it('publishes pending base template changes as a new formal version', () => {
+    adoptOptimizationSuggestion('suggestion-enterprise-practice')
+    applyAdoptedSuggestionsToBaseTemplate()
+
+    const newVersion = confirmBaseTemplateChanges()
+    const state = getAbilityListState()
+    const formalIndicator = state.baseTemplateIndicators.find(
+      indicator => indicator.key === 'base-enterprise-practice-output',
+    )
+
+    expect(newVersion?.versionNo).toBe('V1.1')
+    expect(formalIndicator?.name).toBe('企业实践成果转化')
+    expect(formalIndicator?.status).toBe('enabled')
+    expect(state.pendingBaseTemplateChanges).toHaveLength(0)
   })
 
   it('imports a policy file as a pending optimization suggestion', () => {

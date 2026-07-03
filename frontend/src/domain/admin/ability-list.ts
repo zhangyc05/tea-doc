@@ -119,7 +119,7 @@ export type PendingBaseTemplateChange = {
   indicatorKey: string
   indicatorName: string
   abilityKey?: string
-  before: AbilityIndicator
+  before?: AbilityIndicator
   after: AbilityIndicator
   changedAt: string
   operator: string

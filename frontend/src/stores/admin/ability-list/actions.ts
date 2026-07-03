@@ -28,12 +28,14 @@ export function saveBaseTemplateChangeInState(
   patch: Partial<Omit<AbilityIndicator, 'key'>>,
 ) {
   const source = state.baseTemplateIndicators.find(indicator => indicator.key === key)
-  if (!source) return null
+  const patchName = typeof patch.name === 'string' ? patch.name : ''
+  const patchAbilityKey = typeof patch.abilityKey === 'string' ? patch.abilityKey : ''
+  if (!source && (!patchName || !patchAbilityKey)) return null
 
   const existing = state.pendingBaseTemplateChanges.find(change => change.indicatorKey === key)
-  const before = existing?.before ?? { ...source }
+  const before = existing?.before ?? (source ? { ...source } : undefined)
   const after: AbilityIndicator = {
-    ...(existing?.after ?? source),
+    ...(existing?.after ?? source ?? { key, abilityKey: patchAbilityKey, name: patchName, novice: '', competent: '', backbone: '', expert: '', basisLabel: '' }),
     ...patch,
     status: 'draft' satisfies AbilityIndicator['status'],
   }
@@ -55,7 +57,7 @@ export function saveBaseTemplateChangeInState(
     state.pendingBaseTemplateChanges.push(change)
   }
 
-  state.operationMessage = `已保存待确认变更：${after.name}。`
+  state.operationMessage = `已保存修订草稿：${after.name}。`
   return change
 }
 
@@ -164,21 +166,12 @@ export function applyAdoptedSuggestionsToBaseTemplateInState(state: AbilityListS
   const applications = [...state.pendingTemplateApplications]
 
   applications.forEach((application) => {
-    const index = state.baseTemplateIndicators.findIndex(
-      indicator => indicator.key === application.targetIndicator.key,
-    )
-
-    if (index >= 0) {
-      state.baseTemplateIndicators[index] = { ...application.targetIndicator }
-    } else {
-      state.baseTemplateIndicators.push({ ...application.targetIndicator })
-    }
-
+    saveBaseTemplateChangeInState(state, application.targetIndicator.key, application.targetIndicator)
     updateOptimizationSuggestionStatusInState(state, application.suggestionId, 'applied')
   })
 
   state.operationMessage = applications.length > 0
-    ? `已应用 ${applications.length} 条优化建议到基准模板。`
+    ? `已形成 ${applications.length} 条基准模板修订草稿，发布新版本后生效。`
     : '暂无待应用的优化建议。'
 
   return applications.length
