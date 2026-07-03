@@ -14,6 +14,27 @@
 - 提交类动作必须写入对应本地 domain/store，并能在结果页、列表页或详情页回显。
 - 涉及页面覆盖、业务对象或状态口径变化时，同步更新 `docs/page-coverage-ledger.md` 和 `docs/business-logic-map.md`。
 
+## 1.1 自动复扫命令
+
+页面闭环不依赖人工记忆，新增统一复扫脚本：
+
+```bash
+node scripts/verify-page-action-closure.mjs
+```
+
+也可从任一子项目执行：
+
+```bash
+cd frontend && npm run test:page-actions
+cd teacher-mobile && npm run test:page-actions
+```
+
+脚本会扫描 `frontend/src/pages/**/*.vue` 和 `teacher-mobile/src/pages/**/*.vue` 中的 `@click`、`@tap`、`href="#"` 等动作，并按导航、本地状态、明确降级、未知和高风险空操作分类。
+
+- `critical`：必须修复，包含未定义 handler、空绑定、`href="#"`、纯 `console.log` 等高风险空动作。
+- `warning`：进入人工复核或后续任务，通常是明确降级提示、复杂表达式或脚本暂无法静态判断的状态动作。
+- `0 critical` 只代表没有发现高风险空操作；页面是否业务完整仍以本清单、业务地图和模块行为测试共同判断。
+
 ## 2. 当前扫描结论
 
 - `teacher-mobile/src/pages.json` 注册页面数为 102，`teacher-mobile/src/pages/**/index.vue` 页面文件数为 102，注册关系当前一致。
@@ -77,6 +98,7 @@
 | OC-P2-02 | 已补代码并通过目标验证 | 管理端实践导出新增 `practiceStore.exportTasks` 本地模拟导出任务，年度实践跟踪“导出名单”和实践记录“导出记录”按当前筛选结果写入导出中、已完成或失败状态，并展示最近任务文件名、条数和失败原因；`test:stores -- practiceStore.test.ts` 已通过 |
 | OC-P2-03 | 已补代码并通过目标验证 | 管理端群体画像新增 `calculateAbilityProfileGroup()`，基于教师画像、正式档案事实和执行版指标聚合综合指数、雷达分、维度分布、发展支持方向和关注对象；群体画像页读取 `archiveStore.teacherArchiveFacts` 与 `abilityListStore.executionIndicators`，不再只依赖固定静态 mock；`test -- ability-profile.test.ts` 已通过 |
 | OC-P2-04 | 已完成复扫并通过目标验证 | 已复扫本轮改造相关管理端页面的原生 `button`、公共 `Button`、`operationMessage`、`console.log`、旧导出纯提示和无效锚点；`adminVisualActions.test.ts` 65 个用例通过，未发现空动作按钮回归 |
+| OC-P2-05 | 已补统一页面动作复扫脚本 | 新增 `scripts/verify-page-action-closure.mjs` 和 `scripts/verify-page-action-closure.test.mjs`，可统一扫描管理端和手机端页面点击动作；`frontend`、`teacher-mobile` 均已接入 `npm run test:page-actions`；当前扫描结果为 524 个动作、0 个 critical、146 个 warning |
 
 ## 7. 建议执行顺序
 
