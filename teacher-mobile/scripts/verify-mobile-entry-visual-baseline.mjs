@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -7,6 +7,21 @@ const repoRoot = resolve(root, '..')
 
 function read(path) {
   return readFileSync(resolve(root, path), 'utf8')
+}
+
+function hasMockSystemStatus(source) {
+  return /status-(signal|wifi|battery)/.test(source)
+}
+
+function collectVueFiles(dir) {
+  const entries = readdirSync(resolve(root, dir), { withFileTypes: true })
+  return entries.flatMap(entry => {
+    const path = `${dir}/${entry.name}`
+    if (entry.isDirectory()) {
+      return collectVueFiles(path)
+    }
+    return entry.isFile() && entry.name.endsWith('.vue') ? [path] : []
+  })
 }
 
 const checks = [
@@ -26,6 +41,10 @@ const checks = [
         name: 'activity entry uses stable design-system density',
         test: source => /\.page-head__title\s*\{[\s\S]*font-size: 68rpx/.test(source) && /\.section-card\s*\{[\s\S]*border-radius: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 40rpx/.test(source),
       },
+      {
+        name: 'activity entry strips screenshot-only system status icons',
+        test: source => !hasMockSystemStatus(source),
+      },
     ],
   },
   {
@@ -43,6 +62,10 @@ const checks = [
       {
         name: 'todo entry uses stable design-system density',
         test: source => /\.hero-title\s*\{[\s\S]*font-size: 44rpx/.test(source) && /\.section-card\s*\{[\s\S]*border-radius: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 40rpx/.test(source),
+      },
+      {
+        name: 'todo entry strips screenshot-only system status icons',
+        test: source => !hasMockSystemStatus(source),
       },
     ],
   },
@@ -62,6 +85,10 @@ const checks = [
         name: 'archive entry uses stable design-system density',
         test: source => /\.page-head__title\s*\{[\s\S]*font-size: 68rpx/.test(source) && /\.section-card\s*\{[\s\S]*border-radius: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 40rpx/.test(source),
       },
+      {
+        name: 'archive entry strips screenshot-only system status icons',
+        test: source => !hasMockSystemStatus(source),
+      },
     ],
   },
   {
@@ -80,6 +107,10 @@ const checks = [
         name: 'profile entry uses stable design-system density',
         test: source => /\.profile-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 16rpx\) 28rpx calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.page-head__title\s*\{[\s\S]*font-size: 68rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 40rpx/.test(source),
       },
+      {
+        name: 'profile entry strips screenshot-only system status icons',
+        test: source => !hasMockSystemStatus(source),
+      },
     ],
   },
   {
@@ -97,6 +128,10 @@ const checks = [
       {
         name: 'assistant entry uses stable design-system density',
         test: source => /\.assistant-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 16rpx\) 28rpx calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.assistant-hero\s*\{[\s\S]*border-radius: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 40rpx/.test(source),
+      },
+      {
+        name: 'assistant entry strips screenshot-only system status icons',
+        test: source => !hasMockSystemStatus(source),
       },
     ],
   },
@@ -1461,6 +1496,47 @@ const checks = [
 ]
 
 const failures = []
+
+const pagesConfig = JSON.parse(read('src/pages.json'))
+
+if (pagesConfig.pages?.[0]?.path !== 'pages/todo/index') {
+  failures.push('pages.json: default launch page must be pages/todo/index')
+}
+
+const tabbarSource = read('src/components/MobileTabBar.vue')
+
+if (!tabbarSource.includes('<wd-tabbar') || !tabbarSource.includes('<wd-tabbar-item')) {
+  failures.push('src/components/MobileTabBar.vue: bottom navigation must be backed by Wot Design Uni wd-tabbar')
+}
+
+if (!tabbarSource.includes('<template #icon>') || !tabbarSource.includes('mobile-tabbar__assistant-orb') || !tabbarSource.includes('/static/tabbar/assistant.png')) {
+  failures.push('src/components/MobileTabBar.vue: bottom navigation must use custom icon slots with raised AI assistant orb')
+}
+
+if (tabbarSource.includes(':title="tab.text"') || !tabbarSource.includes('mobile-tabbar__item-label') || !tabbarSource.includes('mobile-tabbar__item-shell')) {
+  failures.push('src/components/MobileTabBar.vue: bottom navigation must fully control item icon and label layout inside custom slot')
+}
+
+if (!tabbarSource.includes('/static/tabbar/') || !tabbarSource.includes('<image') || tabbarSource.includes('clip-path: polygon')) {
+  failures.push('src/components/MobileTabBar.vue: bottom navigation must use generated PNG icon resources instead of CSS polygon icons')
+}
+
+if (!/(?:\.mobile-tabbar|:deep\(\.mobile-tabbar\))\s*\{[\s\S]*border-radius: 38rpx 38rpx 0 0/.test(tabbarSource) || !/\.mobile-tabbar__assistant-orb\s*\{[\s\S]*transform: translateY\(-52rpx\)/.test(tabbarSource)) {
+  failures.push('src/components/MobileTabBar.vue: bottom navigation must keep recent-archive rounded floating bar and raised center visual')
+}
+
+const navbarSource = read('src/components/MobileNavbar.vue')
+
+if (hasMockSystemStatus(navbarSource)) {
+  failures.push('src/components/MobileNavbar.vue: navbar must strip screenshot-only system status icons')
+}
+
+for (const file of collectVueFiles('src/pages').concat(collectVueFiles('src/components'))) {
+  const source = read(file)
+  if (hasMockSystemStatus(source)) {
+    failures.push(`${file}: must not contain screenshot-only system status icon classes`)
+  }
+}
 
 for (const check of checks) {
   if (!existsSync(resolve(repoRoot, check.target))) {

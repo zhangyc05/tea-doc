@@ -7,6 +7,12 @@
   },
   "pages": [
     {
+      "path": "pages/todo/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/activity/index",
       "style": {
         "navigationStyle": "custom",
@@ -430,12 +436,6 @@
     },
     {
       "path": "pages/activity/virtual-research-advanced-settings/index",
-      "style": {
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/todo/index",
       "style": {
         "navigationStyle": "custom"
       }

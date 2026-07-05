@@ -26,6 +26,13 @@ H5 视觉验收视口：
 360x800
 ```
 
+## 效果图剥离规则
+
+- 不实现模拟手机信号、电量、Wi-Fi。
+- 不实现设计稿中的手机壳、系统状态栏、系统底部手势条。
+- 页面只保留真实安全区占位：`var(--status-bar-height)` 和 `env(safe-area-inset-bottom)`。
+- 如果效果图顶部有系统状态栏，只作为截图环境，不作为页面内容。
+
 ## 页面容器
 
 - 页面使用浅绿到浅蓝的纵向背景，顶部保留状态栏空间。
@@ -85,14 +92,18 @@ teacher-mobile/src/components/MobileTabBar.vue
 - `MobileCard`：白色内容卡片的边框、圆角、背景和阴影。
 - `MobileStatusTag`：紫、蓝、橙、绿四类轻量状态标签。
 - `MobileActionButton`：清理 UniApp `button` 默认样式，提供主按钮、描边按钮、文本链接。
-- `MobileTabBar`：固定底部入口。
+- `MobileTabBar`：固定底部入口；对外保持统一组件，内部使用 Wot Design Uni `wd-tabbar` / `wd-tabbar-item` 承载。
 
 暂不抽象状态栏、通知铃、搜索框、业务图标、首页业务卡片、记录列表行；等更多页面重复后再判断。
 
 ## TabBar
 
 - 不使用 UniApp 原生 `tabBar` 配置。
-- 使用 `teacher-mobile/src/components/MobileTabBar.vue`。
+- 页面只使用 `teacher-mobile/src/components/MobileTabBar.vue`，禁止在页面内直接新增一套底部导航。
+- `MobileTabBar` 内部使用 Wot Design Uni `wd-tabbar`，通过 `wd-tabbar-item` 的 `#icon` 插槽定制图标。
+- 普通入口图标使用 `teacher-mobile/static/tabbar/` 下的 PNG 资源，不再用 CSS `clip-path` 手绘图标；源 SVG 保留在 `teacher-mobile/static/tabbar-src/`。
+- 底部视觉以最近入档类效果图为基准：白色圆角浮层、中间 `AI 助手` 圆形凸起、当前项绿色、其余项灰蓝色。
+- 不实现效果图里的系统 Home Indicator；只保留真实 `env(safe-area-inset-bottom)` 安全区。
 - 入口顺序固定为：
 
 ```txt

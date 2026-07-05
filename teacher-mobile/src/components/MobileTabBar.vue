@@ -13,43 +13,72 @@ const tabs: Array<{ key: TabKey; text: string; path: string }> = [
   { key: 'profile', text: '我的', path: '/pages/profile/index' },
 ]
 
-function handleTab(path: string) {
-  uni.redirectTo({ url: path })
+function iconSrc(key: TabKey) {
+  if (key === 'assistant') {
+    return ''
+  }
+  const state = props.active === key ? 'active' : 'inactive'
+  return `/static/tabbar/${key}-${state}.png`
+}
+
+function handleChange(event: { value: TabKey }) {
+  const tab = tabs.find((item) => item.key === event.value)
+  if (!tab || tab.key === props.active) {
+    return
+  }
+  uni.redirectTo({ url: tab.path })
 }
 </script>
 
 <template>
-  <view class="mobile-tabbar">
-    <button
-      v-for="tab in tabs"
-      :key="tab.key"
-      class="mobile-tabbar__item"
-      :class="{
-        'mobile-tabbar__item--active': props.active === tab.key,
-        'mobile-tabbar__item--center': tab.key === 'assistant',
-      }"
-      @tap="handleTab(tab.path)"
-    >
-      <view class="mobile-tabbar__icon" :class="`mobile-tabbar__icon--${tab.key}`"></view>
-      <text>{{ tab.text }}</text>
-    </button>
-  </view>
+  <wd-tabbar
+    :model-value="props.active"
+    custom-class="mobile-tabbar"
+    active-color="#0ec165"
+    inactive-color="#667089"
+    shape="round"
+    fixed
+    safe-area-inset-bottom
+    :bordered="false"
+    :z-index="50"
+    @change="handleChange"
+  >
+    <wd-tabbar-item v-for="tab in tabs" :key="tab.key" :name="tab.key">
+      <template #icon>
+        <view
+          v-if="tab.key === 'assistant'"
+          class="mobile-tabbar__item-shell mobile-tabbar__item-shell--assistant"
+        >
+          <image class="mobile-tabbar__assistant-orb" src="/static/tabbar/assistant.png" mode="aspectFit" />
+          <text class="mobile-tabbar__item-label mobile-tabbar__item-label--assistant">AI助手</text>
+        </view>
+        <view
+          v-else
+          class="mobile-tabbar__item-shell"
+          :class="[
+            { 'mobile-tabbar__item-shell--active': props.active === tab.key },
+          ]"
+        >
+          <image
+            class="mobile-tabbar__icon"
+            :src="iconSrc(tab.key)"
+            mode="aspectFit"
+          />
+          <text class="mobile-tabbar__item-label">{{ tab.text }}</text>
+        </view>
+      </template>
+    </wd-tabbar-item>
+  </wd-tabbar>
 </template>
 
 <style lang="scss" scoped>
 @import '../styles/tokens.scss';
 
-.mobile-tabbar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 50;
-  display: flex;
+:deep(.mobile-tabbar) {
   height: calc(138rpx + env(safe-area-inset-bottom));
   align-items: flex-start;
   justify-content: space-around;
-  padding: 16rpx 20rpx env(safe-area-inset-bottom);
+  padding: 18rpx 20rpx env(safe-area-inset-bottom);
   border: 1rpx solid rgba(234, 238, 246, 0.95);
   border-bottom: 0;
   border-radius: 38rpx 38rpx 0 0;
@@ -57,133 +86,72 @@ function handleTab(path: string) {
   box-shadow: 0 -18rpx 52rpx rgba(21, 40, 74, 0.08);
 }
 
-.mobile-tabbar__item {
+:deep(.wd-tabbar-item) {
+  flex: 0 0 126rpx;
+  height: 110rpx;
+  overflow: visible;
+}
+
+:deep(.wd-tabbar-item__body) {
+  height: 110rpx;
+  justify-content: center;
+  overflow: visible;
+}
+
+.mobile-tabbar__item-shell {
   position: relative;
   display: flex;
-  width: 118rpx;
-  height: 104rpx;
+  width: 126rpx;
+  height: 110rpx;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
-  border: 0;
-  outline: 0;
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  box-shadow: none;
   color: #667089;
-  font-size: 26rpx;
-  font-weight: 700;
+  overflow: visible;
+}
+
+.mobile-tabbar__item-shell--active {
+  color: $teacher-mobile-primary;
+}
+
+.mobile-tabbar__item-shell--assistant {
+  color: $teacher-mobile-primary;
+}
+
+.mobile-tabbar__icon {
+  display: block;
+  width: 58rpx;
+  height: 58rpx;
+  margin-top: 2rpx;
+  flex: 0 0 58rpx;
+}
+
+.mobile-tabbar__item-label {
+  margin-top: 8rpx;
+  color: currentColor;
+  font-size: 30rpx;
+  font-weight: 900;
   line-height: 1;
   white-space: nowrap;
 }
 
-.mobile-tabbar__item::after {
-  display: none;
-  border: 0;
-}
-
-.mobile-tabbar__item--active {
-  color: $teacher-mobile-primary;
-}
-
-.mobile-tabbar__item--center {
-  color: $teacher-mobile-primary;
-  transform: translateY(-38rpx);
-}
-
-.mobile-tabbar__item--center text {
-  width: 112rpx;
-  text-align: center;
-}
-
-.mobile-tabbar__icon {
-  position: relative;
-  width: 48rpx;
-  height: 48rpx;
-  margin-bottom: 10rpx;
-  background: transparent;
-  opacity: 0.9;
-}
-
-.mobile-tabbar__icon::before,
-.mobile-tabbar__icon::after {
+.mobile-tabbar__item-label--assistant {
   position: absolute;
-  content: '';
+  top: 74rpx;
+  left: 50%;
+  width: 128rpx;
+  margin-top: 0;
+  color: #58627a;
+  text-align: center;
+  transform: translateX(-50%);
 }
 
-.mobile-tabbar__icon--todo::before {
-  inset: 9rpx 5rpx 4rpx;
-  background: currentColor;
-  clip-path: polygon(50% 0, 100% 42%, 100% 100%, 66% 100%, 66% 64%, 34% 64%, 34% 100%, 0 100%, 0 42%);
-}
-
-.mobile-tabbar__icon--archive::before {
-  inset: 14rpx 4rpx 8rpx;
-  border-radius: 6rpx;
-  background: currentColor;
-}
-
-.mobile-tabbar__icon--archive::after {
-  top: 9rpx;
-  left: 8rpx;
-  width: 22rpx;
-  height: 10rpx;
-  border-radius: 6rpx 6rpx 0 0;
-  background: currentColor;
-}
-
-.mobile-tabbar__icon--activity::before {
-  inset: 7rpx;
-  background: currentColor;
-  clip-path: polygon(0 0, 42% 0, 42% 42%, 0 42%, 0 0, 58% 0, 100% 0, 100% 42%, 58% 42%, 58% 0, 0 58%, 42% 58%, 42% 100%, 0 100%, 0 58%, 58% 58%, 100% 58%, 100% 100%, 58% 100%);
-}
-
-.mobile-tabbar__icon--profile::before {
-  top: 6rpx;
-  left: 15rpx;
-  width: 20rpx;
-  height: 20rpx;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.mobile-tabbar__icon--profile::after {
-  right: 7rpx;
-  bottom: 4rpx;
-  left: 7rpx;
-  height: 20rpx;
-  border-radius: 22rpx 22rpx 8rpx 8rpx;
-  background: currentColor;
-}
-
-.mobile-tabbar__icon--assistant {
-  width: 100rpx;
-  height: 100rpx;
-  margin-bottom: 4rpx;
-  border: 14rpx solid #f7fbff;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #17ce72, #08b85a);
-  box-shadow: 0 12rpx 32rpx rgba(7, 178, 86, 0.24);
-  opacity: 1;
-}
-
-.mobile-tabbar__icon--assistant::before {
-  top: 30rpx;
-  left: 24rpx;
-  width: 52rpx;
-  height: 34rpx;
-  border-radius: 14rpx;
-  background: #eafff2;
-}
-
-.mobile-tabbar__icon--assistant::after {
-  top: 42rpx;
-  left: 37rpx;
-  width: 9rpx;
-  height: 9rpx;
-  border-radius: 50%;
-  background: #09b85a;
-  box-shadow: 19rpx 0 0 #09b85a;
+.mobile-tabbar__assistant-orb {
+  display: block;
+  width: 114rpx;
+  height: 114rpx;
+  flex: 0 0 114rpx;
+  filter: drop-shadow(0 12rpx 24rpx rgba(7, 178, 86, 0.14));
+  transform: translateY(-52rpx);
 }
 </style>

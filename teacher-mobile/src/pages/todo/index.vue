@@ -34,15 +34,6 @@ function showNoticeFeedback() {
 
 <template>
   <MobilePageShell class="todo-page" active="todo">
-    <view class="system-status" aria-hidden="true">
-      <text class="system-status__time">9:41</text>
-      <view class="system-status__icons">
-        <view class="status-signal"></view>
-        <view class="status-wifi"></view>
-        <view class="status-battery"></view>
-      </view>
-    </view>
-
     <view class="hero-head">
       <view class="hero-head__copy">
         <view class="hero-title-line">
@@ -116,8 +107,6 @@ function showNoticeFeedback() {
   color: $teacher-mobile-text-primary;
 }
 
-.system-status,
-.system-status__icons,
 .hero-head,
 .hero-title-line,
 .todo-card__head,
@@ -131,80 +120,6 @@ function showNoticeFeedback() {
 .all-link {
   display: flex;
   align-items: center;
-}
-
-.system-status {
-  height: 42rpx;
-  justify-content: space-between;
-  padding: 0 18rpx;
-}
-
-.system-status__time {
-  color: #050812;
-  font-size: 30rpx;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.system-status__icons {
-  gap: 14rpx;
-}
-
-.status-signal {
-  width: 38rpx;
-  height: 26rpx;
-  background: #050812;
-  clip-path: polygon(0 70%, 18% 70%, 18% 100%, 0 100%, 0 70%, 27% 52%, 45% 52%, 45% 100%, 27% 100%, 27% 52%, 54% 32%, 72% 32%, 72% 100%, 54% 100%, 54% 32%, 82% 10%, 100% 10%, 100% 100%, 82% 100%, 82% 10%);
-}
-
-.status-wifi {
-  position: relative;
-  width: 36rpx;
-  height: 26rpx;
-  border: 8rpx solid #050812;
-  border-color: #050812 transparent transparent;
-  border-radius: 50%;
-}
-
-.status-wifi::after {
-  position: absolute;
-  right: 7rpx;
-  bottom: -9rpx;
-  width: 9rpx;
-  height: 9rpx;
-  border-radius: 50%;
-  background: #050812;
-  content: '';
-}
-
-.status-battery {
-  position: relative;
-  width: 52rpx;
-  height: 26rpx;
-  border: 4rpx solid #050812;
-  border-radius: 8rpx;
-}
-
-.status-battery::before {
-  position: absolute;
-  top: 4rpx;
-  left: 4rpx;
-  width: 38rpx;
-  height: 10rpx;
-  border-radius: 4rpx;
-  background: #050812;
-  content: '';
-}
-
-.status-battery::after {
-  position: absolute;
-  top: 6rpx;
-  right: -9rpx;
-  width: 5rpx;
-  height: 12rpx;
-  border-radius: 0 4rpx 4rpx 0;
-  background: #050812;
-  content: '';
 }
 
 .hero-head {
