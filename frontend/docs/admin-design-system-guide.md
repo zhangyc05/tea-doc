@@ -264,6 +264,11 @@ PC 端 Element Plus 迁移按 `frontend/scripts/audit-admin-element-plus-migrati
 | ELP-02 | 企业实践申请、年度实践跟踪、实践记录、虚拟教研室、教学反思、报告中心、档案查阅、能力画像列表 | select / input |
 | ELP-03 | 能力清单编辑抽屉、培训计划抽屉、档案上传、手写分页 | drawer / dialog / upload / pagination |
 | ELP-04 | 稳定列表页和详情关联表 | table |
+| ELP-05 | 能力清单结构树、通用详情抽屉、能力清单编辑表单 | tree / drawer / form controls |
+
+当前可直接使用的 `admin-ui` Element Plus 适配器包括 `AdminInput`、`AdminSelect`、`AdminDatePicker`、`AdminCheckboxGroup`、`AdminPagination`、`AdminUpload`、`AdminTable`、`AdminTableColumn`、`AdminDialog`、`AdminDrawer`、`AdminTree`。新增管理端复杂控件时必须先判断这些适配器是否可用；页面不得直接引入 `element-plus`。
+
+`DetailSheet` 属于业务抽屉封装，底层使用 `AdminDrawer`。页面仍应优先使用 `DetailSheet` 表达编辑、来源记录、版本历史等业务抽屉，不允许重新写 `drawer-overlay`、`edit-drawer` 或页面级 Teleport 抽屉。
 
 ### 按钮等级
 
@@ -734,6 +739,7 @@ E13-01 当前扫描结论：
 F8-01 当前扫描结论：
 
 - `DetailSheet` 已提供 `sm` 360px、`md` 480px、`form` 540px、`source` 540px、`history` 620px、`lg` 640px、`complex` 660px、`xl` 760px 八档宽度；当前培训计划新建抽屉使用 `md`，培训资源详情使用 `lg`，能力清单基准模板编辑指标和执行版编辑指标抽屉使用 `form`，基准模板版本记录和执行版历史版本抽屉使用 `history`，能力清单要求映射编辑抽屉使用 `complex`，成长档案来源记录抽屉使用 `source`。
+- `DetailSheet` 底层已迁移到 `AdminDrawer` / Element Plus Drawer；页面继续使用 `DetailSheet` 的业务 API，不直接使用 `ElDrawer`。
 - 培训计划新建抽屉已迁入 `DetailSheet md`，属于轻量新建表单。
 - 教师档案来源记录抽屉宽 `min(540px, calc(100vw - 28px))`，顶部留出正文阅读上下文，承载来源卡片、筛选 tab 和底部说明。
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
 	import { useRoute } from 'vue-router'
-	import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+	import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 	import { DetailSheet, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -30,6 +30,49 @@
 		documentCondition: '待补充制度条件',
 		confirmStatus: 'pending',
 	}
+
+	const requirementSourceOptions = [
+		{ label: '岗位竞聘要求', value: '岗位竞聘要求' },
+		{ label: '聘期履职要求', value: '聘期履职要求' },
+	]
+	const requirementTargetOptions = [
+		{ label: '申报讲师', value: '申报讲师' },
+		{ label: '申报副教授', value: '申报副教授' },
+		{ label: '申报教授', value: '申报教授' },
+		{ label: '讲师聘期要求', value: '讲师聘期要求' },
+		{ label: '副教授聘期要求', value: '副教授聘期要求' },
+		{ label: '教授聘期要求', value: '教授聘期要求' },
+	]
+	const indicatorDimensionOptions = [
+		{ label: '教学能力', value: '教学能力' },
+		{ label: '教研能力', value: '教研能力' },
+		{ label: '实践能力', value: '实践能力' },
+		{ label: '服务能力', value: '服务能力' },
+	]
+	const indicatorElementOptions = [
+		{ label: '教学实施', value: '教学实施' },
+		{ label: '课程思政', value: '课程思政' },
+		{ label: '数字素养', value: '数字素养' },
+		{ label: '教学指导', value: '教学指导' },
+		{ label: '技能竞赛', value: '技能竞赛' },
+		{ label: '团队建设', value: '团队建设' },
+	]
+	const indicatorNameOptions = [
+		{ label: '岗位基本教学工作量（课时/学年）', value: '岗位基本教学工作量（课时/学年）' },
+		{ label: '岗位年听课课时数（课时/学年）', value: '岗位年听课课时数（课时/学年）' },
+		{ label: '教学改革研究项目立项', value: '教学改革研究项目立项' },
+		{ label: '企业锻炼时长（天/年）', value: '企业锻炼时长（天/年）' },
+	]
+	const levelOptions = [
+		{ label: '新手', value: '新手' },
+		{ label: '胜任', value: '胜任' },
+		{ label: '骨干', value: '骨干' },
+		{ label: '名师', value: '名师' },
+	]
+	const confirmStatusOptions = [
+		{ label: '已确认', value: 'confirmed' },
+		{ label: '待确认', value: 'pending' },
+	]
 
 	const mappings = computed(() => abilityListState.requirementMappings)
 
@@ -374,30 +417,21 @@
 					<h4 class="form-section-title"><span>1</span>基本信息</h4>
 					<div class="form-row">
 						<label class="form-label">要求来源</label>
-						<select class="form-select">
-							<option>岗位竞聘要求</option>
-							<option>聘期履职要求</option>
-						</select>
+						<AdminSelect class="form-select" model-value="岗位竞聘要求" :options="requirementSourceOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">适用对象</label>
-						<select class="form-select">
-							<option>申报讲师</option>
-							<option selected>申报副教授</option>
-							<option>申报教授</option>
-							<option>讲师聘期要求</option>
-							<option>副教授聘期要求</option>
-							<option>教授聘期要求</option>
-						</select>
+						<AdminSelect class="form-select" model-value="申报副教授" :options="requirementTargetOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">要求原文</label>
-						<textarea
+						<AdminInput
 							class="form-textarea"
-							rows="3"
 							v-model="editingMapping.requirementText"
+							type="textarea"
+							:rows="3"
 							placeholder="请输入要求原文"
-						></textarea>
+						/>
 					</div>
 				</div>
 
@@ -405,55 +439,33 @@
 					<h4 class="form-section-title"><span>2</span>映射配置</h4>
 					<div class="form-row">
 						<label class="form-label">对应能力维度</label>
-						<select v-model="editingMapping.indicatorDimension" class="form-select">
-							<option>教学能力</option>
-							<option>教研能力</option>
-							<option>实践能力</option>
-							<option>服务能力</option>
-						</select>
+						<AdminSelect v-model="editingMapping.indicatorDimension" class="form-select" :options="indicatorDimensionOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">对应能力要素</label>
-						<select class="form-select">
-							<option>教学实施</option>
-							<option>课程思政</option>
-							<option>数字素养</option>
-							<option>教学指导</option>
-							<option>技能竞赛</option>
-							<option>团队建设</option>
-						</select>
+						<AdminSelect class="form-select" model-value="教学实施" :options="indicatorElementOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">对应能力指标</label>
-						<select v-model="editingMapping.indicatorName" class="form-select">
-							<option>岗位基本教学工作量（课时/学年）</option>
-							<option>岗位年听课课时数（课时/学年）</option>
-							<option>教学改革研究项目立项</option>
-							<option>企业锻炼时长（天/年）</option>
-						</select>
+						<AdminSelect v-model="editingMapping.indicatorName" class="form-select" :options="indicatorNameOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">要求等级</label>
-						<select v-model="editingMapping.level" class="form-select">
-							<option>新手</option>
-							<option>胜任</option>
-							<option>骨干</option>
-							<option>名师</option>
-						</select>
+						<AdminSelect v-model="editingMapping.level" class="form-select" :options="levelOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">等级标准</label>
-						<textarea
+						<AdminInput
 							class="form-textarea"
-							rows="2"
 							v-model="editingMapping.levelCriteria"
+							type="textarea"
+							:rows="2"
 							placeholder="承担核心课程教学并保持较稳定教学质量"
-						></textarea>
+						/>
 					</div>
 					<div class="form-row">
 						<label class="form-label">制度补充条件</label>
-						<input
-							type="text"
+						<AdminInput
 							class="form-input"
 							v-model="editingMapping.documentCondition"
 							placeholder="近三年专业课程授课门数 ≥ 2"
@@ -465,30 +477,23 @@
 					<h4 class="form-section-title"><span>3</span>对照依据</h4>
 					<div class="form-row">
 						<label class="form-label">可引用档案事实</label>
-						<input
-							type="text"
+						<AdminInput
 							class="form-input"
 							placeholder="教学工作记录、课程表、授课任务记录"
 						/>
 					</div>
 					<div class="form-row">
 						<label class="form-label">映射说明</label>
-						<textarea
+						<AdminInput
 							class="form-textarea"
-							rows="2"
+							type="textarea"
+							:rows="2"
 							placeholder="系统后续将优先引用正式入档的教学工作事实进行对照"
-						></textarea>
+						/>
 					</div>
-					<div class="form-row radio-row">
+					<div class="form-row">
 						<label class="form-label">确认状态</label>
-						<label class="radio-option">
-							<input v-model="editingMapping.confirmStatus" type="radio" value="confirmed" />
-							已确认
-						</label>
-						<label class="radio-option">
-							<input v-model="editingMapping.confirmStatus" type="radio" value="pending" />
-							待确认
-						</label>
+						<AdminSelect v-model="editingMapping.confirmStatus" class="form-select" :options="confirmStatusOptions" :clearable="false" />
 					</div>
 				</div>
 			</div>

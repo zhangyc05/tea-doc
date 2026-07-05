@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput } from '@/components/admin-ui'
 import { DetailSheet } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -258,36 +259,36 @@ function publishNewBaseTemplateVersion() {
         <div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">
           <div class="form-group">
             <label class="form-label">指标名称 <span class="required-mark">*</span></label>
-            <input v-model="editingIndicator.name" class="form-input" :aria-invalid="Boolean(editErrors.name)" type="text" />
+            <AdminInput v-model="editingIndicator.name" class="form-input" :aria-invalid="Boolean(editErrors.name)" />
             <p v-if="editErrors.name" class="form-error">{{ editErrors.name }}</p>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">新手 <span class="required-mark">*</span></label>
-              <input v-model="editingIndicator.novice" class="form-input" :aria-invalid="Boolean(editErrors.novice)" type="text" />
+              <AdminInput v-model="editingIndicator.novice" class="form-input" :aria-invalid="Boolean(editErrors.novice)" />
               <p v-if="editErrors.novice" class="form-error">{{ editErrors.novice }}</p>
             </div>
             <div class="form-group">
               <label class="form-label">胜任 <span class="required-mark">*</span></label>
-              <input v-model="editingIndicator.competent" class="form-input" :aria-invalid="Boolean(editErrors.competent)" type="text" />
+              <AdminInput v-model="editingIndicator.competent" class="form-input" :aria-invalid="Boolean(editErrors.competent)" />
               <p v-if="editErrors.competent" class="form-error">{{ editErrors.competent }}</p>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">骨干 <span class="required-mark">*</span></label>
-              <input v-model="editingIndicator.backbone" class="form-input" :aria-invalid="Boolean(editErrors.backbone)" type="text" />
+              <AdminInput v-model="editingIndicator.backbone" class="form-input" :aria-invalid="Boolean(editErrors.backbone)" />
               <p v-if="editErrors.backbone" class="form-error">{{ editErrors.backbone }}</p>
             </div>
             <div class="form-group">
               <label class="form-label">名师 <span class="required-mark">*</span></label>
-              <input v-model="editingIndicator.expert" class="form-input" :aria-invalid="Boolean(editErrors.expert)" type="text" />
+              <AdminInput v-model="editingIndicator.expert" class="form-input" :aria-invalid="Boolean(editErrors.expert)" />
               <p v-if="editErrors.expert" class="form-error">{{ editErrors.expert }}</p>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">建议依据 <span class="required-mark">*</span></label>
-            <input v-model="editingIndicator.basisLabel" class="form-input" :aria-invalid="Boolean(editErrors.basisLabel)" type="text" />
+            <AdminInput v-model="editingIndicator.basisLabel" class="form-input" :aria-invalid="Boolean(editErrors.basisLabel)" />
             <p v-if="editErrors.basisLabel" class="form-error">{{ editErrors.basisLabel }}</p>
           </div>
         </div>

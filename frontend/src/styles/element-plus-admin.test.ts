@@ -59,9 +59,14 @@ describe('Element Plus admin integration', () => {
     expect(fileExists(`${repoRoot}/frontend/src/components/admin-ui/index.ts`)).toBe(true)
 
     const guide = readProjectFile('frontend/docs/admin-design-system-guide.md')
+    const adminUiIndex = readProjectFile('frontend/src/components/admin-ui/index.ts')
 
     expect(guide).toContain('frontend/src/components/admin-ui')
     expect(guide).toContain('自研只做业务封装和必要适配')
+    expect(guide).toContain('AdminTree')
+    expect(guide).toContain('DetailSheet` 属于业务抽屉封装，底层使用 `AdminDrawer`')
+    expect(adminUiIndex).toContain('AdminDrawer')
+    expect(adminUiIndex).toContain('AdminTree')
   })
 
   it('keeps admin pages behind local component and business wrappers', () => {

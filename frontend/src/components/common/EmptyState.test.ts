@@ -73,14 +73,23 @@ describe('EmptyState', () => {
   })
 
   it('is used by the remaining admin empty-state batch', () => {
-    const pageSources = [
+    const emptyTextPageSources = [
       abilityListBaseOptimizationPageSource,
       abilityListRequirementMappingPageSource,
+    ]
+    const emptyStatePageSources = [
       reportCenterPageSource,
       virtualLabRoomPageSource,
     ]
 
-    for (const pageSource of pageSources) {
+    for (const pageSource of emptyTextPageSources) {
+      expect(pageSource).toContain('empty-text=')
+      expect(pageSource).not.toContain('class="empty-cell"')
+      expect(pageSource).not.toContain('class="empty-panel"')
+      expect(pageSource).not.toContain('class="empty-state"')
+    }
+
+    for (const pageSource of emptyStatePageSources) {
       expect(pageSource).toContain('EmptyState')
       expect(pageSource).not.toContain('class="empty-cell"')
       expect(pageSource).not.toContain('class="empty-panel"')

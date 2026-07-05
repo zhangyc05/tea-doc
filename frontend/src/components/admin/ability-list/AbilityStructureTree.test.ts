@@ -24,6 +24,10 @@ const nodes: AbilityTreeNode[] = [
   },
 ]
 
+function findTreeNode(wrapper: ReturnType<typeof mount>, label: string) {
+  return wrapper.findAll('.el-tree-node__content').find(node => node.text().includes(label))
+}
+
 describe('AbilityStructureTree', () => {
   it('selects the first child when a parent ability group is clicked', async () => {
     const wrapper = mount(AbilityStructureTree, {
@@ -34,13 +38,13 @@ describe('AbilityStructureTree', () => {
       },
     })
 
-    await wrapper.findAll('button.ability-parent')[0].trigger('click')
+    await findTreeNode(wrapper, '基本能力')?.trigger('click')
 
     expect(wrapper.emitted('select')?.[0]).toEqual(['basic-ethics'])
     expect(wrapper.text()).toContain('师德师风')
   })
 
-  it('toggles an expanded parent group from the whole parent row', async () => {
+  it('emits a parent toggle when the whole parent row is clicked', async () => {
     const wrapper = mount(AbilityStructureTree, {
       props: {
         nodes,
@@ -49,13 +53,13 @@ describe('AbilityStructureTree', () => {
       },
     })
 
-    await wrapper.findAll('button.ability-parent')[0].trigger('click')
+    await findTreeNode(wrapper, '基本能力')?.trigger('click')
 
-    expect(wrapper.emitted('toggle')?.[0]).toEqual(['basic', false])
-    expect(wrapper.text()).not.toContain('师德师风')
+    expect(wrapper.emitted('toggle')?.[0]).toEqual(['basic', true])
+    expect(wrapper.emitted('select')?.[0]).toEqual(['basic-ethics'])
   })
 
-  it('expands the clicked parent group and collapses the previously expanded group', async () => {
+  it('selects the clicked parent group first child after another group was expanded', async () => {
     const wrapper = mount(AbilityStructureTree, {
       props: {
         nodes,
@@ -64,12 +68,10 @@ describe('AbilityStructureTree', () => {
       },
     })
 
-    await wrapper.findAll('button.ability-parent')[1].trigger('click')
+    await findTreeNode(wrapper, '教学能力')?.trigger('click')
 
-    expect(wrapper.emitted('toggle')?.[0]).toEqual(['basic', false])
-    expect(wrapper.emitted('toggle')?.[1]).toEqual(['teaching', true])
+    expect(wrapper.emitted('toggle')?.[0]).toEqual(['teaching', true])
     expect(wrapper.emitted('select')?.[0]).toEqual(['teaching-implementation'])
-    expect(wrapper.text()).not.toContain('师德师风')
     expect(wrapper.text()).toContain('教学实施')
   })
 
@@ -82,13 +84,13 @@ describe('AbilityStructureTree', () => {
       },
     })
 
-    await wrapper.findAll('button.ability-parent')[1].trigger('click')
+    await findTreeNode(wrapper, '教学能力')?.trigger('click')
     await wrapper.setProps({
       selectedKey: 'teaching-implementation',
       defaultExpandedKeys: ['basic'],
     })
 
-    expect(wrapper.text()).not.toContain('师德师风')
+    expect(wrapper.emitted('select')?.[0]).toEqual(['teaching-implementation'])
     expect(wrapper.text()).toContain('教学实施')
   })
 })

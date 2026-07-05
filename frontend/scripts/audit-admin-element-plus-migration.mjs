@@ -11,10 +11,10 @@ const patterns = [
   { key: 'native-textarea', pattern: /<textarea[\s>]/g },
   { key: 'native-table', pattern: /<table[\s>]/g },
   { key: 'native-dialog', pattern: /<dialog[\s>]/g },
-  { key: 'custom-drawer', pattern: /(?:drawer|sheet)/gi },
+  { key: 'custom-drawer', pattern: /(?:edit-drawer-overlay|drawer-overlay|class=["'][^"']*(?:edit-drawer|custom-drawer)[^"']*)/gi },
   { key: 'manual-pagination', pattern: /(?:page-button|page-input|上一页|下一页)/gi },
   { key: 'file-upload', pattern: /type=["']file["']/g },
-  { key: 'tree-control', pattern: /(?:tree|expanded|node-key|defaultExpandedKeys)/g },
+  { key: 'tree-control', pattern: /(?:ability-tree-item|ability-parent|ability-child|ability-arrow)/g },
 ]
 
 function collectVueFiles(dir) {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput } from '@/components/admin-ui'
 import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -216,46 +217,43 @@ function closeVersionDrawer() {
         <div v-if="editingIndicator" class="drawer-form">
           <div class="form-group">
             <label class="form-label">所属维度</label>
-            <input class="form-input" type="text" :value="getEditingAbilityLabel().dimension" readonly />
+            <AdminInput class="form-input" :model-value="getEditingAbilityLabel().dimension" readonly />
           </div>
           <div class="form-group">
             <label class="form-label">所属要素</label>
-            <input class="form-input" type="text" :value="getEditingAbilityLabel().element" readonly />
+            <AdminInput class="form-input" :model-value="getEditingAbilityLabel().element" readonly />
           </div>
           <div class="form-group">
             <label class="form-label">指标名称</label>
-            <input v-model="editingIndicator.name" class="form-input" type="text" />
+            <AdminInput v-model="editingIndicator.name" class="form-input" />
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">新手</label>
-              <input v-model="editingIndicator.novice" class="form-input" type="text" />
+              <AdminInput v-model="editingIndicator.novice" class="form-input" />
             </div>
             <div class="form-group">
               <label class="form-label">胜任</label>
-              <input v-model="editingIndicator.competent" class="form-input" type="text" />
+              <AdminInput v-model="editingIndicator.competent" class="form-input" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">骨干</label>
-              <input v-model="editingIndicator.backbone" class="form-input" type="text" />
+              <AdminInput v-model="editingIndicator.backbone" class="form-input" />
             </div>
             <div class="form-group">
               <label class="form-label">名师</label>
-              <input v-model="editingIndicator.expert" class="form-input" type="text" />
+              <AdminInput v-model="editingIndicator.expert" class="form-input" />
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">计算规则</label>
-            <input v-model="editingIndicator.basisLabel" class="form-input" type="text" />
+            <AdminInput v-model="editingIndicator.basisLabel" class="form-input" />
           </div>
           <div class="form-group">
             <label class="form-label">状态</label>
-            <label class="form-switch">
-              <input type="checkbox" checked />
-              <span class="form-switch-label">已启用</span>
-            </label>
+            <AdminInput class="form-input" model-value="已启用" readonly />
           </div>
         </div>
       </DetailSheet>

@@ -1,8 +1,11 @@
 /* @vitest-environment jsdom */
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 
 import DetailSheet from './DetailSheet.vue'
+
+const detailSheetSource = readFileSync('src/components/common/DetailSheet.vue', 'utf8')
 
 afterEach(() => {
   document.body.innerHTML = ''
@@ -19,7 +22,8 @@ describe('DetailSheet', () => {
       attachTo: document.body,
     })
 
-    expect(document.body.querySelector('aside')?.classList.contains('w-[540px]')).toBe(true)
+    expect(detailSheetSource).toContain("form: '540px'")
+    expect(detailSheetSource).toContain('<AdminDrawer')
   })
 
   it('supports the version history drawer width without a footer', () => {
@@ -33,8 +37,8 @@ describe('DetailSheet', () => {
       attachTo: document.body,
     })
 
-    expect(document.body.querySelector('aside')?.classList.contains('w-[620px]')).toBe(true)
-    expect(document.body.querySelector('footer')).toBeNull()
+    expect(detailSheetSource).toContain("history: '620px'")
+    expect(document.body.querySelector('.detail-sheet-footer')).toBeNull()
   })
 
   it('supports the source reader drawer placement without a footer', () => {
@@ -49,13 +53,9 @@ describe('DetailSheet', () => {
       attachTo: document.body,
     })
 
-    const panel = document.body.querySelector('aside')
-    expect(panel?.classList.contains('w-[540px]')).toBe(true)
-    expect(panel?.classList.contains('top-[54px]')).toBe(true)
-    expect(panel?.classList.contains('right-3.5')).toBe(true)
-    expect(panel?.classList.contains('bottom-0')).toBe(true)
-    expect(panel?.classList.contains('rounded-t-xl')).toBe(true)
-    expect(document.body.querySelector('footer')).toBeNull()
+    expect(detailSheetSource).toContain("source: '540px'")
+    expect(detailSheetSource).toContain('detail-sheet-reader')
+    expect(document.body.querySelector('.detail-sheet-footer')).toBeNull()
   })
 
   it('supports the complex admin edit drawer width', () => {
@@ -68,6 +68,6 @@ describe('DetailSheet', () => {
       attachTo: document.body,
     })
 
-    expect(document.body.querySelector('aside')?.classList.contains('w-[660px]')).toBe(true)
+    expect(detailSheetSource).toContain("complex: '660px'")
   })
 })

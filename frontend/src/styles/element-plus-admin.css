@@ -93,3 +93,25 @@
   border-color: var(--color-admin-primary);
   background: #f0f7ff;
 }
+
+.admin-ui-tree.el-tree {
+  --el-tree-node-hover-bg-color: #f5f8ff;
+  background: transparent;
+  color: var(--color-admin-text-title);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-ui-tree .el-tree-node__content {
+  min-height: 40px;
+  border-radius: var(--radius-md);
+}
+
+.admin-ui-tree .el-tree-node.is-current > .el-tree-node__content {
+  background: #eef5ff;
+  color: var(--color-admin-primary);
+}
+
+.admin-ui-tree .el-tree-node__expand-icon {
+  color: #8b98aa;
+}
