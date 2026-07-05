@@ -10,6 +10,8 @@ import {
   AdminInput,
   AdminPagination,
   AdminSelect,
+  AdminTabs,
+  AdminTabPane,
   AdminTable,
   AdminTableColumn,
   AdminUpload,
@@ -40,6 +42,21 @@ describe('admin-ui Element Plus adapters', () => {
 
     expect(wrapper.findComponent({ name: 'ElSelect' }).exists()).toBe(true)
     expect(wrapper.findAllComponents({ name: 'ElOption' })).toHaveLength(2)
+  })
+
+  it('renders tabs through Element Plus adapters', () => {
+    const wrapper = mount({
+      components: { AdminTabs, AdminTabPane },
+      template: `
+        <AdminTabs model-value="standard">
+          <AdminTabPane label="基准标准" name="standard">基准标准内容</AdminTabPane>
+          <AdminTabPane label="优化建议" name="optimization">优化建议内容</AdminTabPane>
+        </AdminTabs>
+      `,
+    })
+
+    expect(wrapper.findComponent({ name: 'ElTabs' }).exists()).toBe(true)
+    expect(wrapper.findAllComponents({ name: 'ElTabPane' })).toHaveLength(2)
   })
 
   it('keeps the date picker on a string value format by default', () => {

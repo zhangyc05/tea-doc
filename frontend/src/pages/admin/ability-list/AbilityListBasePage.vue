@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminSelect, AdminTabPane, AdminTabs, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -52,6 +52,7 @@ const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
 const optimizationSectionRef = ref<HTMLElement | null>(null)
+const activeWorkspaceTab = ref<'standard' | 'optimization'>('standard')
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
@@ -221,7 +222,10 @@ function getSelectedAbilityIcon() {
 
 
 function scrollToOptimization() {
-  optimizationSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  activeWorkspaceTab.value = 'optimization'
+  nextTick(() => {
+    optimizationSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 
 function goToVersionHistory() {
@@ -425,158 +429,166 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
         </div>
       </section>
 
-      <AbilityListWorkspace
-        :nodes="abilityTree"
-        :selected-key="selectedAbility"
-        :selected-title="getSelectedAbilityLabel()"
-        :selected-icon="getSelectedAbilityIcon()"
-        :indicators="filteredIndicators"
-        basis-column-title="计算依据"
-        :default-expanded-keys="[defaultAbilityGroupKey]"
-        @select-ability="selectAbility"
-        @row-click="selectIndicator"
-        @edit-indicator="editIndicator"
-      />
+      <div ref="optimizationSectionRef" class="tab-anchor">
+        <AdminTabs v-model="activeWorkspaceTab" class="base-tab-shell" type="border-card">
+          <AdminTabPane name="standard" label="基准标准">
+            <AbilityListWorkspace
+              :nodes="abilityTree"
+              :selected-key="selectedAbility"
+              :selected-title="getSelectedAbilityLabel()"
+              :selected-icon="getSelectedAbilityIcon()"
+              :indicators="filteredIndicators"
+              basis-column-title="计算依据"
+              :default-expanded-keys="[defaultAbilityGroupKey]"
+              @select-ability="selectAbility"
+              @row-click="selectIndicator"
+              @edit-indicator="editIndicator"
+            />
+          </AdminTabPane>
 
-      <section ref="optimizationSectionRef" class="optimization-workspace admin-card">
-        <div class="optimization-header">
-          <div>
-            <h2>优化建议</h2>
-            <p>制度文件、运行反馈和人工建议在本页处理；采纳后形成基准模板修订草稿，发布新版本后生效。</p>
-          </div>
-          <div class="optimization-toolbar">
-            <Button @click="uploadPolicy">上传制度文件</Button>
-            <Button variant="secondary" @click="rerunAnalysis">重新分析运行反馈</Button>
-            <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
-            <Button
-              variant="secondary"
-              :disabled="pendingApplicationCount === 0"
-              @click="applyToBaseTemplate"
-            >
-              形成修订草稿（{{ pendingApplicationCount }}）
-            </Button>
-          </div>
-        </div>
-        <div v-if="analysisState !== 'idle'" class="analysis-status" :class="analysisState">
-          <strong>{{ analysisState === 'running' ? '正在分析运行反馈' : '运行反馈分析完成' }}</strong>
-          <span>{{ analysisState === 'running' ? '正在汇总执行版使用反馈、岗位映射异常和修订痕迹。' : '已生成新的运行反馈建议，可在列表中确认处理。' }}</span>
-        </div>
-        <div class="optimization-grid">
-          <aside class="source-panel">
-            <h3>建议来源</h3>
-            <div class="source-list">
-              <button
-                v-for="source in suggestionSources"
-                :key="source.key"
-                class="source-item"
-                :class="{ active: selectedSource === source.key }"
-                @click="selectSource(source.key)"
-              >
-                <span><AdminIcon :name="source.icon" /></span>
-                {{ source.label }}
-              </button>
-            </div>
-          </aside>
+          <AdminTabPane name="optimization" :label="`优化建议（${optimizationPendingCount}）`">
+            <section v-if="activeWorkspaceTab === 'optimization'" class="optimization-workspace">
+              <div class="optimization-header">
+                <div>
+                  <h2>优化建议</h2>
+                  <p>制度文件、运行反馈和人工建议在本页处理；采纳后形成基准模板修订草稿，发布新版本后生效。</p>
+                </div>
+                <div class="optimization-toolbar">
+                  <Button @click="uploadPolicy">上传制度文件</Button>
+                  <Button variant="secondary" @click="rerunAnalysis">重新分析运行反馈</Button>
+                  <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
+                  <Button
+                    variant="secondary"
+                    :disabled="pendingApplicationCount === 0"
+                    @click="applyToBaseTemplate"
+                  >
+                    形成修订草稿（{{ pendingApplicationCount }}）
+                  </Button>
+                </div>
+              </div>
+              <div v-if="analysisState !== 'idle'" class="analysis-status" :class="analysisState">
+                <strong>{{ analysisState === 'running' ? '正在分析运行反馈' : '运行反馈分析完成' }}</strong>
+                <span>{{ analysisState === 'running' ? '正在汇总执行版使用反馈、岗位映射异常和修订痕迹。' : '已生成新的运行反馈建议，可在列表中确认处理。' }}</span>
+              </div>
+              <div class="optimization-grid">
+                <aside class="source-panel">
+                  <h3>建议来源</h3>
+                  <div class="source-list">
+                    <button
+                      v-for="source in suggestionSources"
+                      :key="source.key"
+                      class="source-item"
+                      :class="{ active: selectedSource === source.key }"
+                      @click="selectSource(source.key)"
+                    >
+                      <span><AdminIcon :name="source.icon" /></span>
+                      {{ source.label }}
+                    </button>
+                  </div>
+                </aside>
 
-          <section class="suggestions-panel">
-            <div class="filter-tags">
-              <button
-                v-for="tag in filterTags"
-                :key="tag.key"
-                class="filter-tag"
-                :class="{ active: selectedTag === tag.key }"
-                @click="selectTag(tag.key)"
-              >
-                {{ tag.label }}
-              </button>
-            </div>
+                <section class="suggestions-panel">
+                  <div class="filter-tags">
+                    <button
+                      v-for="tag in filterTags"
+                      :key="tag.key"
+                      class="filter-tag"
+                      :class="{ active: selectedTag === tag.key }"
+                      @click="selectTag(tag.key)"
+                    >
+                      {{ tag.label }}
+                    </button>
+                  </div>
 
-            <AdminTable
-              v-if="filteredSuggestions.length > 0"
-              :data="filteredSuggestions"
-              row-key="id"
-              :row-class-name="suggestionRowClassName"
-              empty-text="暂无符合条件的优化建议"
-              @row-click="selectSuggestion"
-            >
-              <AdminTableColumn label="来源" min-width="96">
-                <template #default="{ row }">
-                  <span class="source-badge" :class="row.source">{{ row.sourceLabel }}</span>
-                </template>
-              </AdminTableColumn>
-              <AdminTableColumn label="问题类型" min-width="112">
-                <template #default="{ row }">
-                  <span class="issue-badge">{{ row.issueType }}</span>
-                </template>
-              </AdminTableColumn>
-              <AdminTableColumn prop="keyLocation" label="关键位置" min-width="150" />
-              <AdminTableColumn prop="content" label="建议内容" min-width="220" />
-              <AdminTableColumn label="处理状态" min-width="108">
-                <template #default="{ row }">
-                  <StatusBadge :status="row.status" />
-                </template>
-              </AdminTableColumn>
-            </AdminTable>
-            <div v-else class="suggestion-empty">
-              <strong>暂无优化建议</strong>
-              <span>选择左侧来源或调整问题类型筛选，暂无匹配建议。</span>
-              <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
-            </div>
-          </section>
+                  <AdminTable
+                    v-if="filteredSuggestions.length > 0"
+                    :data="filteredSuggestions"
+                    row-key="id"
+                    :row-class-name="suggestionRowClassName"
+                    empty-text="暂无符合条件的优化建议"
+                    @row-click="selectSuggestion"
+                  >
+                    <AdminTableColumn label="来源" min-width="96">
+                      <template #default="{ row }">
+                        <span class="source-badge" :class="row.source">{{ row.sourceLabel }}</span>
+                      </template>
+                    </AdminTableColumn>
+                    <AdminTableColumn label="问题类型" min-width="112">
+                      <template #default="{ row }">
+                        <span class="issue-badge">{{ row.issueType }}</span>
+                      </template>
+                    </AdminTableColumn>
+                    <AdminTableColumn prop="keyLocation" label="关键位置" min-width="150" />
+                    <AdminTableColumn prop="content" label="建议内容" min-width="220" />
+                    <AdminTableColumn label="处理状态" min-width="108">
+                      <template #default="{ row }">
+                        <StatusBadge :status="row.status" />
+                      </template>
+                    </AdminTableColumn>
+                  </AdminTable>
+                  <div v-else class="suggestion-empty">
+                    <strong>暂无优化建议</strong>
+                    <span>选择左侧来源或调整问题类型筛选，暂无匹配建议。</span>
+                    <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
+                  </div>
+                </section>
 
-          <aside class="suggestion-detail-panel">
-            <h3>建议详情</h3>
-            <div v-if="selectedSuggestion" class="suggestion-detail">
-              <div class="detail-item">
-                <span>建议来源</span>
-                <strong>{{ selectedSuggestion.sourceLabel }}</strong>
-              </div>
-              <div class="detail-item">
-                <span>问题类型</span>
-                <strong>{{ selectedSuggestion.issueType }}</strong>
-              </div>
-              <div class="detail-item">
-                <span>关键位置</span>
-                <strong>{{ selectedSuggestion.keyLocation }}</strong>
-              </div>
-              <div class="detail-item">
-                <span>建议内容</span>
-                <strong>{{ selectedSuggestion.content }}</strong>
-              </div>
-              <div class="detail-item">
-                <span>来源依据</span>
-                <strong>{{ selectedSuggestion.basis }}</strong>
-              </div>
-            </div>
+                <aside class="suggestion-detail-panel">
+                  <h3>建议详情</h3>
+                  <div v-if="selectedSuggestion" class="suggestion-detail">
+                    <div class="detail-item">
+                      <span>建议来源</span>
+                      <strong>{{ selectedSuggestion.sourceLabel }}</strong>
+                    </div>
+                    <div class="detail-item">
+                      <span>问题类型</span>
+                      <strong>{{ selectedSuggestion.issueType }}</strong>
+                    </div>
+                    <div class="detail-item">
+                      <span>关键位置</span>
+                      <strong>{{ selectedSuggestion.keyLocation }}</strong>
+                    </div>
+                    <div class="detail-item">
+                      <span>建议内容</span>
+                      <strong>{{ selectedSuggestion.content }}</strong>
+                    </div>
+                    <div class="detail-item">
+                      <span>来源依据</span>
+                      <strong>{{ selectedSuggestion.basis }}</strong>
+                    </div>
+                  </div>
 
-            <div v-if="selectedSuggestion" class="detail-actions">
-              <Button
-                v-if="selectedSuggestion.status === 'pending'"
-                @click="handleSuggestionAction('adopt', selectedSuggestion)"
-              >
-                采纳建议
-              </Button>
-              <Button
-                v-if="selectedSuggestion.status === 'adopted'"
-                @click="applyToBaseTemplate"
-              >
-                形成修订草稿
-              </Button>
-              <Button
-                v-if="selectedSuggestion.status === 'pending'"
-                variant="secondary"
-                @click="handleSuggestionAction('defer', selectedSuggestion)"
-              >
-                暂缓处理
-              </Button>
-            </div>
-            <div v-else class="detail-empty">
-              <strong>当前没有选中的建议</strong>
-              <span>当列表有建议时，点击任一行后可在这里确认来源、依据和处理动作。</span>
-            </div>
-          </aside>
-        </div>
-      </section>
+                  <div v-if="selectedSuggestion" class="detail-actions">
+                    <Button
+                      v-if="selectedSuggestion.status === 'pending'"
+                      @click="handleSuggestionAction('adopt', selectedSuggestion)"
+                    >
+                      采纳建议
+                    </Button>
+                    <Button
+                      v-if="selectedSuggestion.status === 'adopted'"
+                      @click="applyToBaseTemplate"
+                    >
+                      形成修订草稿
+                    </Button>
+                    <Button
+                      v-if="selectedSuggestion.status === 'pending'"
+                      variant="secondary"
+                      @click="handleSuggestionAction('defer', selectedSuggestion)"
+                    >
+                      暂缓处理
+                    </Button>
+                  </div>
+                  <div v-else class="detail-empty">
+                    <strong>当前没有选中的建议</strong>
+                    <span>当列表有建议时，点击任一行后可在这里确认来源、依据和处理动作。</span>
+                  </div>
+                </aside>
+              </div>
+            </section>
+          </AdminTabPane>
+        </AdminTabs>
+      </div>
 
       <DetailSheet
         :open="policyUploadSheetOpen"
@@ -1014,6 +1026,32 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
   font-weight: 850;
   line-height: 1.4;
   padding: 7px 12px;
+}
+
+.tab-anchor {
+  scroll-margin-top: calc(var(--admin-topbar-height) + 16px);
+}
+
+.base-tab-shell {
+  border-radius: var(--radius-admin-panel);
+  overflow: hidden;
+}
+
+.base-tab-shell :deep(.el-tabs__header) {
+  background: #fff;
+}
+
+.base-tab-shell :deep(.el-tabs__item) {
+  color: var(--color-text-secondary);
+  font-weight: 850;
+}
+
+.base-tab-shell :deep(.el-tabs__item.is-active) {
+  color: var(--color-primary);
+}
+
+.base-tab-shell :deep(.el-tabs__content) {
+  padding: 0;
 }
 
 .optimization-workspace {
