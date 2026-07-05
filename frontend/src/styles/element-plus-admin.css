@@ -94,6 +94,10 @@
   background: #f0f7ff;
 }
 
+.admin-ui-drawer .el-drawer__header {
+  margin-bottom: 0;
+}
+
 .admin-ui-tree.el-tree {
   --el-tree-node-hover-bg-color: #f5f8ff;
   background: transparent;

@@ -44,6 +44,8 @@ describe('Element Plus admin integration', () => {
     expect(bridgeCss).toContain('--el-color-primary: var(--color-admin-primary);')
     expect(bridgeCss).toContain('--el-border-color: var(--color-admin-border);')
     expect(bridgeCss).toContain('--el-border-radius-base: var(--radius-admin-panel);')
+    expect(bridgeCss).toContain('.admin-ui-drawer .el-drawer__header')
+    expect(bridgeCss).toContain('margin-bottom: 0;')
   })
 
   it('documents Element Plus as a complex-control base instead of a page-level style system', () => {
