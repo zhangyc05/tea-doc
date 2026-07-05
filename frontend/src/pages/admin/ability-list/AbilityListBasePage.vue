@@ -348,7 +348,7 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
             <span>能力要素</span>
           </div>
           <div class="hero-metric-card">
-            <strong>69</strong>
+            <strong>71</strong>
             <span>能力指标</span>
           </div>
         </div>
@@ -385,8 +385,6 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
             </Button>
           </div>
         </div>
-        <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
-
         <div class="optimization-grid">
           <aside class="source-panel">
             <h3>建议来源</h3>
@@ -439,17 +437,6 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
               <AdminTableColumn label="处理状态" min-width="108">
                 <template #default="{ row }">
                   <StatusBadge :status="row.status" />
-                </template>
-              </AdminTableColumn>
-              <AdminTableColumn label="操作" min-width="236" fixed="right">
-                <template #default="{ row }">
-                  <div class="action-buttons">
-                    <Button variant="ghost" size="sm" @click.stop="handleSuggestionAction('view', row)">查看详情</Button>
-                    <Button v-if="row.status === 'pending'" size="sm" @click.stop="handleSuggestionAction('adopt', row)">采纳</Button>
-                    <Button v-if="row.status === 'pending'" variant="secondary" size="sm" @click.stop="handleSuggestionAction('defer', row)">暂缓</Button>
-                    <Button v-if="row.status === 'pending'" variant="danger" size="sm" @click.stop="handleSuggestionAction('reject', row)">弃用</Button>
-                    <Button v-if="row.status === 'adopted'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>
-                  </div>
                 </template>
               </AdminTableColumn>
             </AdminTable>
@@ -861,13 +848,6 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
   padding: 7px 12px;
 }
 
-.operation-message {
-  display: inline-flex;
-  margin: 0 0 var(--space-admin-md);
-  color: #18845a;
-  font-weight: 850;
-}
-
 .optimization-workspace {
   scroll-margin-top: calc(var(--admin-topbar-height) + 16px);
   overflow: hidden;
@@ -1026,12 +1006,6 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
 .issue-badge {
   background: #fff0df;
   color: #f26a16;
-}
-
-.action-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
 }
 
 .suggestion-detail {

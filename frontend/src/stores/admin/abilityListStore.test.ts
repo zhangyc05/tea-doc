@@ -130,7 +130,7 @@ describe('ability list business state', () => {
   it('keeps base template indicators mapped to ability tree nodes', () => {
     const indicators = getAbilityListState().baseTemplateIndicators
 
-    expect(indicators).toHaveLength(69)
+    expect(indicators).toHaveLength(71)
     expect(indicators.some(indicator => indicator.abilityKey === 'basic-ethics')).toBe(true)
     expect(indicators.some(indicator => indicator.abilityKey === 'teaching-implementation')).toBe(true)
     expect(indicators.some(indicator => indicator.abilityKey === 'research-scientific-research')).toBe(true)

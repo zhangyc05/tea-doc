@@ -13,8 +13,8 @@ export const initialBaseTemplateVersion: BaseTemplateVersion = {
   status: 'current',
   updatedAt: '2026-06-08 20:30',
   operator: '教务处管理员',
-  changeSummary: '按分级教师能力清单带标准版初始化 69 项指标',
-  changeCount: 69,
+  changeSummary: '按分级教师能力清单带标准版初始化 71 项指标',
+  changeCount: 71,
 }
 
 export const initialExecutionVersion: ExecutionVersion = {
@@ -23,7 +23,7 @@ export const initialExecutionVersion: ExecutionVersion = {
   sourceTitle: '2026 年度教师能力清单执行版',
   templateTitle: '教师能力清单基准模板 V1.0',
   scope: '全校教师',
-  indicatorCount: 69,
+  indicatorCount: 71,
   lastUpdated: '2026-06-08 20:30',
   status: 'published',
   publishedAt: '2026-06-08 20:30',
@@ -34,7 +34,9 @@ export const initialExecutionVersion: ExecutionVersion = {
 const excelAbilityStandardIndicators: AbilityIndicator[] = [
   { key: 'ability-standard-01', abilityKey: 'basic-ethics', name: '年度师德考核结果合格及以上', novice: '合格', competent: '合格', backbone: '优秀', expert: '标兵', basisLabel: '师德师风', status: 'enabled' },
   { key: 'ability-standard-02', abilityKey: 'basic-ethics', name: '年度有无违反《新时代高校教师职业行为十项准则》事项', novice: '无', competent: '无', backbone: '无', expert: '无', basisLabel: '师德师风', status: 'enabled' },
-  { key: 'ability-standard-03', abilityKey: 'basic-ethics', name: '（1）获得院级及以上"优秀共产党员"、"四讲四有"模范党员、优秀党务工作者称号；\n（2）获得市级及以上"劳动模范"、"先进工作者"、"五一"劳动奖章称号\n（3）获得省部级及以上"最美教师"、"优秀教师"、"优秀教育工作者"称号', novice: '——', competent: '（1）', backbone: '（2）', expert: '（3）', basisLabel: '师德师风', status: 'enabled' },
+  { key: 'ability-standard-03-party', abilityKey: 'basic-ethics', name: '年度获得院级及以上党员类荣誉', novice: '——', competent: '获得', backbone: '——', expert: '——', basisLabel: '师德师风', status: 'enabled' },
+  { key: 'ability-standard-03-labor', abilityKey: 'basic-ethics', name: '年度获得市级及以上劳动模范类荣誉', novice: '——', competent: '——', backbone: '获得', expert: '——', basisLabel: '师德师风', status: 'enabled' },
+  { key: 'ability-standard-03-teacher', abilityKey: 'basic-ethics', name: '年度获得省部级及以上教师荣誉', novice: '——', competent: '——', backbone: '——', expert: '获得', basisLabel: '师德师风', status: 'enabled' },
   { key: 'ability-standard-04', abilityKey: 'basic-qualification', name: '是否具有高等教育教师资格证', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },
   { key: 'ability-standard-05', abilityKey: 'basic-qualification', name: '普通话等级二级甲等以上', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },
   { key: 'ability-standard-06', abilityKey: 'basic-qualification', name: '硕士研究生学位或三年企业工作经历', novice: '✔', competent: '✔', backbone: '✔', expert: '✔', basisLabel: '从业资格', status: 'enabled' },

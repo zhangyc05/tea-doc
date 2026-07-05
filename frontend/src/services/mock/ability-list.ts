@@ -62,7 +62,7 @@ const filterTags: AbilityListOption[] = [
 const impactCards: AbilityListImpactCard[] = [
   {
     title: '能力指标',
-    description: '69 项指标将作为 2027 年度能力判断口径。',
+    description: '71 项指标将作为 2027 年度能力判断口径。',
     icon: 'list',
     tone: 'blue',
   },
