@@ -172,7 +172,7 @@ function handleTodoAction(type: string) {
       </view>
     </view>
 
-    <MobileTabBar active="assistant" />
+    <MobileTabBar active="activity" />
   </view>
 </template>
 
@@ -181,7 +181,7 @@ function handleTodoAction(type: string) {
 
 .virtual-room-page {
   min-height: 100vh;
-  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 86% 6%, rgba(213, 250, 231, 0.74), transparent 25%),
@@ -211,7 +211,7 @@ function handleTodoAction(type: string) {
 }
 
 .page-title {
-  font-size: 43rpx;
+  font-size: 52rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -234,7 +234,7 @@ function handleTodoAction(type: string) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 24rpx 18rpx;
-  border-radius: 20rpx;
+  border-radius: 28rpx;
 }
 
 .stat-item {
@@ -366,7 +366,7 @@ function handleTodoAction(type: string) {
 }
 
 .section-title {
-  font-size: 33rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 
@@ -381,7 +381,7 @@ function handleTodoAction(type: string) {
   align-items: center;
   gap: 24rpx;
   padding: 26rpx;
-  border-radius: 20rpx;
+  border-radius: 28rpx;
 }
 
 .todo-icon {

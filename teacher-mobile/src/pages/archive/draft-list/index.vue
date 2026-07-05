@@ -128,7 +128,7 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
 
 .archive-draft-list-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(150rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 2%, rgba(255, 238, 214, 0.76), transparent 30%),
@@ -210,7 +210,7 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
 }
 
 .record-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .record-card + .record-card,
@@ -230,7 +230,7 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
   display: block;
   margin-top: 18rpx;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 32rpx;
   font-weight: 900;
   line-height: 1.32;
 }
@@ -239,7 +239,7 @@ function getRecordTone(record: MobileArchiveRecord): 'orange' {
   display: block;
   margin-top: 12rpx;
   color: #526079;
-  font-size: 25rpx;
+  font-size: 26rpx;
   line-height: 1.42;
 }
 

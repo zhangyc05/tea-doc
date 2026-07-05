@@ -35,6 +35,14 @@ function goEnterpriseList() {
 function goEnterpriseArchive() {
   uni.navigateTo({ url: '/pages/archive/record-detail/index?recordId=enterprise-practice-smart-equipment-archive' })
 }
+
+function goFollowItem(title: string) {
+  if (title.includes('企业实践列表')) {
+    goEnterpriseList()
+    return
+  }
+  goEnterpriseArchive()
+}
 </script>
 
 <template>
@@ -103,7 +111,7 @@ function goEnterpriseArchive() {
       <MobileCard class="follow-card">
         <text class="card-title">后续可查看</text>
         <view class="follow-list">
-          <view v-for="item in followItems" :key="item.title" class="follow-row">
+          <view v-for="item in followItems" :key="item.title" class="follow-row" @tap="goFollowItem(item.title)">
             <view class="follow-icon" :class="`follow-icon--${item.tone}`"></view>
             <view class="follow-copy">
               <text class="follow-title">{{ item.title }}</text>
@@ -131,7 +139,7 @@ function goEnterpriseArchive() {
 
 .history-confirmed-page {
   min-height: 100vh;
-  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   background:
     linear-gradient(180deg, #edfff5 0, #f5fff9 310rpx, #f7f8fb 310rpx, #f7f8fb 100%);
   color: #10172d;
@@ -142,7 +150,7 @@ function goEnterpriseArchive() {
   display: flex;
   align-items: center;
   gap: 44rpx;
-  min-height: 224rpx;
+  min-height: 238rpx;
   padding: 34rpx 66rpx 42rpx;
   overflow: hidden;
 }
@@ -220,7 +228,7 @@ function goEnterpriseArchive() {
 }
 
 .hero-title {
-  font-size: 46rpx;
+  font-size: 50rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -287,13 +295,13 @@ function goEnterpriseArchive() {
 .confirmed-card,
 .year-card,
 .follow-card {
-  padding: 28rpx;
+  padding: 32rpx;
   border-radius: 22rpx;
   box-shadow: 0 18rpx 46rpx rgba(35, 51, 87, 0.08);
 }
 
 .card-title {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

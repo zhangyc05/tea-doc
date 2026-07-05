@@ -49,13 +49,25 @@ const logs = [
 function goBack() {
   uni.navigateBack()
 }
+
+function showFilterFeedback() {
+  uni.showToast({ title: '筛选为本地模拟入口，当前展示全部日志', icon: 'none' })
+}
+
+function showSortFeedback() {
+  uni.showToast({ title: '当前已按时间倒序展示', icon: 'none' })
+}
+
+function returnToDetail() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-progress-detail/index' })
+}
 </script>
 
 <template>
   <view class="practice-log-page">
     <MobileNavbar title="实践日志" size="regular" @back="goBack">
       <template #right>
-        <view class="filter-action">
+        <view class="filter-action" @tap="showFilterFeedback">
           <view class="filter-icon"></view>
           <text>筛选</text>
         </view>
@@ -95,7 +107,7 @@ function goBack() {
           <text class="list-title">日志列表</text>
           <text class="list-count">（共 9 条）</text>
         </view>
-        <view class="sort-action">
+        <view class="sort-action" @tap="showSortFeedback">
           <text>按时间倒序</text>
           <view class="down-arrow"></view>
         </view>
@@ -127,7 +139,7 @@ function goBack() {
         <text>日志内容已归档，可作为能力证据长期保存与引用。</text>
       </view>
 
-      <MobileActionButton class="return-button" variant="primary">返回实践记录详情</MobileActionButton>
+      <MobileActionButton class="return-button" variant="primary" @tap="returnToDetail">返回实践记录详情</MobileActionButton>
     </view>
   </view>
 </template>
@@ -137,7 +149,7 @@ function goBack() {
 
 .practice-log-page {
   min-height: 100vh;
-  padding-bottom: calc(44rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(68rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 14%, rgba(220, 248, 235, 0.72), transparent 25%),
     linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
@@ -145,7 +157,7 @@ function goBack() {
 }
 
 .content {
-  padding: 26rpx 40rpx 0;
+  padding: 28rpx 36rpx 0;
 }
 
 .filter-action,
@@ -262,7 +274,7 @@ function goBack() {
 
 .practice-title {
   color: #10172d;
-  font-size: 35rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.32;
 }
@@ -317,7 +329,7 @@ function goBack() {
   position: relative;
   gap: 22rpx;
   margin-top: 44rpx;
-  padding: 34rpx 30rpx;
+  padding: 36rpx 32rpx;
   overflow: hidden;
   border-radius: 18rpx;
   background: linear-gradient(90deg, rgba(232, 247, 239, 0.94), rgba(247, 252, 249, 0.94));
@@ -465,7 +477,7 @@ function goBack() {
   min-width: 0;
   flex: 1;
   margin-bottom: 18rpx;
-  padding: 28rpx 62rpx 26rpx 30rpx;
+  padding: 30rpx 64rpx 28rpx 32rpx;
   border-radius: 18rpx;
 }
 

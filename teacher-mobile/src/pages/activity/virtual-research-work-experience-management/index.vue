@@ -22,13 +22,9 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function previewMaterial(fileName: string) {
   const preview = previewVirtualResearchMaterial(fileName)
-  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
+  uni.showToast({ title: preview.message || `贡献材料预览为本地模拟：${fileName}`, icon: 'none' })
 }
 
 function goResearchRecord() {
@@ -284,7 +280,7 @@ function goResearchRecord() {
 
 .hero-title {
   color: #090f1f;
-  font-size: 35rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -318,12 +314,12 @@ function goResearchRecord() {
 }
 
 .section-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .section-title {
   color: #0b1224;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }

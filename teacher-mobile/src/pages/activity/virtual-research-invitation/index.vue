@@ -168,7 +168,7 @@ function goContributionConfirm() {
 
 .invitation-page {
   min-height: 100vh;
-  padding-bottom: calc(332rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(348rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 82% 4%, rgba(218, 250, 231, 0.74), transparent 26%),
@@ -214,7 +214,7 @@ function goContributionConfirm() {
   display: flex;
   align-items: center;
   gap: 28rpx;
-  padding: 28rpx;
+  padding: 32rpx;
   border-color: #d9efe4;
   border-radius: 24rpx;
 }
@@ -239,7 +239,7 @@ function goContributionConfirm() {
 .room-title {
   margin-top: 30rpx;
   color: #071026;
-  font-size: 39rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.22;
 }
@@ -433,13 +433,13 @@ function goContributionConfirm() {
 }
 
 .section-card {
-  padding: 28rpx;
+  padding: 32rpx;
   border-radius: 24rpx;
 }
 
 .section-title {
   color: #071026;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }

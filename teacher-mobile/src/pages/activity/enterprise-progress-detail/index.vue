@@ -18,6 +18,22 @@ const files = [
 function goBack() {
   uni.navigateBack()
 }
+
+function showDetailFeedback(target: string) {
+  uni.showToast({ title: `${target}为本地模拟入口，当前页面已展示摘要`, icon: 'none' })
+}
+
+function goLogRecord() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-log-record/index' })
+}
+
+function goLogList() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-log-list/index' })
+}
+
+function goProofUpload() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-proof-upload/index' })
+}
 </script>
 
 <template>
@@ -66,7 +82,7 @@ function goBack() {
         <view class="section-head">
           <view class="section-icon section-icon--calendar"></view>
           <text class="section-title">实践计划</text>
-          <text class="section-link">查看详情</text>
+          <text class="section-link" @tap="showDetailFeedback('实践计划详情')">查看详情</text>
           <view class="chevron"></view>
         </view>
         <text class="plan-line"><text class="strong">实践目标：</text>了解企业软件开发流程，提升项目分析与编码能力。</text>
@@ -81,7 +97,7 @@ function goBack() {
           </view>
           <text class="today-desc">补充一条实践日志，记录今天参与的工作、观察到的流程或新的收获。</text>
         </view>
-        <MobileActionButton class="record-button" variant="primary">去记录</MobileActionButton>
+        <MobileActionButton class="record-button" variant="primary" @tap="goLogRecord">去记录</MobileActionButton>
       </MobileCard>
 
       <MobileCard class="logs-card">
@@ -89,7 +105,7 @@ function goBack() {
           <view class="section-icon section-icon--list"></view>
           <text class="section-title">实践日志</text>
           <text class="log-count">（已记录 8 天）</text>
-          <text class="section-link">查看全部</text>
+          <text class="section-link" @tap="goLogList">查看全部</text>
           <view class="chevron"></view>
         </view>
         <view class="log-list">
@@ -106,7 +122,7 @@ function goBack() {
         <view class="section-head">
           <view class="section-icon section-icon--folder"></view>
           <text class="section-title">附件资料</text>
-          <text class="section-link">查看全部</text>
+          <text class="section-link" @tap="showDetailFeedback('附件资料')">查看全部</text>
           <view class="chevron"></view>
         </view>
         <view class="file-strip">
@@ -122,7 +138,7 @@ function goBack() {
         <view class="file-footer">
           <text>已上传 2 份</text>
           <text>可补充：实践证明、过程照片、成果材料等</text>
-          <text class="green-link">补充资料</text>
+          <text class="green-link" @tap="goProofUpload">补充资料</text>
         </view>
       </MobileCard>
 
@@ -141,14 +157,14 @@ function goBack() {
 
 .progress-detail-page {
   min-height: 100vh;
-  padding-bottom: calc(178rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #f3fffa 0%, #ffffff 22%, #f7fbff 100%);
   color: #10172d;
 }
 
 .hero {
   position: relative;
-  min-height: 238rpx;
+  min-height: 254rpx;
   padding: calc(var(--status-bar-height) + 12rpx) 28rpx 24rpx;
   overflow: hidden;
 }
@@ -264,7 +280,7 @@ function goBack() {
   position: relative;
   flex-wrap: wrap;
   gap: 24rpx;
-  padding: 30rpx;
+  padding: 32rpx;
   border-radius: 28rpx;
 }
 
@@ -383,7 +399,7 @@ function goBack() {
 
 .section-title {
   flex: 1;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

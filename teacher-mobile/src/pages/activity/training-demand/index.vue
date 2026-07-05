@@ -21,6 +21,14 @@ function submitDemand() {
   const demand = submitTrainingDemand('found-training')
   uni.navigateTo({ url: `/pages/activity/training-demand-result/index?demandId=${demand.id}` })
 }
+
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，后续接入真实编辑能力`, icon: 'none' })
+}
+
+function saveDraft() {
+  uni.showToast({ title: '草稿已保存，本地模拟数据可继续提交', icon: 'none' })
+}
 </script>
 
 <template>
@@ -96,8 +104,8 @@ function submitDemand() {
             <text class="info-row__value">{{ row[1] }}</text>
           </view>
           <view class="panel-actions">
-            <MobileActionButton class="panel-action" variant="outline">修改信息</MobileActionButton>
-            <MobileActionButton class="panel-action" variant="outline">重新识别</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('修改信息')">修改信息</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('重新识别')">重新识别</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -110,8 +118,8 @@ function submitDemand() {
         <view class="ai-panel">
           <text class="ai-text">系统已结合已识别的培训信息、当前任课课程信息以及你上传的头像/图像建议，生成下方申请说明，可直接提交或修改后提交。</text>
           <view class="panel-actions">
-            <MobileActionButton class="panel-action" variant="outline">修改说明</MobileActionButton>
-            <MobileActionButton class="panel-action" variant="outline">让 AI 再优化</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('修改说明')">修改说明</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('让 AI 再优化')">让 AI 再优化</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -126,7 +134,7 @@ function submitDemand() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="bottom-actions__button" variant="outline">保存草稿</MobileActionButton>
+      <MobileActionButton class="bottom-actions__button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
       <MobileActionButton class="bottom-actions__button" variant="primary" @tap="submitDemand">提交需求</MobileActionButton>
     </view>
 
@@ -139,7 +147,7 @@ function submitDemand() {
 
 .training-demand-page {
   min-height: 100vh;
-  padding-bottom: calc(286rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 2%, rgba(220, 252, 236, 0.86), transparent 30%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
@@ -148,7 +156,7 @@ function submitDemand() {
 
 .hero {
   position: relative;
-  min-height: 184rpx;
+  min-height: 210rpx;
   padding: calc(var(--status-bar-height) + 12rpx) 28rpx 20rpx;
   overflow: hidden;
 }
@@ -239,7 +247,7 @@ function submitDemand() {
 .form-card,
 .ai-card,
 .after-card {
-  padding: 26rpx;
+  padding: 28rpx;
 }
 
 .section-head,
@@ -259,7 +267,7 @@ function submitDemand() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

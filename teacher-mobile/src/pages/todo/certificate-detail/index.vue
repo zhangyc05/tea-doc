@@ -39,6 +39,13 @@ function goRemoved() {
 
 function previewMaterial() {
   const material = previewTodoCertificateMaterial()
+  if (!material.previewUrl) {
+    uni.showToast({
+      title: `证书材料预览为本地模拟：${certificate.value.material.name}`,
+      icon: 'none',
+    })
+    return
+  }
   uni.navigateTo({ url: material.previewUrl })
 }
 </script>
@@ -101,6 +108,7 @@ function previewMaterial() {
 
 .detail-page {
   --detail-danger: #ff1f39;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .system-status,
@@ -243,7 +251,8 @@ function previewMaterial() {
 .material-card,
 .confirm-card {
   margin-top: 12rpx;
-  padding: 22rpx 32rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 24rpx;
 }
 
 .summary-card {
@@ -326,7 +335,7 @@ function previewMaterial() {
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -415,11 +424,11 @@ function previewMaterial() {
 
 .confirm-action {
   width: 100%;
-  height: 56rpx;
+  height: 64rpx;
   margin-top: 16rpx;
   border-radius: 14rpx;
   font-size: 27rpx;
-  line-height: 56rpx;
+  line-height: 64rpx;
 }
 
 .confirm-action--outline {

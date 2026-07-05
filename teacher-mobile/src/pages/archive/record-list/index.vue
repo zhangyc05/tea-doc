@@ -17,6 +17,12 @@ import {
 } from '../../../domain/archive'
 
 const category = ref<ArchiveCategoryKey>('all')
+const statusFilters = [
+  { key: 'all', label: '全部状态' },
+  { key: 'archived', label: '已入档' },
+  { key: 'pending', label: '待确认' },
+] as const
+const selectedStatus = ref<(typeof statusFilters)[number]['key']>('all')
 
 onLoad((options) => {
   const input = options?.category as ArchiveCategoryKey | undefined
@@ -27,7 +33,12 @@ onLoad((options) => {
 
 const pageTitle = computed(() => getArchiveCategorySummary(category.value).title)
 
-const filteredRecords = computed(() => getArchiveRecordsByCategory(category.value))
+const filteredRecords = computed(() => {
+  const records = getArchiveRecordsByCategory(category.value)
+  if (selectedStatus.value === 'all') return records
+  if (selectedStatus.value === 'archived') return records.filter(record => record.status === 'archived')
+  return records.filter(record => record.status !== 'archived')
+})
 
 function goBack() {
   uni.navigateBack()
@@ -35,6 +46,10 @@ function goBack() {
 
 function goArchiveQuery() {
   uni.navigateTo({ url: '/pages/archive/record-query/index' })
+}
+
+function selectStatus(status: (typeof statusFilters)[number]['key']) {
+  selectedStatus.value = status
 }
 
 function goRecord(record: MobileArchiveRecord) {
@@ -60,9 +75,15 @@ function goRecord(record: MobileArchiveRecord) {
     </MobileCard>
 
     <view class="toolbar">
-      <view class="toolbar-chip toolbar-chip--active">全部状态</view>
-      <view class="toolbar-chip">已入档</view>
-      <view class="toolbar-chip">待确认</view>
+      <button
+        v-for="status in statusFilters"
+        :key="status.key"
+        class="toolbar-chip"
+        :class="{ 'toolbar-chip--active': selectedStatus === status.key }"
+        @tap="selectStatus(status.key)"
+      >
+        {{ status.label }}
+      </button>
       <MobileActionButton class="toolbar-search" variant="link" arrow @tap="goArchiveQuery">
         搜索
       </MobileActionButton>
@@ -118,7 +139,7 @@ function goRecord(record: MobileArchiveRecord) {
 
 .archive-record-list-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(150rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 2%, rgba(224, 250, 237, 0.82), transparent 30%),
@@ -205,8 +226,9 @@ function goRecord(record: MobileArchiveRecord) {
 }
 
 .toolbar-chip {
-  height: 54rpx;
+  height: 58rpx;
   flex: 0 0 auto;
+  margin: 0;
   padding: 0 20rpx;
   border: 1rpx solid rgba(224, 232, 244, 0.95);
   border-radius: 999rpx;
@@ -215,6 +237,11 @@ function goRecord(record: MobileArchiveRecord) {
   font-size: 24rpx;
   font-weight: 900;
   line-height: 54rpx;
+}
+
+.toolbar-chip::after {
+  display: none;
+  border: 0;
 }
 
 .toolbar-chip--active {
@@ -235,7 +262,7 @@ function goRecord(record: MobileArchiveRecord) {
 }
 
 .record-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .record-card + .record-card,
@@ -255,7 +282,7 @@ function goRecord(record: MobileArchiveRecord) {
   display: block;
   margin-top: 18rpx;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 32rpx;
   font-weight: 900;
   line-height: 1.32;
 }

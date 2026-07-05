@@ -31,9 +31,12 @@ function goBack() {
   uni.navigateBack()
 }
 
-function handleEvidenceAction(title: string) {
+function handleEvidenceAction(title: string, active: boolean) {
   recordMemberProfileAction(`查看关联依据：${title}`)
-  uni.showToast({ title: `${title} 已关联到虚拟教研成员资料`, icon: 'none' })
+  uni.showToast({
+    title: active ? `${title} 已关联到虚拟教研成员资料` : `依据选择为本地模拟：${title}`,
+    icon: 'none',
+  })
 }
 
 function handleSupplementMaterialAction(title: string) {
@@ -138,7 +141,7 @@ function submitContributionSupplement() {
             :key="item.title"
             class="evidence-item"
             :class="{ 'evidence-item--inactive': !item.active }"
-            @tap="handleEvidenceAction(item.title)"
+            @tap="handleEvidenceAction(item.title, item.active)"
           >
             <view class="evidence-icon" :class="`evidence-icon--${item.icon}`"></view>
             <text class="evidence-title">{{ item.title }}</text>
@@ -195,7 +198,7 @@ function submitContributionSupplement() {
 
 .supplement-page {
   min-height: 100vh;
-  padding-bottom: calc(136rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 85% 3%, rgba(233, 252, 241, 0.9), transparent 30%),
@@ -247,7 +250,7 @@ function submitContributionSupplement() {
 .material-card,
 .notice-card {
   border-radius: 26rpx;
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .card-head,

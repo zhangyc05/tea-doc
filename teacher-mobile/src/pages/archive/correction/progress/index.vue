@@ -121,7 +121,7 @@ function goCorrectionResult() {
               <text class="timeline-title">结果回写</text>
               <text class="timeline-time">待完成</text>
             </view>
-            <text class="timeline-desc">通过、退回或需补充材料的结果页仍待后续接入。</text>
+            <text class="timeline-desc">可查看本地模拟处理结果，确认是否需要补充材料。</text>
           </view>
         </view>
       </view>

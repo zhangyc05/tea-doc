@@ -37,14 +37,24 @@ function goSupplementContribution() {
 
 function addVoiceMaterial() {
   addSupplementMaterial('语音')
+  showSupplementFeedback('语音说明')
 }
 
 function addPhotoMaterial() {
   addSupplementMaterial('拍照')
+  showSupplementFeedback('拍照材料')
 }
 
 function addUploadMaterial() {
   addSupplementMaterial('上传')
+  showSupplementFeedback('上传材料')
+}
+
+function showSupplementFeedback(action: string) {
+  uni.showToast({
+    title: `${action}已加入本地补充材料`,
+    icon: 'none',
+  })
 }
 
 function markNotMine() {
@@ -182,7 +192,7 @@ function submitContribution() {
 
 .confirm-contribution-page {
   min-height: 100vh;
-  padding-bottom: calc(156rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 82% 6%, rgba(226, 250, 237, 0.75), transparent 27%),
@@ -205,7 +215,7 @@ function submitContribution() {
 }
 
 .summary-card {
-  padding: 34rpx 30rpx 28rpx;
+  padding: 32rpx;
   border-color: #d9f2e5;
   background: linear-gradient(115deg, #fcfffe, #f8fffb);
 }
@@ -372,7 +382,7 @@ function submitContribution() {
   min-width: 0;
   flex: 1;
   color: #111827;
-  font-size: 38rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.22;
 }
@@ -453,7 +463,7 @@ function submitContribution() {
 .ai-card,
 .supplement-card,
 .direction-card {
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .section-title-row {
@@ -462,7 +472,7 @@ function submitContribution() {
 
 .section-title {
   color: #111827;
-  font-size: 33rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

@@ -141,7 +141,7 @@ function goArchivePendingList() {
 
 .archive-result-page {
   min-height: 100vh;
-  padding-bottom: calc(52rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(76rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 4%, rgba(222, 252, 237, 0.58), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f8fbff 48%, #f6f9ff 100%);
@@ -162,7 +162,7 @@ function goArchivePendingList() {
 .hero-card,
 .submitted-card,
 .progress-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .hero-card {
@@ -231,7 +231,7 @@ function goArchivePendingList() {
 
 .hero-title {
   color: #10172d;
-  font-size: 42rpx;
+  font-size: 46rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -358,7 +358,7 @@ function goArchivePendingList() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

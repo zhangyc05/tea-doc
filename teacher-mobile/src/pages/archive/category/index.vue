@@ -141,7 +141,7 @@ function goRecord(recordId: string) {
 
 .archive-category-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(176rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 2%, rgba(224, 250, 237, 0.86), transparent 30%),
@@ -248,7 +248,7 @@ function goRecord(recordId: string) {
 
 .section-card {
   margin-top: 18rpx;
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .section-head,
@@ -278,7 +278,7 @@ function goRecord(recordId: string) {
 
 .section-title {
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -372,7 +372,7 @@ function goRecord(recordId: string) {
 .footer-button {
   position: fixed;
   right: 30rpx;
-  bottom: calc(42rpx + env(safe-area-inset-bottom));
+  bottom: calc(32rpx + env(safe-area-inset-bottom));
   left: 30rpx;
   height: 88rpx;
   font-size: 30rpx;

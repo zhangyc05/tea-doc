@@ -37,8 +37,18 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showMoreFeedback() {
+  uni.showToast({
+    title: '更多操作为本地模拟，当前可返回教研室或查看记录',
+    icon: 'none',
+  })
+}
+
+function showArchiveFileFeedback(name: string) {
+  uni.showToast({
+    title: `归档材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
 }
 
 function goArchiveRecord() {
@@ -56,7 +66,7 @@ function goResearchRoom() {
   <view class="archive-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack">
       <template #right>
-        <button class="more-button" @tap="showToast('更多')">•••</button>
+        <button class="more-button" @tap="showMoreFeedback">•••</button>
       </template>
     </MobileNavbar>
 
@@ -133,7 +143,7 @@ function goResearchRoom() {
           <text class="archived-chip">全部已归档</text>
         </view>
         <view class="file-list">
-          <button v-for="file in archiveFiles" :key="file.name" class="file-row" @tap="showToast(file.name)">
+          <button v-for="file in archiveFiles" :key="file.name" class="file-row" @tap="showArchiveFileFeedback(file.name)">
             <view class="file-type" :class="`file-type--${file.type}`">
               <text>{{ file.type === 'pdf' ? 'PDF' : file.type === 'doc' ? 'DOC' : '记' }}</text>
             </view>
@@ -192,7 +202,7 @@ function goResearchRoom() {
 
 .archive-page {
   min-height: 100vh;
-  padding-bottom: calc(136rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #fbfdff 44%, #f8fbfa 100%);
   color: #10172d;
@@ -395,7 +405,7 @@ function goResearchRoom() {
 
 .activity-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   box-shadow: 0 10rpx 28rpx rgba(23, 35, 61, 0.05);
 }
 
@@ -405,7 +415,7 @@ function goResearchRoom() {
 }
 
 .section-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
   background: #fff;
 }
 
@@ -447,7 +457,7 @@ function goResearchRoom() {
 
 .section-title {
   color: #070d1d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

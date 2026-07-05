@@ -20,6 +20,10 @@ function goSupplement() {
   uni.navigateTo({ url: '/pages/activity/enterprise-resupplement/index' })
 }
 
+function showMaterialFeedback() {
+  uni.showToast({ title: '已提交材料为本地模拟，可通过补充材料重新上传', icon: 'none' })
+}
+
 function submitAgain() {
   submitEnterpriseSupplement()
   uni.navigateTo({ url: '/pages/activity/enterprise-supplement-submitted/index' })
@@ -87,7 +91,7 @@ function submitAgain() {
           <view class="accent-line"></view>
           <text class="section-title">已提交材料</text>
         </view>
-        <view class="file-row">
+        <view class="file-row" @tap="showMaterialFeedback">
           <view class="pdf-icon">PDF</view>
           <view class="file-copy">
             <text class="file-name">企业实践证明.pdf</text>
@@ -146,7 +150,7 @@ function submitAgain() {
 
 .supplement-needed-page {
   min-height: 100vh;
-  padding-bottom: calc(330rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(344rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 92% 8%, rgba(212, 246, 225, 0.58), transparent 20%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 45%, #f5faf8 100%);
@@ -184,7 +188,7 @@ function submitAgain() {
 
 .alert-card {
   gap: 28rpx;
-  padding: 28rpx 32rpx;
+  padding: 30rpx 34rpx;
   border: 2rpx solid rgba(230, 238, 232, 0.88);
   border-radius: 24rpx;
   background: rgba(255, 255, 255, 0.96);
@@ -301,7 +305,7 @@ function submitAgain() {
 .material-card,
 .upload-card,
 .remark-card {
-  padding: 28rpx 32rpx;
+  padding: 32rpx 34rpx;
   border-radius: 24rpx;
 }
 
@@ -321,7 +325,7 @@ function submitAgain() {
 .section-title {
   min-width: 0;
   flex: 1;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }

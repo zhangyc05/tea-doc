@@ -137,6 +137,10 @@ function requestCorrection() {
   })
 }
 
+function goArchiveHome() {
+  uni.switchTab({ url: '/pages/archive/index' })
+}
+
 function previewMaterial(material: { name: string; meta: string }) {
   const preview = previewArchiveMaterial(material)
   uni.showToast({ title: `${preview.title}：${preview.status}，来源：${preview.source}。${preview.fallback}`, icon: 'none' })
@@ -222,7 +226,7 @@ function previewMaterial(material: { name: string; meta: string }) {
       <MobileActionButton class="footer-button" variant="outline" @tap="requestCorrection">
         申请更正
       </MobileActionButton>
-      <MobileActionButton class="footer-button" variant="primary" @tap="goBack">
+      <MobileActionButton class="footer-button" variant="primary" @tap="goArchiveHome">
         返回档案
       </MobileActionButton>
     </view>

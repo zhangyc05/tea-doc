@@ -142,7 +142,7 @@ function submitAgain() {
 
 .history-needed-page {
   min-height: 100vh;
-  padding-bottom: calc(164rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   background:
     linear-gradient(180deg, #fff3e9 0, #fff9f4 292rpx, #f7f8fb 292rpx, #f7f8fb 100%);
   color: #10172d;
@@ -253,7 +253,7 @@ function submitAgain() {
 }
 
 .hero-title {
-  font-size: 45rpx;
+  font-size: 50rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -296,13 +296,13 @@ function submitAgain() {
 .return-card,
 .practice-card,
 .material-card {
-  padding: 28rpx 28rpx 30rpx;
+  padding: 32rpx;
   border-radius: 22rpx;
   box-shadow: 0 18rpx 46rpx rgba(35, 51, 87, 0.08);
 }
 
 .card-title {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

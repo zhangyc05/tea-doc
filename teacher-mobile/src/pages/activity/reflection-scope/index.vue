@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
@@ -11,19 +11,21 @@ const reflectionRecord = computed(() => reflectionState.records[0])
 const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
 const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
 const selectedEvidenceTitles = computed(() => selectedEvidence.value.map((item) => item.title).join('、'))
+const selectedScopeIndex = ref(1)
+const selectedPeriodIndex = ref(1)
 
 const scopeOptions = [
-  { title: '单次课', active: false },
-  { title: '课程阶段', active: true },
-  { title: '学期课程', active: false },
-  { title: '自定义主题', active: false },
+  { title: '单次课' },
+  { title: '课程阶段' },
+  { title: '学期课程' },
+  { title: '自定义主题' },
 ]
 
 const periodTabs = [
-  { title: '按周', active: false },
-  { title: '按月', active: true },
-  { title: '按季度', active: false },
-  { title: '自定义', active: false },
+  { title: '按周' },
+  { title: '按月' },
+  { title: '按季度' },
+  { title: '自定义' },
 ]
 
 const evidenceRows = [
@@ -77,6 +79,14 @@ function selectEvidence() {
   selectReflectionEvidence('class-analysis-report')
 }
 
+function selectScope(index: number) {
+  selectedScopeIndex.value = index
+}
+
+function selectPeriod(index: number) {
+  selectedPeriodIndex.value = index
+}
+
 function switchMonth() {
   selectReflectionLesson('2026 年 3 月教学阶段')
 }
@@ -105,7 +115,7 @@ function goDirectChat() {
       <MobileCard class="scope-card">
         <text class="section-title">反思范围</text>
         <view class="scope-grid">
-          <view v-for="item in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': item.active }">
+          <view v-for="(item, index) in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': selectedScopeIndex === index }" @tap="selectScope(index)">
             <text>{{ item.title }}</text>
             <view class="scope-radio"></view>
           </view>
@@ -119,7 +129,7 @@ function goDirectChat() {
       <MobileCard class="period-card">
         <text class="period-title">阶段范围</text>
         <view class="period-tabs">
-          <view v-for="item in periodTabs" :key="item.title" class="period-tab" :class="{ 'period-tab--active': item.active }">
+          <view v-for="(item, index) in periodTabs" :key="item.title" class="period-tab" :class="{ 'period-tab--active': selectedPeriodIndex === index }" @tap="selectPeriod(index)">
             <text>{{ item.title }}</text>
           </view>
         </view>
@@ -193,7 +203,7 @@ function goDirectChat() {
 
 .reflection-scope-page {
   min-height: 100vh;
-  padding-bottom: calc(288rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 0%, rgba(234, 224, 255, 0.44), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f8fbff 48%, #f5f9ff 100%);
@@ -226,7 +236,7 @@ function goDirectChat() {
 .stage-card,
 .evidence-card,
 .supplement-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .section-title,
@@ -244,7 +254,7 @@ function goDirectChat() {
 .section-title,
 .period-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -417,7 +427,7 @@ function goDirectChat() {
 
 .evidence-row {
   gap: 24rpx;
-  min-height: 112rpx;
+  min-height: 126rpx;
   padding: 18rpx 22rpx 18rpx 18rpx;
   border: 1rpx solid #dfe6f0;
   border-radius: 14rpx;

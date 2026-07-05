@@ -15,13 +15,16 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showMoreFeedback() {
+  uni.showToast({
+    title: '更多操作为本地模拟，当前可查看活动与材料',
+    icon: 'none',
+  })
 }
 
 function previewMaterial(title: string) {
   const preview = previewVirtualResearchMaterial(title)
-  uni.showToast({ title: preview.message, icon: 'none' })
+  uni.showToast({ title: preview.message || `过程材料预览为本地模拟：${title}`, icon: 'none' })
 }
 
 function goResearchRoom() {
@@ -43,7 +46,7 @@ function joinMeeting() {
   <view class="detail-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack">
       <template #right>
-        <button class="more-button" @tap="showToast('更多')">
+        <button class="more-button" @tap="showMoreFeedback">
           <view class="more-dot"></view>
           <view class="more-dot"></view>
           <view class="more-dot"></view>
@@ -185,7 +188,7 @@ function joinMeeting() {
 
 .detail-page {
   min-height: 100vh;
-  padding-bottom: calc(142rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 7%, rgba(229, 246, 255, 0.74), transparent 27%),
@@ -262,7 +265,7 @@ function joinMeeting() {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .hero-copy {
@@ -285,7 +288,7 @@ function joinMeeting() {
 .activity-title {
   margin-bottom: 28rpx;
   color: #080f24;
-  font-size: 39rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.22;
 }
@@ -494,7 +497,7 @@ function joinMeeting() {
 }
 
 .section-card {
-  padding: 28rpx;
+  padding: 32rpx;
 }
 
 .section-head {
@@ -542,7 +545,7 @@ function joinMeeting() {
 
 .section-title {
   color: #111827;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }

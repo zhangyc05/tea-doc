@@ -164,7 +164,7 @@ function openLearningResource(recordId = 'digital-teaching-record') {
 
 .training-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 14% 4%, rgba(220, 252, 236, 0.86), transparent 30%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 50%, #f5f9ff 100%);
@@ -173,7 +173,7 @@ function openLearningResource(recordId = 'digital-teaching-record') {
 
 .hero {
   position: relative;
-  min-height: 188rpx;
+  min-height: 220rpx;
   padding: calc(var(--status-bar-height) + 12rpx) 28rpx 24rpx;
   overflow: hidden;
 }
@@ -298,7 +298,7 @@ function openLearningResource(recordId = 'digital-teaching-record') {
 
 .section-title {
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
@@ -10,35 +10,38 @@ const reflectionState = getMobileReflectionState()
 const reflectionRecord = computed(() => reflectionState.records[0])
 const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
 const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
+const selectedScopeIndex = ref(2)
+const selectedEvidenceTypeIndex = ref(0)
+const selectedCourseEvidenceIds = ref(['march-5', 'march-6', 'midterm', 'stage-test', 'student-review'])
 
 const scopeOptions = [
-  { title: '单次课', active: false },
-  { title: '课程阶段', active: false },
-  { title: '学期课程', active: true, tip: '围绕本学期整门课程进行综合反思' },
-  { title: '自定义主题', active: false },
+  { title: '单次课' },
+  { title: '课程阶段' },
+  { title: '学期课程', tip: '围绕本学期整门课程进行综合反思' },
+  { title: '自定义主题' },
 ]
 
 const evidenceTypes = [
-  { title: '课堂过程', desc: '已找到 16 堂课堂分析，可按月份选择', icon: 'calendar', active: true },
+  { title: '课堂过程', desc: '已找到 16 堂课堂分析，可按月份选择', icon: 'calendar' },
   { title: '成绩与学习表现', desc: '基于成绩与学习数据综合分析表现', icon: 'chart' },
   { title: '评价与反馈', desc: '综合收集评价与反馈了解课堂成效', icon: 'star' },
   { title: '教学资料与资源', desc: '整理课程资料与资源辅助分析教学实施', icon: 'file' },
 ]
 
 const monthReports = [
-  { title: '第 5 次课堂分析报告', date: '2026-03-18', course: '工业互联网架构导入', desc: '课堂视频与语音已解析', selected: true },
-  { title: '第 6 次课堂分析报告', date: '2026-03-25', course: '平台层与应用层关系', desc: '已识别互动与提问情况', selected: true },
-  { title: '第 7 次课堂分析报告', date: '2026-03-29', course: '智能工厂数据流转', desc: '已生成课堂节奏分析', selected: false },
+  { id: 'march-5', title: '第 5 次课堂分析报告', date: '2026-03-18', course: '工业互联网架构导入', desc: '课堂视频与语音已解析' },
+  { id: 'march-6', title: '第 6 次课堂分析报告', date: '2026-03-25', course: '平台层与应用层关系', desc: '已识别互动与提问情况' },
+  { id: 'march-7', title: '第 7 次课堂分析报告', date: '2026-03-29', course: '智能工厂数据流转', desc: '已生成课堂节奏分析' },
 ]
 
 const analysisRows = [
-  { title: '期中成绩分析', desc: '已导入期中成绩结果 | 可辅助分析知识掌握与薄弱点', icon: 'score', selected: true },
-  { title: '阶段测验分析', desc: '覆盖 3 次单元测验 | 可辅助分析阶段学习表现', icon: 'test', selected: true },
-  { title: '作业完成情况', desc: '已汇总 12 次课堂作业 | 可辅助分析学习投入情况', icon: 'doc', selected: false },
-  { title: '本学期学生评教', desc: '已汇总学生评教结果 | 可辅助分析课堂体验与反馈', icon: 'star', selected: true },
-  { title: '同行听课反馈', desc: '已同步 1 条听课记录 | 可作为课堂观察参考', icon: 'doc', selected: false },
-  { title: '课程教案与课件', desc: '已整理 16 次课资料 | 可结合课程设计分析实施情况', icon: 'doc', selected: false },
-  { title: '案例与项目材料', desc: '已上传 4 份案例材料 | 可辅助分析案例教学效果', icon: 'doc', selected: false },
+  { id: 'midterm', title: '期中成绩分析', desc: '已导入期中成绩结果 | 可辅助分析知识掌握与薄弱点', icon: 'score' },
+  { id: 'stage-test', title: '阶段测验分析', desc: '覆盖 3 次单元测验 | 可辅助分析阶段学习表现', icon: 'test' },
+  { id: 'homework', title: '作业完成情况', desc: '已汇总 12 次课堂作业 | 可辅助分析学习投入情况', icon: 'doc' },
+  { id: 'student-review', title: '本学期学生评教', desc: '已汇总学生评教结果 | 可辅助分析课堂体验与反馈', icon: 'star' },
+  { id: 'peer-review', title: '同行听课反馈', desc: '已同步 1 条听课记录 | 可作为课堂观察参考', icon: 'doc' },
+  { id: 'lesson-material', title: '课程教案与课件', desc: '已整理 16 次课资料 | 可结合课程设计分析实施情况', icon: 'doc' },
+  { id: 'case-material', title: '案例与项目材料', desc: '已上传 4 份案例材料 | 可辅助分析案例教学效果', icon: 'doc' },
 ]
 
 function goBack() {
@@ -48,6 +51,22 @@ function goBack() {
 function goEvidenceSelect() {
   selectReflectionCourse('智能制造基础')
   uni.navigateTo({ url: '/pages/activity/reflection-evidence/index' })
+}
+
+function selectScope(index: number) {
+  selectedScopeIndex.value = index
+}
+
+function selectEvidenceType(index: number) {
+  selectedEvidenceTypeIndex.value = index
+}
+
+function selectCourseEvidence(id: string) {
+  if (selectedCourseEvidenceIds.value.includes(id)) {
+    selectedCourseEvidenceIds.value = selectedCourseEvidenceIds.value.filter((item) => item !== id)
+    return
+  }
+  selectedCourseEvidenceIds.value = [...selectedCourseEvidenceIds.value, id]
 }
 
 function switchCourse() {
@@ -78,7 +97,7 @@ function goDirectChat() {
       <MobileCard class="scope-card">
         <text class="section-title">反思范围</text>
         <view class="scope-grid">
-          <view v-for="item in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': item.active }">
+          <view v-for="(item, index) in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': selectedScopeIndex === index }" @tap="selectScope(index)">
             <text>{{ item.title }}</text>
             <view class="scope-radio"></view>
           </view>
@@ -109,7 +128,7 @@ function goDirectChat() {
 
         <view class="evidence-layout">
           <view class="type-list">
-            <view v-for="item in evidenceTypes" :key="item.title" class="type-card" :class="{ 'type-card--active': item.active }">
+            <view v-for="(item, index) in evidenceTypes" :key="item.title" class="type-card" :class="{ 'type-card--active': selectedEvidenceTypeIndex === index }" @tap="selectEvidenceType(index)">
               <view class="type-icon" :class="`type-icon--${item.icon}`"></view>
               <text class="type-title">{{ item.title }}</text>
               <text class="type-desc">{{ item.desc }}</text>
@@ -122,14 +141,14 @@ function goDirectChat() {
                 <text>3 月课堂分析 | 3 堂 | 已选 2 堂</text>
                 <view class="up-icon"></view>
               </view>
-              <view v-for="item in monthReports" :key="item.title" class="report-row" :class="{ 'report-row--selected': item.selected }">
+              <view v-for="item in monthReports" :key="item.title" class="report-row" :class="{ 'report-row--selected': selectedCourseEvidenceIds.includes(item.id) }" @tap="selectCourseEvidence(item.id)">
                 <view class="report-icon"></view>
                 <view class="report-row__body">
                   <text class="row-title">{{ item.title }}</text>
                   <text class="row-desc">{{ item.date }} | {{ item.course }}</text>
                   <text class="row-desc">{{ item.desc }}</text>
                 </view>
-                <view class="select-dot" :class="{ 'select-dot--checked': item.selected }"></view>
+                <view class="select-dot" :class="{ 'select-dot--checked': selectedCourseEvidenceIds.includes(item.id) }"></view>
               </view>
             </view>
 
@@ -142,13 +161,13 @@ function goDirectChat() {
               <view class="down-icon"></view>
             </view>
 
-            <view v-for="row in analysisRows" :key="row.title" class="analysis-row">
+            <view v-for="row in analysisRows" :key="row.title" class="analysis-row" @tap="selectCourseEvidence(row.id)">
               <view class="small-icon" :class="`small-icon--${row.icon}`"></view>
               <view class="analysis-row__body">
                 <text class="row-title">{{ row.title }}</text>
                 <text class="row-desc">{{ row.desc }}</text>
               </view>
-              <view class="select-dot" :class="{ 'select-dot--checked': row.selected }"></view>
+              <view class="select-dot" :class="{ 'select-dot--checked': selectedCourseEvidenceIds.includes(row.id) }"></view>
             </view>
           </view>
         </view>
@@ -181,7 +200,7 @@ function goDirectChat() {
 
 .reflection-course-page {
   min-height: 100vh;
-  padding-bottom: calc(288rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 0%, rgba(234, 224, 255, 0.44), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f8fbff 48%, #f5f9ff 100%);
@@ -213,7 +232,7 @@ function goDirectChat() {
 .course-card,
 .evidence-card,
 .supplement-card {
-  padding: 26rpx;
+  padding: 30rpx;
 }
 
 .section-title,
@@ -231,7 +250,7 @@ function goDirectChat() {
 
 .section-title {
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -260,7 +279,7 @@ function goDirectChat() {
 
 .scope-option {
   width: calc((100% - 24rpx) / 2);
-  height: 58rpx;
+  height: 64rpx;
   justify-content: space-between;
   padding: 0 20rpx;
   border: 2rpx solid #d8e0ec;

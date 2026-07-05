@@ -140,7 +140,7 @@ function getManualStartMethod(icon: string): ReflectionStartMethod {
 
 .reflection-start-page {
   min-height: 100vh;
-  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 0%, rgba(234, 224, 255, 0.52), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f8fbff 48%, #f5f9ff 100%);
@@ -148,6 +148,7 @@ function getManualStartMethod(icon: string): ReflectionStartMethod {
 }
 
 .hero {
+  min-height: 210rpx;
   padding: calc(var(--status-bar-height) + 14rpx) 28rpx 28rpx;
 }
 
@@ -170,6 +171,7 @@ function getManualStartMethod(icon: string): ReflectionStartMethod {
 
 .section-card {
   padding: 28rpx;
+  border-radius: 28rpx;
 }
 
 .section-head,
@@ -191,7 +193,7 @@ function getManualStartMethod(icon: string): ReflectionStartMethod {
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }

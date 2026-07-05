@@ -18,6 +18,13 @@ function goDraft() {
   saveReflectionDraft('AI 引导会话已生成反思草稿')
   uni.navigateTo({ url: '/pages/activity/reflection-draft/index' })
 }
+
+function showEvidenceFeedback() {
+  uni.showToast({
+    title: '依据管理为本地模拟，当前已展示已选依据',
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -43,7 +50,7 @@ function goDraft() {
         </view>
         <view class="evidence-bottom">
           <text>2026-03-18　|　智能制造 2301 班</text>
-          <MobileActionButton class="add-button" variant="outline" arrow>查看 / 添加依据</MobileActionButton>
+          <MobileActionButton class="add-button" variant="outline" arrow @tap="showEvidenceFeedback">查看 / 添加依据</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -137,7 +144,7 @@ function goDraft() {
 
 .reflection-guide-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 46%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -165,7 +172,7 @@ function goDraft() {
 .evidence-card,
 .chat-card,
 .summary-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .evidence-title,
@@ -355,7 +362,7 @@ function goDraft() {
 .summary-title {
   flex: 1;
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 
@@ -520,7 +527,7 @@ function goDraft() {
 
 .draft-button {
   width: 300rpx;
-  height: 70rpx;
+  height: 76rpx;
   flex: 0 0 auto;
   border-radius: 16rpx;
   font-size: 29rpx;

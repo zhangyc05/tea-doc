@@ -48,6 +48,10 @@ function goLogDetail() {
   uni.navigateTo({ url: '/pages/activity/enterprise-workflow-config/index' })
 }
 
+function showAttachmentFeedback() {
+  uni.showToast({ title: '附件清单为本地模拟，可通过补充资料追加材料', icon: 'none' })
+}
+
 function updateArchiveDraft() {
   saveEnterpriseArchiveDraft()
 }
@@ -137,7 +141,7 @@ function supplementMaterial() {
       </MobileCard>
 
       <MobileCard class="attachment-card">
-        <view class="section-head attachment-head">
+        <view class="section-head attachment-head" @tap="showAttachmentFeedback">
           <view class="section-icon section-icon--clip"></view>
           <text class="section-title">附件资料</text>
           <view class="section-chevron"></view>
@@ -187,7 +191,7 @@ function supplementMaterial() {
 .login-history-page {
   position: relative;
   min-height: 100vh;
-  padding-bottom: calc(142rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 88% 10%, rgba(190, 246, 218, 0.7), transparent 19%),
@@ -315,7 +319,7 @@ function supplementMaterial() {
 .practice-card {
   display: flex;
   gap: 28rpx;
-  padding: 28rpx 28rpx 24rpx;
+  padding: 32rpx;
 }
 
 .practice-icon,
@@ -501,7 +505,7 @@ function supplementMaterial() {
 .ready-card {
   position: relative;
   gap: 24rpx;
-  min-height: 164rpx;
+  min-height: 176rpx;
   padding: 28rpx 34rpx;
   overflow: hidden;
   background: linear-gradient(105deg, rgba(239, 254, 246, 0.96), rgba(248, 253, 250, 0.96));
@@ -604,7 +608,7 @@ function supplementMaterial() {
 
 .summary-card,
 .attachment-card {
-  padding: 26rpx 28rpx 24rpx;
+  padding: 30rpx 32rpx;
 }
 
 .section-head {
@@ -658,7 +662,7 @@ function supplementMaterial() {
   min-width: 0;
   flex: 1;
   color: #111827;
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

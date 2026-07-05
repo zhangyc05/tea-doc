@@ -161,7 +161,7 @@ function goArchivePendingList() {
 .archive-result-page {
   position: relative;
   min-height: 100vh;
-  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(198rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 86% 8%, rgba(202, 250, 225, 0.72), transparent 16%),
@@ -271,13 +271,13 @@ function goArchivePendingList() {
   display: flex;
   flex-direction: column;
   gap: 24rpx;
-  padding: 86rpx 28rpx 0;
+  padding: 92rpx 30rpx 0;
 }
 
 .result-card,
 .overview-card,
 .submit-card {
-  padding: 38rpx 38rpx 34rpx;
+  padding: 40rpx 40rpx 36rpx;
   border-radius: 22rpx;
   box-shadow: 0 16rpx 42rpx rgba(45, 64, 93, 0.07);
 }
@@ -345,7 +345,7 @@ function goArchivePendingList() {
 }
 
 .result-title {
-  font-size: 39rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.2;
 }

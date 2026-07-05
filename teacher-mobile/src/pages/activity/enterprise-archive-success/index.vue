@@ -33,6 +33,10 @@ function goArchiveRecord() {
   })
 }
 
+function showMaterialFeedback() {
+  uni.showToast({ title: '入档材料为本地模拟，可查看提交内容确认详情', icon: 'none' })
+}
+
 function goArchivePendingList() {
   uni.navigateTo({
     url: '/pages/archive/draft-list/index',
@@ -86,7 +90,7 @@ function goArchivePendingList() {
           <text class="section-title">入档材料</text>
         </view>
 
-        <view class="file-row">
+        <view class="file-row" @tap="showMaterialFeedback">
           <view class="pdf-icon">PDF</view>
           <view class="file-copy">
             <text class="file-name">企业实践证明.pdf</text>
@@ -139,7 +143,7 @@ function goArchivePendingList() {
 
 .archive-success-page {
   min-height: 100vh;
-  padding-bottom: calc(154rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(182rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 0%, rgba(224, 251, 238, 0.78), transparent 34%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 50%, #f2faf7 100%);
@@ -169,7 +173,7 @@ function goArchivePendingList() {
 .success-card {
   position: relative;
   gap: 34rpx;
-  padding: 48rpx 56rpx;
+  padding: 50rpx 58rpx;
   overflow: hidden;
   border-radius: 18rpx;
   background: linear-gradient(105deg, rgba(225, 249, 237, 0.95), rgba(250, 255, 253, 0.96));
@@ -218,7 +222,7 @@ function goArchivePendingList() {
 
 .success-title {
   color: #08a85c;
-  font-size: 36rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -252,7 +256,7 @@ function goArchivePendingList() {
 .record-card,
 .material-card,
 .usage-card {
-  padding: 34rpx 38rpx;
+  padding: 36rpx 40rpx;
   border-radius: 18rpx;
 }
 
@@ -347,7 +351,7 @@ function goArchivePendingList() {
 }
 
 .section-title {
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
 }
 

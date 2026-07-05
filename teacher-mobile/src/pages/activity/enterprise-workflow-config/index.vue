@@ -18,6 +18,10 @@ function showToast(title: string) {
   uni.showToast({ title, icon: 'none' })
 }
 
+function showPracticeFeedback() {
+  uni.showToast({ title: '所属实践为本地模拟，可返回实践日志查看上下文', icon: 'none' })
+}
+
 function goEnterpriseLogList() {
   uni.navigateBack()
 }
@@ -56,7 +60,7 @@ function goEnterpriseLogList() {
           <view class="section-icon section-icon--building"></view>
           <text class="section-title">所属实践</text>
         </view>
-        <view class="practice-row">
+        <view class="practice-row" @tap="showPracticeFeedback">
           <view class="mini-icon mini-icon--building"></view>
           <text class="practice-title">山东某智能装备有限公司企业实践</text>
           <view class="chevron"></view>
@@ -147,7 +151,7 @@ function goEnterpriseLogList() {
 
 .workflow-page {
   min-height: 100vh;
-  padding-bottom: calc(38rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(62rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 45%, #f8fbf9 100%);
   color: #10172d;
@@ -224,7 +228,7 @@ function goEnterpriseLogList() {
 }
 
 .hero-card {
-  min-height: 206rpx;
+  min-height: 218rpx;
   padding: 34rpx 240rpx 34rpx 28rpx;
 }
 
@@ -284,7 +288,7 @@ function goEnterpriseLogList() {
 .hero-title {
   margin-top: 28rpx;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.35;
 }
@@ -379,7 +383,7 @@ function goEnterpriseLogList() {
 .attachment-card,
 .ai-card,
 .archive-card {
-  padding: 30rpx 28rpx;
+  padding: 32rpx;
 }
 
 .section-head {
@@ -409,7 +413,7 @@ function goEnterpriseLogList() {
 .section-title {
   flex: 1;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
 }
 

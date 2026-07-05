@@ -44,8 +44,22 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showActivityFeedback(action: string) {
+  uni.showToast({
+    title: `教研活动操作为本地模拟：${action}`,
+    icon: 'none',
+  })
+}
+
+function showMaterialFeedback(title: string) {
+  uni.showToast({
+    title: `过程材料预览为本地模拟：${title}`,
+    icon: 'none',
+  })
+}
+
+function goContributionConfirm() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-confirm-contribution/index' })
 }
 </script>
 
@@ -85,7 +99,7 @@ function showToast(title: string) {
           </view>
           <view class="pending-actions">
             <text class="warning-chip">待确认</text>
-            <MobileActionButton class="small-outline" variant="outline" @tap="showToast('确认贡献')">
+            <MobileActionButton class="small-outline" variant="outline" @tap="goContributionConfirm">
               确认贡献
             </MobileActionButton>
           </view>
@@ -103,7 +117,7 @@ function showToast(title: string) {
             </view>
             <view class="activity-actions">
               <text class="state-chip" :class="`state-chip--${item.statusType}`">{{ item.status }}</text>
-              <MobileActionButton class="row-button" variant="outline" @tap="showToast(item.action)">
+              <MobileActionButton class="row-button" variant="outline" @tap="showActivityFeedback(item.action)">
                 {{ item.action }}
               </MobileActionButton>
             </view>
@@ -115,7 +129,7 @@ function showToast(title: string) {
       <view class="section-block">
         <text class="block-title">过程材料</text>
         <MobileCard class="material-card">
-          <button v-for="item in materials" :key="item.title" class="material-item" @tap="showToast(item.title)">
+          <button v-for="item in materials" :key="item.title" class="material-item" @tap="showMaterialFeedback(item.title)">
             <view class="material-icon" :class="`material-icon--${item.icon}`" aria-hidden="true"></view>
             <text class="material-title">{{ item.title }}</text>
             <text class="material-count">{{ item.count }}</text>
@@ -131,7 +145,7 @@ function showToast(title: string) {
       </view>
     </view>
 
-    <MobileTabBar active="assistant" />
+    <MobileTabBar active="activity" />
   </view>
 </template>
 
@@ -140,7 +154,7 @@ function showToast(title: string) {
 
 .room-detail-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 86% 6%, rgba(218, 249, 235, 0.7), transparent 29%),
@@ -175,7 +189,7 @@ function showToast(title: string) {
 .room-card {
   display: flex;
   gap: 34rpx;
-  padding: 32rpx;
+  padding: 34rpx;
 }
 
 .room-visual {
@@ -282,7 +296,7 @@ function showToast(title: string) {
 .room-title {
   flex: 1;
   color: #11182d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.28;
 }

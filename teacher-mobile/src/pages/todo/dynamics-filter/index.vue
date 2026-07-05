@@ -9,6 +9,7 @@ import {
   getTodoState,
   resetTodoDynamicFilter,
   setTodoDynamicFilter,
+  type MobileTodoDynamic,
   type MobileTodoDynamicTimeFilter,
   type MobileTodoDynamicType,
 } from '../../../stores/todoStore'
@@ -48,6 +49,10 @@ function resetFilter() {
 function applyFilter() {
   uni.redirectTo({ url: '/pages/todo/dynamics/index' })
 }
+
+function showDynamic(item: MobileTodoDynamic) {
+  uni.showToast({ title: `动态详情为本地模拟：${item.title}`, icon: 'none' })
+}
 </script>
 
 <template>
@@ -82,7 +87,7 @@ function applyFilter() {
         <text class="date-count">{{ resultCount }} 条</text>
       </view>
 
-      <MobileCard v-for="item in visibleItems" :key="item.id" class="dynamic-card">
+      <MobileCard v-for="item in visibleItems" :key="item.id" class="dynamic-card" @tap="showDynamic(item)">
         <view class="dynamic-icon" :class="[`dynamic-icon--${item.tone}`, `dynamic-icon--${item.icon}`]">
           <view class="dynamic-icon__glyph"></view>
         </view>
@@ -166,6 +171,7 @@ function applyFilter() {
   position: relative;
   overflow: hidden;
   padding-top: calc(var(--status-bar-height) + 8rpx);
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #fcfffd 0%, #f6fbff 100%);
 }
 
@@ -304,7 +310,7 @@ function applyFilter() {
   min-height: 104rpx;
   margin-top: 12rpx;
   padding: 20rpx 18rpx;
-  border-radius: 18rpx;
+  border-radius: 24rpx;
 }
 
 .dynamic-icon {
@@ -511,7 +517,7 @@ function applyFilter() {
 .option-pill {
   display: flex;
   box-sizing: border-box;
-  height: 74rpx;
+  height: 76rpx;
   min-width: 0;
   align-items: center;
   justify-content: center;
@@ -551,7 +557,7 @@ function applyFilter() {
 
 .drawer-action {
   flex: 1;
-  height: 76rpx;
+  height: 80rpx;
   border-radius: 18rpx;
   font-size: 31rpx;
 }

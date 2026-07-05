@@ -141,7 +141,7 @@ function startLearning(recordId = 'digital-teaching-record') {
 
 .training-list-page {
   min-height: 100vh;
-  padding-bottom: calc(156rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 12% 0%, rgba(220, 252, 236, 0.9), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
@@ -252,7 +252,7 @@ function startLearning(recordId = 'digital-teaching-record') {
 .recommend-card,
 .mine-card,
 .empty-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .section-head,
@@ -282,7 +282,7 @@ function startLearning(recordId = 'digital-teaching-record') {
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -340,7 +340,7 @@ function startLearning(recordId = 'digital-teaching-record') {
 .recommend-item {
   position: relative;
   gap: 30rpx;
-  min-height: 230rpx;
+  min-height: 240rpx;
   padding: 36rpx 30rpx 112rpx;
   border: 1rpx solid rgba(232, 237, 245, 0.95);
   border-radius: 24rpx;

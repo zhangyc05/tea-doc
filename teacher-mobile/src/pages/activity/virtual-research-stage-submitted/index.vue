@@ -13,8 +13,25 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showStageFileFeedback(name: string) {
+  uni.showToast({
+    title: `阶段材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
+}
+
+function showDetailFeedback() {
+  uni.showToast({
+    title: '材料说明详情为本地模拟，当前页面已展示摘要',
+    icon: 'none',
+  })
+}
+
+function showNextActionFeedback(title: string) {
+  uni.showToast({
+    title: `后续动作提醒为本地模拟：${title}`,
+    icon: 'none',
+  })
 }
 
 function goResearchRoom() {
@@ -79,7 +96,7 @@ function goActivityDetail() {
           <view class="head-icon head-icon--confirm"></view>
           <text class="section-title">已提交材料</text>
         </view>
-        <button class="file-row" @tap="showToast('设备调试案例素材.pdf')">
+        <button class="file-row" @tap="showStageFileFeedback('设备调试案例素材.pdf')">
           <view class="file-type">
             <text>PDF</text>
           </view>
@@ -108,7 +125,7 @@ function goActivityDetail() {
         </view>
         <view class="ai-box">
           <text class="ai-desc">你准备的企业设备调试案例可用于课程案例共创讨论，包含案例背景、设备问题、调试过程及可提炼的教学点。</text>
-          <button class="detail-button" @tap="showToast('查看详情')">查看详情</button>
+          <button class="detail-button" @tap="showDetailFeedback">查看详情</button>
         </view>
       </MobileCard>
 
@@ -133,7 +150,7 @@ function goActivityDetail() {
           <text class="section-title">后续可能需要你处理</text>
         </view>
         <view class="next-grid">
-          <view v-for="item in nextActions" :key="item.title" class="next-item" @tap="showToast(item.title)">
+          <view v-for="item in nextActions" :key="item.title" class="next-item" @tap="showNextActionFeedback(item.title)">
             <view class="next-icon" :class="`next-icon--${item.type}`"></view>
             <view class="next-copy">
               <text class="next-title">{{ item.title }}</text>
@@ -160,7 +177,7 @@ function goActivityDetail() {
 
 .stage-page {
   min-height: 100vh;
-  padding-bottom: calc(132rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #fbfdff 44%, #f8fbfa 100%);
   color: #10172d;
@@ -332,7 +349,7 @@ function goActivityDetail() {
 
 .activity-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   box-shadow: 0 10rpx 28rpx rgba(23, 35, 61, 0.05);
 }
 
@@ -342,7 +359,7 @@ function goActivityDetail() {
 }
 
 .section-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
   background: #fff;
 }
 
@@ -368,7 +385,7 @@ function goActivityDetail() {
 
 .section-title {
   color: #070d1d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

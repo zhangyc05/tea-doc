@@ -35,7 +35,7 @@ const resultView = computed(() => {
       tag: '已通过',
       tone: 'green' as const,
       title: '更正申请已通过',
-      desc: '核验通过后，正式档案事实将由管理端或真实接口回写。本页只展示结果态。',
+      desc: '核验通过后，正式档案事实保持当前模拟结果态，后续以管理端核验结果同步为准。',
       action: '查看原档案',
     }
   }
@@ -128,7 +128,7 @@ function goPrimaryAction() {
       <text class="section-title">结果说明</text>
       <view class="notice-row">
         <view class="notice-dot"></view>
-        <text class="notice-text">更正结果需要管理端或真实接口回写后，才能改变档案状态。</text>
+        <text class="notice-text">更正结果当前为本地模拟状态，正式档案状态以管理端核验结果为准。</text>
       </view>
       <view class="notice-row">
         <view class="notice-dot"></view>

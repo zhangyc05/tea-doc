@@ -35,8 +35,18 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showRequirementFeedback(title: string) {
+  uni.showToast({
+    title: `补充要求详情为本地模拟：${title}`,
+    icon: 'none',
+  })
+}
+
+function showVoiceFeedback() {
+  uni.showToast({
+    title: '语音说明为本地模拟入口，当前可用文字说明替代',
+    icon: 'none',
+  })
 }
 
 function handleSupplementUpload(source: '上传' | '拍照') {
@@ -105,7 +115,7 @@ function submitAgain() {
             v-for="item in supplementItems"
             :key="item.title"
             class="supplement-row"
-            @tap="showToast(item.title)"
+            @tap="showRequirementFeedback(item.title)"
           >
             <view class="row-icon" :class="`row-icon--${item.icon}`"></view>
             <view class="row-copy">
@@ -141,7 +151,7 @@ function submitAgain() {
             <view class="tool-icon tool-icon--camera"></view>
             <text>拍照</text>
           </button>
-          <button class="tool-button" @tap="showToast('语音说明')">
+          <button class="tool-button" @tap="showVoiceFeedback">
             <view class="tool-icon tool-icon--mic"></view>
             <text>语音说明</text>
           </button>
@@ -191,7 +201,7 @@ function submitAgain() {
 
 .supplement-page {
   min-height: 100vh;
-  padding-bottom: calc(270rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 5%, rgba(224, 250, 239, 0.8), transparent 29%),
@@ -218,7 +228,7 @@ function submitAgain() {
 .activity-card,
 .return-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
 }
 
 .activity-card,
@@ -226,7 +236,7 @@ function submitAgain() {
   display: flex;
   align-items: center;
   gap: 30rpx;
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .activity-illustration,
@@ -362,7 +372,7 @@ function submitAgain() {
 
 .section-title {
   color: #070d1d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.24;
 }
@@ -482,7 +492,7 @@ function submitAgain() {
 }
 
 .section-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .supplement-list,

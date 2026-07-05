@@ -18,6 +18,7 @@ onLoad((options) => {
 
 const archiveRecord = computed(() => findArchiveRecordById(query.value.recordId))
 const processingQueueTrace = computed(() => archiveRecord.value?.processingQueueTrace)
+const processingQueueLabel = computed(() => processingQueueTrace.value ? '档案处理队列' : '档案待确认')
 
 function backAssistant() {
   uni.redirectTo({ url: '/pages/assistant/index' })
@@ -53,7 +54,7 @@ function goPendingList() {
       </view>
       <view v-if="processingQueueTrace" class="status-row">
         <text>处理队列</text>
-        <text>{{ processingQueueTrace.store || 'archiveStore.processingRecords' }}</text>
+        <text>{{ processingQueueLabel }}</text>
       </view>
       <view v-if="processingQueueTrace" class="status-row">
         <text>队列状态</text>

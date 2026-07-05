@@ -68,7 +68,7 @@ function goContributionDetail() {
 function previewMaterial(fileName: string) {
   recordMemberProfileAction(`查看材料：${fileName}`)
   const preview = previewVirtualResearchMaterial(fileName)
-  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
+  uni.showToast({ title: preview.message || `附件预览为本地模拟：${fileName}`, icon: 'none' })
 }
 </script>
 
@@ -218,7 +218,7 @@ function previewMaterial(fileName: string) {
 
 .intro-submitted-page {
   min-height: 100vh;
-  padding-bottom: calc(138rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 0%, rgba(235, 246, 255, 0.9), transparent 30%),
@@ -284,7 +284,7 @@ function previewMaterial(fileName: string) {
   min-height: 190rpx;
   align-items: center;
   gap: 28rpx;
-  padding: 38rpx 34rpx 30rpx;
+  padding: 40rpx 34rpx 32rpx;
 }
 
 .hero-copy {
@@ -412,18 +412,18 @@ function previewMaterial(fileName: string) {
 }
 
 .section-card {
-  border-radius: 16rpx;
+  border-radius: 24rpx;
   box-shadow: 0 14rpx 38rpx rgba(20, 41, 72, 0.055);
 }
 
 .activity-card,
 .file-card,
 .status-card {
-  padding: 24rpx;
+  padding: 30rpx;
 }
 
 .contribution-card {
-  padding: 24rpx 18rpx 16rpx;
+  padding: 30rpx;
 }
 
 .section-head {
@@ -486,7 +486,7 @@ function previewMaterial(fileName: string) {
 
 .section-title {
   color: #10172d;
-  font-size: 28rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }

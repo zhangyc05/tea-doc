@@ -12,6 +12,22 @@ const uploadMethods = [
 function goBack() {
   uni.navigateBack()
 }
+
+function showUploadFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟入口，当前沿用已上传材料`, icon: 'none' })
+}
+
+function previewMaterial() {
+  uni.showToast({ title: '材料预览为本地模拟，已展示证明文件摘要', icon: 'none' })
+}
+
+function returnToDraft() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-archive-edit/index' })
+}
+
+function confirmMaterial() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-supplement-submitted/index' })
+}
 </script>
 
 <template>
@@ -41,7 +57,7 @@ function goBack() {
           <text class="section-title">上传方式</text>
         </view>
         <view class="method-box">
-          <view v-for="item in uploadMethods" :key="item.title" class="method-row">
+          <view v-for="item in uploadMethods" :key="item.title" class="method-row" @tap="showUploadFeedback(item.title)">
             <view class="method-icon" :class="`method-icon--${item.type}`"></view>
             <view class="method-copy">
               <text class="method-title">{{ item.title }}</text>
@@ -68,7 +84,7 @@ function goBack() {
           </view>
 
           <view class="preview-title">材料预览</view>
-          <view class="preview-row">
+          <view class="preview-row" @tap="previewMaterial">
             <view class="paper-thumb">
               <view class="paper-line paper-line--wide"></view>
               <view class="paper-line"></view>
@@ -94,8 +110,8 @@ function goBack() {
       </view>
 
       <view class="bottom-actions">
-        <MobileActionButton class="action-button action-button--draft" variant="outline">返回草稿</MobileActionButton>
-        <MobileActionButton class="action-button" variant="primary">确定使用</MobileActionButton>
+        <MobileActionButton class="action-button action-button--draft" variant="outline" @tap="returnToDraft">返回草稿</MobileActionButton>
+        <MobileActionButton class="action-button" variant="primary" @tap="confirmMaterial">确定使用</MobileActionButton>
       </view>
     </view>
 
@@ -108,7 +124,7 @@ function goBack() {
 
 .proof-supplement-page {
   min-height: 100vh;
-  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(320rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 10% 0%, rgba(224, 251, 238, 0.76), transparent 34%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 48%, #f4faf7 100%);
@@ -144,7 +160,7 @@ function goBack() {
 
 .record-card {
   gap: 30rpx;
-  padding: 34rpx 40rpx;
+  padding: 36rpx 42rpx;
   border-radius: 24rpx;
 }
 
@@ -253,7 +269,7 @@ function goBack() {
 
 .method-card,
 .uploaded-card {
-  padding: 28rpx;
+  padding: 32rpx;
   border-radius: 24rpx;
 }
 
@@ -269,7 +285,7 @@ function goBack() {
 }
 
 .section-title {
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

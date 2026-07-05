@@ -40,6 +40,13 @@ function goAbilityProfile() {
 function goDevelopmentReport() {
   uni.navigateTo({ url: '/pages/profile/development-report/index' })
 }
+
+function showServiceFeedback(target: string) {
+  uni.showToast({
+    title: `${target}为本地模拟入口，暂未接入独立页面`,
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -55,7 +62,7 @@ function goDevelopmentReport() {
 
     <view class="page-head">
       <text class="page-head__title">我的</text>
-      <button class="setting-button" aria-label="设置">
+      <button class="setting-button" aria-label="设置" @tap="showServiceFeedback('设置')">
         <view class="setting-button__gear"></view>
       </button>
     </view>
@@ -74,7 +81,7 @@ function goDevelopmentReport() {
         <text class="teacher-meta">智能制造学院 ｜ 讲师</text>
         <text class="teacher-meta teacher-meta--period">2026 年度发展周期 ｜ 聘期第 2 年</text>
       </view>
-      <MobileActionButton class="profile-link" variant="link" arrow>查看个人资料</MobileActionButton>
+      <MobileActionButton class="profile-link" variant="link" arrow @tap="showServiceFeedback('个人资料')">查看个人资料</MobileActionButton>
     </MobileCard>
 
     <MobileCard class="ability-card">
@@ -133,7 +140,7 @@ function goDevelopmentReport() {
 
     <MobileCard class="service-card">
       <text class="section-title">系统服务</text>
-      <view v-for="item in serviceMenus" :key="item.title" class="service-row">
+      <view v-for="item in serviceMenus" :key="item.title" class="service-row" @tap="showServiceFeedback(item.title)">
         <view class="service-icon" :class="`service-icon--${item.tone} service-icon--${item.icon}`"></view>
         <text class="service-row__title">{{ item.title }}</text>
         <view class="menu-row__arrow"></view>
@@ -147,6 +154,13 @@ function goDevelopmentReport() {
 
 .profile-page {
   --profile-green: #0ec165;
+
+  min-height: 100vh;
+  padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(150rpx + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 14% 2%, rgba(226, 252, 239, 0.8), transparent 30%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbff 50%, #f5f9ff 100%);
+  color: $teacher-mobile-text-primary;
 }
 
 .system-status,
@@ -244,7 +258,7 @@ function goDevelopmentReport() {
 
 .page-head__title {
   color: #080d1f;
-  font-size: 62rpx;
+  font-size: 68rpx;
   font-weight: 900;
   line-height: 1.04;
 }
@@ -445,7 +459,7 @@ function goDevelopmentReport() {
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }

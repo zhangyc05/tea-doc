@@ -57,8 +57,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showTodoFallback(action: string) {
+  uni.showToast({
+    title: `待办操作为本地模拟：${action}`,
+    icon: 'none',
+  })
 }
 
 function goResearchInvitation() {
@@ -86,7 +89,7 @@ function handleTodoAction(action: string) {
     goContributionConfirm()
     return
   }
-  showToast(action)
+  showTodoFallback(action)
 }
 </script>
 
@@ -190,7 +193,7 @@ function handleTodoAction(action: string) {
       </view>
     </view>
 
-    <MobileTabBar active="assistant" />
+    <MobileTabBar active="activity" />
   </view>
 </template>
 
@@ -199,7 +202,7 @@ function handleTodoAction(action: string) {
 
 .room-dashboard-page {
   min-height: 100vh;
-  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 86% 7%, rgba(215, 250, 232, 0.72), transparent 25%),
@@ -249,8 +252,8 @@ function handleTodoAction(action: string) {
 .stats-card {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: 24rpx 28rpx;
-  border-radius: 20rpx;
+  padding: 28rpx;
+  border-radius: 24rpx;
   background: linear-gradient(90deg, rgba(244, 255, 249, 0.94), #fff);
 }
 
@@ -385,7 +388,7 @@ function handleTodoAction(action: string) {
 .todo-card,
 .room-card,
 .activity-card {
-  border-radius: 18rpx;
+  border-radius: 24rpx;
   box-shadow: 0 14rpx 38rpx rgba(20, 40, 70, 0.055);
 }
 

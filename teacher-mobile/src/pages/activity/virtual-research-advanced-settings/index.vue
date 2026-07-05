@@ -28,8 +28,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showReportFeedback(action: string) {
+  uni.showToast({
+    title: `发展报告操作为本地模拟：${action}`,
+    icon: 'none',
+  })
 }
 </script>
 
@@ -37,7 +40,7 @@ function showToast(title: string) {
   <view class="report-page">
     <MobileNavbar title="2026 年度发展报告" size="compact" @back="goBack">
       <template #right>
-        <button class="share-button" @tap="showToast('导出报告')"></button>
+        <button class="share-button" @tap="showReportFeedback('导出报告')"></button>
       </template>
     </MobileNavbar>
 
@@ -137,22 +140,22 @@ function showToast(title: string) {
             <view class="suggestion-icon" :class="`suggestion-icon--${item.type}`"></view>
             <text class="suggestion-title">{{ item.title }}</text>
             <text class="suggestion-desc">{{ item.desc }}</text>
-            <button class="suggestion-button" @tap="showToast(item.action)">{{ item.action }}</button>
+            <button class="suggestion-button" @tap="showReportFeedback(item.action)">{{ item.action }}</button>
           </view>
         </view>
       </MobileCard>
     </view>
 
     <view class="fixed-actions">
-      <button class="text-action" @tap="showToast('引用记录')">
+      <button class="text-action" @tap="showReportFeedback('引用记录')">
         <view class="quote-icon"></view>
         <text>引用记录</text>
       </button>
-      <button class="text-action" @tap="showToast('重新生成')">
+      <button class="text-action" @tap="showReportFeedback('重新生成')">
         <view class="refresh-icon"></view>
         <text>重新生成</text>
       </button>
-      <MobileActionButton class="save-button" variant="primary" @tap="showToast('确认保存报告')">
+      <MobileActionButton class="save-button" variant="primary" @tap="showReportFeedback('确认保存报告')">
         确认保存报告
       </MobileActionButton>
     </view>
@@ -164,7 +167,7 @@ function showToast(title: string) {
 
 .report-page {
   min-height: 100vh;
-  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
   color: #10172d;
@@ -290,8 +293,8 @@ function showToast(title: string) {
 }
 
 .section-card {
-  border-radius: 14rpx;
-  padding: 28rpx 26rpx 26rpx;
+  border-radius: 24rpx;
+  padding: 30rpx;
 }
 
 .section-title-row {
@@ -304,7 +307,7 @@ function showToast(title: string) {
   height: 52rpx;
   align-items: center;
   justify-content: center;
-  border-radius: 8rpx 8rpx 0 0;
+  border-radius: 12rpx 12rpx 0 0;
   background: linear-gradient(135deg, #5ca0ff, #2f78f5);
   color: #fff;
   font-size: 28rpx;
@@ -313,7 +316,7 @@ function showToast(title: string) {
 
 .section-title {
   color: #0b1224;
-  font-size: 34rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 
@@ -663,7 +666,7 @@ function showToast(title: string) {
   bottom: 0;
   left: 0;
   gap: 18rpx;
-  padding: 18rpx 32rpx calc(18rpx + env(safe-area-inset-bottom));
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid #edf1f7;
   background: rgba(255, 255, 255, 0.96);
 }

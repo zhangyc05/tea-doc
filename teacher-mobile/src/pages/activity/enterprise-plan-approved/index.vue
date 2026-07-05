@@ -110,7 +110,7 @@ function goLogRecord() {
 
 .plan-approved-page {
   min-height: 100vh;
-  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 84% 7%, rgba(210, 250, 228, 0.7), transparent 22%),
     linear-gradient(180deg, #ffffff 0%, #f8fbff 42%, #f5f9ff 100%);
@@ -194,7 +194,7 @@ function goLogRecord() {
 .plan-card,
 .confirmed-card,
 .next-card {
-  padding: 34rpx;
+  padding: 36rpx;
 }
 
 .success-card,
@@ -265,7 +265,7 @@ function goLogRecord() {
 
 .success-title {
   color: #0b713f;
-  font-size: 42rpx;
+  font-size: 46rpx;
   font-weight: 900;
   line-height: 1.24;
 }
@@ -344,7 +344,7 @@ function goLogRecord() {
 
 .section-title {
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

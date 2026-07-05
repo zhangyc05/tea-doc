@@ -15,6 +15,14 @@ function submitDemand() {
   const demand = submitTrainingDemand('ability-improvement')
   uni.navigateTo({ url: `/pages/activity/training-need-result/index?demandId=${demand.id}` })
 }
+
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，后续接入真实编辑能力`, icon: 'none' })
+}
+
+function saveDraft() {
+  uni.showToast({ title: '草稿已保存，本地模拟数据可继续提交', icon: 'none' })
+}
 </script>
 
 <template>
@@ -83,8 +91,8 @@ function submitDemand() {
         <view class="statement-box">
           <text class="statement-text">我希望参加数字化教学应用相关培训，重点学习在线测验、课堂互动工具和学习数据反馈在课堂教学中的应用方式，后续计划结合《智能制造基础》课程进行尝试。</text>
           <view class="panel-actions">
-            <MobileActionButton class="panel-action" variant="outline">修改说明</MobileActionButton>
-            <MobileActionButton class="panel-action" variant="outline">让 AI 再优化</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('修改说明')">修改说明</MobileActionButton>
+            <MobileActionButton class="panel-action" variant="outline" @tap="showDraftFeedback('让 AI 再优化')">让 AI 再优化</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -99,7 +107,7 @@ function submitDemand() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="bottom-actions__button" variant="outline">保存草稿</MobileActionButton>
+      <MobileActionButton class="bottom-actions__button" variant="outline" @tap="saveDraft">保存草稿</MobileActionButton>
       <MobileActionButton class="bottom-actions__button" variant="primary" @tap="submitDemand">提交需求</MobileActionButton>
     </view>
 
@@ -112,7 +120,7 @@ function submitDemand() {
 
 .found-page {
   min-height: 100vh;
-  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(310rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 2%, rgba(220, 252, 236, 0.86), transparent 30%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
@@ -121,7 +129,7 @@ function submitDemand() {
 
 .hero {
   position: relative;
-  min-height: 188rpx;
+  min-height: 210rpx;
   padding: calc(var(--status-bar-height) + 12rpx) 28rpx 20rpx;
   overflow: hidden;
 }
@@ -214,7 +222,7 @@ function submitDemand() {
 .direction-card,
 .statement-card,
 .after-card {
-  padding: 26rpx;
+  padding: 28rpx;
 }
 
 .section-head,
@@ -234,7 +242,7 @@ function submitDemand() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

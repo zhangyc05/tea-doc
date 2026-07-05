@@ -96,7 +96,7 @@ function goPendingList() {
 
 .removed-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 34rpx calc(180rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 34rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 14% 2%, rgba(227, 252, 240, 0.72), transparent 31%),
@@ -382,7 +382,7 @@ function goPendingList() {
 
 .section-title {
   color: #10172d;
-  font-size: 40rpx;
+  font-size: 36rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -437,10 +437,17 @@ function goPendingList() {
 }
 
 .footer-actions {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 28rpx;
-  margin-top: 72rpx;
+  gap: 20rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #edf1f6;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .footer-button {

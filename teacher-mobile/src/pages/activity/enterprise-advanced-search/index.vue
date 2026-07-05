@@ -26,6 +26,10 @@ function uploadProof() {
   addEnterpriseSupplementMaterial()
 }
 
+function showNoteFeedback() {
+  uni.showToast({ title: '补充说明为本地模拟，可直接提交补充材料', icon: 'none' })
+}
+
 function handleLater() {
   saveEnterpriseArchiveDraft('enterprise-jinan-training-base')
   uni.navigateBack()
@@ -110,7 +114,7 @@ function submitSupplement() {
           <text class="section-title">补充说明</text>
           <text class="optional">可选</text>
         </view>
-        <view class="textarea-box">
+        <view class="textarea-box" @tap="showNoteFeedback">
           <text class="placeholder">请输入补充说明，例如：材料由实践单位统一出具</text>
           <text class="count">0/200</text>
         </view>
@@ -138,7 +142,7 @@ function submitSupplement() {
 
 .advanced-search-page {
   min-height: 100vh;
-  padding-bottom: calc(142rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 5% 2%, rgba(217, 247, 234, 0.82), transparent 28%),
@@ -167,7 +171,7 @@ function submitSupplement() {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  padding: 26rpx 30rpx;
+  padding: 30rpx 34rpx;
   border: 2rpx solid rgba(255, 148, 62, 0.3);
   background: linear-gradient(105deg, rgba(255, 250, 244, 0.95), rgba(255, 255, 255, 0.96));
 }
@@ -232,7 +236,7 @@ function submitSupplement() {
 
 .alert-title {
   color: #8d1f10;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.3;
 }
@@ -248,7 +252,7 @@ function submitSupplement() {
 .missing-card,
 .upload-card,
 .note-card {
-  padding: 30rpx 28rpx;
+  padding: 32rpx;
 }
 
 .practice-head,
@@ -527,7 +531,7 @@ function submitSupplement() {
 
 .section-title {
   color: #111827;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 
@@ -89,12 +90,29 @@ const groups = [
   },
 ]
 
+const activeFilterIndex = ref(0)
+
 function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function selectFilter(index: number) {
+  activeFilterIndex.value = index
+}
+
+function showArchiveFilterFeedback() {
+  activeFilterIndex.value = 0
+  uni.showToast({
+    title: '更新筛选已重置为全部',
+    icon: 'none',
+  })
+}
+
+function showRecordFeedback(title: string) {
+  uni.showToast({
+    title: `记录详情为本地模拟：${title}`,
+    icon: 'none',
+  })
 }
 </script>
 
@@ -102,7 +120,7 @@ function showToast(title: string) {
   <view class="recent-page">
     <MobileNavbar title="最近更新" size="compact" @back="goBack">
       <template #right>
-        <button class="filter-button" @tap="showToast('筛选')">
+        <button class="filter-button" @tap="showArchiveFilterFeedback">
           <view class="filter-icon"></view>
           <text>筛选</text>
         </button>
@@ -114,8 +132,8 @@ function showToast(title: string) {
         v-for="(item, index) in filters"
         :key="item"
         class="filter-tab"
-        :class="{ 'filter-tab--active': index === 0 }"
-        @tap="showToast(item)"
+        :class="{ 'filter-tab--active': index === activeFilterIndex }"
+        @tap="selectFilter(index)"
       >
         {{ item }}
       </button>
@@ -132,7 +150,7 @@ function showToast(title: string) {
         </view>
 
         <MobileCard v-for="item in group.items" :key="item.title" class="update-card">
-          <button class="update-row" @tap="showToast(item.title)">
+          <button class="update-row" @tap="showRecordFeedback(item.title)">
             <view class="record-icon" :class="`record-icon--${item.icon}`"></view>
             <view class="record-main">
               <text class="record-title">{{ item.title }}</text>
@@ -155,6 +173,7 @@ function showToast(title: string) {
 
 .recent-page {
   min-height: 100vh;
+  padding-bottom: calc(44rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 80% 2%, rgba(237, 248, 255, 0.9), transparent 30%),
@@ -320,14 +339,14 @@ function showToast(title: string) {
 }
 
 .update-card {
-  border-radius: 18rpx;
+  border-radius: 24rpx;
 }
 
 .update-row {
   width: 100%;
   min-height: 142rpx;
   gap: 32rpx;
-  padding: 26rpx 28rpx 24rpx 24rpx;
+  padding: 28rpx;
   text-align: left;
 }
 
@@ -471,7 +490,7 @@ function showToast(title: string) {
 
 .record-title {
   color: #111827;
-  font-size: 31rpx;
+  font-size: 32rpx;
   font-weight: 900;
   line-height: 1.25;
 }

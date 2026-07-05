@@ -103,7 +103,7 @@ function goEnterpriseList() {
 
 .import-export-page {
   min-height: 100vh;
-  padding-bottom: calc(360rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(374rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 18% 9%, rgba(224, 248, 235, 0.76), transparent 25%),
@@ -129,7 +129,7 @@ function goEnterpriseList() {
 
 .success-card {
   display: flex;
-  min-height: 200rpx;
+  min-height: 212rpx;
   align-items: center;
   gap: 48rpx;
   padding: 34rpx 52rpx;
@@ -201,7 +201,7 @@ function goEnterpriseList() {
 
 .success-title {
   color: #0a6a39;
-  font-size: 42rpx;
+  font-size: 44rpx;
   font-weight: 900;
   line-height: 1.22;
 }
@@ -227,7 +227,7 @@ function goEnterpriseList() {
 .plan-card,
 .ai-card,
 .status-card {
-  padding: 28rpx 32rpx 30rpx;
+  padding: 30rpx 34rpx;
 }
 
 .section-head,
@@ -311,7 +311,7 @@ function goEnterpriseList() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

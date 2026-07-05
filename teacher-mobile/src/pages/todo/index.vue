@@ -23,6 +23,13 @@ function showTodoAction(item: MobileTodoItem) {
 function goAllDynamics() {
   uni.navigateTo({ url: '/pages/todo/dynamics/index' })
 }
+
+function showNoticeFeedback() {
+  uni.showToast({
+    title: '消息通知为本地模拟入口，当前展示待办摘要',
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -45,7 +52,7 @@ function goAllDynamics() {
         <text class="hero-meta">智能制造学院 ｜ 讲师</text>
         <text class="hero-meta hero-meta--period">2026 年度发展周期 ｜ 聘期第 2 年</text>
       </view>
-      <button class="notice-button" aria-label="消息通知">
+      <button class="notice-button" aria-label="消息通知" @tap="showNoticeFeedback">
         <view class="notice-button__bell">
           <view class="notice-button__badge">5</view>
         </view>
@@ -218,7 +225,7 @@ function goAllDynamics() {
 .hero-title {
   display: block;
   color: #080d1f;
-  font-size: 54rpx;
+  font-size: 44rpx;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.08;
@@ -365,7 +372,7 @@ function goAllDynamics() {
 
 .section-title {
   color: $teacher-mobile-text-primary;
-  font-size: 42rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }

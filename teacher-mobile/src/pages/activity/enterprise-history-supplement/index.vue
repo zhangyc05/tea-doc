@@ -27,6 +27,10 @@ function saveDraft() {
   uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，当前沿用 AI 已整理内容`, icon: 'none' })
+}
+
 function goConfirmed() {
   submitEnterpriseHistory()
   uni.navigateTo({ url: '/pages/activity/enterprise-history-confirmed/index' })
@@ -114,8 +118,8 @@ function goConfirmed() {
         </view>
 
         <view class="ai-actions">
-          <MobileActionButton class="ai-action-button" variant="outline">修改内容</MobileActionButton>
-          <MobileActionButton class="ai-action-button" variant="outline">重新整理</MobileActionButton>
+          <MobileActionButton class="ai-action-button" variant="outline" @tap="showDraftFeedback('修改内容')">修改内容</MobileActionButton>
+          <MobileActionButton class="ai-action-button" variant="outline" @tap="showDraftFeedback('重新整理')">重新整理</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -128,7 +132,7 @@ function goConfirmed() {
             <text class="material-tip">建议补充：单位盖章证明、过程照片、成果材料等</text>
           </view>
         </view>
-        <MobileActionButton class="material-button" variant="outline">补充资料</MobileActionButton>
+        <MobileActionButton class="material-button" variant="outline" @tap="showDraftFeedback('补充资料')">补充资料</MobileActionButton>
       </MobileCard>
 
       <view class="notice-card">
@@ -154,7 +158,7 @@ function goConfirmed() {
 
 .history-supplement-page {
   min-height: 100vh;
-  padding-bottom: calc(330rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(344rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 86% 5%, rgba(190, 246, 218, 0.72), transparent 25%),
     linear-gradient(180deg, #f9fffc 0%, #ffffff 28%, #f6fbf8 100%);
@@ -185,7 +189,7 @@ function goConfirmed() {
 
 .hero-title {
   margin-left: 62rpx;
-  font-size: 58rpx;
+  font-size: 62rpx;
   font-weight: 900;
   line-height: 1.12;
 }
@@ -240,7 +244,7 @@ function goConfirmed() {
 .input-card,
 .ai-card,
 .material-card {
-  padding: 30rpx;
+  padding: 32rpx;
   border-radius: 24rpx;
 }
 
@@ -384,7 +388,7 @@ function goConfirmed() {
 }
 
 .card-title {
-  font-size: 33rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

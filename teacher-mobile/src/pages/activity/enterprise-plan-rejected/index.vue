@@ -40,6 +40,10 @@ function goEnterpriseList() {
   uni.navigateTo({ url: '/pages/activity/enterprise-list/index' })
 }
 
+function showAttachmentFeedback() {
+  uni.showToast({ title: '已提交附件为本地模拟，请在修改计划页重新整理', icon: 'none' })
+}
+
 function goPlanEdit() {
   rejectEnterprisePlan()
   uni.navigateTo({ url: '/pages/activity/enterprise-plan-edit/index' })
@@ -118,7 +122,7 @@ function goPlanEdit() {
               <text class="file-name">企业实践安排表.pdf</text>
               <text class="file-size">328 KB</text>
             </view>
-            <text class="view-link">查看</text>
+            <text class="view-link" @tap="showAttachmentFeedback">查看</text>
           </view>
         </MobileCard>
 
@@ -153,7 +157,7 @@ function goPlanEdit() {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
-  padding: 22rpx 28rpx calc(142rpx + env(safe-area-inset-bottom));
+  padding: 24rpx 30rpx calc(166rpx + env(safe-area-inset-bottom));
 }
 
 .alert-card,
@@ -171,7 +175,7 @@ function goPlanEdit() {
 
 .alert-card {
   gap: 26rpx;
-  padding: 30rpx 28rpx;
+  padding: 32rpx 30rpx;
   border-radius: 18rpx;
   background: linear-gradient(105deg, #fff2e8 0%, #fff7f2 100%);
 }
@@ -224,13 +228,13 @@ function goPlanEdit() {
 .reject-card,
 .plan-card,
 .attachment-card {
-  padding: 24rpx;
+  padding: 28rpx;
   border-radius: 18rpx;
 }
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.3;
 }

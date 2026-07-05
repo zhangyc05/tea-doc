@@ -46,6 +46,13 @@ function goActivityHome() {
   uni.switchTab?.({ url: '/pages/activity/index' })
   uni.redirectTo({ url: '/pages/activity/index' })
 }
+
+function showSubmitContentFeedback() {
+  uni.showToast({
+    title: '提交内容为本地模拟，当前页面已展示摘要',
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -120,7 +127,7 @@ function goActivityHome() {
       </view>
 
       <view class="page-actions">
-        <MobileActionButton class="page-actions__button" variant="outline">查看提交内容</MobileActionButton>
+        <MobileActionButton class="page-actions__button" variant="outline" @tap="showSubmitContentFeedback">查看提交内容</MobileActionButton>
         <MobileActionButton class="page-actions__button" variant="primary" @tap="goTraining">返回培训进修</MobileActionButton>
       </view>
 
@@ -136,7 +143,7 @@ function goActivityHome() {
 
 .demand-result-page {
   min-height: 100vh;
-  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 2%, rgba(222, 252, 237, 0.78), transparent 30%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 50%, #f5f9ff 100%);
@@ -157,7 +164,7 @@ function goActivityHome() {
 .success-card,
 .info-card,
 .progress-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .success-card,
@@ -211,7 +218,7 @@ function goActivityHome() {
 .success-card__title {
   display: block;
   color: #086238;
-  font-size: 45rpx;
+  font-size: 48rpx;
   font-weight: 900;
   line-height: 1.16;
 }
@@ -245,7 +252,7 @@ function goActivityHome() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

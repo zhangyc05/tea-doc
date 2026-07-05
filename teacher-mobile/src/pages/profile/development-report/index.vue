@@ -26,8 +26,8 @@ function navigateTo(url: string) {
 
 function showExportNotice() {
   uni.showModal({
-    title: '报告导出待接入',
-    content: '当前为本地 mock 发展报告，尚未生成真实导出文件；报告依据和画像解读可在页面内查看。',
+    title: '报告导出为本地模拟',
+    content: '当前为本地模拟发展报告，暂不生成导出文件；报告依据和画像解读可在页面内查看。',
     showCancel: false,
   })
 }

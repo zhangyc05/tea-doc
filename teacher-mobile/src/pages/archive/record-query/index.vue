@@ -121,7 +121,7 @@ function showRecord(recordId: string) {
 
 .record-query-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(150rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(170rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 14% 4%, rgba(223, 252, 239, 0.82), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 52%, #f5f9ff 100%);
@@ -258,7 +258,7 @@ function showRecord(recordId: string) {
   gap: 20rpx;
   padding: 0 22rpx;
   border: 2rpx solid $teacher-mobile-primary;
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 16rpx 36rpx rgba(35, 51, 87, 0.05);
 }
@@ -360,7 +360,7 @@ function showRecord(recordId: string) {
 .filter-tab {
   display: flex;
   min-width: 128rpx;
-  height: 58rpx;
+  height: 62rpx;
   align-items: center;
   justify-content: center;
   padding: 0 26rpx;
@@ -417,9 +417,9 @@ function showRecord(recordId: string) {
 .record-card {
   min-height: 112rpx;
   gap: 24rpx;
-  padding: 18rpx 26rpx 18rpx 18rpx;
+  padding: 24rpx;
   border: 1rpx solid rgba(232, 238, 247, 0.9);
-  border-radius: 24rpx;
+  border-radius: 26rpx;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 18rpx 46rpx rgba(35, 51, 87, 0.06);
 }

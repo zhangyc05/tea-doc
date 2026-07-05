@@ -37,6 +37,10 @@ function saveDraft() {
   uni.showToast({ title: '日志草稿已保存', icon: 'none' })
 }
 
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，当前沿用 AI 已整理内容`, icon: 'none' })
+}
+
 function saveLog() {
   saveEnterpriseLog(query.value.recordId)
   uni.navigateTo({ url: '/pages/activity/enterprise-progress-detail/index' })
@@ -85,7 +89,7 @@ function saveLog() {
             <text class="today-text">（今天）</text>
           </view>
         </view>
-        <view class="other-date">
+        <view class="other-date" @tap="showDraftFeedback('补记其他日期')">
           <text>补记其他日期</text>
           <view class="chevron chevron--green"></view>
         </view>
@@ -112,7 +116,7 @@ function saveLog() {
             <text class="ai-title">AI 已整理为实践日志草稿</text>
             <text class="info-mark">i</text>
           </view>
-          <view class="refresh-action">
+          <view class="refresh-action" @tap="showDraftFeedback('重新整理')">
             <view class="refresh-icon"></view>
             <text>重新整理</text>
           </view>
@@ -140,8 +144,8 @@ function saveLog() {
           </view>
 
           <view class="draft-actions">
-            <MobileActionButton class="draft-button" variant="outline">修改草稿</MobileActionButton>
-            <MobileActionButton class="draft-button draft-button--muted" variant="outline">重新整理</MobileActionButton>
+            <MobileActionButton class="draft-button" variant="outline" @tap="showDraftFeedback('修改草稿')">修改草稿</MobileActionButton>
+            <MobileActionButton class="draft-button draft-button--muted" variant="outline" @tap="showDraftFeedback('重新整理')">重新整理</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -161,7 +165,7 @@ function saveLog() {
 
 .log-record-page {
   min-height: 100vh;
-  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 84% 8%, rgba(213, 250, 231, 0.72), transparent 25%),
     linear-gradient(180deg, #f7fffb 0%, #ffffff 25%, #f8fbff 100%);
@@ -170,7 +174,7 @@ function saveLog() {
 
 .hero {
   position: relative;
-  min-height: 238rpx;
+  min-height: 254rpx;
   padding: calc(var(--status-bar-height) + 12rpx) 28rpx 22rpx;
   overflow: hidden;
 }
@@ -283,7 +287,7 @@ function saveLog() {
 
 .practice-card {
   gap: 26rpx;
-  padding: 32rpx;
+  padding: 34rpx;
   border-radius: 24rpx;
 }
 
@@ -469,7 +473,7 @@ function saveLog() {
 }
 
 .ai-title {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

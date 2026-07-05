@@ -163,7 +163,7 @@ function goApplicationDetail() {
 
 .application-page {
   min-height: 100vh;
-  padding-bottom: calc(330rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(344rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 14% 0%, rgba(220, 252, 236, 0.9), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
@@ -172,7 +172,7 @@ function goApplicationDetail() {
 
 .hero {
   position: relative;
-  min-height: 206rpx;
+  min-height: 220rpx;
   padding: calc(var(--status-bar-height) + 14rpx) 28rpx 24rpx;
   overflow: hidden;
 }
@@ -265,7 +265,7 @@ function goApplicationDetail() {
 .summary-card,
 .submitted-card,
 .progress-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .success-card,
@@ -327,7 +327,7 @@ function goApplicationDetail() {
 .success-title {
   display: block;
   color: #10172d;
-  font-size: 40rpx;
+  font-size: 44rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -389,7 +389,7 @@ function goApplicationDetail() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

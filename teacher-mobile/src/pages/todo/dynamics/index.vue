@@ -71,8 +71,8 @@ function resetFilter() {
   isFilterOpen.value = false
 }
 
-function showDynamic(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showDynamic(item: MobileTodoDynamic) {
+  uni.showToast({ title: `动态详情为本地模拟：${item.title}`, icon: 'none' })
 }
 </script>
 
@@ -108,7 +108,7 @@ function showDynamic(title: string) {
         <text class="date-count">{{ group.count }}</text>
       </view>
 
-      <MobileCard v-for="item in group.items" :key="item.title" class="dynamic-card" @tap="showDynamic(item.title)">
+      <MobileCard v-for="item in group.items" :key="item.title" class="dynamic-card" @tap="showDynamic(item)">
         <view class="dynamic-icon" :class="[`dynamic-icon--${item.tone}`, `dynamic-icon--${item.icon}`]">
           <view class="dynamic-icon__glyph"></view>
         </view>
@@ -188,6 +188,7 @@ function showDynamic(title: string) {
 
 .dynamics-page {
   padding-top: calc(var(--status-bar-height) + 8rpx);
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #fefffe 0%, #f7fbff 100%);
 }
 
@@ -406,7 +407,7 @@ function showDynamic(title: string) {
 .date-title {
   gap: 15rpx;
   color: #111827;
-  font-size: 31rpx;
+  font-size: 32rpx;
   font-weight: 900;
 }
 
@@ -426,8 +427,8 @@ function showDynamic(title: string) {
 .dynamic-card {
   min-height: 96rpx;
   margin-top: 10rpx;
-  padding: 18rpx;
-  border-radius: 18rpx;
+  padding: 22rpx;
+  border-radius: 24rpx;
 }
 
 .dynamic-icon {

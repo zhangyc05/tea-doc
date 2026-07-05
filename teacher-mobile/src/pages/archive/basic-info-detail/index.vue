@@ -33,6 +33,7 @@ const record = computed<MobileArchiveRecord>(() => {
 const profileFields = computed(() => record.value.fields.slice(0, 6))
 const educationFields = computed(() => record.value.fields.filter((field) => ['最高学历', '毕业院校'].includes(field.label)))
 const workFields = computed(() => record.value.fields.filter((field) => ['工作经历'].includes(field.label)))
+const sourceLabel = computed(() => record.value.adminStoreRefs?.length ? '管理端已同步档案数据' : '成长档案基础数据')
 
 function goBack() {
   uni.navigateBack()
@@ -74,7 +75,7 @@ function previewMaterial(material: { name: string; meta: string }) {
       <text class="summary-text">{{ record.summary }}</text>
       <view class="source-chip">
         <text class="source-label">管理端对象</text>
-        <text class="source-value">{{ record.adminStoreRefs?.join('、') || 'teacherArchiveFacts' }}</text>
+        <text class="source-value">{{ sourceLabel }}</text>
       </view>
     </MobileCard>
 
@@ -154,7 +155,7 @@ function previewMaterial(material: { name: string; meta: string }) {
 
 .basic-info-detail-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(206rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 2%, rgba(220, 251, 235, 0.82), transparent 31%),
@@ -226,14 +227,14 @@ function previewMaterial(material: { name: string; meta: string }) {
 
 .section-card {
   margin-top: 24rpx;
-  padding: 30rpx;
+  padding: 32rpx;
   background: rgba(255, 255, 255, 0.94);
 }
 
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -415,7 +416,7 @@ function previewMaterial(material: { name: string; meta: string }) {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18rpx;
-  padding: 24rpx 30rpx calc(28rpx + env(safe-area-inset-bottom));
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border-top: 2rpx solid rgba(220, 232, 244, 0.82);
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 -18rpx 42rpx rgba(35, 51, 87, 0.08);

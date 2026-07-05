@@ -37,8 +37,12 @@ function selectFilter(filter: VirtualResearchFilter) {
   setVirtualResearchFilter(filter)
 }
 
-function showAllActivities() {
+function showFilterFeedback() {
   setVirtualResearchFilter('全部')
+  uni.showToast({
+    title: '活动筛选已重置为全部',
+    icon: 'none',
+  })
 }
 
 function showResearchRule() {
@@ -113,7 +117,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
   <view class="activity-list-page">
     <MobileNavbar title="虚拟教研" size="compact" @back="goBack">
       <template #right>
-        <button class="filter-button" @tap="showAllActivities">
+        <button class="filter-button" @tap="showFilterFeedback">
           <view class="filter-icon"></view>
           <text>筛选</text>
         </button>
@@ -223,7 +227,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
 
 .activity-list-page {
   min-height: 100vh;
-  padding-bottom: calc(46rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(70rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 83% 6%, rgba(220, 249, 234, 0.68), transparent 26%),
@@ -266,7 +270,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
 .summary-card {
   display: flex;
   gap: 34rpx;
-  padding: 34rpx 30rpx 30rpx;
+  padding: 36rpx 32rpx 32rpx;
   border-radius: 18rpx;
   background: linear-gradient(108deg, rgba(245, 253, 249, 0.98), rgba(248, 253, 251, 0.9));
 }
@@ -374,7 +378,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
 
 .summary-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -460,7 +464,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 24rpx;
-  padding: 24rpx 30rpx;
+  padding: 28rpx 32rpx;
   border-color: #d6efe3;
   border-radius: 18rpx;
   background: linear-gradient(105deg, #f2fcf7, #fbfffd);
@@ -558,7 +562,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
   display: grid;
   grid-template-columns: 132rpx minmax(0, 1fr);
   gap: 24rpx;
-  padding: 34rpx 24rpx 24rpx 150rpx;
+  padding: 36rpx 28rpx 28rpx 150rpx;
   overflow: hidden;
   border-radius: 18rpx;
 }

@@ -92,7 +92,7 @@ function goNewReflection() {
 
 .reflection-success-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 46%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -121,7 +121,7 @@ function goNewReflection() {
 .summary-card,
 .next-card,
 .actions-card {
-  padding: 32rpx;
+  padding: 34rpx;
 }
 
 .success-card,
@@ -176,7 +176,7 @@ function goNewReflection() {
 
 .success-title {
   color: #10172d;
-  font-size: 42rpx;
+  font-size: 46rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -267,7 +267,7 @@ function goNewReflection() {
 
 .card-title {
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

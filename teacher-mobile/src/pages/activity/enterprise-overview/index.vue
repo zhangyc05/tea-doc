@@ -220,7 +220,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 .hero-title {
   margin-left: 62rpx;
   color: #10172d;
-  font-size: 58rpx;
+  font-size: 62rpx;
   font-weight: 900;
   line-height: 1.12;
 }
@@ -276,6 +276,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 .records-card,
 .history-card {
   padding: 30rpx;
+  border-radius: 28rpx;
 }
 
 .year-card {
@@ -446,7 +447,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 
 .section-title {
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

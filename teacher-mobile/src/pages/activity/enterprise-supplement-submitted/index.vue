@@ -130,7 +130,7 @@ function goActivityHome() {
 
 .supplement-submitted-page {
   min-height: 100vh;
-  padding-bottom: calc(142rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 12% 0%, rgba(224, 251, 238, 0.78), transparent 34%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 48%, #f5faf8 100%);
@@ -158,7 +158,7 @@ function goActivityHome() {
 .success-card {
   position: relative;
   gap: 54rpx;
-  padding: 42rpx 58rpx;
+  padding: 44rpx 60rpx;
   overflow: hidden;
   border: 2rpx solid rgba(19, 185, 106, 0.18);
   border-radius: 22rpx;
@@ -210,7 +210,7 @@ function goActivityHome() {
 
 .success-title {
   color: #08a85c;
-  font-size: 38rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -246,7 +246,7 @@ function goActivityHome() {
 .record-card,
 .material-card,
 .verify-card {
-  padding: 32rpx;
+  padding: 34rpx;
   border-radius: 24rpx;
 }
 

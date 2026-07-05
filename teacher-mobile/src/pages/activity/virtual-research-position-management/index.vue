@@ -128,7 +128,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
       </MobileActionButton>
     </view>
 
-    <MobileTabBar active="assistant" />
+    <MobileTabBar active="activity" />
   </view>
 </template>
 
@@ -137,7 +137,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
 
 .joined-room-page {
   min-height: 100vh;
-  padding-bottom: calc(282rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 4%, rgba(225, 252, 238, 0.9), transparent 30%),
@@ -175,7 +175,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
   min-height: 278rpx;
   gap: 18rpx;
   overflow: hidden;
-  padding: 28rpx 28rpx 26rpx;
+  padding: 32rpx;
 }
 
 .room-card::after {
@@ -249,7 +249,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
 
 .room-title {
   color: #111827;
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -440,7 +440,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
 
 .section-title {
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }

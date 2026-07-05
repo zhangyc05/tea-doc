@@ -95,7 +95,7 @@ function goArchiveRecord() {
 
 .archive-success-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 34rpx calc(354rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 34rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 13% 2%, rgba(224, 252, 239, 0.78), transparent 31%),
@@ -487,15 +487,16 @@ function goArchiveRecord() {
 
 .footer-actions {
   position: fixed;
-  right: 34rpx;
-  bottom: calc(148rpx + env(safe-area-inset-bottom));
-  left: 34rpx;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 12;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
-  padding: 18rpx 0 20rpx;
-  background: linear-gradient(180deg, rgba(248, 251, 249, 0), rgba(248, 251, 249, 0.96) 18%, rgba(248, 251, 249, 0.98));
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #edf1f6;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .footer-button {

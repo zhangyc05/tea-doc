@@ -27,6 +27,10 @@ function saveDraft() {
   uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，当前沿用 AI 已整理内容`, icon: 'none' })
+}
+
 function submitPlan() {
   submitEnterprisePlan()
   uni.navigateTo({ url: '/pages/activity/enterprise-import-export/index' })
@@ -127,8 +131,8 @@ function submitPlan() {
         </view>
 
         <view class="ai-actions">
-          <MobileActionButton class="ai-action-button" variant="outline">修改草稿</MobileActionButton>
-          <MobileActionButton class="ai-action-button" variant="outline">重新整理</MobileActionButton>
+          <MobileActionButton class="ai-action-button" variant="outline" @tap="showDraftFeedback('修改草稿')">修改草稿</MobileActionButton>
+          <MobileActionButton class="ai-action-button" variant="outline" @tap="showDraftFeedback('重新整理')">重新整理</MobileActionButton>
         </view>
       </MobileCard>
 
@@ -140,7 +144,7 @@ function submitPlan() {
             <text class="card-desc">可上传企业简介、实践安排表、单位联系人说明等材料。</text>
           </view>
         </view>
-        <MobileActionButton class="material-button" variant="outline">补充资料</MobileActionButton>
+        <MobileActionButton class="material-button" variant="outline" @tap="showDraftFeedback('补充资料')">补充资料</MobileActionButton>
       </MobileCard>
 
       <view class="notice-card">
@@ -166,7 +170,7 @@ function submitPlan() {
 
 .plan-submit-page {
   min-height: 100vh;
-  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 44%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -215,7 +219,7 @@ function submitPlan() {
 .input-card,
 .ai-card,
 .material-card {
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .requirement-card {
@@ -433,7 +437,7 @@ function submitPlan() {
 
 .card-title {
   color: #10172d;
-  font-size: 33rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 
@@ -752,7 +756,7 @@ function submitPlan() {
 }
 
 .bottom-actions {
-  gap: 28rpx;
+  gap: 30rpx;
 }
 
 .bottom-button {

@@ -14,6 +14,10 @@ function goBack() {
   uni.navigateBack()
 }
 
+function showUploadFeedback() {
+  uni.showToast({ title: '上传材料为本地模拟入口，当前可直接重新提交', icon: 'none' })
+}
+
 function submitAgain() {
   uni.navigateTo({ url: '/pages/activity/enterprise-supplement-submitted/index' })
 }
@@ -104,7 +108,7 @@ function submitAgain() {
             <text class="section-desc">请上传带单位盖章或签字的企业实践证明 / 企业鉴定材料。</text>
           </view>
         </view>
-        <view class="upload-drop">
+        <view class="upload-drop" @tap="showUploadFeedback">
           <view class="upload-plus">+</view>
           <text>上传新的证明材料</text>
         </view>
@@ -133,7 +137,7 @@ function submitAgain() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="action-button action-button--later" variant="outline">稍后处理</MobileActionButton>
+      <MobileActionButton class="action-button action-button--later" variant="outline" @tap="goBack">稍后处理</MobileActionButton>
       <MobileActionButton class="action-button" variant="primary" @tap="submitAgain">重新提交</MobileActionButton>
     </view>
   </view>
@@ -144,7 +148,7 @@ function submitAgain() {
 
 .resupplement-page {
   min-height: 100vh;
-  padding-bottom: calc(148rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(178rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 12% 0%, rgba(224, 251, 238, 0.72), transparent 34%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 45%, #f5faf8 100%);
@@ -175,7 +179,7 @@ function submitAgain() {
 
 .alert-card {
   gap: 28rpx;
-  padding: 28rpx 34rpx;
+  padding: 30rpx 36rpx;
   border: 2rpx solid rgba(255, 118, 38, 0.25);
   border-radius: 24rpx;
   background: linear-gradient(100deg, rgba(255, 252, 249, 0.98), rgba(255, 247, 238, 0.82));
@@ -271,7 +275,7 @@ function submitAgain() {
 .material-card,
 .upload-card,
 .remark-card {
-  padding: 30rpx 32rpx;
+  padding: 32rpx 34rpx;
   border-radius: 24rpx;
 }
 
@@ -467,7 +471,7 @@ function submitAgain() {
 }
 
 .section-title {
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

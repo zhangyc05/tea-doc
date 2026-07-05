@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
@@ -8,12 +8,13 @@ import { addReflectionMaterial, getMobileReflectionState, selectReflectionCourse
 
 const reflectionState = getMobileReflectionState()
 const materialCount = computed(() => reflectionState.evidence.filter((item) => item.status === 'uploaded' || item.status === 'recorded').length)
+const selectedScopeIndex = ref(3)
 
 const scopeCards = [
-  { title: '单次课', icon: 'video', active: false },
-  { title: '课程阶段', icon: 'calendar', active: false },
-  { title: '学期课程', icon: 'cap', active: false },
-  { title: '自主反思', icon: 'pen', active: true },
+  { title: '单次课', icon: 'video' },
+  { title: '课程阶段', icon: 'calendar' },
+  { title: '学期课程', icon: 'cap' },
+  { title: '自主反思', icon: 'pen' },
 ]
 
 const supplementItems = [
@@ -29,6 +30,14 @@ function goBack() {
 function goAiChat() {
   startReflectionAiSession()
   uni.navigateTo({ url: '/pages/activity/reflection-ai-chat/index' })
+}
+
+function selectScope(index: number) {
+  selectedScopeIndex.value = index
+}
+
+function showStartOptionFeedback(title: string) {
+  uni.showToast({ title: `${title}为本地模拟入口，可点底部开始`, icon: 'none' })
 }
 
 function addMaterial(title: string) {
@@ -54,10 +63,10 @@ function changeCourse() {
           <text>反思范围</text>
         </view>
         <view class="scope-cards">
-          <view v-for="item in scopeCards" :key="item.title" class="scope-card" :class="{ 'scope-card--active': item.active }">
+          <view v-for="(item, index) in scopeCards" :key="item.title" class="scope-card" :class="{ 'scope-card--active': selectedScopeIndex === index }" @tap="selectScope(index)">
             <view class="scope-icon" :class="`scope-icon--${item.icon}`"></view>
             <text>{{ item.title }}</text>
-            <view v-if="item.active" class="corner-check"></view>
+            <view v-if="selectedScopeIndex === index" class="corner-check"></view>
           </view>
         </view>
         <view class="scope-tip">
@@ -72,7 +81,7 @@ function changeCourse() {
           <text>你想怎么开始</text>
         </view>
         <view class="start-options">
-          <view class="start-option start-option--chat">
+          <view class="start-option start-option--chat" @tap="showStartOptionFeedback('直接和 AI 聊聊')">
             <view class="start-icon start-icon--chat"></view>
             <text class="start-title">直接和 AI 聊聊</text>
             <text class="start-desc">不用准备材料，可以按住说话，也可以输入一句想法，AI 会继续追问并帮您整理反思。</text>
@@ -81,7 +90,7 @@ function changeCourse() {
               <text>支持语音或文字输入</text>
             </view>
           </view>
-          <view class="start-option start-option--upload">
+          <view class="start-option start-option--upload" @tap="showStartOptionFeedback('上传教学资料')">
             <view class="start-icon start-icon--folder"></view>
             <text class="start-title">上传教学资料</text>
             <text class="start-desc">支持教案、课件、课堂记录、学生作业、图片等材料，AI 会先帮您提取反思线索。</text>
@@ -148,7 +157,7 @@ function changeCourse() {
 
 .reflection-self-page {
   min-height: 100vh;
-  padding-bottom: calc(292rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 48%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -178,7 +187,7 @@ function changeCourse() {
 .start-card,
 .course-card,
 .supplement-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .block-title,
@@ -199,7 +208,7 @@ function changeCourse() {
 .block-title {
   gap: 14rpx;
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 
@@ -217,7 +226,7 @@ function changeCourse() {
 
 .scope-card {
   position: relative;
-  height: 142rpx;
+  height: 152rpx;
   flex: 1;
   flex-direction: column;
   justify-content: center;

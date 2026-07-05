@@ -34,8 +34,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showSubmittedFileFeedback(name: string) {
+  uni.showToast({
+    title: `关联材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
 }
 
 function goResearchRoom() {
@@ -121,7 +124,7 @@ function goContributionDetail() {
           <text class="section-title">关联材料（已归集）</text>
         </view>
         <view class="file-list">
-          <button v-for="file in files" :key="file.name" class="file-row" @tap="showToast(file.name)">
+          <button v-for="file in files" :key="file.name" class="file-row" @tap="showSubmittedFileFeedback(file.name)">
             <view class="file-type" :class="`file-type--${file.type}`">
               <text>{{ file.type === 'docx' ? 'DOC' : 'PDF' }}</text>
             </view>
@@ -182,7 +185,7 @@ function goContributionDetail() {
 
 .submitted-page {
   min-height: 100vh;
-  padding-bottom: calc(164rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 83% 6%, rgba(231, 246, 255, 0.8), transparent 28%),
@@ -344,7 +347,7 @@ function goContributionDetail() {
   display: block;
   margin-top: 28rpx;
   color: #050812;
-  font-size: 37rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -361,7 +364,7 @@ function goContributionDetail() {
 .section-card,
 .status-card,
 .destination-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
 }
 
 .activity-card {
@@ -408,7 +411,7 @@ function goContributionDetail() {
 
 .section-title {
   color: #070d1d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

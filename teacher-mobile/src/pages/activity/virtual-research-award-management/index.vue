@@ -16,8 +16,25 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showTaskDetailFeedback() {
+  uni.showToast({
+    title: '任务详情为本地模拟，当前卡片已展示摘要',
+    icon: 'none',
+  })
+}
+
+function showMaterialFeedback(action: string) {
+  uni.showToast({
+    title: `材料操作为本地模拟：${action}`,
+    icon: 'none',
+  })
+}
+
+function showAiFeedback(action: string) {
+  uni.showToast({
+    title: `AI 整理操作为本地模拟：${action}`,
+    icon: 'none',
+  })
 }
 
 function handleUploadAction(title: string) {
@@ -26,7 +43,7 @@ function handleUploadAction(title: string) {
     uni.showToast({ title: `${material.name} 已加入`, icon: 'none' })
     return
   }
-  showToast('语音说明入口待接入')
+  showMaterialFeedback('语音说明为本地模拟入口')
 }
 
 function saveDraft() {
@@ -78,7 +95,7 @@ function submitMaterial() {
         <view class="card-head task-head">
           <view class="head-icon head-icon--task"></view>
           <text class="section-title">我的任务</text>
-          <button class="detail-link" @tap="showToast('查看详情')">查看详情</button>
+          <button class="detail-link" @tap="showTaskDetailFeedback">查看详情</button>
         </view>
         <view class="task-body">
           <view class="task-icon"></view>
@@ -110,7 +127,7 @@ function submitMaterial() {
             <text class="file-name">{{ file.name }}</text>
             <text class="file-meta">{{ file.meta }} · {{ file.source }} · {{ file.status }}</text>
           </view>
-          <button class="remove-button" @tap="showToast('移除材料')">×</button>
+          <button class="remove-button" @tap="showMaterialFeedback('移除材料')">×</button>
         </view>
         <view class="hint-bar">
           <view class="hint-icon"></view>
@@ -138,9 +155,9 @@ function submitMaterial() {
           你准备的企业设备调试案例可用于《智能制造基础》课程中的设备故障诊断与调试教学环节，包含案例背景、设备问题、调试过程及可提炼的教学点。
         </text>
         <view class="ai-actions">
-          <button @tap="showToast('不准确，重新整理')">不准确，重新整理</button>
+          <button @tap="showAiFeedback('不准确，重新整理')">不准确，重新整理</button>
           <text>|</text>
-          <button @tap="showToast('重新生成')">重新生成 ↻</button>
+          <button @tap="showAiFeedback('重新生成')">重新生成 ↻</button>
         </view>
       </MobileCard>
 
@@ -171,7 +188,7 @@ function submitMaterial() {
 
 .stage-material-page {
   min-height: 100vh;
-  padding-bottom: calc(144rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
   color: #111827;
@@ -203,7 +220,7 @@ function submitMaterial() {
 .ai-card,
 .notice-card {
   border-radius: 24rpx;
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .activity-card {
@@ -387,7 +404,7 @@ function submitMaterial() {
 .eyebrow,
 .section-title {
   color: #0b1224;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }

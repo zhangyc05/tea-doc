@@ -89,14 +89,14 @@ function goCorrectionProgress() {
         <view class="progress-index progress-index--active">2</view>
         <view class="progress-body">
           <text class="progress-title">等待核验</text>
-          <text class="progress-desc">后续由管理端或真实接口回写核验进度。</text>
+          <text class="progress-desc">当前以本地模拟进度展示核验流转。</text>
         </view>
       </view>
       <view class="progress-row">
         <view class="progress-index">3</view>
         <view class="progress-body">
           <text class="progress-title">结果回写</text>
-          <text class="progress-desc">通过、退回或需补充材料的结果页后续补齐。</text>
+          <text class="progress-desc">可继续查看处理结果和补充材料状态。</text>
         </view>
       </view>
     </MobileCard>

@@ -147,7 +147,7 @@ function saveDraft() {
 
 .reflection-draft-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 46%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -179,7 +179,7 @@ function saveDraft() {
 
 .source-card,
 .draft-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .card-head,
@@ -229,7 +229,7 @@ function saveDraft() {
 
 .card-title {
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 
@@ -377,7 +377,7 @@ function saveDraft() {
 }
 
 .bottom-actions {
-  gap: 28rpx;
+  gap: 30rpx;
   padding-bottom: 8rpx;
 }
 

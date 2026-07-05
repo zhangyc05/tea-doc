@@ -28,6 +28,23 @@ function addSupplement(item: string) {
   addReflectionMaterial(item, item.includes('音频') ? 'audio' : item.includes('报告') ? 'report' : 'material')
 }
 
+function selectQuickOption(item: string) {
+  saveReflectionDraft(`已记录对话选项：${item}`)
+  uni.showToast({ title: `已记录对话选项：${item}`, icon: 'none' })
+}
+
+function showClueDetail() {
+  uni.showToast({ title: '反思线索详情为本地模拟', icon: 'none' })
+}
+
+function continueChat() {
+  uni.showToast({ title: '继续聊为本地模拟：可补充一句想法', icon: 'none' })
+}
+
+function showComposerFeedback() {
+  uni.showToast({ title: '输入框为本地模拟：可直接生成反思草稿', icon: 'none' })
+}
+
 function changeCourse() {
   selectReflectionCourse('智能制造基础')
 }
@@ -72,7 +89,7 @@ function changeCourse() {
         </view>
 
         <view class="quick-row">
-          <text v-for="item in firstOptions" :key="item" class="quick-chip">{{ item }}</text>
+          <text v-for="item in firstOptions" :key="item" class="quick-chip" @tap="selectQuickOption(item)">{{ item }}</text>
         </view>
 
         <view class="message-row message-row--user">
@@ -90,7 +107,7 @@ function changeCourse() {
         </view>
 
         <view class="quick-row">
-          <text v-for="item in secondOptions" :key="item" class="quick-chip">{{ item }}</text>
+          <text v-for="item in secondOptions" :key="item" class="quick-chip" @tap="selectQuickOption(item)">{{ item }}</text>
         </view>
 
         <view class="message-row message-row--user">
@@ -108,7 +125,7 @@ function changeCourse() {
         </view>
 
         <view class="quick-row quick-row--last">
-          <text v-for="item in thirdOptions" :key="item" class="quick-chip">{{ item }}</text>
+          <text v-for="item in thirdOptions" :key="item" class="quick-chip" @tap="selectQuickOption(item)">{{ item }}</text>
         </view>
       </MobileCard>
 
@@ -116,7 +133,7 @@ function changeCourse() {
         <view class="clue-head">
           <view class="clue-icon"></view>
           <text class="clue-title">AI 已整理的反思线索</text>
-          <view class="detail-link">
+          <view class="detail-link" @tap="showClueDetail">
             <text>查看详情</text>
             <view class="arrow-right"></view>
           </view>
@@ -129,7 +146,7 @@ function changeCourse() {
           <view class="check-dot"></view>
           <text>需要继续判断是提问方式、案例设计还是课堂节奏导致</text>
         </view>
-        <view class="continue-line">
+        <view class="continue-line" @tap="continueChat">
           <view class="chat-small"></view>
           <text>继续聊一会儿</text>
         </view>
@@ -149,7 +166,7 @@ function changeCourse() {
       <MobileCard class="composer-card">
         <view class="composer-row">
           <view class="plus-button"></view>
-          <view class="input-box">
+          <view class="input-box" @tap="showComposerFeedback">
             <view class="mic-icon"></view>
             <text>输入一句想法，或按住说话...</text>
           </view>
@@ -173,7 +190,7 @@ function changeCourse() {
 
 .reflection-ai-page {
   min-height: 100vh;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #f1fff8 0%, #ffffff 16%, #f7fbff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -236,7 +253,7 @@ function changeCourse() {
 .chat-card,
 .clue-card,
 .composer-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .mode-head,
@@ -285,7 +302,7 @@ function changeCourse() {
 
 .mode-title {
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.35;
 }
@@ -490,7 +507,7 @@ function changeCourse() {
 .clue-title {
   flex: 1;
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

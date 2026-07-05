@@ -117,7 +117,7 @@ function submitCorrection() {
 
     <MobileCard class="notice-card">
       <text class="notice-title">提交口径</text>
-      <text class="notice-desc">更正申请提交后进入待核验，不直接改写正式档案事实。审核进度和结果页后续接入。</text>
+      <text class="notice-desc">更正申请提交后进入本地模拟待核验队列，不直接改写正式档案事实。可在进度页查看处理状态。</text>
     </MobileCard>
 
     <view class="footer-actions">

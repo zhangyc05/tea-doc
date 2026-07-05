@@ -41,6 +41,10 @@ function saveDraft() {
   uni.showToast({ title: '草稿已保存', icon: 'none' })
 }
 
+function showDraftFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟操作，当前沿用 AI 已整理内容`, icon: 'none' })
+}
+
 function resubmitPlan() {
   submitEnterprisePlan()
   uni.navigateTo({ url: '/pages/activity/enterprise-import-export/index' })
@@ -143,8 +147,8 @@ function resubmitPlan() {
             </view>
           </view>
           <view class="ai-actions">
-            <MobileActionButton class="ai-button" variant="outline">修改内容</MobileActionButton>
-            <MobileActionButton class="ai-button" variant="outline">重新整理</MobileActionButton>
+            <MobileActionButton class="ai-button" variant="outline" @tap="showDraftFeedback('修改内容')">修改内容</MobileActionButton>
+            <MobileActionButton class="ai-button" variant="outline" @tap="showDraftFeedback('重新整理')">重新整理</MobileActionButton>
           </view>
         </view>
       </MobileCard>
@@ -154,7 +158,7 @@ function resubmitPlan() {
           <view class="head-icon head-icon--clip"></view>
           <text class="card-title">补充资料（选填）</text>
         </view>
-        <MobileActionButton class="material-button" variant="outline">补充资料</MobileActionButton>
+        <MobileActionButton class="material-button" variant="outline" @tap="showDraftFeedback('补充资料')">补充资料</MobileActionButton>
       </MobileCard>
 
       <view class="bottom-actions">

@@ -42,8 +42,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showFileFeedback(name: string) {
+  uni.showToast({
+    title: `关联材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
 }
 
 function goSupplementContribution() {
@@ -129,7 +132,7 @@ function submitContribution() {
       <MobileCard class="section-card file-card">
         <text class="section-title">本次已关联材料</text>
         <view class="file-list">
-          <button v-for="file in files" :key="file" class="file-row" @tap="showToast(file)">
+          <button v-for="file in files" :key="file" class="file-row" @tap="showFileFeedback(file)">
             <view class="file-icon"></view>
             <text>{{ file }}</text>
             <view class="row-arrow"></view>
@@ -158,7 +161,7 @@ function submitContribution() {
 
 .contribution-confirm-page {
   min-height: 100vh;
-  padding-bottom: calc(286rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 7%, rgba(229, 250, 239, 0.82), transparent 28%),
@@ -293,7 +296,7 @@ function submitContribution() {
   min-width: 0;
   flex: 1 1 auto;
   color: #070d1d;
-  font-size: 40rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -320,7 +323,7 @@ function submitContribution() {
 }
 
 .section-card {
-  padding: 30rpx 28rpx;
+  padding: 32rpx;
 }
 
 .section-title {

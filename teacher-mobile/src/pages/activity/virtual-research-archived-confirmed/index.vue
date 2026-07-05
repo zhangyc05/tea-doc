@@ -44,8 +44,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showArchivedFileFeedback(name: string) {
+  uni.showToast({
+    title: `归档材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
 }
 
 function goResearchRoom() {
@@ -120,7 +123,7 @@ function goResearchRecord() {
       <MobileCard class="section-card material-card">
         <text class="section-title">归档材料</text>
         <view class="file-list">
-          <button v-for="file in files" :key="file.name" class="file-row" @tap="showToast(file.name)">
+          <button v-for="file in files" :key="file.name" class="file-row" @tap="showArchivedFileFeedback(file.name)">
             <view class="file-type" :class="`file-type--${file.type}`">
               <text>{{ file.type === 'word' ? 'W' : file.type === 'excel' ? 'X' : '' }}</text>
             </view>
@@ -158,7 +161,7 @@ function goResearchRecord() {
 
 .archived-page {
   min-height: 100vh;
-  padding-bottom: calc(126rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #fbfdff 54%, #f8fbfb 100%);
   color: #0b122a;
@@ -173,7 +176,7 @@ function goResearchRecord() {
 
 .hero-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   box-shadow: 0 12rpx 30rpx rgba(19, 30, 54, 0.05);
 }
 
@@ -312,7 +315,7 @@ function goResearchRecord() {
 
 .hero-title {
   color: #080d20;
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.25;
 }

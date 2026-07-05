@@ -20,8 +20,11 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showMoreFeedback() {
+  uni.showToast({
+    title: '更多操作为本地模拟，当前可继续补充或确认贡献',
+    icon: 'none',
+  })
 }
 
 function goSupplementContribution() {
@@ -37,7 +40,7 @@ function goContributionConfirm() {
   <view class="submitted-page">
     <MobileNavbar title="教研活动详情" size="compact" @back="goBack">
       <template #right>
-        <button class="more-button" @tap="showToast('更多')">
+        <button class="more-button" @tap="showMoreFeedback">
           <view></view>
           <view></view>
           <view></view>
@@ -181,7 +184,7 @@ function goContributionConfirm() {
 
 .submitted-page {
   min-height: 100vh;
-  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 8%, rgba(230, 244, 255, 0.76), transparent 28%),
@@ -353,8 +356,8 @@ function goContributionConfirm() {
 .identified-card,
 .file-card,
 .status-card {
-  border-radius: 14rpx;
-  padding: 28rpx 28rpx;
+  border-radius: 24rpx;
+  padding: 30rpx;
 }
 
 .activity-card {
@@ -380,7 +383,7 @@ function goContributionConfirm() {
 
 .section-title {
   color: #12192f;
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 900;
 }
 

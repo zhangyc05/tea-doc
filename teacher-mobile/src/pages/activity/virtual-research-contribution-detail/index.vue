@@ -21,13 +21,9 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
-}
-
 function previewMaterial(fileName: string) {
   const preview = previewVirtualResearchMaterial(fileName)
-  uni.showToast({ title: preview.message || '真实附件服务后续接入', icon: 'none' })
+  uni.showToast({ title: preview.message || `贡献材料预览为本地模拟：${fileName}`, icon: 'none' })
 }
 
 function goResearchRecord() {
@@ -159,7 +155,7 @@ function goResearchRecord() {
 
 .contribution-detail-page {
   min-height: 100vh;
-  padding-bottom: calc(42rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(76rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 88% 2%, rgba(223, 250, 236, 0.92), transparent 26%),
@@ -300,7 +296,7 @@ function goResearchRecord() {
   min-width: 0;
   flex: 1 1 auto;
   color: #070d1d;
-  font-size: 39rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -323,7 +319,7 @@ function goResearchRecord() {
 }
 
 .section-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .section-head {

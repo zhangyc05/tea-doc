@@ -19,6 +19,7 @@ type TrainingSummaryQuery = {
 }
 
 const query = ref<TrainingSummaryQuery>({})
+const selectedCertificateIndex = ref(0)
 
 onLoad((options) => {
   query.value = options as TrainingSummaryQuery
@@ -44,6 +45,10 @@ function goBack() {
   uni.navigateBack()
 }
 
+function showRuleFeedback() {
+  uni.showToast({ title: '归档规则为本地模拟：材料提交后进入档案待确认', icon: 'none' })
+}
+
 function goArchiveResult() {
   const record = submitTrainingArchive(trainingRecord.value.id)
   uni.navigateTo({ url: `/pages/activity/training-archive-result/index?recordId=${record.id}` })
@@ -51,6 +56,14 @@ function goArchiveResult() {
 
 function goLearningRecord() {
   uni.showToast({ title: '原学习记录已用于当前总结', icon: 'none' })
+}
+
+function selectCertificateChoice(index: number) {
+  selectedCertificateIndex.value = index
+}
+
+function showThoughtFeedback() {
+  uni.showToast({ title: '后续培训想法为本地模拟，可随草稿保存', icon: 'none' })
 }
 
 function editSummary() {
@@ -75,7 +88,7 @@ function saveDraft() {
     <view class="hero">
       <MobileNavbar title="培训总结" size="compact" @back="goBack">
         <template #right>
-          <view class="rule-link">
+          <view class="rule-link" @tap="showRuleFeedback">
             <view class="rule-link__icon">i</view>
             <text>规则说明</text>
           </view>
@@ -155,10 +168,11 @@ function saveDraft() {
         </view>
         <view class="choice-grid">
           <view
-            v-for="item in certificateChoices"
+            v-for="(item, index) in certificateChoices"
             :key="item.title"
             class="choice-item"
-            :class="{ 'choice-item--active': item.active }"
+            :class="{ 'choice-item--active': selectedCertificateIndex === index }"
+            @tap="selectCertificateChoice(index)"
           >
             <view class="choice-radio"></view>
             <view>
@@ -189,7 +203,7 @@ function saveDraft() {
         </view>
         <view class="thought-box">
           <text>可尝试将在在线测验结果用于课堂分层指导，并将互动工具用于课中即时反馈，提升学生参与度。</text>
-          <text class="modify-link">修改</text>
+          <text class="modify-link" @tap="showThoughtFeedback">修改</text>
           <text class="word-count">48/300</text>
         </view>
       </MobileCard>
@@ -221,7 +235,7 @@ function saveDraft() {
 
 .summary-page {
   min-height: 100vh;
-  padding-bottom: calc(134rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(166rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -317,7 +331,7 @@ function saveDraft() {
 .certificate-card,
 .thought-card,
 .upload-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .course-card {
@@ -387,7 +401,7 @@ function saveDraft() {
 .course-title {
   display: block;
   color: #10172d;
-  font-size: 35rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -496,7 +510,7 @@ function saveDraft() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

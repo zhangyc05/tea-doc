@@ -273,7 +273,7 @@ function goArchiveRecord(record: { id: string }) {
 .page-head__title {
   display: block;
   color: #080d1f;
-  font-size: 62rpx;
+  font-size: 68rpx;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.04;
@@ -476,7 +476,7 @@ function goArchiveRecord(record: { id: string }) {
 .section-title {
   display: block;
   color: $teacher-mobile-text-primary;
-  font-size: 31rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }

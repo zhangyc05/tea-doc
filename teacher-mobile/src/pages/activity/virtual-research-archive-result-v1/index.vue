@@ -38,8 +38,18 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showContributionFeedback(title: string) {
+  uni.showToast({
+    title: `贡献详情为本地模拟：${title}`,
+    icon: 'none',
+  })
+}
+
+function showMaterialFeedback(name: string) {
+  uni.showToast({
+    title: `归档材料预览为本地模拟：${name}`,
+    icon: 'none',
+  })
 }
 
 function goArchiveRecord() {
@@ -104,7 +114,7 @@ function goResearchRoom() {
             v-for="item in contributions"
             :key="item.title"
             class="contribution-row"
-            @tap="showToast(item.title)"
+            @tap="showContributionFeedback(item.title)"
           >
             <view class="contribution-icon" :class="`contribution-icon--${item.icon}`"></view>
             <view class="contribution-copy">
@@ -123,7 +133,7 @@ function goResearchRoom() {
             v-for="item in materials"
             :key="item.name"
             class="material-row"
-            @tap="showToast(item.name)"
+            @tap="showMaterialFeedback(item.name)"
           >
             <view class="material-icon" :class="`material-icon--${item.icon}`"></view>
             <text class="material-name">{{ item.name }}</text>
@@ -185,7 +195,7 @@ function goResearchRoom() {
 
 .hero-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   box-shadow: 0 12rpx 34rpx rgba(17, 34, 68, 0.06);
 }
 
@@ -345,7 +355,7 @@ function goResearchRoom() {
 
 .hero-title {
   color: #070d1d;
-  font-size: 39rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -369,7 +379,7 @@ function goResearchRoom() {
 }
 
 .section-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .section-title {

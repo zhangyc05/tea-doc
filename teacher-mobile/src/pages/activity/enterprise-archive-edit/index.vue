@@ -24,6 +24,11 @@ function editField(_label: string) {
   saveEnterpriseArchiveDraft()
 }
 
+function showTextFeedback(label: string) {
+  saveEnterpriseArchiveDraft()
+  uni.showToast({ title: `${label}已保存为本地草稿`, icon: 'none' })
+}
+
 function goSupplementMaterial() {
   uni.navigateTo({ url: '/pages/activity/enterprise-advanced-search/index' })
 }
@@ -80,7 +85,7 @@ function saveEdit() {
           <view class="accent"></view>
           <text class="section-title">实践内容</text>
         </view>
-        <view class="textarea-box">
+        <view class="textarea-box" @tap="showTextFeedback('实践内容')">
           <text class="textarea-content">参与企业项目开发，学习最新技术，完成系统功能模块设计与实现。</text>
           <text class="counter">30/500</text>
         </view>
@@ -92,7 +97,7 @@ function saveEdit() {
           <text class="section-title">补充说明</text>
           <text class="optional">（可选）</text>
         </view>
-        <view class="textarea-box textarea-box--empty">
+        <view class="textarea-box textarea-box--empty" @tap="showTextFeedback('补充说明')">
           <text class="placeholder">可补充说明材料来源、实践背景或其他需要说明的情况</text>
           <text class="counter">0/300</text>
         </view>
@@ -143,7 +148,7 @@ function saveEdit() {
 
 .archive-edit-page {
   min-height: 100vh;
-  padding-bottom: calc(360rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(374rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 12% 0%, rgba(235, 252, 243, 0.86), transparent 22%),
     radial-gradient(circle at 96% 6%, rgba(224, 247, 235, 0.72), transparent 18%),
@@ -179,7 +184,7 @@ function saveEdit() {
 
 .draft-card {
   gap: 28rpx;
-  padding: 32rpx 34rpx;
+  padding: 34rpx 36rpx;
   border-radius: 22rpx;
   box-shadow: 0 16rpx 42rpx rgba(45, 64, 93, 0.07);
 }
@@ -295,7 +300,7 @@ function saveEdit() {
 }
 
 .section-card {
-  padding: 24rpx;
+  padding: 28rpx;
   border-radius: 22rpx;
   box-shadow: 0 16rpx 42rpx rgba(45, 64, 93, 0.06);
 }
@@ -313,7 +318,7 @@ function saveEdit() {
 }
 
 .section-title {
-  font-size: 33rpx;
+  font-size: 36rpx;
   font-weight: 900;
 }
 

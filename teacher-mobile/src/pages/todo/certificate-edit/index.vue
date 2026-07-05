@@ -123,6 +123,7 @@ function updateField(label: string, event: unknown) {
   position: relative;
   overflow: hidden;
   padding-top: calc(var(--status-bar-height) + 8rpx);
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
 }
 
 .system-status,
@@ -312,7 +313,7 @@ function updateField(label: string, event: unknown) {
 .note-card {
   position: relative;
   z-index: 1;
-  padding: 22rpx;
+  padding: 28rpx;
 }
 
 .summary-card {
@@ -427,7 +428,7 @@ function updateField(label: string, event: unknown) {
 
 .section-title {
   color: #10172d;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -608,7 +609,7 @@ function updateField(label: string, event: unknown) {
 .submit-button,
 .cancel-button {
   width: 100%;
-  height: 56rpx;
+  height: 64rpx;
   border-radius: 14rpx;
   font-size: 26rpx;
 }

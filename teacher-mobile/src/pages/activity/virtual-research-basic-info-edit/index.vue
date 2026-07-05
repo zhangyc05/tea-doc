@@ -21,8 +21,19 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showContributionFeedback(title: string) {
+  uni.showToast({
+    title: `贡献详情为本地模拟：${title}`,
+    icon: 'none',
+  })
+}
+
+function goResearchRoom() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-room/index' })
+}
+
+function goContributionDetail() {
+  uni.navigateTo({ url: '/pages/activity/virtual-research-contribution-detail/index' })
 }
 </script>
 
@@ -79,7 +90,7 @@ function showToast(title: string) {
           v-for="item in contributions"
           :key="item.title"
           class="contribution-row"
-          @tap="showToast(item.title)"
+          @tap="showContributionFeedback(item.title)"
         >
           <view class="contribution-icon" :class="`contribution-icon--${item.icon}`" aria-hidden="true"></view>
           <view class="contribution-copy">
@@ -103,15 +114,15 @@ function showToast(title: string) {
     </view>
 
     <view class="fixed-actions">
-      <MobileActionButton class="action-button outline-action" variant="outline" @tap="showToast('返回教研室')">
+      <MobileActionButton class="action-button outline-action" variant="outline" @tap="goResearchRoom">
         返回教研室
       </MobileActionButton>
-      <MobileActionButton class="action-button primary-action" variant="primary" @tap="showToast('查看提交内容')">
+      <MobileActionButton class="action-button primary-action" variant="primary" @tap="goContributionDetail">
         查看提交内容
       </MobileActionButton>
     </view>
 
-    <MobileTabBar active="assistant" />
+    <MobileTabBar active="activity" />
   </view>
 </template>
 
@@ -120,7 +131,7 @@ function showToast(title: string) {
 
 .submitted-shell {
   min-height: 100vh;
-  padding-bottom: calc(252rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(270rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 84% 4%, rgba(224, 248, 255, 0.78), transparent 30%),
@@ -295,7 +306,7 @@ function showToast(title: string) {
 
 .hero-title {
   color: #10172d;
-  font-size: 39rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -321,7 +332,7 @@ function showToast(title: string) {
 .activity-card,
 .contribution-card,
 .status-card {
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .section-title {

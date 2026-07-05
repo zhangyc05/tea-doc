@@ -11,6 +11,18 @@ const uploadMethods = [
 function goBack() {
   uni.navigateBack()
 }
+
+function showUploadFeedback(action: string) {
+  uni.showToast({ title: `${action}为本地模拟入口，当前沿用已上传材料`, icon: 'none' })
+}
+
+function previewMaterial() {
+  uni.showToast({ title: '材料预览为本地模拟，已展示证明文件摘要', icon: 'none' })
+}
+
+function confirmMaterial() {
+  uni.navigateTo({ url: '/pages/activity/enterprise-supplement-submitted/index' })
+}
 </script>
 
 <template>
@@ -37,7 +49,7 @@ function goBack() {
       <MobileCard class="method-card">
         <text class="section-title">上传方式</text>
         <view class="method-list">
-          <view v-for="item in uploadMethods" :key="item.title" class="method-row">
+          <view v-for="item in uploadMethods" :key="item.title" class="method-row" @tap="showUploadFeedback(item.title)">
             <view class="method-icon" :class="`method-icon--${item.type}`"></view>
             <view class="method-copy">
               <text class="method-title">{{ item.title }}</text>
@@ -60,7 +72,7 @@ function goBack() {
         </view>
 
         <view class="preview-title">材料预览</view>
-        <view class="preview-row">
+        <view class="preview-row" @tap="previewMaterial">
           <view class="paper-thumb">
             <view class="paper-line paper-line--wide"></view>
             <view class="paper-line"></view>
@@ -77,8 +89,8 @@ function goBack() {
     </view>
 
     <view class="bottom-actions">
-      <MobileActionButton class="action-button action-button--ghost" variant="outline">重新上传</MobileActionButton>
-      <MobileActionButton class="action-button" variant="primary">确定使用</MobileActionButton>
+      <MobileActionButton class="action-button action-button--ghost" variant="outline" @tap="showUploadFeedback('重新上传')">重新上传</MobileActionButton>
+      <MobileActionButton class="action-button" variant="primary" @tap="confirmMaterial">确定使用</MobileActionButton>
     </view>
   </view>
 </template>
@@ -88,7 +100,7 @@ function goBack() {
 
 .proof-upload-page {
   min-height: 100vh;
-  padding-bottom: calc(154rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(178rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 14% 0%, rgba(224, 251, 238, 0.78), transparent 34%),
     linear-gradient(180deg, #fbfffd 0%, #ffffff 48%, #f4faf7 100%);
@@ -114,7 +126,7 @@ function goBack() {
 
 .intro-card {
   gap: 30rpx;
-  padding: 42rpx 32rpx;
+  padding: 44rpx 34rpx;
   border-radius: 24rpx;
 }
 
@@ -247,12 +259,12 @@ function goBack() {
 
 .method-card,
 .uploaded-card {
-  padding: 34rpx;
+  padding: 36rpx;
   border-radius: 24rpx;
 }
 
 .section-title {
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

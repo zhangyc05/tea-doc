@@ -61,7 +61,7 @@ function previewMaterial(name: string) {
   const preview = previewVirtualResearchMaterial(name)
   uni.showModal({
     title: preview.title,
-    content: preview.message,
+    content: preview.message || `材料预览为本地模拟：${name}`,
     showCancel: false,
   })
 }
@@ -209,7 +209,7 @@ function submitContribution() {
 
 .confirm-page {
   min-height: 100vh;
-  padding-bottom: calc(154rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(178rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 86% 6%, rgba(230, 243, 255, 0.75), transparent 27%),
@@ -293,7 +293,7 @@ function submitContribution() {
   display: flex;
   align-items: center;
   gap: 22rpx;
-  padding: 30rpx;
+  padding: 32rpx;
   background: linear-gradient(105deg, #f6fbff, #fbfdff);
 }
 
@@ -378,7 +378,7 @@ function submitContribution() {
 .activity-title {
   margin-top: 24rpx;
   color: #080f24;
-  font-size: 39rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.22;
 }
@@ -539,7 +539,7 @@ function submitContribution() {
 .organize-card,
 .contribution-card,
 .file-card {
-  padding: 26rpx;
+  padding: 30rpx;
 }
 
 .section-head {
@@ -569,7 +569,7 @@ function submitContribution() {
 .section-title,
 .block-title {
   color: #111827;
-  font-size: 31rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.3;
 }

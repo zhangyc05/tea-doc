@@ -121,6 +121,13 @@ function goScene(scene: AssistantScene) {
 .assistant-page {
   --assistant-ink: #122031;
   --assistant-line: rgba(18, 32, 49, 0.1);
+
+  min-height: 100vh;
+  padding: calc(var(--status-bar-height) + 16rpx) 28rpx calc(150rpx + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 18% 0%, rgba(229, 252, 240, 0.82), transparent 30%),
+    linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
+  color: var(--assistant-ink);
 }
 
 .system-status,
@@ -237,6 +244,7 @@ function goScene(scene: AssistantScene) {
 .assistant-hero {
   gap: 24rpx;
   padding: 28rpx;
+  border-radius: 32rpx;
   border-color: rgba(14, 193, 101, 0.24);
   background:
     linear-gradient(135deg, rgba(235, 255, 245, 0.96), rgba(255, 255, 255, 0.96)),
@@ -361,7 +369,7 @@ function goScene(scene: AssistantScene) {
 
 .section-title {
   color: var(--assistant-ink);
-  font-size: 30rpx;
+  font-size: 40rpx;
   font-weight: 900;
 }
 

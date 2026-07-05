@@ -110,7 +110,7 @@ function submitPlan() {
 
 .plan-confirm-page {
   min-height: 100vh;
-  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 44%, #f5f9ff 100%);
   color: $teacher-mobile-text-primary;
 }
@@ -157,7 +157,7 @@ function submitPlan() {
 .summary-card,
 .info-card,
 .process-card {
-  padding: 34rpx;
+  padding: 36rpx;
 }
 
 .summary-card,
@@ -246,7 +246,7 @@ function submitPlan() {
 
 .summary-title {
   color: #10172d;
-  font-size: 39rpx;
+  font-size: 42rpx;
   font-weight: 900;
   line-height: 1.28;
 }
@@ -285,7 +285,7 @@ function submitPlan() {
 
 .section-title {
   color: #10172d;
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

@@ -26,7 +26,10 @@ function goTodo() {
 }
 
 function showSubmitRecord() {
-  uni.showToast({ title: submissionRecords.value[0]?.title || '暂无提交记录', icon: 'none' })
+  uni.showToast({
+    title: `提交记录为本地模拟：${submissionRecords.value[0]?.title || '暂无提交记录'}`,
+    icon: 'none',
+  })
 }
 </script>
 
@@ -135,6 +138,7 @@ function showSubmitRecord() {
   position: relative;
   overflow: hidden;
   padding-top: calc(var(--status-bar-height) + 4rpx);
+  padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
 }
 
 .system-status,
@@ -325,7 +329,8 @@ function showSubmitRecord() {
 .next-card {
   position: relative;
   z-index: 1;
-  padding: 18rpx;
+  padding: 30rpx;
+  border-radius: 28rpx;
 }
 
 .result-card {
@@ -462,7 +467,7 @@ function showSubmitRecord() {
 
 .section-title {
   color: #10172d;
-  font-size: 29rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -650,19 +655,28 @@ function showSubmitRecord() {
 }
 
 .footer-actions {
-  margin-top: 10rpx;
-  padding-bottom: 118rpx;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #edf1f6;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .footer-button {
   width: 100%;
-  height: 50rpx;
+  height: 64rpx;
   border-radius: 14rpx;
   font-size: 26rpx;
 }
 
 .footer-button--outline {
-  margin-top: 8rpx;
+  margin-top: 0;
 }
 
 @media (max-width: 374px) {

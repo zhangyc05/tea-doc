@@ -53,6 +53,13 @@ function goHome() {
   uni.switchTab?.({ url: '/pages/activity/index' })
   uni.redirectTo({ url: '/pages/activity/index' })
 }
+
+function showSubmitContentFeedback() {
+  uni.showToast({
+    title: '提交内容为本地模拟，当前页面已展示摘要',
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -123,7 +130,7 @@ function goHome() {
       </view>
 
       <view class="page-actions">
-        <MobileActionButton class="page-action" variant="outline">查看提交内容</MobileActionButton>
+        <MobileActionButton class="page-action" variant="outline" @tap="showSubmitContentFeedback">查看提交内容</MobileActionButton>
         <MobileActionButton class="page-action" variant="primary" @tap="goTraining">返回培训进修</MobileActionButton>
       </view>
       <button class="home-link" @tap="goHome">返回活动首页</button>
@@ -138,7 +145,7 @@ function goHome() {
 
 .need-result-page {
   min-height: 100vh;
-  padding-bottom: calc(330rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(344rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 16% 0%, rgba(220, 252, 236, 0.78), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f7fbff 48%, #f5f9ff 100%);
@@ -147,7 +154,7 @@ function goHome() {
 
 .hero {
   position: relative;
-  min-height: 164rpx;
+  min-height: 210rpx;
   padding: calc(var(--status-bar-height) + 14rpx) 28rpx 18rpx;
   overflow: hidden;
 }
@@ -284,7 +291,7 @@ function goHome() {
 
 .success-title {
   color: #10172d;
-  font-size: 45rpx;
+  font-size: 48rpx;
   font-weight: 900;
   line-height: 1.18;
 }
@@ -335,7 +342,7 @@ function goHome() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

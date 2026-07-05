@@ -19,7 +19,7 @@ const activities: Array<{
   note: string
   action: string
   tone: TagTone
-  actionUrl?: string
+  actionUrl: string
 }> = [
   {
     tag: '培训进修',
@@ -46,6 +46,7 @@ const activities: Array<{
     note: '系统可自动整理纪要与成果资料',
     action: '查看教研室',
     tone: 'green',
+    actionUrl: '/pages/activity/virtual-research-room/index',
   },
 ]
 
@@ -74,9 +75,16 @@ function goReflectionStart() {
   uni.navigateTo({ url: '/pages/activity/reflection-start/index' })
 }
 
-function goActivityUrl(url?: string) {
-  if (!url) return
+function goActivityUrl(url: string) {
   uni.navigateTo({ url })
+}
+
+function showNoticeFeedback() {
+  uni.showToast({ title: '消息中心为本地模拟入口，后续接入真实提醒', icon: 'none' })
+}
+
+function showRecentFeedback() {
+  uni.showToast({ title: '全部活动记录为本地模拟入口，当前展示最近 3 条', icon: 'none' })
 }
 </script>
 
@@ -96,7 +104,7 @@ function goActivityUrl(url?: string) {
         <text class="page-head__title">活动</text>
         <text class="page-head__subtitle">选择一种成长活动，AI 会帮您整理过程记录</text>
       </view>
-      <button class="notice-button" aria-label="消息通知">
+      <button class="notice-button" aria-label="消息通知" @tap="showNoticeFeedback">
         <view class="notice-button__bell">
           <view class="notice-button__badge">5</view>
         </view>
@@ -178,7 +186,7 @@ function goActivityUrl(url?: string) {
     <MobileCard class="section-card recent-card">
       <view class="section-card__head">
         <text class="section-title">最近活动</text>
-        <MobileActionButton class="all-link" variant="link" arrow>全部</MobileActionButton>
+        <MobileActionButton class="all-link" variant="link" arrow @tap="showRecentFeedback">全部</MobileActionButton>
       </view>
       <view v-for="item in recentActivities" :key="item.title" class="recent-row">
         <view class="recent-icon" :class="`recent-icon--${item.tone}`"></view>
@@ -309,7 +317,7 @@ function goActivityUrl(url?: string) {
 .page-head__title {
   display: block;
   color: #080d1f;
-  font-size: 62rpx;
+  font-size: 68rpx;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.04;
@@ -499,7 +507,7 @@ function goActivityUrl(url?: string) {
 
 .section-title {
   color: $teacher-mobile-text-primary;
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: 900;
   line-height: 1.2;
 }

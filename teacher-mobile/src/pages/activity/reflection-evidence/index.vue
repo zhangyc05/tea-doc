@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
@@ -11,42 +11,44 @@ const reflectionRecord = computed(() => reflectionState.records[0])
 const selectedEvidence = computed(() => reflectionState.evidence.filter((item) => reflectionRecord.value.evidenceIds.includes(item.id)))
 const selectedEvidenceCount = computed(() => selectedEvidence.value.length)
 const selectedEvidenceTitles = computed(() => selectedEvidence.value.map((item) => item.title).join('、'))
+const selectedScopeIndex = ref(0)
+const selectedEvidenceIds = ref(['class-analysis-report', 'class-audio'])
 
 const scopeOptions = [
-  { title: '单次课', active: true },
-  { title: '课程阶段', active: false },
-  { title: '学期课程', active: false },
-  { title: '自定义主题', active: false },
+  { title: '单次课' },
+  { title: '课程阶段' },
+  { title: '学期课程' },
+  { title: '自定义主题' },
 ]
 
 const evidenceRows = [
   {
+    id: 'class-analysis-report',
     icon: 'video',
     title: '课堂分析报告',
     desc: '第 5 次课课堂数据与语音已解析',
     sub: 'AI 已生成课堂节奏与互动分析',
-    selected: true,
   },
   {
+    id: 'class-audio',
     icon: 'mic',
     title: '课堂录音',
     desc: '45 分钟录音已解析',
     sub: '可辅助分析讲授节奏和学生回应',
-    selected: true,
   },
   {
+    id: 'lesson-material',
     icon: 'file',
     title: '教案与课件',
     desc: '已上传教案、课件各 1 份',
     sub: '可结合教学设计分析课堂实施',
-    selected: false,
   },
   {
+    id: 'student-practice',
     icon: 'task',
     title: '学生练习记录',
     desc: '覆盖 42 人',
     sub: '可辅助分析学生掌握情况',
-    selected: false,
   },
 ]
 
@@ -63,6 +65,19 @@ function goScopeSelect() {
 
 function switchLesson() {
   selectReflectionLesson('第 5 次课')
+}
+
+function selectScope(index: number) {
+  selectedScopeIndex.value = index
+}
+
+function toggleEvidence(id: string) {
+  if (selectedEvidenceIds.value.includes(id)) {
+    selectedEvidenceIds.value = selectedEvidenceIds.value.filter((item) => item !== id)
+    return
+  }
+  selectedEvidenceIds.value = [...selectedEvidenceIds.value, id]
+  selectReflectionEvidence(id === 'student-practice' ? 'class-analysis-report' : id)
 }
 
 function addEvidence(rowTitle: string) {
@@ -93,7 +108,7 @@ function goDirectChat() {
       <MobileCard class="scope-card">
         <text class="section-title">反思范围</text>
         <view class="scope-grid">
-          <view v-for="item in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': item.active }">
+          <view v-for="(item, index) in scopeOptions" :key="item.title" class="scope-option" :class="{ 'scope-option--active': selectedScopeIndex === index }" @tap="selectScope(index)">
             <text>{{ item.title }}</text>
             <view class="scope-radio"></view>
           </view>
@@ -123,14 +138,14 @@ function goDirectChat() {
         </view>
 
         <view class="evidence-list">
-          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': row.selected }" @tap="addEvidence(row.title)">
+          <view v-for="row in evidenceRows" :key="row.title" class="evidence-row" :class="{ 'evidence-row--selected': selectedEvidenceIds.includes(row.id) }" @tap="toggleEvidence(row.id)">
             <view class="evidence-icon" :class="`evidence-icon--${row.icon}`"></view>
             <view class="evidence-row__body">
               <text class="row-title">{{ row.title }}</text>
               <text class="row-desc">{{ row.desc }}</text>
               <text class="row-desc">{{ row.sub }}</text>
             </view>
-            <view class="select-dot" :class="{ 'select-dot--checked': row.selected }"></view>
+            <view class="select-dot" :class="{ 'select-dot--checked': selectedEvidenceIds.includes(row.id) }"></view>
           </view>
         </view>
       </MobileCard>
@@ -171,7 +186,7 @@ function goDirectChat() {
 
 .reflection-evidence-page {
   min-height: 100vh;
-  padding-bottom: calc(288rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(304rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 0%, rgba(234, 224, 255, 0.44), transparent 32%),
     linear-gradient(180deg, #fbfffd 0%, #f8fbff 48%, #f5f9ff 100%);
@@ -203,7 +218,7 @@ function goDirectChat() {
 .lesson-card,
 .evidence-card,
 .supplement-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .section-title,
@@ -218,7 +233,7 @@ function goDirectChat() {
 
 .section-title {
   color: #10172d;
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -355,7 +370,7 @@ function goDirectChat() {
 
 .evidence-row {
   gap: 24rpx;
-  min-height: 122rpx;
+  min-height: 126rpx;
   padding: 22rpx 22rpx 22rpx 20rpx;
   border: 1rpx solid #dfe6f0;
   border-radius: 14rpx;

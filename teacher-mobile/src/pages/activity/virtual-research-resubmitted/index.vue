@@ -26,8 +26,18 @@ function goBack() {
   uni.navigateBack()
 }
 
-function showToast(title: string) {
-  uni.showToast({ title, icon: 'none' })
+function showMoreFeedback() {
+  uni.showToast({
+    title: '更多操作为本地模拟，当前可返回教研室或查看提交内容',
+    icon: 'none',
+  })
+}
+
+function showSupplementFeedback(title: string) {
+  uni.showToast({
+    title: `补充内容详情为本地模拟：${title}`,
+    icon: 'none',
+  })
 }
 
 function goResearchRoom() {
@@ -43,7 +53,7 @@ function goContributionDetail() {
   <view class="resubmitted-page">
     <MobileNavbar title="补充材料已提交" size="compact" @back="goBack">
       <template #right>
-        <button class="more-button" @tap="showToast('更多')">•••</button>
+        <button class="more-button" @tap="showMoreFeedback">•••</button>
       </template>
     </MobileNavbar>
 
@@ -91,7 +101,7 @@ function goContributionDetail() {
             v-for="item in supplementItems"
             :key="item.title"
             class="supplement-item"
-            @tap="showToast(item.title)"
+            @tap="showSupplementFeedback(item.title)"
           >
             <view class="item-icon" :class="`item-icon--${item.icon}`"></view>
             <view class="item-copy">
@@ -169,7 +179,7 @@ function goContributionDetail() {
 
 .resubmitted-page {
   min-height: 100vh;
-  padding-bottom: calc(126rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #fbfdff 48%, #f8fbfa 100%);
   color: #10172d;
@@ -306,7 +316,7 @@ function goContributionDetail() {
 
 .activity-card,
 .section-card {
-  border-radius: 22rpx;
+  border-radius: 24rpx;
   box-shadow: 0 12rpx 28rpx rgba(20, 30, 52, 0.05);
 }
 
@@ -315,7 +325,7 @@ function goContributionDetail() {
 }
 
 .section-card {
-  padding: 28rpx 30rpx;
+  padding: 30rpx;
 }
 
 .section-head {
@@ -326,7 +336,7 @@ function goContributionDetail() {
 
 .section-title {
   color: #070d1d;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.25;
 }

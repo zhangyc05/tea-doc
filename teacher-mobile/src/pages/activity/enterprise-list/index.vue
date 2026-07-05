@@ -38,6 +38,10 @@ function selectFilter(filter: EnterpriseFilter) {
   setEnterpriseFilter(filter)
 }
 
+function showYearFeedback() {
+  uni.showToast({ title: '年度筛选为本地模拟，当前展示 2026 年度', icon: 'none' })
+}
+
 function goLogRecord(recordId = 'enterprise-smart-equipment') {
   uni.navigateTo({ url: `/pages/activity/enterprise-log-record/index?recordId=${recordId}` })
 }
@@ -148,7 +152,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
       <MobileCard class="records-card">
         <view class="section-head">
           <text class="section-title">实践记录</text>
-          <view class="year-select">
+          <view class="year-select" @tap="showYearFeedback">
             <text>2026 年度</text>
             <view class="down-icon"></view>
           </view>
@@ -231,7 +235,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 .hero-title {
   margin-left: 62rpx;
   color: #10172d;
-  font-size: 58rpx;
+  font-size: 62rpx;
   font-weight: 900;
   line-height: 1.12;
 }
@@ -286,7 +290,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 .todo-card,
 .records-card,
 .history-card {
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .year-card {
@@ -473,7 +477,7 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 
 .section-title {
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 38rpx;
   font-weight: 900;
 }
 

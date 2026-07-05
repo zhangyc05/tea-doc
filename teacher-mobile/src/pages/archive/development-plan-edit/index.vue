@@ -109,7 +109,7 @@ function submitDraft() {
     <MobileCard class="section-card">
       <text class="section-title">提交后状态</text>
       <text class="status-desc">
-        保存草稿只保留在手机端草稿记录；提交核验后会生成个人发展维度待核验档案记录，并追溯到 archiveStore.processingRecords。
+        保存草稿只保留在手机端草稿记录；提交核验后会生成个人发展维度待核验档案记录，并进入档案处理队列。
       </text>
     </MobileCard>
 

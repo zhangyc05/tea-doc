@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
@@ -8,6 +8,7 @@ import MobileStatusTag from '../../../components/MobileStatusTag.vue'
 import { getTodoActionUrl, getVisibleTodoItems, type MobileTodoItem } from '../../../stores/todoStore'
 
 const visibleTodos = computed(() => getVisibleTodoItems())
+const activeFilterIndex = ref(0)
 const filters = computed(() => {
   const pendingConfirmCount = visibleTodos.value.filter(item => item.status === 'pending-confirm').length
   const pendingSupplementCount = visibleTodos.value.filter(item => item.status === 'pending-supplement').length
@@ -20,6 +21,11 @@ const filters = computed(() => {
     `可完善(${improvableCount})`,
   ]
 })
+const filteredTodos = computed(() => {
+  const statusFilters = [undefined, 'pending-confirm', 'pending-supplement', 'improvable'] as const
+  const status = statusFilters[activeFilterIndex.value]
+  return status ? visibleTodos.value.filter(item => item.status === status) : visibleTodos.value
+})
 
 function goBack() {
   uni.navigateBack()
@@ -30,6 +36,10 @@ function showTodoAction(item: MobileTodoItem) {
   if (actionUrl) {
     uni.navigateTo({ url: actionUrl })
   }
+}
+
+function selectFilter(index: number) {
+  activeFilterIndex.value = index
 }
 </script>
 
@@ -42,14 +52,15 @@ function showTodoAction(item: MobileTodoItem) {
         v-for="(filter, index) in filters"
         :key="filter"
         class="filter-pill"
-        :class="{ 'filter-pill--active': index === 0 }"
+        :class="{ 'filter-pill--active': index === activeFilterIndex }"
+        @tap="selectFilter(index)"
       >
         {{ filter }}
       </button>
     </view>
 
     <MobileCard class="todo-list-card">
-      <view v-for="item in visibleTodos" :key="item.id" class="todo-list-row">
+      <view v-for="item in filteredTodos" :key="item.id" class="todo-list-row">
         <view class="todo-icon" :class="[`todo-icon--${item.tone}`, `todo-icon--${item.icon}`]">
           <view class="todo-icon__glyph"></view>
         </view>
@@ -78,6 +89,7 @@ function showTodoAction(item: MobileTodoItem) {
 
 .all-todo-page {
   padding-top: calc(var(--status-bar-height) + 8rpx);
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .system-status,
@@ -226,7 +238,7 @@ function showTodoAction(item: MobileTodoItem) {
   align-items: center;
   justify-content: center;
   padding: 0 22rpx;
-  border-radius: 14rpx;
+  border-radius: 16rpx;
   background: rgba(247, 249, 253, 0.92);
   color: #4d5871;
   font-size: 27rpx;
@@ -242,8 +254,8 @@ function showTodoAction(item: MobileTodoItem) {
 }
 
 .todo-list-card {
-  padding: 30rpx 36rpx 16rpx;
-  border-radius: 34rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
 }
 
 .todo-list-row {
@@ -333,7 +345,7 @@ function showTodoAction(item: MobileTodoItem) {
 .todo-title {
   margin-top: 13rpx;
   color: #080d1e;
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 900;
   line-height: 1.2;
 }
