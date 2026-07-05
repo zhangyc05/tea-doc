@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import { getTodoState } from '../../../stores/todoStore'
@@ -12,8 +13,8 @@ const certificate = computed(() => todoState.certificate)
 const nextItems = [
   { icon: 'folder', text: '可在「档案待确认」中查看这条记录' },
   { icon: 'chart', text: '管理端确认后才会沉淀到成长档案' },
-  { icon: 'shield', text: '如信息有误，可在档案详情中申请更正' },
-]
+  { icon: 'secured', text: '如信息有误，可在档案详情中申请更正' },
+] as const
 
 function goBack() {
   uni.navigateBack()
@@ -54,9 +55,7 @@ function goArchiveRecord() {
     <MobileCard class="record-card">
       <text class="section-title">确认记录</text>
       <view class="record-row">
-        <view class="document-icon">
-          <view class="document-line"></view>
-        </view>
+        <MobileIcon class="document-icon" name="file" tone="blue" size="lg" />
         <view class="record-copy">
           <text class="record-title">{{ certificate.title }}</text>
           <text class="record-meta">{{ certificate.category }} ｜ 待核验 ｜ 06.14</text>
@@ -73,7 +72,7 @@ function goArchiveRecord() {
         class="next-row"
         @tap="goArchiveRecord"
       >
-        <view class="next-icon" :class="`next-icon--${item.icon}`"></view>
+        <MobileIcon class="next-icon" :name="item.icon" tone="green" size="sm" shape="circle" />
         <text class="next-text">{{ item.text }}</text>
         <view class="row-arrow"></view>
       </button>
@@ -158,11 +157,6 @@ function goArchiveRecord() {
 .check-circle::before,
 .leaf::before,
 .spark::before,
-.document-icon::before,
-.document-icon::after,
-.document-line::before,
-.next-icon::before,
-.next-icon::after,
 .row-arrow::before {
   position: absolute;
   content: '';
@@ -312,35 +306,6 @@ function goArchiveRecord() {
 .document-icon {
   width: 132rpx;
   height: 132rpx;
-  border-radius: 24rpx;
-  background: #eaf4ff;
-  color: #1677ff;
-}
-
-.document-icon::before {
-  left: 43rpx;
-  top: 31rpx;
-  width: 50rpx;
-  height: 66rpx;
-  border: 9rpx solid currentColor;
-  border-radius: 7rpx;
-}
-
-.document-icon::after {
-  right: 35rpx;
-  top: 32rpx;
-  border-top: 24rpx solid currentColor;
-  border-left: 24rpx solid transparent;
-}
-
-.document-line::before {
-  left: 57rpx;
-  top: 64rpx;
-  width: 30rpx;
-  height: 7rpx;
-  border-radius: 7rpx;
-  background: currentColor;
-  box-shadow: 0 20rpx 0 currentColor;
 }
 
 .record-copy {
@@ -402,66 +367,6 @@ function goArchiveRecord() {
 .next-icon {
   width: 62rpx;
   height: 62rpx;
-  border-radius: 50%;
-  background: #e6fbef;
-  color: #10b960;
-}
-
-.next-icon--folder::before {
-  left: 16rpx;
-  top: 21rpx;
-  width: 32rpx;
-  height: 24rpx;
-  border-radius: 5rpx;
-  background: currentColor;
-}
-
-.next-icon--folder::after {
-  left: 18rpx;
-  top: 17rpx;
-  width: 22rpx;
-  height: 10rpx;
-  border-radius: 6rpx 6rpx 0 0;
-  background: currentColor;
-}
-
-.next-icon--chart::before {
-  left: 16rpx;
-  bottom: 15rpx;
-  width: 7rpx;
-  height: 15rpx;
-  border-radius: 4rpx;
-  background: currentColor;
-  box-shadow: 12rpx -7rpx 0 currentColor, 24rpx -19rpx 0 currentColor;
-}
-
-.next-icon--chart::after {
-  left: 17rpx;
-  top: 15rpx;
-  width: 26rpx;
-  height: 18rpx;
-  border-top: 5rpx solid currentColor;
-  border-right: 5rpx solid currentColor;
-  transform: rotate(-18deg);
-}
-
-.next-icon--shield::before {
-  left: 18rpx;
-  top: 13rpx;
-  width: 26rpx;
-  height: 34rpx;
-  background: currentColor;
-  clip-path: polygon(50% 0, 100% 17%, 90% 72%, 50% 100%, 10% 72%, 0 17%);
-}
-
-.next-icon--shield::after {
-  left: 30rpx;
-  top: 22rpx;
-  width: 5rpx;
-  height: 16rpx;
-  border-radius: 4rpx;
-  background: #fff;
-  box-shadow: 0 21rpx 0 -1rpx #fff;
 }
 
 .next-text {

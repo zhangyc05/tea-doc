@@ -246,6 +246,14 @@ frontend/src/components/admin/ability-list/AbilityStructureTree.vue
 
 不得先凭经验设计通用组件，再用组件拼页面。组件必须从目标效果图和当前基准页中提炼。
 
+### Element Plus 使用边界
+
+PC 端已引入 Element Plus，定位是复杂控件底座，不是页面级视觉体系。管理端页面不得在管理端页面中直接散用 `element-plus` 组件，必须优先通过 `frontend/src/components/ui`、`frontend/src/components/common` 或业务组件封装使用。
+
+Element Plus 只承接表格、分页、日期、选择器、上传、弹窗、抽屉、树等复杂基础控件能力；页面布局、设计 token、状态语义、业务入口和目标效果图还原仍以本指南和本地组件边界为准。
+
+Element Plus 主题变量统一由 `frontend/src/styles/element-plus-admin.css` 桥接到 `frontend/src/styles/tokens.css`，不得在页面局部重写框架全局变量。
+
 ### 按钮等级
 
 管理端新增或重构按钮必须优先使用 `frontend/src/components/ui/button.ts` 的 `Button` 组件。F4-44 后管理端页面源码已完成页面级 `.btn-*` 按钮类收尾；旧类名只作为历史迁移记录，不作为新增页面样板。

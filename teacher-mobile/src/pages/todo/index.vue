@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
+import MobileIcon from '../../components/MobileIcon.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../components/MobileStatusTag.vue'
 import { getHomeTodoItems, getRecentTodoDynamics, getTodoActionUrl, type MobileTodoItem } from '../../stores/todoStore'
@@ -38,13 +39,14 @@ function showNoticeFeedback() {
       <view class="hero-head__copy">
         <view class="hero-title-line">
           <text class="hero-title">上午好， 林老师</text>
-          <view class="seed-mini"></view>
+          <MobileIcon class="seed-icon" name="seed" tone="green" size="plain" shape="none" />
         </view>
         <text class="hero-meta">智能制造学院 ｜ 讲师</text>
         <text class="hero-meta hero-meta--period">2026 年度发展周期 ｜ 聘期第 2 年</text>
       </view>
       <button class="notice-button" aria-label="消息通知" @tap="showNoticeFeedback">
-        <view class="notice-button__bell">
+        <view class="notice-button__icon-wrap">
+          <MobileIcon class="notice-button__icon" name="bell" tone="dark" size="plain" shape="none" />
           <view class="notice-button__badge">5</view>
         </view>
       </button>
@@ -60,9 +62,7 @@ function showNoticeFeedback() {
       </view>
 
       <view v-for="item in visibleTodoItems" :key="item.id" class="todo-row">
-        <view class="todo-visual" :class="`todo-visual--${item.tone}`">
-          <view class="todo-visual__shape"></view>
-        </view>
+        <MobileIcon class="todo-visual" :name="item.icon" :tone="item.tone" size="lg" />
         <view class="todo-row__body">
           <MobileStatusTag :tone="item.tone">{{ item.tag }}</MobileStatusTag>
           <text class="todo-row__title">{{ item.title }}</text>
@@ -84,7 +84,7 @@ function showNoticeFeedback() {
       </view>
 
       <view v-for="item in todoDynamics" :key="item.id" class="dynamic-row">
-        <view class="dynamic-icon" :class="`dynamic-icon--${item.tone}`"></view>
+        <MobileIcon class="dynamic-icon" :name="item.icon" :tone="item.tone" size="sm" shape="circle" />
         <view class="dynamic-row__body">
           <text class="dynamic-row__title">{{ item.title }}</text>
           <text class="dynamic-row__desc">{{ item.desc }}</text>
@@ -146,36 +146,10 @@ function showNoticeFeedback() {
   line-height: 1.08;
 }
 
-.seed-mini {
-  position: relative;
-  width: 34rpx;
-  height: 40rpx;
-  flex: 0 0 34rpx;
-}
-
-.seed-mini::before,
-.seed-mini::after {
-  position: absolute;
-  top: 10rpx;
-  width: 18rpx;
-  height: 12rpx;
-  border-radius: 18rpx 18rpx 2rpx 18rpx;
-  background: $teacher-mobile-primary;
-  content: '';
-}
-
-.seed-mini::before {
-  left: 2rpx;
-  transform: rotate(28deg);
-}
-
-.seed-mini::after {
-  right: 0;
-  transform: rotate(-38deg);
-}
-
-.seed-mini {
-  border-bottom: 5rpx solid $teacher-mobile-primary;
+.seed-icon {
+  width: 40rpx;
+  height: 44rpx;
+  flex: 0 0 40rpx;
 }
 
 .hero-meta {
@@ -210,38 +184,17 @@ function showNoticeFeedback() {
   border: 0;
 }
 
-.notice-button__bell {
+.notice-button__icon-wrap {
   position: absolute;
   right: 8rpx;
   bottom: 8rpx;
   width: 58rpx;
   height: 58rpx;
-  border: 6rpx solid #0d1430;
-  border-top-color: transparent;
-  border-radius: 50% 50% 20rpx 20rpx;
 }
 
-.notice-button__bell::before {
-  position: absolute;
-  top: -13rpx;
-  left: 17rpx;
-  width: 18rpx;
-  height: 12rpx;
-  border: 5rpx solid #0d1430;
-  border-bottom: 0;
-  border-radius: 18rpx 18rpx 0 0;
-  content: '';
-}
-
-.notice-button__bell::after {
-  position: absolute;
-  right: 14rpx;
-  bottom: -13rpx;
-  width: 20rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: #0d1430;
-  content: '';
+.notice-button__icon {
+  width: 58rpx;
+  height: 58rpx;
 }
 
 .notice-button__badge {
@@ -322,62 +275,9 @@ function showNoticeFeedback() {
 }
 
 .todo-visual {
-  display: flex;
   width: 92rpx;
   height: 92rpx;
-  align-items: center;
-  justify-content: center;
   flex: 0 0 92rpx;
-  border-radius: 28rpx;
-}
-
-.todo-visual--blue {
-  background: linear-gradient(145deg, #eaf4ff, #f8fbff);
-  color: #1677ff;
-}
-
-.todo-visual--orange {
-  background: linear-gradient(145deg, #fff1e8, #fff9f5);
-  color: #ff6c1a;
-}
-
-.todo-visual--purple {
-  background: linear-gradient(145deg, #f2e8ff, #fbf8ff);
-  color: #9b4df4;
-}
-
-.todo-visual__shape {
-  position: relative;
-  width: 54rpx;
-  height: 66rpx;
-  border: 8rpx solid currentColor;
-  border-radius: 8rpx;
-}
-
-.todo-visual--orange .todo-visual__shape {
-  width: 64rpx;
-  height: 50rpx;
-  border-radius: 10rpx;
-}
-
-.todo-visual--orange .todo-visual__shape::before {
-  position: absolute;
-  top: -24rpx;
-  left: 14rpx;
-  width: 28rpx;
-  height: 20rpx;
-  border: 8rpx solid currentColor;
-  border-bottom: 0;
-  border-radius: 10rpx 10rpx 0 0;
-  content: '';
-}
-
-.todo-visual--purple .todo-visual__shape {
-  width: 58rpx;
-  height: 58rpx;
-  border: 0;
-  border-radius: 8rpx;
-  background: currentColor;
 }
 
 .todo-row__body {
@@ -490,32 +390,6 @@ function showNoticeFeedback() {
   width: 62rpx;
   height: 62rpx;
   flex: 0 0 62rpx;
-  border-radius: 16rpx;
-}
-
-.dynamic-icon::before {
-  display: block;
-  width: 36rpx;
-  height: 36rpx;
-  margin: 13rpx;
-  border-radius: 50%;
-  background: currentColor;
-  content: '';
-}
-
-.dynamic-icon--green {
-  background: #e6f8ee;
-  color: $teacher-mobile-primary;
-}
-
-.dynamic-icon--blue {
-  background: #edf6ff;
-  color: #1677ff;
-}
-
-.dynamic-icon--orange {
-  background: #fff1e8;
-  color: #ff6c1a;
 }
 
 .dynamic-row__body {

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
@@ -57,9 +58,7 @@ function previewMaterial() {
     <text class="page-hint">系统已帮你识别，请确认是否属于本人</text>
 
     <MobileCard class="summary-card">
-      <view class="certificate-icon">
-        <view class="certificate-icon__paper"></view>
-      </view>
+      <MobileIcon class="certificate-icon" name="file" tone="blue" size="md" />
       <view class="summary-card__body">
         <MobileStatusTag :tone="certificateTodo?.tone || 'blue'">{{ certificateTodo?.tag || '待确认' }}</MobileStatusTag>
         <text class="summary-title">{{ certificateTodo?.title || certificate.title }}</text>
@@ -87,7 +86,7 @@ function previewMaterial() {
     <MobileCard class="material-card">
       <text class="section-title">相关材料</text>
       <view class="material-row">
-        <view class="material-icon"></view>
+        <MobileIcon class="material-icon" name="file" tone="blue" size="plain" />
         <text class="material-name">{{ certificate.material.name }}</text>
         <MobileActionButton class="material-link" variant="link" arrow @tap="previewMaterial">查看</MobileActionButton>
       </view>
@@ -187,42 +186,9 @@ function previewMaterial() {
 }
 
 .certificate-icon {
-  position: relative;
   width: 78rpx;
   height: 78rpx;
   flex: 0 0 78rpx;
-  border-radius: 24rpx;
-  background: #eaf4ff;
-  color: #1677ff;
-}
-
-.certificate-icon__paper {
-  position: absolute;
-  top: 18rpx;
-  left: 24rpx;
-  width: 32rpx;
-  height: 42rpx;
-  border: 7rpx solid currentColor;
-  border-radius: 6rpx;
-}
-
-.certificate-icon__paper::before,
-.certificate-icon__paper::after {
-  position: absolute;
-  left: 9rpx;
-  width: 18rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: currentColor;
-  content: '';
-}
-
-.certificate-icon__paper::before {
-  top: 15rpx;
-}
-
-.certificate-icon__paper::after {
-  top: 29rpx;
 }
 
 .summary-card__body {
@@ -299,31 +265,9 @@ function previewMaterial() {
 }
 
 .material-icon {
-  position: relative;
   width: 46rpx;
   height: 46rpx;
   flex: 0 0 46rpx;
-  border-radius: 12rpx;
-  background: #eaf4ff;
-}
-
-.material-icon::before {
-  position: absolute;
-  inset: 12rpx;
-  border: 5rpx solid #1677ff;
-  border-radius: 6rpx;
-  content: '';
-}
-
-.material-icon::after {
-  position: absolute;
-  right: 16rpx;
-  bottom: 16rpx;
-  width: 18rpx;
-  height: 16rpx;
-  background: #1677ff;
-  clip-path: polygon(0 100%, 38% 48%, 58% 72%, 78% 38%, 100% 100%);
-  content: '';
 }
 
 .material-name {

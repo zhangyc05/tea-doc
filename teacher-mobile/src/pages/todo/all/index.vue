@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
@@ -61,9 +62,7 @@ function selectFilter(index: number) {
 
     <MobileCard class="todo-list-card">
       <view v-for="item in filteredTodos" :key="item.id" class="todo-list-row">
-        <view class="todo-icon" :class="[`todo-icon--${item.tone}`, `todo-icon--${item.icon}`]">
-          <view class="todo-icon__glyph"></view>
-        </view>
+        <MobileIcon class="todo-icon" :name="item.icon" :tone="item.tone" size="md" />
         <view class="todo-main">
           <MobileStatusTag :tone="item.tone">{{ item.tag }}</MobileStatusTag>
           <text class="todo-title">{{ item.title }}</text>
@@ -195,69 +194,9 @@ function selectFilter(index: number) {
 }
 
 .todo-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 82rpx;
   height: 82rpx;
-  border-radius: 24rpx;
-}
-
-.todo-icon--blue {
-  background: #eaf3ff;
-}
-
-.todo-icon--orange {
-  background: #fff1e8;
-}
-
-.todo-icon--purple {
-  background: #f3e8ff;
-}
-
-.todo-icon__glyph {
-  position: absolute;
-  inset: 25rpx 29rpx;
-  border: 7rpx solid currentColor;
-  border-radius: 7rpx;
-}
-
-.todo-icon--blue .todo-icon__glyph {
-  color: #1b77e8;
-}
-
-.todo-icon--orange .todo-icon__glyph {
-  color: #ff6b12;
-}
-
-.todo-icon--purple .todo-icon__glyph {
-  color: #9b42f5;
-}
-
-.todo-icon--folder .todo-icon__glyph {
-  top: 31rpx;
-  right: 24rpx;
-  bottom: 27rpx;
-  left: 24rpx;
-  border-radius: 8rpx;
-}
-
-.todo-icon--pen .todo-icon__glyph {
-  width: 46rpx;
-  height: 46rpx;
-  border-radius: 6rpx;
-  transform: skew(-12deg);
-}
-
-.todo-icon--clock .todo-icon__glyph::after {
-  position: absolute;
-  right: -14rpx;
-  bottom: -14rpx;
-  width: 26rpx;
-  height: 26rpx;
-  border: 5rpx solid currentColor;
-  border-radius: 50%;
-  background: #eaf3ff;
-  content: '';
 }
 
 .todo-main {

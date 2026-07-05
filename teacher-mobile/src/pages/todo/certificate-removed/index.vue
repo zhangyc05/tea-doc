@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import { getTodoState } from '../../../stores/todoStore'
@@ -44,10 +45,7 @@ function goPendingList() {
     </MobileCard>
 
     <MobileCard class="record-card">
-      <view class="record-icon">
-        <view class="record-paper"></view>
-        <view class="record-ribbon"></view>
-      </view>
+      <MobileIcon class="record-icon" name="file" tone="green" size="lg" />
       <view class="record-copy">
         <text class="record-title">{{ certificate.title }}</text>
         <view class="tag-row">
@@ -61,7 +59,7 @@ function goPendingList() {
 
     <MobileCard class="note-card">
       <view class="section-head">
-        <view class="info-icon"></view>
+        <MobileIcon class="info-icon" name="seed" tone="green" size="plain" shape="none" />
         <text class="section-title">后续说明</text>
       </view>
       <view class="note-list">
@@ -130,8 +128,6 @@ function goPendingList() {
 .minus-badge,
 .leaf,
 .record-icon,
-.record-paper,
-.record-ribbon,
 .info-icon,
 .dot {
   position: relative;
@@ -165,11 +161,6 @@ function goPendingList() {
 .doc-art::before,
 .doc-line,
 .minus-badge::before,
-.record-paper::before,
-.record-paper::after,
-.record-ribbon::before,
-.info-icon::before,
-.info-icon::after,
 .dot::before,
 .leaf::before {
   position: absolute;
@@ -271,55 +262,6 @@ function goPendingList() {
 .record-icon {
   width: 112rpx;
   height: 112rpx;
-  border-radius: 26rpx;
-  background: #eafbf1;
-}
-
-.record-paper {
-  position: absolute;
-  left: 26rpx;
-  top: 30rpx;
-  width: 54rpx;
-  height: 46rpx;
-  border: 9rpx solid #10b960;
-  border-radius: 7rpx;
-}
-
-.record-paper::before,
-.record-paper::after {
-  left: 12rpx;
-  width: 28rpx;
-  height: 7rpx;
-  border-radius: 7rpx;
-  background: #10b960;
-}
-
-.record-paper::before {
-  top: 12rpx;
-}
-
-.record-paper::after {
-  top: 30rpx;
-  width: 22rpx;
-}
-
-.record-ribbon {
-  position: absolute;
-  right: 20rpx;
-  bottom: 22rpx;
-  width: 34rpx;
-  height: 34rpx;
-  border: 7rpx solid #31cf83;
-  border-radius: 50%;
-}
-
-.record-ribbon::before {
-  left: 6rpx;
-  bottom: -16rpx;
-  width: 24rpx;
-  height: 24rpx;
-  background: #31cf83;
-  clip-path: polygon(0 0, 50% 42%, 100% 0, 78% 100%, 50% 70%, 22% 100%);
 }
 
 .record-copy {
@@ -390,26 +332,6 @@ function goPendingList() {
 .info-icon {
   width: 50rpx;
   height: 50rpx;
-  border-radius: 50%;
-  background: #10b960;
-}
-
-.info-icon::before {
-  left: 22rpx;
-  top: 20rpx;
-  width: 7rpx;
-  height: 20rpx;
-  border-radius: 7rpx;
-  background: #fff;
-}
-
-.info-icon::after {
-  left: 22rpx;
-  top: 11rpx;
-  width: 7rpx;
-  height: 7rpx;
-  border-radius: 50%;
-  background: #fff;
 }
 
 .note-list {

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import { getTodoState } from '../../../stores/todoStore'
@@ -46,19 +47,14 @@ function showSubmitRecord() {
 
     <MobileCard class="result-card">
       <view class="result-head">
-        <view class="result-icon">
-          <view class="result-icon__paper"></view>
-          <view class="result-icon__check"></view>
-        </view>
+        <MobileIcon class="result-icon" name="check" tone="green" size="sm" shape="circle" />
         <view class="result-copy">
           <text class="result-title">待核验</text>
           <text class="result-desc">核验通过后，记录将入档到“个人发展”。</text>
         </view>
       </view>
       <view class="result-record">
-        <view class="certificate-icon">
-          <view class="certificate-icon__paper"></view>
-        </view>
+        <MobileIcon class="certificate-icon" name="file" tone="green" size="sm" />
         <view class="record-body">
           <text class="record-title">{{ certificate.title }}</text>
           <text class="record-meta">{{ certificate.category }} ｜ {{ certificate.type }} ｜ <text class="record-state">待核验</text></text>
@@ -77,9 +73,7 @@ function showSubmitRecord() {
     <MobileCard class="material-card">
       <text class="section-title">相关材料</text>
       <view class="material-row">
-        <view class="file-icon">
-          <view class="file-icon__mountain"></view>
-        </view>
+        <MobileIcon class="file-icon" name="file" tone="green" size="plain" />
         <view class="material-info">
           <text class="material-name">{{ certificate.material.name }}</text>
           <text class="material-meta">{{ certificate.material.meta }}</text>
@@ -270,51 +264,12 @@ function showSubmitRecord() {
 
 .result-icon,
 .certificate-icon {
-  position: relative;
   flex: 0 0 auto;
-  background: #e7f8ee;
 }
 
 .result-icon {
   width: 62rpx;
   height: 62rpx;
-  border-radius: 31rpx;
-}
-
-.result-icon__paper,
-.certificate-icon__paper {
-  position: absolute;
-  border-radius: 9rpx;
-  background: linear-gradient(180deg, #16cf72, #08ab55);
-}
-
-.result-icon__paper {
-  top: 18rpx;
-  left: 20rpx;
-  width: 27rpx;
-  height: 32rpx;
-}
-
-.result-icon__check {
-  position: absolute;
-  right: 10rpx;
-  bottom: 12rpx;
-  width: 20rpx;
-  height: 20rpx;
-  border-radius: 50%;
-  background: $teacher-mobile-primary;
-}
-
-.result-icon__check::after {
-  position: absolute;
-  top: 6rpx;
-  left: 7rpx;
-  width: 9rpx;
-  height: 5rpx;
-  border-bottom: 3rpx solid #fff;
-  border-left: 3rpx solid #fff;
-  content: '';
-  transform: rotate(-45deg);
 }
 
 .result-copy {
@@ -345,14 +300,6 @@ function showSubmitRecord() {
 .certificate-icon {
   width: 62rpx;
   height: 62rpx;
-  border-radius: 15rpx;
-}
-
-.certificate-icon__paper {
-  top: 14rpx;
-  left: 19rpx;
-  width: 29rpx;
-  height: 36rpx;
 }
 
 .record-body {
@@ -431,31 +378,9 @@ function showSubmitRecord() {
 }
 
 .file-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 46rpx;
   height: 52rpx;
-  border-radius: 10rpx;
-  background: linear-gradient(180deg, #1fc774, #12ae57);
-}
-
-.file-icon::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-top: 18rpx solid rgba(255, 255, 255, 0.55);
-  border-left: 18rpx solid transparent;
-  content: '';
-}
-
-.file-icon__mountain {
-  position: absolute;
-  right: 12rpx;
-  bottom: 15rpx;
-  width: 30rpx;
-  height: 20rpx;
-  background: #fff;
-  clip-path: polygon(0 100%, 32% 44%, 48% 68%, 66% 30%, 100% 100%);
 }
 
 .material-info {

@@ -1,0 +1,56 @@
+:root {
+  --el-color-primary: var(--color-admin-primary);
+  --el-color-primary-light-3: #5b95f8;
+  --el-color-primary-light-5: #8fb7fb;
+  --el-color-primary-light-7: #c4d9fd;
+  --el-color-primary-light-8: #d9e7fe;
+  --el-color-primary-light-9: var(--color-primary-soft);
+  --el-color-primary-dark-2: var(--color-admin-primary-hover);
+
+  --el-color-success: var(--color-success);
+  --el-color-warning: var(--color-warning);
+  --el-color-danger: var(--color-danger);
+  --el-color-info: var(--color-info);
+
+  --el-bg-color: var(--color-card-bg);
+  --el-bg-color-page: var(--color-admin-bg);
+  --el-bg-color-overlay: var(--color-card-bg);
+  --el-text-color-primary: var(--color-admin-text-strong);
+  --el-text-color-regular: var(--color-admin-text-title);
+  --el-text-color-secondary: var(--color-admin-text-muted);
+  --el-text-color-placeholder: var(--color-text-tertiary);
+  --el-border-color: var(--color-admin-border);
+  --el-border-color-light: var(--color-admin-border-muted);
+  --el-border-color-lighter: var(--color-admin-divider);
+  --el-border-color-extra-light: var(--color-card-border-soft);
+  --el-fill-color-blank: var(--color-card-bg);
+  --el-fill-color-light: var(--color-admin-bg-soft);
+  --el-fill-color-lighter: var(--color-page-bg-soft);
+
+  --el-border-radius-base: var(--radius-admin-panel);
+  --el-border-radius-small: var(--radius-sm);
+  --el-border-radius-round: var(--radius-full);
+
+  --el-font-size-base: var(--font-size-md);
+  --el-font-size-small: var(--font-size-sm);
+  --el-font-size-extra-small: var(--font-size-xs);
+  --el-component-size: 40px;
+  --el-component-size-small: 32px;
+  --el-component-size-large: 44px;
+
+  --el-box-shadow-light: var(--shadow-admin-card-soft);
+  --el-box-shadow-lighter: var(--shadow-admin-card-faint);
+  --el-index-top: 1000;
+  --el-index-popper: 2000;
+}
+
+.el-button {
+  font-weight: 500;
+}
+
+.el-table {
+  --el-table-header-bg-color: var(--color-admin-bg-soft);
+  --el-table-header-text-color: var(--color-admin-text-muted);
+  --el-table-border-color: var(--color-admin-divider);
+  --el-table-row-hover-bg-color: var(--color-admin-bg-soft);
+}

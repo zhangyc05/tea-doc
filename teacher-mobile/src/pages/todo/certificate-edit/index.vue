@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
@@ -50,9 +51,7 @@ function updateField(label: string, event: unknown) {
     <MobileCard class="summary-card">
       <MobileStatusTag tone="blue">待确认</MobileStatusTag>
       <view class="summary-main">
-        <view class="certificate-icon">
-          <view class="certificate-icon__paper"></view>
-        </view>
+        <MobileIcon class="certificate-icon" name="file" tone="green" size="md" />
         <view class="summary-body">
           <text class="summary-title">{{ certificate.title }}</text>
           <text class="summary-meta">{{ certificate.category }} ｜ {{ certificate.type }}</text>
@@ -77,9 +76,7 @@ function updateField(label: string, event: unknown) {
     <MobileCard class="material-card">
       <text class="section-title">相关材料</text>
       <view class="material-row">
-        <view class="file-icon">
-          <view class="file-icon__mountain"></view>
-        </view>
+        <MobileIcon class="file-icon" name="file" tone="green" size="plain" />
         <view class="material-info">
           <text class="material-name">{{ certificate.material.name }}</text>
           <text class="material-meta">{{ certificate.material.meta }}</text>
@@ -105,7 +102,7 @@ function updateField(label: string, event: unknown) {
     </MobileCard>
 
     <view class="submit-tip">
-      <view class="submit-tip__icon"></view>
+      <MobileIcon class="submit-tip__icon" name="seed" tone="green" size="plain" shape="none" />
       <text class="submit-tip__text">提交后将进入部门核验，核验通过后入档到“个人发展”。</text>
     </view>
 
@@ -252,41 +249,9 @@ function updateField(label: string, event: unknown) {
 }
 
 .certificate-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 82rpx;
   height: 82rpx;
-  border-radius: 20rpx;
-  background: #e7f8ee;
-}
-
-.certificate-icon__paper {
-  position: absolute;
-  top: 18rpx;
-  left: 23rpx;
-  width: 42rpx;
-  height: 50rpx;
-  border-radius: 8rpx;
-  background: linear-gradient(180deg, #16cf72, #08ab55);
-}
-
-.certificate-icon__paper::before,
-.certificate-icon__paper::after {
-  position: absolute;
-  left: 12rpx;
-  width: 19rpx;
-  height: 5rpx;
-  border-radius: 999rpx;
-  background: #fff;
-  content: '';
-}
-
-.certificate-icon__paper::before {
-  top: 14rpx;
-}
-
-.certificate-icon__paper::after {
-  top: 27rpx;
 }
 
 .summary-body {
@@ -399,31 +364,9 @@ function updateField(label: string, event: unknown) {
 }
 
 .file-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 48rpx;
   height: 54rpx;
-  border-radius: 10rpx;
-  background: linear-gradient(180deg, #1fc774, #12ae57);
-}
-
-.file-icon::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-top: 18rpx solid rgba(255, 255, 255, 0.55);
-  border-left: 18rpx solid transparent;
-  content: '';
-}
-
-.file-icon__mountain {
-  position: absolute;
-  right: 12rpx;
-  bottom: 15rpx;
-  width: 30rpx;
-  height: 20rpx;
-  background: #fff;
-  clip-path: polygon(0 100%, 32% 44%, 48% 68%, 66% 30%, 100% 100%);
 }
 
 .material-info {
@@ -501,23 +444,9 @@ function updateField(label: string, event: unknown) {
 }
 
 .submit-tip__icon {
-  position: relative;
   flex: 0 0 auto;
   width: 28rpx;
   height: 34rpx;
-  border: 4rpx solid $teacher-mobile-primary;
-  border-radius: 50% 50% 42% 42%;
-}
-
-.submit-tip__icon::after {
-  position: absolute;
-  right: 7rpx;
-  bottom: -9rpx;
-  width: 8rpx;
-  height: 10rpx;
-  border-radius: 4rpx;
-  background: $teacher-mobile-primary;
-  content: '';
 }
 
 .submit-tip__text {

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import MobileCard from '../../../components/MobileCard.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
   getFilteredTodoDynamics,
@@ -81,7 +82,7 @@ function showDynamic(item: MobileTodoDynamic) {
     <MobileNavbar title="全部动态" @back="goBack">
       <template #right>
       <button class="filter-button" @tap="showFilter">
-        <view class="filter-button__icon"></view>
+        <MobileIcon class="filter-button__icon" name="filter" tone="dark" size="plain" shape="none" />
         <text>筛选</text>
       </button>
       </template>
@@ -109,9 +110,7 @@ function showDynamic(item: MobileTodoDynamic) {
       </view>
 
       <MobileCard v-for="item in group.items" :key="item.title" class="dynamic-card" @tap="showDynamic(item)">
-        <view class="dynamic-icon" :class="[`dynamic-icon--${item.tone}`, `dynamic-icon--${item.icon}`]">
-          <view class="dynamic-icon__glyph"></view>
-        </view>
+        <MobileIcon class="dynamic-icon" :name="item.icon" :tone="item.tone" size="sm" shape="circle" />
         <view class="dynamic-body">
           <text class="dynamic-title">{{ item.title }}</text>
           <text class="dynamic-desc">{{ item.desc }}</text>
@@ -260,33 +259,8 @@ function showDynamic(item: MobileTodoDynamic) {
 }
 
 .filter-button__icon {
-  position: relative;
   width: 28rpx;
   height: 30rpx;
-}
-
-.filter-button__icon::before {
-  position: absolute;
-  top: 0;
-  left: 2rpx;
-  width: 24rpx;
-  height: 18rpx;
-  border: 4rpx solid #111827;
-  border-bottom: 0;
-  border-radius: 4rpx 4rpx 0 0;
-  clip-path: polygon(0 0, 100% 0, 66% 100%, 34% 100%);
-  content: '';
-}
-
-.filter-button__icon::after {
-  position: absolute;
-  left: 11rpx;
-  bottom: 0;
-  width: 6rpx;
-  height: 14rpx;
-  border-radius: 999rpx;
-  background: #111827;
-  content: '';
 }
 
 .filter-tabs {
@@ -357,63 +331,9 @@ function showDynamic(item: MobileTodoDynamic) {
 }
 
 .dynamic-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 66rpx;
   height: 66rpx;
-  border-radius: 50%;
-}
-
-.dynamic-icon--green {
-  background: #e7faef;
-  color: #0fb35b;
-}
-
-.dynamic-icon--blue {
-  background: #e9f3ff;
-  color: #1478f2;
-}
-
-.dynamic-icon--orange {
-  background: #fff1e6;
-  color: #ff7a13;
-}
-
-.dynamic-icon--purple {
-  background: #f0e8ff;
-  color: #7b45ec;
-}
-
-.dynamic-icon__glyph {
-  position: absolute;
-  inset: 19rpx;
-  border-radius: 8rpx;
-  background: currentColor;
-}
-
-.dynamic-icon--check .dynamic-icon__glyph::after {
-  position: absolute;
-  top: 12rpx;
-  left: 10rpx;
-  width: 19rpx;
-  height: 10rpx;
-  border-bottom: 6rpx solid #fff;
-  border-left: 6rpx solid #fff;
-  content: '';
-  transform: rotate(-45deg);
-}
-
-.dynamic-icon--book .dynamic-icon__glyph,
-.dynamic-icon--building .dynamic-icon__glyph {
-  border-radius: 50% 8rpx 8rpx 50%;
-}
-
-.dynamic-icon--star .dynamic-icon__glyph {
-  clip-path: polygon(50% 0, 62% 34%, 98% 36%, 69% 56%, 79% 91%, 50% 70%, 21% 91%, 31% 56%, 2% 36%, 38% 34%);
-}
-
-.dynamic-icon--edit .dynamic-icon__glyph {
-  transform: skew(-12deg);
 }
 
 .dynamic-body {

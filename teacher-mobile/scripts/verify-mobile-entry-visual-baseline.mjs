@@ -13,6 +13,18 @@ function hasMockSystemStatus(source) {
   return /status-(signal|wifi|battery)/.test(source)
 }
 
+function usesFrameworkTodoIcons(source) {
+  return source.includes('<MobileIcon')
+}
+
+function usesGeneratedTodoIconResources(source) {
+  return source.includes('/static/icons/todo/')
+}
+
+function hasHandDrawnTodoIcons(source) {
+  return /seed-mini|notice-button__bell|todo-visual__shape|todo-icon__glyph|dynamic-icon__glyph|filter-button__icon::before|file-icon__mountain|certificate-icon__paper|result-icon__|record-paper|record-ribbon|document-line|next-icon--|clip-path:\s*polygon/.test(source)
+}
+
 function collectVueFiles(dir) {
   const entries = readdirSync(resolve(root, dir), { withFileTypes: true })
   return entries.flatMap(entry => {
@@ -1529,6 +1541,30 @@ const navbarSource = read('src/components/MobileNavbar.vue')
 
 if (hasMockSystemStatus(navbarSource)) {
   failures.push('src/components/MobileNavbar.vue: navbar must strip screenshot-only system status icons')
+}
+
+const todoIconResourcePages = [
+  'src/pages/todo/index.vue',
+  'src/pages/todo/all/index.vue',
+  'src/pages/todo/dynamics/index.vue',
+  'src/pages/todo/dynamics-filter/index.vue',
+]
+
+for (const file of todoIconResourcePages) {
+  const source = read(file)
+  if (!usesFrameworkTodoIcons(source)) {
+    failures.push(`${file}: todo icons must use MobileIcon framework icons`)
+  }
+}
+
+for (const file of collectVueFiles('src/pages/todo')) {
+  const source = read(file)
+  if (usesGeneratedTodoIconResources(source)) {
+    failures.push(`${file}: todo icons must not use generated /static/icons/todo/ resources`)
+  }
+  if (hasHandDrawnTodoIcons(source)) {
+    failures.push(`${file}: core todo icons must not be CSS hand-drawn glyphs`)
+  }
 }
 
 for (const file of collectVueFiles('src/pages').concat(collectVueFiles('src/components'))) {

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import {
@@ -61,7 +62,7 @@ function showDynamic(item: MobileTodoDynamic) {
       <MobileNavbar title="全部动态" @back="goBack">
         <template #right>
           <button class="filter-button" @tap="closeFilter">
-            <view class="filter-button__icon"></view>
+            <MobileIcon class="filter-button__icon" name="filter" tone="dark" size="plain" shape="none" />
             <text>筛选</text>
           </button>
         </template>
@@ -88,9 +89,7 @@ function showDynamic(item: MobileTodoDynamic) {
       </view>
 
       <MobileCard v-for="item in visibleItems" :key="item.id" class="dynamic-card" @tap="showDynamic(item)">
-        <view class="dynamic-icon" :class="[`dynamic-icon--${item.tone}`, `dynamic-icon--${item.icon}`]">
-          <view class="dynamic-icon__glyph"></view>
-        </view>
+        <MobileIcon class="dynamic-icon" :name="item.icon" :tone="item.tone" size="sm" shape="circle" />
         <view class="dynamic-body">
           <text class="dynamic-title">{{ item.title }}</text>
           <text class="dynamic-desc">{{ item.desc }}</text>
@@ -221,22 +220,8 @@ function showDynamic(item: MobileTodoDynamic) {
 }
 
 .filter-button__icon {
-  position: relative;
   width: 30rpx;
   height: 32rpx;
-}
-
-.filter-button__icon::before {
-  position: absolute;
-  top: 0;
-  left: 1rpx;
-  width: 28rpx;
-  height: 20rpx;
-  border: 4rpx solid #111827;
-  border-bottom: 0;
-  border-radius: 5rpx 5rpx 0 0;
-  clip-path: polygon(0 0, 100% 0, 66% 100%, 34% 100%);
-  content: '';
 }
 
 .filter-button__icon::after {
@@ -314,49 +299,9 @@ function showDynamic(item: MobileTodoDynamic) {
 }
 
 .dynamic-icon {
-  position: relative;
   flex: 0 0 auto;
   width: 72rpx;
   height: 72rpx;
-  border-radius: 50%;
-}
-
-.dynamic-icon--green {
-  background: #e7faef;
-  color: #0fb35b;
-}
-
-.dynamic-icon--blue {
-  background: #e9f3ff;
-  color: #1478f2;
-}
-
-.dynamic-icon--orange {
-  background: #fff1e6;
-  color: #ff7a13;
-}
-
-.dynamic-icon__glyph {
-  position: absolute;
-  inset: 20rpx;
-  border-radius: 8rpx;
-  background: currentColor;
-}
-
-.dynamic-icon--check .dynamic-icon__glyph::after {
-  position: absolute;
-  top: 12rpx;
-  left: 10rpx;
-  width: 20rpx;
-  height: 10rpx;
-  border-bottom: 6rpx solid #fff;
-  border-left: 6rpx solid #fff;
-  content: '';
-  transform: rotate(-45deg);
-}
-
-.dynamic-icon--book .dynamic-icon__glyph {
-  border-radius: 50% 8rpx 8rpx 50%;
 }
 
 .dynamic-body {
