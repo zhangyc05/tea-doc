@@ -2,10 +2,12 @@ import { reactive } from 'vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import type {
   AbilityListState,
+  OptimizationSuggestionDraft,
   OptimizationSuggestionStatus,
   RequirementMapping,
 } from '@/domain/admin/ability-list'
 import {
+  addManualOptimizationSuggestionInState,
   applyAdoptedSuggestionsToBaseTemplateInState,
   confirmExecutionIndicatorChangesInState,
   confirmBaseTemplateChangesInState,
@@ -29,6 +31,7 @@ export type {
   BaseTemplateVersionStatus,
   ExecutionVersion,
   ExecutionVersionStatus,
+  OptimizationSuggestionDraft,
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
   PendingBaseTemplateChange,
@@ -113,12 +116,16 @@ export function applyAdoptedSuggestionsToBaseTemplate() {
   return applyAdoptedSuggestionsToBaseTemplateInState(state)
 }
 
-export function importPolicySuggestion() {
-  return importPolicySuggestionInState(state)
+export function importPolicySuggestion(draft?: Partial<OptimizationSuggestionDraft>) {
+  return importPolicySuggestionInState(state, draft)
 }
 
 export function rerunFeedbackAnalysis() {
   return rerunFeedbackAnalysisInState(state)
+}
+
+export function addManualOptimizationSuggestion(draft: OptimizationSuggestionDraft) {
+  return addManualOptimizationSuggestionInState(state, draft)
 }
 
 export function saveRequirementMapping(mapping: RequirementMapping) {

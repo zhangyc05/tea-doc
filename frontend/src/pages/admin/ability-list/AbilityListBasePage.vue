@@ -10,6 +10,7 @@ import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { useOperationMessage } from '@/lib/operationMessage'
 import { getAbilityListBaseMock, getAbilityListOptimizationMock } from '@/services/mock/ability-list'
 import {
+  addManualOptimizationSuggestion,
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
   confirmBaseTemplateChanges,
@@ -18,6 +19,7 @@ import {
   rerunFeedbackAnalysis,
   updateBaseTemplateIndicator,
   updateOptimizationSuggestionStatus,
+  type OptimizationSuggestionDraft,
   type OptimizationSuggestion,
 } from '@/stores/admin/abilityListStore'
 import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
@@ -53,6 +55,23 @@ const optimizationSectionRef = ref<HTMLElement | null>(null)
 const selectedSource = ref('all')
 const selectedSuggestionId = ref('suggestion-enterprise-practice')
 const selectedTag = ref('all')
+const policyUploadSheetOpen = ref(false)
+const manualSuggestionSheetOpen = ref(false)
+const analysisState = ref<'idle' | 'running' | 'completed'>('idle')
+const policyUploadForm = ref({
+  fileName: '2026年教师能力标准补充办法.docx',
+  keyLocation: '教学能力 / 数字素养',
+  content: '根据新上传制度文件补充专业教学资源库建设指标的适用说明',
+  basis: '新上传制度文件解析结果',
+})
+const manualSuggestionForm = ref({
+  issueType: '要求映射问题',
+  keyLocation: '服务能力 / 社会服务记录',
+  content: '补充岗位要求与社会服务记录之间的映射说明',
+  basis: '管理员人工补充',
+  targetName: '社会服务记录映射说明',
+  basisLabel: '社会服务记录',
+})
 const indicatorStatusOptions = [
   { label: '已启用', value: 'enabled' },
   { label: '已禁用', value: 'disabled' },
@@ -74,9 +93,6 @@ const optimizationPendingCount = computed(() => (
 ))
 const suggestions = computed(() => abilityListState.optimizationSuggestions)
 const pendingApplicationCount = computed(() => abilityListState.pendingTemplateApplications.length)
-const selectedSuggestion = computed(() => {
-  return suggestions.value.find((item) => item.id === selectedSuggestionId.value) ?? suggestions.value[0]
-})
 const filteredSuggestions = computed(() => {
   let result = suggestions.value
 
@@ -96,6 +112,9 @@ const filteredSuggestions = computed(() => {
   }
 
   return result
+})
+const selectedSuggestion = computed(() => {
+  return filteredSuggestions.value.find((item) => item.id === selectedSuggestionId.value) ?? filteredSuggestions.value[0]
 })
 
 watch(
@@ -264,17 +283,69 @@ function applyToBaseTemplate() {
 }
 
 function uploadPolicy() {
-  importPolicySuggestion()
+  policyUploadSheetOpen.value = true
+}
+
+function closePolicyUploadSheet() {
+  policyUploadSheetOpen.value = false
+}
+
+function submitPolicyUpload() {
+  const suggestion = importPolicySuggestion({
+    issueType: '标准补充',
+    keyLocation: policyUploadForm.value.keyLocation,
+    content: policyUploadForm.value.content,
+    basis: `${policyUploadForm.value.fileName}；${policyUploadForm.value.basis}`,
+  })
   selectedSource.value = 'policy'
-  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  selectedSuggestionId.value = suggestion.id
   operationMessage.fromStore(abilityListState)
+  closePolicyUploadSheet()
 }
 
 function rerunAnalysis() {
-  rerunFeedbackAnalysis()
+  analysisState.value = 'running'
+  const suggestion = rerunFeedbackAnalysis()
+  analysisState.value = 'completed'
   selectedSource.value = 'feedback'
-  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  selectedSuggestionId.value = suggestion.id
   operationMessage.fromStore(abilityListState)
+}
+
+function openManualSuggestionSheet() {
+  manualSuggestionSheetOpen.value = true
+}
+
+function closeManualSuggestionSheet() {
+  manualSuggestionSheetOpen.value = false
+}
+
+function buildManualSuggestionDraft(): OptimizationSuggestionDraft {
+  return {
+    issueType: manualSuggestionForm.value.issueType,
+    keyLocation: manualSuggestionForm.value.keyLocation,
+    content: manualSuggestionForm.value.content,
+    basis: manualSuggestionForm.value.basis,
+    targetIndicator: {
+      key: `manual-${Date.now()}`,
+      abilityKey: 'service',
+      name: manualSuggestionForm.value.targetName,
+      novice: '有相关记录',
+      competent: '记录可支撑岗位要求',
+      backbone: '记录可支撑聘期要求',
+      expert: '记录可支撑画像和报告',
+      basisLabel: manualSuggestionForm.value.basisLabel,
+      status: 'draft',
+    },
+  }
+}
+
+function submitManualSuggestion() {
+  const suggestion = addManualOptimizationSuggestion(buildManualSuggestionDraft())
+  selectedSource.value = 'manual'
+  selectedSuggestionId.value = suggestion.id
+  operationMessage.fromStore(abilityListState)
+  closeManualSuggestionSheet()
 }
 
 function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
@@ -376,6 +447,7 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
           <div class="optimization-toolbar">
             <Button @click="uploadPolicy">上传制度文件</Button>
             <Button variant="secondary" @click="rerunAnalysis">重新分析运行反馈</Button>
+            <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
             <Button
               variant="secondary"
               :disabled="pendingApplicationCount === 0"
@@ -384,6 +456,10 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
               形成修订草稿（{{ pendingApplicationCount }}）
             </Button>
           </div>
+        </div>
+        <div v-if="analysisState !== 'idle'" class="analysis-status" :class="analysisState">
+          <strong>{{ analysisState === 'running' ? '正在分析运行反馈' : '运行反馈分析完成' }}</strong>
+          <span>{{ analysisState === 'running' ? '正在汇总执行版使用反馈、岗位映射异常和修订痕迹。' : '已生成新的运行反馈建议，可在列表中确认处理。' }}</span>
         </div>
         <div class="optimization-grid">
           <aside class="source-panel">
@@ -416,6 +492,7 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
             </div>
 
             <AdminTable
+              v-if="filteredSuggestions.length > 0"
               :data="filteredSuggestions"
               row-key="id"
               :row-class-name="suggestionRowClassName"
@@ -440,6 +517,11 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
                 </template>
               </AdminTableColumn>
             </AdminTable>
+            <div v-else class="suggestion-empty">
+              <strong>暂无优化建议</strong>
+              <span>选择左侧来源或调整问题类型筛选，暂无匹配建议。</span>
+              <Button variant="secondary" @click="openManualSuggestionSheet">人工补充建议</Button>
+            </div>
           </section>
 
           <aside class="suggestion-detail-panel">
@@ -488,9 +570,95 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
                 暂缓处理
               </Button>
             </div>
+            <div v-else class="detail-empty">
+              <strong>当前没有选中的建议</strong>
+              <span>当列表有建议时，点击任一行后可在这里确认来源、依据和处理动作。</span>
+            </div>
           </aside>
         </div>
       </section>
+
+      <DetailSheet
+        :open="policyUploadSheetOpen"
+        title="上传制度文件"
+        description="前端模拟解析制度文件，提交后生成一条待确认优化建议。"
+        width="form"
+        mode="confirm"
+        @update:open="value => { if (!value) closePolicyUploadSheet() }"
+        @cancel="closePolicyUploadSheet"
+        @confirm="submitPolicyUpload"
+      >
+        <div class="drawer-form drawer-form-in-sheet">
+          <div class="form-group">
+            <label class="form-label">文件名称</label>
+            <AdminInput v-model="policyUploadForm.fileName" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">影响位置</label>
+            <AdminInput v-model="policyUploadForm.keyLocation" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">解析建议</label>
+            <AdminInput v-model="policyUploadForm.content" class="form-input" type="textarea" :rows="3" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">解析依据</label>
+            <AdminInput v-model="policyUploadForm.basis" class="form-input" />
+          </div>
+        </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closePolicyUploadSheet">取消</Button>
+          <Button @click="submitPolicyUpload">生成优化建议</Button>
+        </template>
+      </DetailSheet>
+
+      <DetailSheet
+        :open="manualSuggestionSheetOpen"
+        title="人工补充建议"
+        description="用于补充制度解析和运行反馈没有覆盖的人工判断，提交后进入同一处理列表。"
+        width="form"
+        mode="confirm"
+        @update:open="value => { if (!value) closeManualSuggestionSheet() }"
+        @cancel="closeManualSuggestionSheet"
+        @confirm="submitManualSuggestion"
+      >
+        <div class="drawer-form drawer-form-in-sheet">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">问题类型</label>
+              <AdminInput v-model="manualSuggestionForm.issueType" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">关键位置</label>
+              <AdminInput v-model="manualSuggestionForm.keyLocation" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">建议内容</label>
+            <AdminInput v-model="manualSuggestionForm.content" class="form-input" type="textarea" :rows="3" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">来源依据</label>
+            <AdminInput v-model="manualSuggestionForm.basis" class="form-input" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">拟新增指标</label>
+              <AdminInput v-model="manualSuggestionForm.targetName" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">建议依据</label>
+              <AdminInput v-model="manualSuggestionForm.basisLabel" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeManualSuggestionSheet">取消</Button>
+          <Button @click="submitManualSuggestion">提交人工建议</Button>
+        </template>
+      </DetailSheet>
 
       <DetailSheet
         :open="Boolean(editingIndicator)"
@@ -888,6 +1056,31 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
   gap: var(--space-admin-sm);
 }
 
+.analysis-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-admin-md);
+  border-bottom: 1px solid #e4ebf5;
+  background: var(--color-admin-bg-soft);
+  padding: var(--space-admin-md) var(--space-admin-xl);
+}
+
+.analysis-status strong {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.analysis-status span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.analysis-status.completed strong {
+  color: #18845a;
+}
+
 .optimization-grid {
   display: grid;
   grid-template-columns: 176px minmax(520px, 1fr) 320px;
@@ -1006,6 +1199,39 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
 .issue-badge {
   background: #fff0df;
   color: #f26a16;
+}
+
+.suggestion-empty,
+.detail-empty {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  gap: var(--space-admin-sm);
+  border: 1px dashed #d7e2f2;
+  border-radius: var(--radius-admin-panel);
+  background: var(--color-admin-bg-soft);
+  padding: var(--space-admin-xl);
+  text-align: center;
+}
+
+.suggestion-empty strong,
+.detail-empty strong {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.suggestion-empty span,
+.detail-empty span {
+  max-width: 320px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.suggestion-empty button {
+  margin-top: var(--space-admin-xs);
 }
 
 .suggestion-detail {

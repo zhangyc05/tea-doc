@@ -109,6 +109,8 @@ export type OptimizationSuggestion = {
   targetIndicator: AbilityIndicator
 }
 
+export type OptimizationSuggestionDraft = Omit<OptimizationSuggestion, 'id' | 'source' | 'sourceLabel' | 'status' | 'statusLabel'>
+
 export type TemplateApplication = {
   suggestionId: string
   targetIndicator: AbilityIndicator

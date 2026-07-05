@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import {
   adoptOptimizationSuggestion,
+  addManualOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
   confirmExecutionIndicatorChanges,
   confirmBaseTemplateChanges,
@@ -242,6 +243,33 @@ describe('ability list business state', () => {
     expect(suggestion.status).toBe('pending')
     expect(state.optimizationSuggestions[0]?.id).toBe(suggestion.id)
     expect(state.operationMessage).toContain('运行反馈')
+  })
+
+  it('adds a manual optimization suggestion from administrator input', () => {
+    const suggestion = addManualOptimizationSuggestion({
+      issueType: '要求映射问题',
+      keyLocation: '服务能力 / 社会服务记录',
+      content: '补充岗位要求与社会服务记录之间的映射说明',
+      basis: '管理员人工补充',
+      targetIndicator: {
+        key: 'manual-service-record-mapping',
+        abilityKey: 'service',
+        name: '社会服务记录映射说明',
+        novice: '有服务记录',
+        competent: '记录可关联岗位要求',
+        backbone: '记录可关联聘期要求',
+        expert: '记录可支撑画像分析',
+        basisLabel: '社会服务记录',
+        status: 'draft',
+      },
+    })
+    const state = getAbilityListState()
+
+    expect(suggestion.source).toBe('manual')
+    expect(suggestion.sourceLabel).toBe('人工补充')
+    expect(suggestion.status).toBe('pending')
+    expect(state.optimizationSuggestions[0]?.id).toBe(suggestion.id)
+    expect(state.operationMessage).toContain('人工补充')
   })
 
   it('adds a new requirement mapping as a pending item', () => {

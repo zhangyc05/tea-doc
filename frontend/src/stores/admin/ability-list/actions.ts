@@ -1,6 +1,7 @@
 import type {
   AbilityIndicator,
   AbilityListState,
+  OptimizationSuggestionDraft,
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
   RequirementMapping,
@@ -246,18 +247,21 @@ export function applyAdoptedSuggestionsToBaseTemplateInState(state: AbilityListS
   return applications.length
 }
 
-export function importPolicySuggestionInState(state: AbilityListState): OptimizationSuggestion {
+export function importPolicySuggestionInState(
+  state: AbilityListState,
+  draft: Partial<OptimizationSuggestionDraft> = {},
+): OptimizationSuggestion {
   const suggestion: OptimizationSuggestion = {
     id: `policy-import-${state.optimizationSuggestions.length + 1}`,
     source: 'policy',
     sourceLabel: '制度文件',
-    issueType: '标准补充',
-    keyLocation: '教学能力 / 数字素养',
-    content: '根据新上传制度文件补充专业教学资源库建设指标的适用说明',
-    basis: '新上传制度文件解析结果',
+    issueType: draft.issueType ?? '标准补充',
+    keyLocation: draft.keyLocation ?? '教学能力 / 数字素养',
+    content: draft.content ?? '根据新上传制度文件补充专业教学资源库建设指标的适用说明',
+    basis: draft.basis ?? '新上传制度文件解析结果',
     status: 'pending',
     statusLabel: getOptimizationSuggestionStatusLabel('pending'),
-    targetIndicator: {
+    targetIndicator: draft.targetIndicator ?? {
       key: 'base-policy-teaching-resource-scope',
       abilityKey: 'teaching-digital-literacy',
       name: '专业教学资源库建设适用范围',
@@ -301,6 +305,28 @@ export function rerunFeedbackAnalysisInState(state: AbilityListState): Optimizat
 
   state.optimizationSuggestions.unshift(suggestion)
   state.operationMessage = '已重新分析运行反馈，并生成 1 条待确认优化建议。'
+  return suggestion
+}
+
+export function addManualOptimizationSuggestionInState(
+  state: AbilityListState,
+  draft: OptimizationSuggestionDraft,
+): OptimizationSuggestion {
+  const suggestion: OptimizationSuggestion = {
+    id: `manual-suggestion-${state.optimizationSuggestions.length + 1}`,
+    source: 'manual',
+    sourceLabel: '人工补充',
+    issueType: draft.issueType,
+    keyLocation: draft.keyLocation,
+    content: draft.content,
+    basis: draft.basis,
+    status: 'pending',
+    statusLabel: getOptimizationSuggestionStatusLabel('pending'),
+    targetIndicator: { ...draft.targetIndicator },
+  }
+
+  state.optimizationSuggestions.unshift(suggestion)
+  state.operationMessage = '人工补充建议已生成 1 条待确认优化建议。'
   return suggestion
 }
 
