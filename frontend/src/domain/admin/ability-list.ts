@@ -125,8 +125,19 @@ export type PendingBaseTemplateChange = {
   operator: string
 }
 
+export type PendingExecutionIndicatorChange = {
+  id: string
+  indicatorKey: string
+  indicatorName: string
+  before?: AbilityIndicator
+  after: AbilityIndicator
+  changedAt: string
+  operator: string
+}
+
 export type RequirementMapping = {
   id: string
+  requirementGroupKey: string
   requirementText: string
   indicatorDimension: string
   indicatorName: string
@@ -229,6 +240,7 @@ export type AbilityListState = {
   executionVersion: ExecutionVersion
   versionHistory: ExecutionVersion[]
   executionIndicators: AbilityIndicator[]
+  pendingExecutionIndicatorChanges: PendingExecutionIndicatorChange[]
   optimizationSuggestions: OptimizationSuggestion[]
   pendingTemplateApplications: TemplateApplication[]
   requirementMappings: RequirementMapping[]

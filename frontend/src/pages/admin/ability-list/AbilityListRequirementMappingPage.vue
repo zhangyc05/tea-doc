@@ -11,6 +11,7 @@
 	import {
 		confirmRequirementMapping,
 		deleteRequirementMapping,
+		getRequirementMappingsForGroup,
 		getAbilityListState,
 		saveRequirementMapping,
 		type RequirementMapping,
@@ -22,6 +23,7 @@
 
 	const emptyMapping: RequirementMapping = {
 		id: '',
+		requirementGroupKey: 'associate-professor',
 		requirementText: '暂无要求项',
 		indicatorDimension: '教学能力',
 		indicatorName: '岗位基本教学工作量（课时/学年）',
@@ -79,11 +81,12 @@
 	// 当前选中的要求对象
 	const selectedGroup = ref('associate-professor')
 
-	const selectedMappingId = ref(mappings.value[0]?.id ?? '')
+	const filteredMappings = computed(() => getRequirementMappingsForGroup(selectedGroup.value))
+	const selectedMappingId = ref(filteredMappings.value[0]?.id ?? '')
 	const selectedMapping = computed(() => {
-		return mappings.value.find(mapping => mapping.id === selectedMappingId.value)
-			?? mappings.value[0]
-			?? emptyMapping
+		return filteredMappings.value.find(mapping => mapping.id === selectedMappingId.value)
+			?? filteredMappings.value[0]
+			?? { ...emptyMapping, requirementGroupKey: selectedGroup.value }
 	})
 
 	// 编辑抽屉状态
@@ -92,15 +95,16 @@
 
 	// 统计数据
 	const stats = computed(() => ({
-		positionRequirements: 12,
-		tenureRequirements: 12,
-		confirmed: mappings.value.filter((item) => item.confirmStatus === 'confirmed').length + 17,
-		pending: mappings.value.filter((item) => item.confirmStatus !== 'confirmed').length + 3,
+		positionRequirements: mappings.value.filter((item) => !item.requirementGroupKey.includes('tenure')).length,
+		tenureRequirements: mappings.value.filter((item) => item.requirementGroupKey.includes('tenure')).length,
+		confirmed: mappings.value.filter((item) => item.confirmStatus === 'confirmed').length,
+		pending: mappings.value.filter((item) => item.confirmStatus !== 'confirmed').length,
 	}))
 
 	// 选择要求对象
 	function selectGroup(key: string) {
 		selectedGroup.value = key
+		selectedMappingId.value = getRequirementMappingsForGroup(key)[0]?.id ?? ''
 		operationMessage.set(`已切换要求对象：${getSelectedGroupLabel()}。`)
 	}
 
@@ -124,6 +128,7 @@
 	function addNewMapping() {
 		editingMapping.value = {
 			id: `new-${Date.now()}`,
+			requirementGroupKey: selectedGroup.value,
 			requirementText: '新增要求项待完善',
 			indicatorDimension: '教学能力',
 			indicatorName: '岗位基本教学工作量（课时/学年）',
@@ -138,8 +143,9 @@
 	// 删除映射
 	function deleteMapping() {
 		const target = editingMapping.value || selectedMapping.value
+		if (!target.id) return
 		deleteRequirementMapping(target.id)
-		selectedMappingId.value = mappings.value[0]?.id ?? ''
+		selectedMappingId.value = filteredMappings.value[0]?.id ?? ''
 		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
 	}
@@ -147,7 +153,10 @@
 	// 保存映射
 	function saveMapping() {
 		if (!editingMapping.value) return
-		saveRequirementMapping(editingMapping.value)
+		saveRequirementMapping({
+			...editingMapping.value,
+			requirementGroupKey: editingMapping.value.requirementGroupKey || selectedGroup.value,
+		})
 		selectedMappingId.value = editingMapping.value.id
 		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
@@ -155,6 +164,7 @@
 
 	// 确认配置
 	function confirmMapping() {
+		if (!selectedMapping.value.id) return
 		confirmRequirementMapping(selectedMapping.value.id)
 		operationMessage.fromStore(abilityListState)
 	}
@@ -174,6 +184,11 @@
 			return ''
 		}
 		return findInGroups(requirementGroups)
+	}
+
+	function getSelectedSourceLabel() {
+		const parent = requirementGroups.find(group => group.children?.some(child => child.key === selectedGroup.value))
+		return parent?.label ?? getSelectedGroupLabel()
 	}
 
 	function getLevelBadgeClass(level: string) {
@@ -305,7 +320,7 @@
 
 					<div class="admin-table-container">
 						<AdminTable
-							:data="mappings"
+							:data="filteredMappings"
 							row-key="id"
 							:row-class-name="mappingRowClassName"
 							empty-text="暂无要求项映射"
@@ -340,7 +355,7 @@
 					</div>
 
 					<div class="table-footer">
-						<span>共 {{ mappings.length }} 条</span>
+						<span>共 {{ filteredMappings.length }} 条</span>
 						<span>第 1 页</span>
 						<span>每页 10 条/页</span>
 					</div>
@@ -360,11 +375,11 @@
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">要求来源：</span>
-							<span class="detail-value">岗位竞聘要求</span>
+							<span class="detail-value">{{ getSelectedSourceLabel() }}</span>
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">适用对象：</span>
-							<span class="detail-value">申报副教授</span>
+							<span class="detail-value">{{ getSelectedGroupLabel() }}</span>
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">对应能力指标：</span>
@@ -417,11 +432,11 @@
 					<h4 class="form-section-title"><span>1</span>基本信息</h4>
 					<div class="form-row">
 						<label class="form-label">要求来源</label>
-						<AdminSelect class="form-select" model-value="岗位竞聘要求" :options="requirementSourceOptions" :clearable="false" />
+						<AdminSelect class="form-select" :model-value="getSelectedSourceLabel()" :options="requirementSourceOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">适用对象</label>
-						<AdminSelect class="form-select" model-value="申报副教授" :options="requirementTargetOptions" :clearable="false" />
+						<AdminSelect class="form-select" :model-value="getSelectedGroupLabel()" :options="requirementTargetOptions" :clearable="false" />
 					</div>
 					<div class="form-row">
 						<label class="form-label">要求原文</label>

@@ -437,6 +437,11 @@ describe('admin visual action guardrails', () => {
   it('guards ability list execution indicator filtering', () => {
     expect(abilityListExecutionPage).toContain('filteredIndicators')
     expect(abilityListExecutionPage).toContain('indicator.abilityKey === selectedAbility.value')
+    expect(abilityListExecutionPage).toContain('pendingExecutionChangeRows')
+    expect(abilityListExecutionPage).toContain('confirmExecutionAdjustments')
+    expect(abilityListExecutionPage).toContain('discardExecutionAdjustments')
+    expect(abilityListExecutionPage).toContain('确认调整（{{ pendingExecutionChangeRows.length }}）')
+    expect(abilityListExecutionPage).toContain('撤回调整')
     expect(abilityListExecutionPage).toContain('@select-ability="selectAbility"')
     expect(abilityListExecutionPage).toContain(':indicators="filteredIndicators"')
     expect(abilityListExecutionPage).toContain('const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey')
@@ -444,6 +449,27 @@ describe('admin visual action guardrails', () => {
     expect(abilityListExecutionPage).toContain(':default-expanded-keys="[defaultAbilityGroupKey]"')
     expect(abilityListExecutionPage).not.toContain("const selectedAbility = ref('teaching-implementation')")
     expect(abilityListExecutionPage).not.toContain(':default-expanded-keys="[\'teaching\']"')
+  })
+
+  it('keeps ability list publish confirmation free of automatic version derivation', () => {
+    expect(abilityListPublishConfirmPage).not.toContain('deriveNextExecutionVersion')
+    expect(abilityListPublishConfirmPage).toContain('发布准备来自执行版页面的“派生下一周期执行版”操作')
+  })
+
+  it('keeps requirement mapping data scoped to the selected requirement object', () => {
+    expect(abilityListRequirementMappingPage).toContain('filteredMappings')
+    expect(abilityListRequirementMappingPage).toContain('getRequirementMappingsForGroup(selectedGroup.value)')
+    expect(abilityListRequirementMappingPage).toContain(':data="filteredMappings"')
+    expect(abilityListRequirementMappingPage).toContain('requirementGroupKey: selectedGroup.value')
+    expect(abilityListRequirementMappingPage).not.toContain('+ 17')
+    expect(abilityListRequirementMappingPage).not.toContain('+ 3')
+  })
+
+  it('shows current execution version evidence on ability profile pages', () => {
+    expect(abilityProfileGroupPage).toContain('currentExecutionVersionTitle')
+    expect(abilityProfileGroupPage).toContain('当前执行版：{{ currentExecutionVersionTitle }}')
+    expect(abilityProfileTeacherDetailPage).toContain('currentExecutionVersionTitle')
+    expect(abilityProfileTeacherDetailPage).toContain('当前执行版：{{ currentExecutionVersionTitle }}')
   })
 
   it('defaults the base ability list to the first ability element', () => {

@@ -10,6 +10,7 @@ import { initialExecutionVersion } from './initialData'
 
 const systemOperator = '教务处管理员'
 const baseTemplateChangeTime = '2026-07-03 23:20'
+const executionChangeTime = '2026-07-05 19:10'
 
 export function updateIndicatorInState(
   indicators: AbilityIndicator[],
@@ -59,6 +60,74 @@ export function saveBaseTemplateChangeInState(
 
   state.operationMessage = `已保存修订草稿：${after.name}。`
   return change
+}
+
+export function saveExecutionIndicatorChangeInState(
+  state: AbilityListState,
+  key: string,
+  patch: Partial<Omit<AbilityIndicator, 'key'>>,
+) {
+  const source = state.executionIndicators.find(indicator => indicator.key === key)
+  if (!source) return null
+
+  const existing = state.pendingExecutionIndicatorChanges.find(change => change.indicatorKey === key)
+  const before = existing?.before ?? { ...source }
+  const after: AbilityIndicator = {
+    ...(existing?.after ?? source),
+    ...patch,
+    status: 'draft' satisfies AbilityIndicator['status'],
+  }
+  const change = {
+    id: existing?.id ?? `execution-indicator-change-${state.pendingExecutionIndicatorChanges.length + 1}`,
+    indicatorKey: key,
+    indicatorName: after.name,
+    before,
+    after,
+    changedAt: executionChangeTime,
+    operator: systemOperator,
+  }
+  const index = state.pendingExecutionIndicatorChanges.findIndex(item => item.indicatorKey === key)
+
+  if (index >= 0) {
+    state.pendingExecutionIndicatorChanges[index] = change
+  } else {
+    state.pendingExecutionIndicatorChanges.push(change)
+  }
+
+  state.operationMessage = `已保存执行版调整草稿：${after.name}。`
+  return change
+}
+
+export function confirmExecutionIndicatorChangesInState(state: AbilityListState) {
+  const changes = [...state.pendingExecutionIndicatorChanges]
+  if (changes.length === 0) {
+    state.operationMessage = '暂无待确认的执行版调整。'
+    return 0
+  }
+
+  changes.forEach((change) => {
+    const index = state.executionIndicators.findIndex(indicator => indicator.key === change.indicatorKey)
+    if (index < 0) return
+    state.executionIndicators[index] = {
+      ...change.after,
+      status: 'enabled' satisfies AbilityIndicator['status'],
+    }
+  })
+
+  state.pendingExecutionIndicatorChanges = []
+  state.executionVersion.lastUpdated = executionChangeTime
+  state.executionVersion.operator = systemOperator
+  state.operationMessage = `已确认 ${changes.length} 项执行版调整。`
+  return changes.length
+}
+
+export function discardExecutionIndicatorChangesInState(state: AbilityListState) {
+  const count = state.pendingExecutionIndicatorChanges.length
+  state.pendingExecutionIndicatorChanges = []
+  state.operationMessage = count > 0
+    ? `已撤回 ${count} 项执行版调整。`
+    : '暂无可撤回的执行版调整。'
+  return count
 }
 
 export function confirmBaseTemplateChangesInState(state: AbilityListState) {
@@ -133,8 +202,8 @@ export function publishExecutionVersionInState(state: AbilityListState) {
   }
 
   state.executionVersion.status = 'published'
-  state.executionVersion.lastUpdated = '2026-07-02 17:20'
-  state.executionVersion.publishedAt = '2026-07-02 17:20'
+  state.executionVersion.lastUpdated = executionChangeTime
+  state.executionVersion.publishedAt = executionChangeTime
   state.executionVersion.operator = '教务处管理员'
   state.operationMessage = `${state.executionVersion.title}已确认发布。`
 }

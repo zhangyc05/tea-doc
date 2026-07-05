@@ -2,12 +2,16 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import {
   adoptOptimizationSuggestion,
   applyAdoptedSuggestionsToBaseTemplate,
+  confirmExecutionIndicatorChanges,
   confirmBaseTemplateChanges,
   confirmRequirementMapping,
   deleteRequirementMapping,
   deriveNextExecutionVersion,
+  discardExecutionIndicatorChanges,
   importPolicySuggestion,
   getAbilityListState,
+  getDisplayedExecutionIndicators,
+  getRequirementMappingsForGroup,
   publishExecutionVersion,
   rerunFeedbackAnalysis,
   resetAbilityListState,
@@ -21,21 +25,54 @@ describe('ability list business state', () => {
     resetAbilityListState()
   })
 
-  it('updates an execution indicator and marks it as a draft adjustment', () => {
+  it('keeps execution indicator edits pending until confirmed or discarded', () => {
+    const before = getAbilityListState().executionIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+
     updateExecutionIndicator('ability-standard-11', {
       novice: '>= 72',
       competent: '>= 108',
       basisLabel: '调整后的课时规则',
     })
 
-    const target = getAbilityListState().executionIndicators.find(
+    const formal = getAbilityListState().executionIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+    const displayedDraft = getDisplayedExecutionIndicators().find(
       indicator => indicator.key === 'ability-standard-11',
     )
 
-    expect(target?.novice).toBe('>= 72')
-    expect(target?.competent).toBe('>= 108')
-    expect(target?.basisLabel).toBe('调整后的课时规则')
-    expect(target?.status).toBe('draft')
+    expect(formal?.novice).toBe(before?.novice)
+    expect(getAbilityListState().pendingExecutionIndicatorChanges).toHaveLength(1)
+    expect(displayedDraft).toMatchObject({
+      novice: '>= 72',
+      competent: '>= 108',
+      basisLabel: '调整后的课时规则',
+      status: 'draft',
+    })
+
+    discardExecutionIndicatorChanges()
+    expect(getDisplayedExecutionIndicators().find(
+      indicator => indicator.key === 'ability-standard-11',
+    )?.novice).toBe(before?.novice)
+
+    updateExecutionIndicator('ability-standard-11', {
+      novice: '>= 72',
+      competent: '>= 108',
+      basisLabel: '调整后的课时规则',
+    })
+    const appliedCount = confirmExecutionIndicatorChanges()
+    const confirmed = getAbilityListState().executionIndicators.find(
+      indicator => indicator.key === 'ability-standard-11',
+    )
+
+    expect(appliedCount).toBe(1)
+    expect(confirmed?.novice).toBe('>= 72')
+    expect(confirmed?.competent).toBe('>= 108')
+    expect(confirmed?.basisLabel).toBe('调整后的课时规则')
+    expect(confirmed?.status).toBe('enabled')
+    expect(getAbilityListState().pendingExecutionIndicatorChanges).toHaveLength(0)
   })
 
   it('saves a base template indicator edit as a pending change', () => {
@@ -114,6 +151,7 @@ describe('ability list business state', () => {
     publishExecutionVersion()
 
     expect(getAbilityListState().executionVersion.status).toBe('published')
+    expect(getAbilityListState().executionVersion.publishedAt).toBe('2026-07-05 19:10')
     expect(getAbilityListState().operationMessage).toBe('2027 年度教师能力清单执行版已确认发布。')
   })
 
@@ -209,6 +247,7 @@ describe('ability list business state', () => {
   it('adds a new requirement mapping as a pending item', () => {
     saveRequirementMapping({
       id: 'new-mapping',
+      requirementGroupKey: 'professor',
       requirementText: '近三年完成校级公开课不少于 1 次',
       indicatorDimension: '教学能力',
       indicatorName: '开展公开课、示范课、说专业、说课程等工作（次/学年）',
@@ -221,7 +260,10 @@ describe('ability list business state', () => {
     const target = getAbilityListState().requirementMappings.find(mapping => mapping.id === 'new-mapping')
 
     expect(target?.requirementText).toContain('公开课')
+    expect(target?.requirementGroupKey).toBe('professor')
     expect(target?.confirmStatus).toBe('pending')
+    expect(getRequirementMappingsForGroup('professor').some(mapping => mapping.id === 'new-mapping')).toBe(true)
+    expect(getRequirementMappingsForGroup('associate-professor').some(mapping => mapping.id === 'new-mapping')).toBe(false)
   })
 
   it('edits and confirms an existing requirement mapping', () => {

@@ -13,10 +13,12 @@ const route = useRoute()
 
 const teacherId = route.params.teacherId as string
 const teacherDetailMock = getAbilityProfileTeacherDetailMock(teacherId)
+const abilityListState = getAbilityListState()
+const currentExecutionVersionTitle = abilityListState.executionVersion.title
 const teacherDetailProfile = calculateTeacherAbilityProfile(
   teacherDetailMock.teacherInfo.name,
   getTeacherArchiveFacts(teacherDetailMock.teacherInfo.name),
-  getAbilityListState().executionIndicators,
+  abilityListState.executionIndicators,
 )
 
 const teacherInfo = ref(teacherDetailProfile.teacherInfo)
@@ -74,7 +76,7 @@ function switchTeacher() {
           </div>
           <div>
             <span>数据依据：</span>
-            <strong>{{ teacherInfo.dataBasis }}</strong>
+            <strong>{{ teacherInfo.dataBasis }}。当前执行版：{{ currentExecutionVersionTitle }}</strong>
           </div>
           <div>
             <span>更新时间：</span>

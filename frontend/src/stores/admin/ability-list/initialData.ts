@@ -159,10 +159,10 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
 ]
 
 export const initialRequirementMappings: RequirementMapping[] = [
-  { id: '1', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '岗位基本教学工作量（课时/学年）', level: '骨干', levelCriteria: '岗位基本教学工作量达到骨干标准', documentCondition: '岗位基本教学工作量达到骨干标准', confirmStatus: 'confirmed' },
-  { id: '2', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教学改革研究项目立项', level: '胜任', levelCriteria: '主持厅局级或以上教学改革研究项目', documentCondition: '主持厅局级或以上教学改革研究项目', confirmStatus: 'pending' },
-  { id: '3', requirementText: '近三年教学指导或技能竞赛达到岗位要求', indicatorDimension: '教学能力', indicatorName: '指导学生参加省级及以上一类/二类技能竞赛获奖', level: '胜任', levelCriteria: '第一位指导二类竞赛获奖', documentCondition: '第一位指导二类竞赛获奖', confirmStatus: 'confirmed' },
-  { id: '4', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业锻炼时长（天/年）', level: '胜任', levelCriteria: '企业锻炼时长 30 天/年', documentCondition: '企业锻炼时长 30 天/年', confirmStatus: 'unconfigured' },
+  { id: '1', requirementGroupKey: 'associate-professor', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '岗位基本教学工作量（课时/学年）', level: '骨干', levelCriteria: '岗位基本教学工作量达到骨干标准', documentCondition: '岗位基本教学工作量达到骨干标准', confirmStatus: 'confirmed' },
+  { id: '2', requirementGroupKey: 'associate-professor', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教学改革研究项目立项', level: '胜任', levelCriteria: '主持厅局级或以上教学改革研究项目', documentCondition: '主持厅局级或以上教学改革研究项目', confirmStatus: 'pending' },
+  { id: '3', requirementGroupKey: 'professor', requirementText: '近三年教学指导或技能竞赛达到岗位要求', indicatorDimension: '教学能力', indicatorName: '指导学生参加省级及以上一类/二类技能竞赛获奖', level: '胜任', levelCriteria: '第一位指导二类竞赛获奖', documentCondition: '第一位指导二类竞赛获奖', confirmStatus: 'confirmed' },
+  { id: '4', requirementGroupKey: 'associate-professor-tenure', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业锻炼时长（天/年）', level: '胜任', levelCriteria: '企业锻炼时长 30 天/年', documentCondition: '企业锻炼时长 30 天/年', confirmStatus: 'unconfigured' },
 ]
 
 export function createInitialAbilityListState(): AbilityListState {
@@ -174,6 +174,7 @@ export function createInitialAbilityListState(): AbilityListState {
     executionVersion: { ...initialExecutionVersion },
     versionHistory: [],
     executionIndicators: cloneIndicators(initialExecutionIndicators),
+    pendingExecutionIndicatorChanges: [],
     optimizationSuggestions: cloneOptimizationSuggestions(initialOptimizationSuggestions),
     pendingTemplateApplications: initialOptimizationSuggestions
       .filter(suggestion => suggestion.status === 'adopted')

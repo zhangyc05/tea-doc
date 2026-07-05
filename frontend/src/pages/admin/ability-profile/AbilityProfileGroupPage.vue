@@ -31,9 +31,11 @@ import { getArchiveState } from '@/stores/admin/archiveStore'
 const router = useRouter()
 const route = useRoute()
 const operationMessage = useOperationMessage()
+const abilityListState = getAbilityListState()
+const currentExecutionVersionTitle = abilityListState.executionVersion.title
 const groupProfile = calculateAbilityProfileGroup(
   getArchiveState().teacherArchiveFacts,
-  getAbilityListState().executionIndicators,
+  abilityListState.executionIndicators,
 )
 
 const developmentIndex = groupProfile.developmentIndex
@@ -133,7 +135,7 @@ function focusRowClassName({ row }: { row: { name: string } }) {
               <span>/ 100</span>
             </div>
             <p>
-              由教学、教研、实践、服务四个维度的发展指数按权重汇总形成；依据：{{ dataBasis }}
+              由教学、教研、实践、服务四个维度的发展指数按权重汇总形成；依据：{{ dataBasis }}。当前执行版：{{ currentExecutionVersionTitle }}
             </p>
             <div class="status-line">
               <img class="status-icon" :src="iconBasicQualified" alt="" />

@@ -10,7 +10,10 @@ import type { AbilityIndicator } from '@/components/admin/ability-list/types'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListExecutionMock } from '@/services/mock/ability-list'
 import {
+  confirmExecutionIndicatorChanges,
   deriveNextExecutionVersion,
+  discardExecutionIndicatorChanges,
+  getDisplayedExecutionIndicators,
   getAbilityListState,
   updateExecutionIndicator,
 } from '@/stores/admin/abilityListStore'
@@ -63,10 +66,11 @@ function saveEdit() {
   closeEditDrawer()
 }
 
-const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.executionIndicators)
+const normalizedIndicators = computed<AbilityIndicator[]>(() => getDisplayedExecutionIndicators())
 const filteredIndicators = computed<AbilityIndicator[]>(() => (
   normalizedIndicators.value.filter(indicator => indicator.abilityKey === selectedAbility.value)
 ))
+const pendingExecutionChangeRows = computed(() => abilityListState.pendingExecutionIndicatorChanges)
 const versionRows = computed(() => [
   abilityListState.executionVersion,
   ...abilityListState.versionHistory,
@@ -121,6 +125,14 @@ function deriveNextVersion() {
   router.push('/admin/ability-list/execution/publish-confirm')
 }
 
+function confirmExecutionAdjustments() {
+  confirmExecutionIndicatorChanges()
+}
+
+function discardExecutionAdjustments() {
+  discardExecutionIndicatorChanges()
+}
+
 function openVersionDrawer() {
   showVersionDrawer.value = true
 }
@@ -164,6 +176,20 @@ function closeVersionDrawer() {
                 <Button class="primary-action" @click="deriveNextVersion">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
                   派生下一周期执行版
+                </Button>
+                <Button
+                  v-if="pendingExecutionChangeRows.length > 0"
+                  variant="secondary"
+                  @click="confirmExecutionAdjustments"
+                >
+                  确认调整（{{ pendingExecutionChangeRows.length }}）
+                </Button>
+                <Button
+                  v-if="pendingExecutionChangeRows.length > 0"
+                  variant="outline"
+                  @click="discardExecutionAdjustments"
+                >
+                  撤回调整
                 </Button>
                 <Button class="secondary-action" variant="outline" @click="openVersionDrawer">历史版本</Button>
               </div>

@@ -1,30 +1,21 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListPublishConfirmMock } from '@/services/mock/ability-list'
 import {
-  deriveNextExecutionVersion,
   getAbilityListState,
   publishExecutionVersion,
 } from '@/stores/admin/abilityListStore'
 
 const router = useRouter()
-const route = useRoute()
 const abilityListState = getAbilityListState()
 const publishStatus = computed(() => abilityListState.executionVersion.status)
 const publishStatusLabel = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
 const operationMessage = computed(() => abilityListState.operationMessage)
-
-if (
-  abilityListState.executionVersion.status === 'published'
-  && abilityListState.executionVersion.title === '2026 年度教师能力清单执行版'
-) {
-  deriveNextExecutionVersion()
-}
 
 const { impactCards } = getAbilityListPublishConfirmMock()
 
@@ -98,6 +89,7 @@ function goBack() {
         <div>
           <h4 class="notice-title">发布说明</h4>
           <p class="notice-text">
+            发布准备来自执行版页面的“派生下一周期执行版”操作。
             发布后，2027 年度执行版将成为当前周期默认运行口径。2026 年度执行版将保留历史引用记录，不会被覆盖。
           </p>
         </div>

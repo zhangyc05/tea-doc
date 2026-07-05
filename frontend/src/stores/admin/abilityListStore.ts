@@ -7,16 +7,18 @@ import type {
 } from '@/domain/admin/ability-list'
 import {
   applyAdoptedSuggestionsToBaseTemplateInState,
+  confirmExecutionIndicatorChangesInState,
   confirmBaseTemplateChangesInState,
   confirmRequirementMappingInState,
   deleteRequirementMappingInState,
   deriveNextExecutionVersionInState,
+  discardExecutionIndicatorChangesInState,
   importPolicySuggestionInState,
   publishExecutionVersionInState,
   rerunFeedbackAnalysisInState,
   saveBaseTemplateChangeInState,
+  saveExecutionIndicatorChangeInState,
   saveRequirementMappingInState,
-  updateIndicatorInState,
   updateOptimizationSuggestionStatusInState,
 } from './ability-list/actions'
 import { createInitialAbilityListState } from './ability-list/initialData'
@@ -30,6 +32,7 @@ export type {
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
   PendingBaseTemplateChange,
+  PendingExecutionIndicatorChange,
   RequirementMapping,
   RequirementMappingStatus,
   TemplateApplication,
@@ -49,9 +52,26 @@ export function updateExecutionIndicator(
   key: string,
   patch: Partial<Omit<AbilityIndicator, 'key'>>,
 ) {
-  const target = updateIndicatorInState(state.executionIndicators, key, patch)
+  const target = saveExecutionIndicatorChangeInState(state, key, patch)
   if (!target) return
-  state.operationMessage = `已保存指标调整：${target.name}。`
+  state.operationMessage = `已保存执行版调整草稿：${target.indicatorName}。`
+}
+
+export function getDisplayedExecutionIndicators() {
+  return state.executionIndicators.map((indicator) => {
+    const pendingChange = state.pendingExecutionIndicatorChanges.find(
+      change => change.indicatorKey === indicator.key,
+    )
+    return pendingChange ? { ...pendingChange.after } : { ...indicator }
+  })
+}
+
+export function confirmExecutionIndicatorChanges() {
+  return confirmExecutionIndicatorChangesInState(state)
+}
+
+export function discardExecutionIndicatorChanges() {
+  return discardExecutionIndicatorChangesInState(state)
 }
 
 export function updateBaseTemplateIndicator(
@@ -103,6 +123,10 @@ export function rerunFeedbackAnalysis() {
 
 export function saveRequirementMapping(mapping: RequirementMapping) {
   saveRequirementMappingInState(state, mapping)
+}
+
+export function getRequirementMappingsForGroup(groupKey: string) {
+  return state.requirementMappings.filter(mapping => mapping.requirementGroupKey === groupKey)
 }
 
 export function deleteRequirementMapping(mappingId: string) {
