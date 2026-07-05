@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput } from '@/components/admin-ui'
+import { AdminInput, AdminSelect } from '@/components/admin-ui'
 import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -36,24 +36,57 @@ const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
 
 // 编辑抽屉状态
 const editingIndicator = ref<AbilityIndicator | null>(null)
+const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
 const defaultAbilityGroupKey = normalizedAbilityTree[0]?.key ?? ''
 const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey
 const selectedAbility = ref(defaultAbilityKey)
+const indicatorStatusOptions = [
+  { label: '已启用', value: 'enabled' },
+  { label: '已禁用', value: 'disabled' },
+  { label: '草稿', value: 'draft' },
+]
 
 // 打开编辑抽屉
 function openEditDrawer(indicator: AbilityIndicator) {
   editingIndicator.value = { ...indicator }
+  editErrors.value = {}
 }
 
 // 关闭编辑抽屉
 function closeEditDrawer() {
   editingIndicator.value = null
+  editErrors.value = {}
+}
+
+function validateIndicatorEdit() {
+  if (!editingIndicator.value) return false
+
+  const fields: Array<{ key: keyof AbilityIndicator, message: string }> = [
+    { key: 'name', message: '请输入指标名称' },
+    { key: 'novice', message: '请输入新手标准' },
+    { key: 'competent', message: '请输入胜任标准' },
+    { key: 'backbone', message: '请输入骨干标准' },
+    { key: 'expert', message: '请输入名师标准' },
+    { key: 'basisLabel', message: '请输入计算规则' },
+  ]
+  const nextErrors: Record<string, string> = {}
+
+  fields.forEach((field) => {
+    const value = editingIndicator.value?.[field.key]
+    if (typeof value !== 'string' || value.trim() === '') {
+      nextErrors[field.key] = field.message
+    }
+  })
+
+  editErrors.value = nextErrors
+  return Object.keys(nextErrors).length === 0
 }
 
 // 保存编辑
 function saveEdit() {
   if (!editingIndicator.value) return
+  if (!validateIndicatorEdit()) return
 
   updateExecutionIndicator(editingIndicator.value.key, {
     name: editingIndicator.value.name,
@@ -62,6 +95,7 @@ function saveEdit() {
     backbone: editingIndicator.value.backbone,
     expert: editingIndicator.value.expert,
     basisLabel: editingIndicator.value.basisLabel,
+    status: editingIndicator.value.status,
   })
   closeEditDrawer()
 }
@@ -104,20 +138,6 @@ function getSelectedAbilityLabel() {
 
 function getSelectedAbilityIcon() {
   return findSelectedAbility().icon
-}
-
-function getEditingAbilityLabel() {
-  const target = editingIndicator.value
-  if (!target) return { dimension: '', element: '' }
-
-  for (const item of normalizedAbilityTree) {
-    const child = item.children?.find(childItem => childItem.key === target.abilityKey)
-    if (child) {
-      return { dimension: item.label, element: child.label }
-    }
-  }
-
-  return { dimension: '', element: target.basisLabel }
 }
 
 function deriveNextVersion() {
@@ -236,52 +256,57 @@ function closeVersionDrawer() {
         @cancel="closeEditDrawer"
         @confirm="saveEdit"
       >
-        <div v-if="editingIndicator" class="drawer-tip">
-          当前执行版已发布，修改后将先保存为调整内容，确认后再生效。
-        </div>
-
-        <div v-if="editingIndicator" class="drawer-form">
+        <div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">
+          <p class="form-tip">当前执行版已发布，修改后将先保存为调整内容，确认后再生效。</p>
           <div class="form-group">
-            <label class="form-label">所属维度</label>
-            <AdminInput class="form-input" :model-value="getEditingAbilityLabel().dimension" readonly />
-          </div>
-          <div class="form-group">
-            <label class="form-label">所属要素</label>
-            <AdminInput class="form-input" :model-value="getEditingAbilityLabel().element" readonly />
-          </div>
-          <div class="form-group">
-            <label class="form-label">指标名称</label>
-            <AdminInput v-model="editingIndicator.name" class="form-input" />
+            <label class="form-label">指标名称 <span class="required-mark">*</span></label>
+            <AdminInput v-model="editingIndicator.name" class="form-input" :aria-invalid="Boolean(editErrors.name)" />
+            <p v-if="editErrors.name" class="form-error">{{ editErrors.name }}</p>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">新手</label>
-              <AdminInput v-model="editingIndicator.novice" class="form-input" />
+              <label class="form-label">新手 <span class="required-mark">*</span></label>
+              <AdminInput v-model="editingIndicator.novice" class="form-input" :aria-invalid="Boolean(editErrors.novice)" />
+              <p v-if="editErrors.novice" class="form-error">{{ editErrors.novice }}</p>
             </div>
             <div class="form-group">
-              <label class="form-label">胜任</label>
-              <AdminInput v-model="editingIndicator.competent" class="form-input" />
+              <label class="form-label">胜任 <span class="required-mark">*</span></label>
+              <AdminInput v-model="editingIndicator.competent" class="form-input" :aria-invalid="Boolean(editErrors.competent)" />
+              <p v-if="editErrors.competent" class="form-error">{{ editErrors.competent }}</p>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">骨干</label>
-              <AdminInput v-model="editingIndicator.backbone" class="form-input" />
+              <label class="form-label">骨干 <span class="required-mark">*</span></label>
+              <AdminInput v-model="editingIndicator.backbone" class="form-input" :aria-invalid="Boolean(editErrors.backbone)" />
+              <p v-if="editErrors.backbone" class="form-error">{{ editErrors.backbone }}</p>
             </div>
             <div class="form-group">
-              <label class="form-label">名师</label>
-              <AdminInput v-model="editingIndicator.expert" class="form-input" />
+              <label class="form-label">名师 <span class="required-mark">*</span></label>
+              <AdminInput v-model="editingIndicator.expert" class="form-input" :aria-invalid="Boolean(editErrors.expert)" />
+              <p v-if="editErrors.expert" class="form-error">{{ editErrors.expert }}</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">计算规则</label>
-            <AdminInput v-model="editingIndicator.basisLabel" class="form-input" />
+            <label class="form-label">计算规则 <span class="required-mark">*</span></label>
+            <AdminInput v-model="editingIndicator.basisLabel" class="form-input" :aria-invalid="Boolean(editErrors.basisLabel)" />
+            <p v-if="editErrors.basisLabel" class="form-error">{{ editErrors.basisLabel }}</p>
           </div>
           <div class="form-group">
             <label class="form-label">状态</label>
-            <AdminInput class="form-input" model-value="已启用" readonly />
+            <AdminSelect
+              v-model="editingIndicator.status"
+              class="form-select"
+              :options="indicatorStatusOptions"
+              :clearable="false"
+            />
           </div>
         </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeEditDrawer">取消</Button>
+          <Button @click="saveEdit">保存调整</Button>
+        </template>
       </DetailSheet>
 
       <DetailSheet
@@ -505,93 +530,82 @@ function closeVersionDrawer() {
 
 .drawer-form {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  gap: var(--space-admin-card-gap);
+  overflow-y: auto;
+  padding: var(--space-admin-2xl);
+}
+
+.drawer-form-in-sheet {
+  padding: 0;
+}
+
+.form-tip {
+  margin: 0;
+  border: 1px solid rgba(18, 104, 246, 0.14);
+  border-radius: var(--radius-admin-panel);
+  background: rgba(239, 246, 255, 0.7);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.55;
+  padding: 10px 12px;
 }
 
 .form-group {
-  margin-bottom: var(--space-admin-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-admin-xs);
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-admin-lg);
-  margin-bottom: var(--space-admin-lg);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-admin-md-lg);
 }
 
 .form-label {
-  display: block;
-  margin-bottom: var(--space-admin-xs);
-  color: #7d899b;
+  color: var(--color-text-secondary);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 850;
 }
 
-.form-input {
+.required-mark {
+  color: #ef4444;
+}
+
+.form-input,
+.form-select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--color-card-border);
+}
+
+.form-input :deep(.el-input__wrapper),
+.form-select :deep(.el-select__wrapper) {
+  min-height: 40px;
   border-radius: var(--radius-admin-panel);
-  font-size: 14px;
-  color: var(--color-text-primary);
-  background: white;
-  transition: all 0.16s ease;
+  box-shadow: 0 0 0 1px var(--color-admin-border) inset;
+  padding: 0 12px;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(47, 191, 155, 0.1);
-}
-
-.form-input[readonly] {
-  background: #f5f8ff;
-  color: #7d899b;
-  cursor: default;
-}
-
-.form-switch {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-xs);
-  cursor: pointer;
-}
-
-.form-switch input[type="checkbox"] {
-  width: 44px;
-  height: 24px;
-  appearance: none;
-  background: #e1efff;
-  border-radius: var(--radius-lg);
-  position: relative;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.form-switch input[type="checkbox"]:checked {
-  background: var(--color-primary);
-}
-
-.form-switch input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  transition: all 0.16s ease;
-}
-
-.form-switch input[type="checkbox"]:checked::before {
-  transform: translateX(20px);
-}
-
-.form-switch-label {
+.form-input :deep(.el-input__inner),
+.form-select :deep(.el-select__placeholder),
+.form-select :deep(.el-select__selected-item) {
   color: var(--color-text-primary);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 750;
+}
+
+.form-input[aria-invalid='true'] :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 1px #ef4444 inset, 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.form-error {
+  margin: -4px 0 0;
+  color: #d93030;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .version-list {

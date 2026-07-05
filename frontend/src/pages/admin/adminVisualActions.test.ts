@@ -330,8 +330,19 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).not.toContain('<button class="btn-primary" @click="saveIndicatorEdit">保存调整</button>')
 
     expect(abilityListExecutionPage).toContain('import { Button } from \'@/components/ui\'')
+    expect(abilityListExecutionPage).toContain('AdminSelect')
     expect(abilityListExecutionPage).toContain('mode="edit"')
     expect(abilityListExecutionPage).toContain('@confirm="saveEdit"')
+    expect(abilityListExecutionPage).toContain('<div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">')
+    expect(abilityListExecutionPage).toContain('<p class="form-tip">当前执行版已发布，修改后将先保存为调整内容，确认后再生效。</p>')
+    expect(abilityListExecutionPage).toContain('indicatorStatusOptions')
+    expect(abilityListExecutionPage).toContain('v-model="editingIndicator.status"')
+    expect(abilityListExecutionPage).toContain('status: editingIndicator.value.status')
+    expect(abilityListExecutionPage).toContain(':aria-invalid="Boolean(editErrors.name)"')
+    expect(abilityListExecutionPage).toContain('<p v-if="editErrors.basisLabel" class="form-error">{{ editErrors.basisLabel }}</p>')
+    expect(abilityListExecutionPage).toContain('.form-input :deep(.el-input__wrapper)')
+    expect(abilityListExecutionPage).not.toContain('model-value="已启用" readonly')
+    expect(abilityListExecutionPage).not.toContain('<div v-if="editingIndicator" class="drawer-tip">')
     expect(abilityListExecutionPage).not.toContain('<button class="btn-secondary" @click="closeEditDrawer">取消</button>')
     expect(abilityListExecutionPage).not.toContain('<button class="btn-primary" @click="saveEdit">保存</button>')
 
@@ -345,8 +356,8 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for ability list base hero actions', () => {
-    expect(abilityListBasePage).toContain('<Button class="primary-action" @click="scrollToOptimization">')
-    expect(abilityListBasePage).toContain('优化建议（{{ optimizationPendingCount }}）')
+    expect(abilityListBasePage).not.toContain('<Button class="primary-action" @click="scrollToOptimization">')
+    expect(abilityListBasePage).not.toContain('优化建议（{{ optimizationPendingCount }}）')
     expect(abilityListBasePage).toContain('<button class="title-link" type="button" @click="goToVersionHistory">')
     expect(abilityListBasePage).toContain('查看版本记录')
     expect(abilityListBasePage).not.toContain('deriveExecutionVersion')
@@ -432,10 +443,10 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).toContain('AdminTabs')
     expect(abilityListBasePage).toContain('AdminTabPane')
     expect(abilityListBasePage).not.toContain('workspace-tabs')
-    expect(abilityListBasePage).toContain('基准标准')
-    expect(abilityListBasePage).toContain('优化建议')
+    expect(abilityListBasePage).toContain('基准清单')
+    expect(abilityListBasePage).toContain('优化清单')
     expect(abilityListBasePage).toContain('<AdminTabs v-model="activeWorkspaceTab"')
-    expect(abilityListBasePage).toContain('<AdminTabPane name="standard" label="基准标准">')
+    expect(abilityListBasePage).toContain('<AdminTabPane name="standard" label="基准清单">')
     expect(abilityListBasePage).toContain('<AdminTabPane name="optimization"')
     expect(abilityListBasePage).toContain('policyUploadSheetOpen')
     expect(abilityListBasePage).toContain('manualSuggestionSheetOpen')
@@ -481,10 +492,11 @@ describe('admin visual action guardrails', () => {
     expect(adminTopbar).toContain('class="current"')
   })
 
-  it('keeps ability list base hero actions as a guided optimization entry', () => {
+  it('keeps ability list base optimization entry inside framework tabs', () => {
     expect(abilityListBasePage).toContain('optimizationPendingCount')
     expect(abilityListBasePage).toContain('scrollToOptimization')
-    expect(abilityListBasePage).toContain('优化建议（{{ optimizationPendingCount }}）')
+    expect(abilityListBasePage).not.toContain('优化建议（{{ optimizationPendingCount }}）')
+    expect(abilityListBasePage).toContain(':label="`优化清单（${optimizationPendingCount}）`"')
     expect(abilityListBasePage).not.toContain('>\\n                优化基准板\\n              </Button>')
   })
 

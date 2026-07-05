@@ -394,12 +394,8 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
               </div>
             </div>
 
-            <div class="hero-actions">
-              <Button class="primary-action" @click="scrollToOptimization">
-                优化建议（{{ optimizationPendingCount }}）
-              </Button>
+            <div v-if="pendingChangeRows.length > 0" class="hero-actions">
               <Button
-                v-if="pendingChangeRows.length > 0"
                 variant="secondary"
                 @click="publishNewBaseTemplateVersion"
               >
@@ -431,7 +427,7 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
 
       <div ref="optimizationSectionRef" class="tab-anchor">
         <AdminTabs v-model="activeWorkspaceTab" class="base-tab-shell" type="border-card">
-          <AdminTabPane name="standard" label="基准标准">
+          <AdminTabPane name="standard" label="基准清单">
             <AbilityListWorkspace
               :nodes="abilityTree"
               :selected-key="selectedAbility"
@@ -446,7 +442,7 @@ function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
             />
           </AdminTabPane>
 
-          <AdminTabPane name="optimization" :label="`优化建议（${optimizationPendingCount}）`">
+          <AdminTabPane name="optimization" :label="`优化清单（${optimizationPendingCount}）`">
             <section v-if="activeWorkspaceTab === 'optimization'" class="optimization-workspace">
               <div class="optimization-header">
                 <div>
