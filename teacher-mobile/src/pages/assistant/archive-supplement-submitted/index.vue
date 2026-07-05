@@ -85,11 +85,12 @@ function goPendingList() {
 
 .submitted-page {
   --submitted-ink: #101d2e;
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
 }
 
 .result-card,
 .status-card {
-  padding: 34rpx 28rpx;
+  padding: 34rpx 30rpx;
 }
 
 .result-card {
@@ -122,7 +123,7 @@ function goPendingList() {
 
 .result-title {
   color: var(--submitted-ink);
-  font-size: 40rpx;
+  font-size: 42rpx;
   font-weight: 900;
 }
 
@@ -166,7 +167,7 @@ function goPendingList() {
 
 .action-button {
   width: 100%;
-  height: 82rpx;
+  height: 88rpx;
   font-size: 28rpx;
 }
 </style>

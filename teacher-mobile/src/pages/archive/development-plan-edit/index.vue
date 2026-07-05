@@ -132,7 +132,7 @@ function submitDraft() {
 
 .development-plan-edit-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(206rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 2%, rgba(225, 239, 255, 0.82), transparent 31%),
@@ -191,14 +191,14 @@ function submitDraft() {
 
 .section-card {
   margin-top: 24rpx;
-  padding: 30rpx;
+  padding: 32rpx;
   background: rgba(255, 255, 255, 0.94);
 }
 
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.2;
 }
@@ -232,7 +232,7 @@ function submitDraft() {
   display: grid;
   grid-template-columns: 0.9fr 0.9fr 1fr;
   gap: 14rpx;
-  padding: 24rpx 30rpx calc(28rpx + env(safe-area-inset-bottom));
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border-top: 2rpx solid rgba(220, 232, 244, 0.82);
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 -18rpx 42rpx rgba(35, 51, 87, 0.08);

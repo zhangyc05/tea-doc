@@ -328,7 +328,7 @@ function showToast(title: string) {
 .page-title {
   display: block;
   color: #050812;
-  font-size: 62rpx;
+  font-size: 68rpx;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.05;
@@ -529,9 +529,9 @@ function showToast(title: string) {
 
 .section-card {
   margin-top: 18rpx;
-  padding: 28rpx 32rpx;
+  padding: 30rpx 32rpx;
   border: 1rpx solid rgba(231, 236, 246, 0.95);
-  border-radius: 28rpx;
+  border-radius: 30rpx;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 22rpx 52rpx rgba(35, 51, 87, 0.07);
 }
@@ -543,7 +543,7 @@ function showToast(title: string) {
 
 .section-title {
   color: #10172d;
-  font-size: 35rpx;
+  font-size: 38rpx;
   font-weight: 900;
   line-height: 1.2;
 }

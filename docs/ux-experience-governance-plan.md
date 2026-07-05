@@ -647,6 +647,49 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 86 个页面。
 
+### 第二十三批视觉基准
+
+范围：教师手机端档案链 5 个职称聘用更正流程页。
+
+| 页面 | 目标图 | 处理 |
+| --- | --- | --- |
+| `teacher-mobile/src/pages/archive/correction/apply/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正申请.png` | 补充底部固定操作区预留，统一原档案、更正原因、说明、关联材料和提交口径卡片密度 |
+| `teacher-mobile/src/pages/archive/correction/submitted/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png` | 补充底部固定操作区预留，统一提交结果、申请记录和后续处理进度密度 |
+| `teacher-mobile/src/pages/archive/correction/progress/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png` | 补充底部固定操作区预留，统一摘要、申请信息和时间线密度 |
+| `teacher-mobile/src/pages/archive/correction/result/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png` | 补充底部固定操作区预留，统一结果状态、关联档案和结果说明密度 |
+| `teacher-mobile/src/pages/archive/correction/supplement/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png` | 补充底部固定操作区预留，统一需补充摘要、补充说明和材料列表密度 |
+
+`verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 91 个页面。
+
+### 第二十四批视觉基准
+
+范围：教师手机端档案 / AI 助手 / 我的 5 个详情与补充页。
+
+| 页面 | 目标图 | 处理 |
+| --- | --- | --- |
+| `teacher-mobile/src/pages/archive/record-detail/index.vue` | `效果图/教师手机端/1档案/个人成长记录.png` | 补充详情页固定操作区底部预留，统一档案摘要、关键信息、来源追溯、材料和引用卡片密度 |
+| `teacher-mobile/src/pages/archive/development-plan-edit/index.vue` | `效果图/教师手机端/1档案/发展计划编辑.png` | 补充编辑页固定操作区底部预留，统一发展目标、行动安排、佐证材料和提交状态卡片密度 |
+| `teacher-mobile/src/pages/assistant/archive-supplement/index.vue` | `效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png` | 补充底部安全区，统一建议材料、补充说明、材料信息和提交按钮密度 |
+| `teacher-mobile/src/pages/assistant/archive-supplement-submitted/index.vue` | `效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png` | 补充底部安全区，统一提交结果、当前状态和后续操作按钮密度 |
+| `teacher-mobile/src/pages/profile/ability-profile/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png` | 补充底部安全区，统一能力画像主卡、维度分布、短板提示、推荐方向和对照入口密度 |
+
+`verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 96 个页面。
+
+### 第二十五批视觉基准
+
+范围：教师手机端活动 / 我的 6 个入口状态与个人发展页。
+
+| 页面 | 目标图 | 处理 |
+| --- | --- | --- |
+| `teacher-mobile/src/pages/activity/room-entry-state/index.vue` | `效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png` | 统一教研室入口状态页标题层级、开始卡、成长活动和最近活动卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-edit/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png` | 补充底部安全区，统一退回信息、计划表单、AI 整理结果、补充资料和提交按钮密度 |
+| `teacher-mobile/src/pages/profile/ability-profile/records/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png` | 补充底部安全区，统一画像引用记录说明、记录卡片和档案详情入口密度 |
+| `teacher-mobile/src/pages/profile/development-report/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png` | 补充底部安全区，统一报告主卡、能力摘要、依据记录、建议行动和对照入口密度 |
+| `teacher-mobile/src/pages/profile/target-position/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png` | 补充底部安全区，统一目标岗位、已满足要求、缺口要求、证据入口和建议行动密度 |
+| `teacher-mobile/src/pages/profile/tenure-requirement/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png` | 补充底部安全区，统一聘期完成度、已完成证据、缺失证据和建议行动密度 |
+
+`verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 102 个页面；教师手机端当前 102 个页面已全部纳入视觉基准守卫。
+
 ## 验收命令
 
 手机端代码修改后执行：

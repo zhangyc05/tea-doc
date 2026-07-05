@@ -60,13 +60,14 @@ function navigateTo(url: string) {
 
 <style lang="scss" scoped>
 .target-page {
-  padding-bottom: 56rpx;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .hero-card,
 .section-card {
   margin-top: 22rpx;
-  padding: 30rpx;
+  padding: 32rpx;
+  border-radius: 30rpx;
 }
 
 .hero-head {
@@ -95,7 +96,7 @@ function navigateTo(url: string) {
 
 .hero-title {
   margin-top: 8rpx;
-  font-size: 42rpx;
+  font-size: 44rpx;
 }
 
 .section-title {
@@ -123,7 +124,7 @@ function navigateTo(url: string) {
 }
 
 .wide-action {
-  height: 76rpx;
+  height: 82rpx;
   font-size: 26rpx;
 }
 </style>

@@ -93,13 +93,14 @@ function goAiInterpretation() {
 
 <style lang="scss" scoped>
 .report-page {
-  padding-bottom: 56rpx;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .hero-card,
 .section-card {
   margin-top: 22rpx;
-  padding: 30rpx;
+  padding: 32rpx;
+  border-radius: 30rpx;
 }
 
 .hero-head,
@@ -131,7 +132,7 @@ function goAiInterpretation() {
 
 .hero-title {
   margin-top: 8rpx;
-  font-size: 42rpx;
+  font-size: 44rpx;
 }
 
 .section-title {
@@ -157,7 +158,7 @@ function goAiInterpretation() {
 
 .report-action,
 .wide-action {
-  height: 76rpx;
+  height: 82rpx;
   font-size: 26rpx;
 }
 

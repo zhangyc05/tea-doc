@@ -176,7 +176,7 @@ function resubmitPlan() {
 
 .plan-edit-page {
   min-height: 100vh;
-  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 88% 3%, rgba(203, 248, 224, 0.78), transparent 20%),
     linear-gradient(180deg, #ffffff 0%, #f8fbff 45%, #f5f9ff 100%);
@@ -285,7 +285,7 @@ function resubmitPlan() {
 .status-card {
   gap: 56rpx;
   min-height: 190rpx;
-  padding: 30rpx 44rpx;
+  padding: 32rpx 44rpx;
 }
 
 .warning-orb {
@@ -334,7 +334,7 @@ function resubmitPlan() {
 .mini-card {
   min-width: 0;
   flex: 1;
-  padding: 22rpx;
+  padding: 24rpx;
 }
 
 .mini-head {
@@ -364,7 +364,7 @@ function resubmitPlan() {
 
 .mini-title,
 .card-title {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
 }
 
@@ -406,7 +406,7 @@ function resubmitPlan() {
 .input-card,
 .ai-card,
 .material-card {
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .card-head {
@@ -595,7 +595,7 @@ function resubmitPlan() {
 }
 
 .bottom-button {
-  height: 76rpx;
+  height: 82rpx;
   flex: 1;
   border-radius: 14rpx;
   font-size: 30rpx;

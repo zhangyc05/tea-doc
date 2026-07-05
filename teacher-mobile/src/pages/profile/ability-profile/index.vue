@@ -99,13 +99,14 @@ function navigateTo(url: string) {
 @import '../../../styles/tokens.scss';
 
 .profile-detail-page {
-  padding-bottom: 56rpx;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .hero-card,
 .section-card {
   margin-top: 22rpx;
-  padding: 30rpx;
+  padding: 32rpx;
+  border-radius: 30rpx;
 }
 
 .hero-top,
@@ -236,7 +237,7 @@ function navigateTo(url: string) {
 }
 
 .wide-action {
-  height: 78rpx;
+  height: 82rpx;
   font-size: 26rpx;
 }
 </style>

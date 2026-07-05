@@ -76,13 +76,14 @@ function goRecord(recordId: string) {
 
 <style lang="scss" scoped>
 .records-page {
-  padding-bottom: 56rpx;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 .summary-card,
 .record-card {
   margin-top: 22rpx;
-  padding: 30rpx;
+  padding: 32rpx;
+  border-radius: 30rpx;
 }
 
 .summary-title,
@@ -118,7 +119,7 @@ function goRecord(recordId: string) {
 
 .record-title {
   flex: 1;
-  font-size: 30rpx;
+  font-size: 32rpx;
   line-height: 1.35;
 }
 
@@ -143,7 +144,7 @@ function goRecord(recordId: string) {
 
 .detail-action {
   width: 100%;
-  height: 76rpx;
+  height: 82rpx;
   margin-top: 24rpx;
   font-size: 26rpx;
 }

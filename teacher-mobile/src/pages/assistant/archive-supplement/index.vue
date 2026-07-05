@@ -67,6 +67,7 @@ function submitSupplement() {
 
 .supplement-page {
   --supplement-ink: #121f31;
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
 }
 
 .page-head {
@@ -97,7 +98,7 @@ function submitSupplement() {
 .guide-card,
 .form-card,
 .notice-card {
-  padding: 28rpx;
+  padding: 30rpx;
 }
 
 .form-card,
@@ -109,7 +110,7 @@ function submitSupplement() {
 .notice-card__title,
 .field-label {
   color: var(--supplement-ink);
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 900;
 }
 
@@ -176,7 +177,7 @@ function submitSupplement() {
 
 .submit-button {
   width: 100%;
-  height: 84rpx;
+  height: 88rpx;
   margin-top: 28rpx;
   font-size: 28rpx;
 }

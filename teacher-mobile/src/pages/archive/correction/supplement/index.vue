@@ -130,7 +130,7 @@ function submitSupplement() {
 
 .archive-correction-supplement-page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(206rpx + env(safe-area-inset-bottom));
+  padding: calc(var(--status-bar-height) + 4rpx) 30rpx calc(220rpx + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background:
     radial-gradient(circle at 14% 2%, rgba(255, 238, 214, 0.8), transparent 30%),
@@ -173,7 +173,7 @@ function submitSupplement() {
   display: block;
   margin-top: 18rpx;
   color: #10172d;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.3;
 }
@@ -191,7 +191,7 @@ function submitSupplement() {
 .section-title {
   display: block;
   color: #10172d;
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.3;
 }
@@ -294,14 +294,14 @@ function submitSupplement() {
 
 .footer-actions {
   position: fixed;
-  right: 30rpx;
-  bottom: calc(26rpx + env(safe-area-inset-bottom));
-  left: 30rpx;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  padding: 18rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
   border: 1rpx solid rgba(226, 232, 240, 0.9);
   border-radius: 28rpx;
   background: rgba(255, 255, 255, 0.94);

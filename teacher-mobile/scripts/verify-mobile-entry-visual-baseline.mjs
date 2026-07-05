@@ -1234,6 +1234,230 @@ const checks = [
       },
     ],
   },
+  {
+    file: 'src/pages/archive/correction/apply/index.vue',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正申请.png',
+    assertions: [
+      {
+        name: 'archive correction apply keeps record reason material and submit actions',
+        test: source => source.includes('<MobilePageShell class="archive-correction-apply-page" active="archive">') && source.includes('更正原因') && source.includes('补充说明') && source.includes('关联材料') && source.includes('提交申请') && source.includes('返回详情'),
+      },
+      {
+        name: 'archive correction apply uses correction form visual density',
+        test: source => /\.archive-correction-apply-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.record-card,\s*[\s\S]*\.notice-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title,\s*[\s\S]*\.notice-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.reason-chip\s*\{[\s\S]*height: 76rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/correction/submitted/index.vue',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png',
+    assertions: [
+      {
+        name: 'archive correction submitted keeps submitted result record progress and actions',
+        test: source => source.includes('<MobilePageShell class="archive-correction-submitted-page" active="archive">') && source.includes('更正申请已提交') && source.includes('申请记录') && source.includes('后续处理') && source.includes('查看原档案') && source.includes('查看进度'),
+      },
+      {
+        name: 'archive correction submitted uses submitted visual density',
+        test: source => /\.archive-correction-submitted-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.result-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.result-title\s*\{[\s\S]*font-size: 40rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/correction/progress/index.vue',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png',
+    assertions: [
+      {
+        name: 'archive correction progress keeps summary info timeline and result action',
+        test: source => source.includes('<MobilePageShell class="archive-correction-progress-page" active="archive">') && source.includes('申请信息') && source.includes('处理进度') && source.includes('等待核验') && source.includes('查看处理结果') && source.includes('查看原档案'),
+      },
+      {
+        name: 'archive correction progress uses progress visual density',
+        test: source => /\.archive-correction-progress-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.summary-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.summary-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/correction/result/index.vue',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png',
+    assertions: [
+      {
+        name: 'archive correction result keeps result status archive info notice and actions',
+        test: source => source.includes('<MobilePageShell class="archive-correction-result-page" active="archive">') && source.includes('更正结果') && source.includes('关联档案') && source.includes('结果说明') && source.includes('查看原档案') && source.includes('{{ resultView.action }}'),
+      },
+      {
+        name: 'archive correction result uses result visual density',
+        test: source => /\.archive-correction-result-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.result-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.result-title\s*\{[\s\S]*font-size: 40rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/correction/supplement/index.vue',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png',
+    assertions: [
+      {
+        name: 'archive correction supplement keeps summary explanation materials and submit actions',
+        test: source => source.includes('<MobilePageShell class="archive-correction-supplement-page" active="archive">') && source.includes('补充说明') && source.includes('补充材料') && source.includes('点选材料后记录为已上传') && source.includes('提交补充') && source.includes('查看原档案'),
+      },
+      {
+        name: 'archive correction supplement uses supplement visual density',
+        test: source => /\.archive-correction-supplement-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.summary-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.summary-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/record-detail/index.vue',
+    target: '效果图/教师手机端/1档案/个人成长记录.png',
+    assertions: [
+      {
+        name: 'archive record detail keeps summary info source materials and correction actions',
+        test: source => source.includes('<MobilePageShell class="record-detail-page" active="archive">') && source.includes('档案摘要') && source.includes('关键信息') && source.includes('来源追溯') && source.includes('关联材料') && source.includes('申请更正') && source.includes('返回档案'),
+      },
+      {
+        name: 'archive record detail uses detail visual density',
+        test: source => /\.record-detail-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/archive/development-plan-edit/index.vue',
+    target: '效果图/教师手机端/1档案/发展计划编辑.png',
+    assertions: [
+      {
+        name: 'archive development plan edit keeps goal action evidence and submit actions',
+        test: source => source.includes('<MobilePageShell class="development-plan-edit-page" active="archive">') && source.includes('发展目标') && source.includes('行动安排') && source.includes('佐证材料') && source.includes('保存草稿') && source.includes('提交核验'),
+      },
+      {
+        name: 'archive development plan edit uses form visual density',
+        test: source => /\.development-plan-edit-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 4rpx\) 30rpx calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.plan-textarea\s*\{[\s\S]*border-radius: 24rpx/.test(source) && /\.footer-actions\s*\{[\s\S]*padding: 20rpx 32rpx calc\(20rpx \+ env\(safe-area-inset-bottom\)\)/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/assistant/archive-supplement/index.vue',
+    target: '效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png',
+    assertions: [
+      {
+        name: 'assistant archive supplement keeps assistant shell guidance fields and submit action',
+        test: source => source.includes('<MobilePageShell class="supplement-page" active="assistant">') && source.includes('补充档案') && source.includes('建议补充的材料') && source.includes('材料信息') && source.includes('提交补充'),
+      },
+      {
+        name: 'assistant archive supplement uses supplement form visual density',
+        test: source => /\.supplement-page\s*\{[\s\S]*padding-bottom: calc\(170rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.guide-card,\s*[\s\S]*\.notice-card\s*\{[\s\S]*padding: 30rpx/.test(source) && /\.guide-card__title,\s*[\s\S]*\.field-label\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.submit-button\s*\{[\s\S]*height: 88rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/assistant/archive-supplement-submitted/index.vue',
+    target: '效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png',
+    assertions: [
+      {
+        name: 'assistant archive supplement submitted keeps result status and next actions',
+        test: source => source.includes('<MobilePageShell class="submitted-page" active="assistant">') && source.includes('补充材料已提交') && source.includes('当前状态') && source.includes('查看待核验记录') && source.includes('返回 AI 助手') && source.includes('查看档案待确认'),
+      },
+      {
+        name: 'assistant archive supplement submitted uses submitted state visual density',
+        test: source => /\.submitted-page\s*\{[\s\S]*padding-bottom: calc\(170rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.result-card,\s*[\s\S]*\.status-card\s*\{[\s\S]*padding: 34rpx 30rpx/.test(source) && /\.result-title\s*\{[\s\S]*font-size: 42rpx/.test(source) && /\.action-button\s*\{[\s\S]*height: 88rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/profile/ability-profile/index.vue',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png',
+    assertions: [
+      {
+        name: 'profile ability profile keeps score dimensions recommendations and comparison links',
+        test: source => source.includes('<MobilePageShell class="profile-detail-page" active="profile">') && source.includes('发展指数 72') && source.includes('维度分布') && source.includes('短板提示') && source.includes('推荐方向') && source.includes('目标岗位对照') && source.includes('聘期要求对照'),
+      },
+      {
+        name: 'profile ability profile uses profile detail visual density',
+        test: source => /\.profile-detail-page\s*\{[\s\S]*padding-bottom: calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.wide-action\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/activity/room-entry-state/index.vue',
+    target: '效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png',
+    assertions: [
+      {
+        name: 'activity room entry state keeps activity shell teacher card growth and recent modules',
+        test: source => source.includes('<MobilePageShell class="activity-room-state-page" active="activity">') && source.includes('今日可开始') && source.includes('成长活动') && source.includes('最近活动') && source.includes('进入教研室'),
+      },
+      {
+        name: 'activity room entry state uses entry state visual density',
+        test: source => /\.activity-room-state-page\s*\{[\s\S]*padding: calc\(var\(--status-bar-height\) \+ 16rpx\) 34rpx calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.page-title\s*\{[\s\S]*font-size: 68rpx/.test(source) && /\.section-card\s*\{[\s\S]*padding: 30rpx 32rpx/.test(source) && /\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.section-title\s*\{[\s\S]*font-size: 38rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/activity/enterprise-plan-edit/index.vue',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png',
+    assertions: [
+      {
+        name: 'enterprise plan edit keeps returned plan reason form ai result and resubmit actions',
+        test: source => source.includes('class="plan-edit-page"') && source.includes('实践计划需修改') && source.includes('退回信息') && source.includes('修改实践计划信息') && source.includes('AI 已整理修改后的实践计划') && source.includes('重新提交'),
+      },
+      {
+        name: 'enterprise plan edit uses returned form visual density',
+        test: source => /\.plan-edit-page\s*\{[\s\S]*padding-bottom: calc\(220rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.status-card\s*\{[\s\S]*padding: 32rpx 44rpx/.test(source) && /\.mini-card\s*\{[\s\S]*padding: 24rpx/.test(source) && /\.input-card,\s*[\s\S]*\.material-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.card-title\s*\{[\s\S]*font-size: 34rpx/.test(source) && /\.bottom-button\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/profile/ability-profile/records/index.vue',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png',
+    assertions: [
+      {
+        name: 'profile ability records keeps referenced records and archive detail links',
+        test: source => source.includes('<MobilePageShell class="records-page" active="profile">') && source.includes('画像引用记录') && source.includes('引用维度') && source.includes('查看档案详情'),
+      },
+      {
+        name: 'profile ability records uses records visual density',
+        test: source => /\.records-page\s*\{[\s\S]*padding-bottom: calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.summary-card,\s*[\s\S]*\.record-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.summary-card,\s*[\s\S]*\.record-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.record-title\s*\{[\s\S]*font-size: 32rpx/.test(source) && /\.detail-action\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/profile/development-report/index.vue',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png',
+    assertions: [
+      {
+        name: 'profile development report keeps report summary evidence actions and comparison links',
+        test: source => source.includes('<MobilePageShell class="report-page" active="profile">') && source.includes('2026 年度发展报告') && source.includes('能力摘要') && source.includes('依据记录') && source.includes('建议行动') && source.includes('AI 解读'),
+      },
+      {
+        name: 'profile development report uses report visual density',
+        test: source => /\.report-page\s*\{[\s\S]*padding-bottom: calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.hero-title\s*\{[\s\S]*font-size: 44rpx/.test(source) && /\.report-action,\s*[\s\S]*\.wide-action\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/profile/target-position/index.vue',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png',
+    assertions: [
+      {
+        name: 'profile target position keeps target match satisfied gaps and evidence actions',
+        test: source => source.includes('<MobilePageShell class="target-page" active="profile">') && source.includes('目标岗位') && source.includes('已满足要求') && source.includes('缺口要求') && source.includes('查看画像证据') && source.includes('建议行动'),
+      },
+      {
+        name: 'profile target position uses target visual density',
+        test: source => /\.target-page\s*\{[\s\S]*padding-bottom: calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.hero-title\s*\{[\s\S]*font-size: 44rpx/.test(source) && /\.wide-action\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
+  {
+    file: 'src/pages/profile/tenure-requirement/index.vue',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png',
+    assertions: [
+      {
+        name: 'profile tenure requirement keeps tenure progress evidence missing and action rows',
+        test: source => source.includes('<MobilePageShell class="tenure-page" active="profile">') && source.includes('当前聘期') && source.includes('总体完成度') && source.includes('已完成证据') && source.includes('缺失证据') && source.includes('建议行动'),
+      },
+      {
+        name: 'profile tenure requirement uses tenure visual density',
+        test: source => /\.tenure-page\s*\{[\s\S]*padding-bottom: calc\(150rpx \+ env\(safe-area-inset-bottom\)\)/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*padding: 32rpx/.test(source) && /\.hero-card,\s*[\s\S]*\.section-card\s*\{[\s\S]*border-radius: 30rpx/.test(source) && /\.hero-title\s*\{[\s\S]*font-size: 42rpx/.test(source) && /\.wide-action\s*\{[\s\S]*height: 82rpx/.test(source),
+      },
+    ],
+  },
 ]
 
 const failures = []
