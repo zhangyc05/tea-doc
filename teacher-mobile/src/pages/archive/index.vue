@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
+import MobileIcon from '../../components/MobileIcon.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 import {
   getArchiveCategorySummary,
@@ -63,38 +64,38 @@ function goArchiveRecord(record: { id: string }) {
         <text class="page-head__subtitle">系统已帮你整理个人成长记录</text>
       </view>
       <button class="notice-button" aria-label="消息通知" @tap="goArchiveQuery">
-        <view class="notice-button__bell">
-          <view class="notice-button__badge">5</view>
-        </view>
+        <wd-badge class="notice-button__badge-wrap" :model-value="5" type="danger" :top="4" :right="4">
+          <MobileIcon class="notice-button__icon" name="bell" tone="dark" size="md" shape="none" />
+        </wd-badge>
       </button>
       <view class="leaf-ghost" aria-hidden="true"></view>
     </view>
 
     <view class="search-card" @tap="goArchiveQuery">
-      <view class="search-icon"></view>
+      <MobileIcon class="search-icon" name="search" tone="gray" size="plain" shape="none" />
       <text class="search-placeholder">输入关键词，或点右侧麦克风语音搜索</text>
-      <view class="mic-icon"></view>
+      <MobileIcon class="mic-icon" name="sound" tone="gray" size="plain" shape="none" />
     </view>
 
     <MobileCard class="section-card overview-card">
       <text class="section-title">档案概览</text>
       <view class="overview-metrics">
         <view class="overview-item">
-          <view class="metric-icon metric-icon--folder"></view>
+          <MobileIcon class="metric-icon" name="folder" tone="green" size="sm" shape="circle" />
           <view class="metric-copy">
             <text class="metric-number">{{ stats.archivedCount }}</text>
             <text class="metric-label">条已入档</text>
           </view>
         </view>
         <view class="overview-item">
-          <view class="metric-icon metric-icon--grid"></view>
+          <MobileIcon class="metric-icon" name="grid" tone="green" size="sm" shape="circle" />
           <view class="metric-copy">
             <text class="metric-number">{{ stats.categoryCount }}</text>
             <text class="metric-label">类档案</text>
           </view>
         </view>
         <view class="overview-item overview-item--date" @tap="goArchiveDraftList">
-          <view class="metric-icon metric-icon--clock"></view>
+          <MobileIcon class="metric-icon" name="clock" tone="green" size="sm" shape="circle" />
           <view class="metric-copy">
             <text class="metric-label">待确认</text>
             <text class="metric-number metric-number--date">{{ stats.pendingCount }}</text>
@@ -113,10 +114,10 @@ function goArchiveRecord(record: { id: string }) {
           class="category-item"
           @tap="goArchiveCategory(item.key)"
         >
-          <view class="category-icon" :class="`category-icon--${item.icon}`"></view>
+          <MobileIcon class="category-icon" :name="item.icon" tone="green" size="sm" shape="circle" />
           <view class="category-title-line">
           <text class="category-name">{{ item.name }}</text>
-            <view class="chevron"></view>
+            <wd-icon class="chevron" name="chevron-right" size="24rpx" color="#7d8799" />
           </view>
           <text class="category-count">{{ getArchiveCategorySummary(item.key).count }} 条已入档</text>
           <text class="category-updated">最近更新 {{ getArchiveCategorySummary(item.key).updated }}</text>
@@ -137,12 +138,12 @@ function goArchiveRecord(record: { id: string }) {
         class="record-row"
         @tap="goArchiveRecord(record)"
       >
-        <view class="record-icon"></view>
+        <MobileIcon class="record-icon" name="file" tone="green" size="sm" shape="circle" />
         <view class="record-body">
           <text class="record-title">{{ record.title }}</text>
           <text class="record-meta">{{ record.categoryName }} ｜ {{ record.date }} ｜ {{ getArchiveRecordStatusLabel(record.status) }}</text>
         </view>
-        <view class="record-arrow"></view>
+        <wd-icon class="record-arrow" name="chevron-right" size="28rpx" color="#8b94a5" />
       </view>
     </MobileCard>
   </MobilePageShell>
@@ -254,54 +255,17 @@ function goArchiveRecord(record: { id: string }) {
   flex: 0 0 88rpx;
 }
 
-.notice-button__bell {
+.notice-button__badge-wrap {
   position: absolute;
-  right: 8rpx;
-  bottom: 8rpx;
+  top: 16rpx;
+  right: 14rpx;
   width: 58rpx;
   height: 58rpx;
-  border: 6rpx solid #0d1430;
-  border-top-color: transparent;
-  border-radius: 50% 50% 20rpx 20rpx;
 }
 
-.notice-button__bell::before {
-  position: absolute;
-  top: -13rpx;
-  left: 17rpx;
-  width: 18rpx;
-  height: 12rpx;
-  border: 5rpx solid #0d1430;
-  border-bottom: 0;
-  border-radius: 18rpx 18rpx 0 0;
-  content: '';
-}
-
-.notice-button__bell::after {
-  position: absolute;
-  right: 14rpx;
-  bottom: -13rpx;
-  width: 20rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: #0d1430;
-  content: '';
-}
-
-.notice-button__badge {
-  position: absolute;
-  top: -30rpx;
-  right: -25rpx;
-  display: flex;
-  width: 48rpx;
-  height: 48rpx;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #ff1f39;
-  color: #fff;
-  font-size: 27rpx;
-  font-weight: 900;
+.notice-button__icon {
+  width: 58rpx;
+  height: 58rpx;
 }
 
 .search-card {
@@ -326,57 +290,15 @@ function goArchiveRecord(record: { id: string }) {
 }
 
 .search-icon {
-  position: relative;
   width: 42rpx;
   height: 42rpx;
   flex: 0 0 42rpx;
-  border: 5rpx solid #69738a;
-  border-radius: 50%;
-}
-
-.search-icon::after {
-  position: absolute;
-  right: -11rpx;
-  bottom: -8rpx;
-  width: 18rpx;
-  height: 5rpx;
-  border-radius: 6rpx;
-  background: #69738a;
-  content: '';
-  transform: rotate(45deg);
 }
 
 .mic-icon {
-  position: relative;
   width: 36rpx;
   height: 46rpx;
   flex: 0 0 36rpx;
-  border: 5rpx solid #69738a;
-  border-top-width: 8rpx;
-  border-radius: 20rpx;
-}
-
-.mic-icon::before {
-  position: absolute;
-  right: -11rpx;
-  bottom: -8rpx;
-  left: -11rpx;
-  height: 26rpx;
-  border: 5rpx solid #69738a;
-  border-top: 0;
-  border-radius: 0 0 20rpx 20rpx;
-  content: '';
-}
-
-.mic-icon::after {
-  position: absolute;
-  bottom: -18rpx;
-  left: 10rpx;
-  width: 16rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: #69738a;
-  content: '';
 }
 
 .section-card {
@@ -425,53 +347,9 @@ function goArchiveRecord(record: { id: string }) {
 }
 
 .metric-icon {
-  position: relative;
-  display: flex;
   width: 64rpx;
   height: 64rpx;
-  align-items: center;
-  justify-content: center;
   flex: 0 0 64rpx;
-  border-radius: 50%;
-  background: #dff8eb;
-  color: $teacher-mobile-primary;
-}
-
-.metric-icon::before {
-  width: 34rpx;
-  height: 28rpx;
-  border-radius: 6rpx;
-  background: currentColor;
-  content: '';
-}
-
-.metric-icon--grid::before {
-  width: 34rpx;
-  height: 34rpx;
-  border-radius: 4rpx;
-  background:
-    linear-gradient(currentColor 0 0) 0 0 / 14rpx 14rpx no-repeat,
-    linear-gradient(currentColor 0 0) 20rpx 0 / 14rpx 14rpx no-repeat,
-    linear-gradient(currentColor 0 0) 0 20rpx / 14rpx 14rpx no-repeat,
-    linear-gradient(currentColor 0 0) 20rpx 20rpx / 14rpx 14rpx no-repeat;
-}
-
-.metric-icon--clock::before {
-  width: 34rpx;
-  height: 34rpx;
-  border-radius: 50%;
-}
-
-.metric-icon--clock::after {
-  position: absolute;
-  top: 22rpx;
-  left: 34rpx;
-  width: 5rpx;
-  height: 22rpx;
-  border-radius: 5rpx;
-  background: #fff;
-  box-shadow: 9rpx 15rpx 0 -2rpx #fff;
-  content: '';
 }
 
 .metric-copy {
@@ -533,54 +411,9 @@ function goArchiveRecord(record: { id: string }) {
 }
 
 .category-icon {
-  position: relative;
   width: 58rpx;
   height: 58rpx;
   margin: 0 auto 17rpx;
-  border-radius: 50%;
-  background: #dff8eb;
-  color: $teacher-mobile-primary;
-}
-
-.category-icon::before {
-  position: absolute;
-  top: 17rpx;
-  left: 17rpx;
-  width: 25rpx;
-  height: 23rpx;
-  border-radius: 6rpx;
-  background: currentColor;
-  content: '';
-}
-
-.category-icon--book::before {
-  width: 25rpx;
-  height: 25rpx;
-  border-radius: 4rpx 12rpx 12rpx 4rpx;
-  box-shadow: -9rpx 0 0 -2rpx currentColor;
-}
-
-.category-icon--lab::before {
-  top: 13rpx;
-  height: 34rpx;
-  clip-path: polygon(35% 0, 65% 0, 65% 40%, 100% 100%, 0 100%, 35% 40%);
-}
-
-.category-icon--heart::before {
-  top: 24rpx;
-  clip-path: polygon(50% 100%, 8% 54%, 8% 22%, 28% 4%, 50% 20%, 72% 4%, 92% 22%, 92% 54%);
-}
-
-.category-icon--cup::before {
-  border-radius: 6rpx 6rpx 12rpx 12rpx;
-}
-
-.category-icon--growth::before {
-  clip-path: polygon(0 76%, 18% 76%, 18% 52%, 38% 52%, 38% 32%, 58% 32%, 58% 12%, 100% 12%, 100% 32%, 75% 32%, 75% 100%, 0 100%);
-}
-
-.category-icon--check::before {
-  border-radius: 8rpx;
 }
 
 .category-title-line {
@@ -600,11 +433,9 @@ function goArchiveRecord(record: { id: string }) {
 
 .chevron,
 .record-arrow {
-  width: 16rpx;
-  height: 16rpx;
-  border-top: 4rpx solid currentColor;
-  border-right: 4rpx solid currentColor;
-  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chevron {
@@ -655,35 +486,9 @@ function goArchiveRecord(record: { id: string }) {
 }
 
 .record-icon {
-  position: relative;
   width: 54rpx;
   height: 54rpx;
   flex: 0 0 54rpx;
-  border-radius: 50%;
-  background: #dff8eb;
-}
-
-.record-icon::before {
-  position: absolute;
-  top: 12rpx;
-  left: 16rpx;
-  width: 24rpx;
-  height: 30rpx;
-  border: 5rpx solid $teacher-mobile-primary;
-  border-radius: 4rpx;
-  content: '';
-}
-
-.record-icon::after {
-  position: absolute;
-  top: 22rpx;
-  left: 25rpx;
-  width: 16rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: $teacher-mobile-primary;
-  box-shadow: 0 11rpx 0 $teacher-mobile-primary;
-  content: '';
 }
 
 .record-body {

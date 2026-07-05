@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -172,24 +173,12 @@ function handleApplication(teacherId: string) {
               </div>
               <div class="card-body">
                 <p class="card-text">{{ planDetail.relatedDemand }} 32 条，来源：能力画像观察 24 条，教师主动提出 8 条，涉及院系：智能制造学院、电子信息学院。</p>
-                <table class="demand-table">
-                  <thead>
-                    <tr>
-                      <th>需求方向</th>
-                      <th>需求来源</th>
-                      <th>涉及对象</th>
-                      <th>匹配说明</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="demand in relatedDemands" :key="demand.direction">
-                      <td>{{ demand.direction }}</td>
-                      <td>{{ demand.source }}</td>
-                      <td>{{ demand.target }}</td>
-                      <td>{{ demand.note }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable :data="relatedDemands" row-key="direction" empty-text="暂无关联需求">
+                  <AdminTableColumn prop="direction" label="需求方向" min-width="140" />
+                  <AdminTableColumn prop="source" label="需求来源" min-width="140" />
+                  <AdminTableColumn prop="target" label="涉及对象" min-width="160" />
+                  <AdminTableColumn prop="note" label="匹配说明" min-width="220" />
+                </AdminTable>
               </div>
             </div>
 
@@ -253,48 +242,44 @@ function handleApplication(teacherId: string) {
               </div>
               <div class="card-body">
                 <p v-if="operationMessage.text.value" class="action-message">{{ operationMessage.text.value }}</p>
-                <table class="participants-table">
-                  <thead>
-                    <tr>
-                      <th>教师</th>
-                      <th>院系 / 专业</th>
-                      <th>申请状态</th>
-                      <th>参与状态</th>
-                      <th>材料情况</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="participant in participants" :key="participant.id">
-                      <td>{{ participant.name }}</td>
-                      <td>{{ participant.department }} / {{ participant.major }}</td>
-                      <td>
-                         <StatusBadge :status="participant.applicationStatus" />
-                      </td>
-                      <td>
-                         <StatusBadge :status="participant.participationStatus" />
-                      </td>
-                      <td>{{ participant.materialStatus }}</td>
-                      <td>
+                <AdminTable :data="participants" row-key="id" empty-text="暂无参与教师">
+                  <AdminTableColumn prop="name" label="教师" min-width="90" />
+                  <AdminTableColumn label="院系 / 专业" min-width="170">
+                    <template #default="{ row }">
+                      {{ row.department }} / {{ row.major }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="申请状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.applicationStatus" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="参与状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.participationStatus" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="materialStatus" label="材料情况" min-width="120" />
+                  <AdminTableColumn label="操作" min-width="150" fixed="right">
+                    <template #default="{ row }">
                         <Button
                           variant="ghost"
                           size="sm"
-                          @click="viewTeacherDetail(participant.id)"
+                          @click="viewTeacherDetail(row.id)"
                         >
                           查看
                         </Button>
                         <Button
-                          v-if="participant.applicationStatus === '待处理'"
+                          v-if="row.applicationStatus === '待处理'"
                           variant="secondary"
                           size="sm"
-                          @click="handleApplication(participant.id)"
+                          @click="handleApplication(row.id)"
                         >
                           处理
                         </Button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
             </div>
           </div>

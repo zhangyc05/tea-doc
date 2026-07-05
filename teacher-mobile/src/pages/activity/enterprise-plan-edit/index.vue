@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 import { saveEnterprisePlanDraft, submitEnterprisePlan } from '../../../domain/enterprise'
@@ -113,9 +114,9 @@ function resubmitPlan() {
         <view class="prompt-box">
           <text class="prompt-text">计划前往山东智联装备有限公司开展实践，岗位为现场工程师助理，时间 2026-06-03 至 2026-06-14。主要参与产线流程观察、设备调试记录、项目文档学习和现场工程师交流，希望进一步明确具体工作任务，并补充实践收获与教学转化想法。</text>
           <view class="prompt-tools">
-            <view class="tool-item"><view class="tool-icon tool-icon--voice"></view><text>语音</text></view>
-            <view class="tool-item"><view class="tool-icon tool-icon--camera"></view><text>拍照</text></view>
-            <view class="tool-item"><view class="tool-icon tool-icon--upload"></view><text>上传</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="mic" tone="dark" size="plain" shape="none" /><text>语音</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="camera" tone="dark" size="plain" shape="none" /><text>拍照</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="upload" tone="dark" size="plain" shape="none" /><text>上传</text></view>
           </view>
         </view>
         <view class="file-chip">

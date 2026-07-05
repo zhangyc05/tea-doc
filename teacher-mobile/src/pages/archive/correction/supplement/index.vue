@@ -4,6 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 
 import MobileActionButton from '../../../../components/MobileActionButton.vue'
 import MobileCard from '../../../../components/MobileCard.vue'
+import MobileIcon from '../../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
@@ -87,14 +88,15 @@ function submitSupplement() {
         <text class="info-label">更正原因</text>
         <text class="info-value">{{ reason }}</text>
       </view>
-      <textarea
+      <wd-textarea
         v-model="supplementDesc"
         class="supplement-input"
-        maxlength="200"
+        :maxlength="200"
         placeholder="说明本次补充的材料内容、来源和可佐证的字段"
         placeholder-class="supplement-placeholder"
+        show-word-limit
+        no-border
       />
-      <text class="supplement-count">{{ supplementDesc.length }}/200</text>
     </MobileCard>
 
     <MobileCard class="section-card">
@@ -105,7 +107,7 @@ function submitSupplement() {
         class="material-row"
         @tap="markMaterialUploaded(index)"
       >
-        <view class="material-icon"></view>
+        <MobileIcon class="material-icon" name="file" tone="orange" size="plain" />
         <view class="material-body">
           <text class="material-name">{{ material.name }}</text>
           <text class="material-meta">{{ getUploadStatusLabel(material.uploadStatus) }} · {{ material.meta }}</text>
@@ -162,8 +164,7 @@ function submitSupplement() {
 .summary-desc,
 .info-label,
 .material-meta,
-.material-note,
-.supplement-count {
+.material-note {
   color: #66728a;
   font-size: 24rpx;
   line-height: 1.42;
@@ -213,27 +214,33 @@ function submitSupplement() {
 }
 
 .supplement-input {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 190rpx;
+  display: block;
   margin-top: 20rpx;
-  padding: 22rpx;
   border: 2rpx solid $teacher-mobile-card-border;
   border-radius: 20rpx;
   background: #f8fbff;
+}
+
+.supplement-input :deep(.wd-textarea) {
+  padding: 22rpx;
+  background: transparent;
+}
+
+.supplement-input :deep(.wd-textarea__inner) {
+  min-height: 190rpx;
   color: #10172d;
   font-size: 26rpx;
   line-height: 1.45;
 }
 
-.supplement-placeholder {
+:deep(.supplement-placeholder) {
   color: #9aa5b8;
 }
 
-.supplement-count {
-  display: block;
-  margin-top: 12rpx;
-  text-align: right;
+.supplement-input :deep(.wd-textarea__count) {
+  padding: 0 22rpx 18rpx 0;
+  color: #778197;
+  font-size: 22rpx;
 }
 
 .material-row {
@@ -247,24 +254,9 @@ function submitSupplement() {
 }
 
 .material-icon {
-  position: relative;
   width: 56rpx;
   height: 64rpx;
   flex: 0 0 56rpx;
-  border-radius: 12rpx;
-  background: #fff0e6;
-}
-
-.material-icon::after {
-  position: absolute;
-  top: 12rpx;
-  left: 12rpx;
-  width: 32rpx;
-  height: 6rpx;
-  border-radius: 999rpx;
-  background: #ff8a2a;
-  box-shadow: 0 14rpx 0 rgba(255, 138, 42, 0.56);
-  content: '';
 }
 
 .material-body {

@@ -8,7 +8,7 @@
 页面：管理端｜能力清单｜执行版查看页
 路由：/admin/ability-list/execution
 源码：frontend/src/pages/admin/ability-list/AbilityListExecutionPage.vue
-目标图：效果图/管理PC端/1能力清单/管理端PC｜能力清单｜执行版查看页.png
+目标图：效果图/已实现/管理PC端/1能力清单/管理端PC｜能力清单｜执行版查看页.png
 ```
 
 ## 工程范围
@@ -248,11 +248,22 @@ frontend/src/components/admin/ability-list/AbilityStructureTree.vue
 
 ### Element Plus 使用边界
 
-PC 端已引入 Element Plus，定位是复杂控件底座，不是页面级视觉体系。管理端页面不得在管理端页面中直接散用 `element-plus` 组件，必须优先通过 `frontend/src/components/ui`、`frontend/src/components/common` 或业务组件封装使用。
+PC 端已引入 Element Plus，执行口径是 Element Plus 优先，自研只做业务封装和必要适配。Element Plus 定位是复杂控件底座，不是页面级视觉体系。管理端页面不得在管理端页面中直接散用 `element-plus` 组件，必须优先通过 `frontend/src/components/admin-ui`、`frontend/src/components/ui`、`frontend/src/components/common` 或业务组件封装使用。
 
 Element Plus 只承接表格、分页、日期、选择器、上传、弹窗、抽屉、树等复杂基础控件能力；页面布局、设计 token、状态语义、业务入口和目标效果图还原仍以本指南和本地组件边界为准。
 
 Element Plus 主题变量统一由 `frontend/src/styles/element-plus-admin.css` 桥接到 `frontend/src/styles/tokens.css`，不得在页面局部重写框架全局变量。
+
+PC 端 Element Plus 迁移按 `frontend/scripts/audit-admin-element-plus-migration.mjs` 的扫描结果分批推进。第一批优先处理培训管理列表页的筛选控件；第二批处理企业实践、虚拟教研、教学反思、报告中心等筛选控件；第三批处理分页、上传、树和抽屉；表格迁移必须结合目标效果图逐页确认行高、空状态、操作列和横向滚动，不做全量机械替换。
+
+当前迁移批次：
+
+| 批次 | 页面范围 | 优先替换 |
+| --- | --- | --- |
+| ELP-01 | 培训资源、培训需求、培训申请、培训计划、培训记录 | select / input / textarea |
+| ELP-02 | 企业实践申请、年度实践跟踪、实践记录、虚拟教研室、教学反思、报告中心、档案查阅、能力画像列表 | select / input |
+| ELP-03 | 能力清单编辑抽屉、培训计划抽屉、档案上传、手写分页 | drawer / dialog / upload / pagination |
+| ELP-04 | 稳定列表页和详情关联表 | table |
 
 ### 按钮等级
 

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 
 const uploadMethods = [
-  { title: '从手机上传', desc: '支持 PDF、图片、Word 文档', type: 'phone' },
-  { title: '拍照上传', desc: '适合纸质证明材料', type: 'camera' },
-]
+  { title: '从手机上传', desc: '支持 PDF、图片、Word 文档', icon: 'upload' },
+  { title: '拍照上传', desc: '适合纸质证明材料', icon: 'camera' },
+] as const
 
 function goBack() {
   uni.navigateBack()
@@ -50,12 +51,12 @@ function confirmMaterial() {
         <text class="section-title">上传方式</text>
         <view class="method-list">
           <view v-for="item in uploadMethods" :key="item.title" class="method-row" @tap="showUploadFeedback(item.title)">
-            <view class="method-icon" :class="`method-icon--${item.type}`"></view>
+            <MobileIcon class="method-icon" :name="item.icon" tone="green" size="plain" shape="none" />
             <view class="method-copy">
               <text class="method-title">{{ item.title }}</text>
               <text class="method-desc">{{ item.desc }}</text>
             </view>
-            <view class="chevron"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>
@@ -83,7 +84,7 @@ function confirmMaterial() {
             <text class="file-name">企业实践证明.pdf</text>
             <text class="preview-desc">点击可查看预览</text>
           </view>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
       </MobileCard>
     </view>
@@ -283,56 +284,11 @@ function confirmMaterial() {
 }
 
 .method-icon {
-  position: relative;
   width: 96rpx;
   height: 96rpx;
   flex: 0 0 auto;
   border-radius: 18rpx;
   background: #e6f9ef;
-}
-
-.method-icon--phone::before {
-  position: absolute;
-  left: 34rpx;
-  top: 20rpx;
-  width: 30rpx;
-  height: 56rpx;
-  border: 6rpx solid #11b664;
-  border-radius: 8rpx;
-  content: '';
-}
-
-.method-icon--phone::after {
-  position: absolute;
-  left: 46rpx;
-  bottom: 27rpx;
-  width: 8rpx;
-  height: 8rpx;
-  border-radius: 50%;
-  background: #11b664;
-  content: '';
-}
-
-.method-icon--camera::before {
-  position: absolute;
-  left: 26rpx;
-  top: 36rpx;
-  width: 46rpx;
-  height: 34rpx;
-  border-radius: 7rpx;
-  background: #11b664;
-  content: '';
-}
-
-.method-icon--camera::after {
-  position: absolute;
-  left: 40rpx;
-  top: 43rpx;
-  width: 16rpx;
-  height: 16rpx;
-  border: 5rpx solid #eafff3;
-  border-radius: 50%;
-  content: '';
 }
 
 .method-copy {

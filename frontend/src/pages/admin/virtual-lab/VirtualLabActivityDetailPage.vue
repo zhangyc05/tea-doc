@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -47,6 +48,10 @@ const materials = computed(() => getVirtualLabMaterialsByActivity(activityId.val
 const selectedMaterialId = ref(materials.value[0]?.id ?? '')
 const selectedMaterial = computed(() => materials.value.find(item => item.id === selectedMaterialId.value) ?? null)
 const formedRecord = computed(() => virtualLabState.records.find(record => record.sourceActivityId === activityId.value) ?? null)
+
+function materialRowClassName({ row }: { row: { id: string } }) {
+  return selectedMaterialId.value === row.id ? 'active' : ''
+}
 
 function editActivity() {
   operationMessage.set('已进入活动信息校对状态。')
@@ -197,29 +202,26 @@ function goBack() {
                 <div><span>同步状态：</span><strong class="green">● 已同步</strong></div>
               </div>
               <div class="table-container">
-                <table class="data-table participant-table">
-                  <thead>
-                    <tr>
-                      <th>教师</th>
-                      <th>教研室角色</th>
-                      <th>参与来源</th>
-                      <th>参与时间</th>
-                      <th>关联记录</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="participant in displayedParticipants" :key="participant.id">
-                      <td>
-                        <span class="avatar">{{ participant.avatar }}</span>
-                        {{ participant.name }}
-                      </td>
-                      <td><span class="role-pill">{{ participant.role }}</span></td>
-                      <td>{{ participant.participationType }}</td>
-                      <td>{{ participant.timeRange }}</td>
-                      <td><StatusBadge :status="participant.status" /></td>
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable :data="displayedParticipants" row-key="id" empty-text="暂无参与教师">
+                  <AdminTableColumn label="教师" min-width="100">
+                    <template #default="{ row }">
+                        <span class="avatar">{{ row.avatar }}</span>
+                        {{ row.name }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="教研室角色" min-width="110">
+                    <template #default="{ row }">
+                      <span class="role-pill">{{ row.role }}</span>
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="participationType" label="参与来源" min-width="110" />
+                  <AdminTableColumn prop="timeRange" label="参与时间" min-width="150" />
+                  <AdminTableColumn label="关联记录" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.status" />
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
             </div>
           </div>
@@ -229,33 +231,27 @@ function goBack() {
               <h2>活动资料</h2>
             </div>
             <div class="table-container">
-              <table class="data-table material-table">
-                <thead>
-                  <tr>
-                    <th>资料名称</th>
-                    <th>来源</th>
-                    <th>类型</th>
-                    <th>时间</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="material in materials"
-                    :key="material.id"
-                    :class="{ active: selectedMaterialId === material.id }"
-                  >
-                    <td>
-                      <span class="file-icon" :class="material.tone">▤</span>
-                      {{ material.name }}
-                    </td>
-                    <td>{{ material.source }}</td>
-                    <td>{{ material.type }}</td>
-                    <td>{{ material.time }}</td>
-                    <td><Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button></td>
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable
+                :data="materials"
+                row-key="id"
+                :row-class-name="materialRowClassName"
+                empty-text="暂无活动资料"
+              >
+                <AdminTableColumn label="资料名称" min-width="180">
+                  <template #default="{ row }">
+                    <span class="file-icon" :class="row.tone">▤</span>
+                    {{ row.name }}
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="source" label="来源" min-width="120" />
+                <AdminTableColumn prop="type" label="类型" min-width="90" />
+                <AdminTableColumn prop="time" label="时间" min-width="140" />
+                <AdminTableColumn label="操作" min-width="90" fixed="right">
+                  <template #default="{ row }">
+                    <Button variant="ghost" size="sm" @click="viewMaterial(row.id)">查看</Button>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
             <div v-if="selectedMaterial" class="material-detail-panel">
               <h3>资料详情：{{ selectedMaterial.name }}</h3>

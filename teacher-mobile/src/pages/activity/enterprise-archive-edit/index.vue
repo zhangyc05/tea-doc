@@ -75,7 +75,7 @@ function saveEdit() {
           <view v-for="item in infoRows" :key="item.label" class="info-row" @tap="editField(item.label)">
             <text class="info-label">{{ item.label }}</text>
             <text class="info-value">{{ item.value }}</text>
-            <view class="chevron"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>

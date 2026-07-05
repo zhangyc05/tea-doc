@@ -173,28 +173,26 @@ describe('admin visual action guardrails', () => {
   })
 
   it('does not render static pagination indicators as clickable buttons', () => {
-    expect(trainingResourcePage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
-    expect(trainingResourcePage).toContain('<span class="page-button active" aria-current="page">1</span>')
-    expect(trainingResourcePage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(trainingResourcePage).toContain('AdminPagination')
+    expect(trainingResourcePage).not.toContain('page-button')
     expect(trainingResourcePage).not.toContain('<button class="page-button" type="button"')
     expect(trainingResourcePage).not.toContain('<button class="page-button active" type="button">1</button>')
 
-    expect(trainingApplicationPage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
-    expect(trainingApplicationPage).toContain('<span class="page-button active" aria-current="page">1</span>')
-    expect(trainingApplicationPage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(trainingApplicationPage).toContain('AdminPagination')
+    expect(trainingApplicationPage).not.toContain('page-button')
     expect(trainingApplicationPage).not.toContain('<button class="page-button" type="button"')
 
-    expect(trainingRecordPage).toContain('<span class="page-button active" aria-current="page">1</span>')
+    expect(trainingRecordPage).toContain('AdminPagination')
+    expect(trainingRecordPage).not.toContain('page-button')
     expect(trainingRecordPage).not.toContain('<button type="button">1</button>')
 
-    expect(practiceApplicationPage).toContain('<span class="page-button" aria-label="上一页">‹</span>')
-    expect(practiceApplicationPage).toContain('<span class="page-button active" aria-current="page">{{ currentPage }}</span>')
-    expect(practiceApplicationPage).toContain('<span class="page-button" aria-label="下一页">›</span>')
+    expect(practiceApplicationPage).toContain('AdminPagination')
+    expect(practiceApplicationPage).not.toContain('page-button')
     expect(practiceApplicationPage).not.toContain('<button class="page-button" type="button"')
 
-    expect(virtualLabRoomDetailPage).toContain('<span class="pager-button" aria-label="上一页">‹</span>')
-    expect(virtualLabRoomDetailPage).toContain('<span class="pager-current" aria-current="page">1</span>')
-    expect(virtualLabRoomDetailPage).toContain('<span class="pager-button" aria-label="下一页">›</span>')
+    expect(virtualLabRoomDetailPage).toContain('AdminPagination')
+    expect(virtualLabRoomDetailPage).not.toContain('pager-button')
+    expect(virtualLabRoomDetailPage).not.toContain('pager-current')
     expect(virtualLabRoomDetailPage).not.toContain('<button disabled>‹</button>')
     expect(virtualLabRoomDetailPage).not.toContain('<button disabled>›</button>')
   })
@@ -239,11 +237,13 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for archive import upload actions', () => {
     expect(archiveImportUploadPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(archiveImportUploadPage).toContain('<Button class="upload-action-button" type="button" variant="outline" size="lg" @click="selectFiles">')
-    expect(archiveImportUploadPage).toContain('<Button class="upload-action-button" type="button" variant="outline" size="lg" @click="importFromFolder">')
+    expect(archiveImportUploadPage).toContain('import { AdminUpload } from \'@/components/admin-ui\'')
+    expect(archiveImportUploadPage).toContain('<Button class="upload-action-button" type="button" variant="outline" size="lg">')
     expect(archiveImportUploadPage).toContain('<Button class="file-remove-action" type="button" variant="ghost" size="sm" @click="removeFile(file.id)">删除</Button>')
     expect(archiveImportUploadPage).toContain('<Button class="bottom-cancel-action" type="button" variant="outline" size="lg" @click="cancelUpload">取消</Button>')
     expect(archiveImportUploadPage).toContain('<Button class="bottom-primary-action" type="button" size="lg" :disabled="uploadedFiles.length === 0" @click="startRecognition">')
+    expect(archiveImportUploadPage).not.toContain('function selectFiles()')
+    expect(archiveImportUploadPage).not.toContain('function importFromFolder()')
     expect(archiveImportUploadPage).not.toContain('<button type="button" class="ghost-button" @click="selectFiles">▣ 选择文件</button>')
     expect(archiveImportUploadPage).not.toContain('<button type="button" class="ghost-button" @click="importFromFolder">▣ 从本地文件夹导入</button>')
     expect(archiveImportUploadPage).not.toContain('<button type="button" @click="removeFile(file.id)">删除</button>')
@@ -321,8 +321,8 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for ability list requirement mapping actions', () => {
     expect(abilityListRequirementMappingPage).toContain('<Button @click="addNewMapping">新增要求项</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="ghost" size="sm" @click.stop="openEditDrawer(mapping)">编辑</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" size="sm" @click.stop="selectMapping(mapping); deleteMapping()">删除</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="ghost" size="sm" @click.stop="openEditDrawer(row)">编辑</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" size="sm" @click.stop="selectMapping(row); deleteMapping()">删除</Button>')
     expect(abilityListRequirementMappingPage).toContain('<Button @click="openEditDrawer(selectedMapping)">编辑映射</Button>')
     expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" @click="deleteMapping">删除</Button>')
     expect(abilityListRequirementMappingPage).toContain('<Button variant="secondary" @click="confirmMapping">确认配置</Button>')
@@ -383,7 +383,7 @@ describe('admin visual action guardrails', () => {
   it('uses the shared Button component for ability profile group actions', () => {
     expect(abilityProfileGroupPage).toContain('import { Button } from \'@/components/ui\'')
     expect(abilityProfileGroupPage).toContain('<Button variant="outline" @click="viewFullAdvice">')
-    expect(abilityProfileGroupPage).toContain('<Button variant="ghost" size="sm" @click="viewProfile(item.name)">查看画像</Button>')
+    expect(abilityProfileGroupPage).toContain('<Button variant="ghost" size="sm" @click="viewProfile(row.name)">查看画像</Button>')
     expect(abilityProfileGroupPage).toContain('const focusedGroupObject = ref(focusData[focusObjects.value][0]?.name ?? \'\')')
     expect(abilityProfileGroupPage).toContain('focusObjects.value = targetTab')
     expect(abilityProfileGroupPage).toContain('focusedGroupObject.value = name')
@@ -580,16 +580,16 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for practice view-only row actions', () => {
-    expect(practiceApplicationPage).toContain('<Button variant="ghost" size="sm" @click="viewApplication(app.id)">')
+    expect(practiceApplicationPage).toContain('<Button variant="ghost" size="sm" @click="viewApplication(row.id)">')
     expect(practiceApplicationPage).toContain('router.push(`/admin/practice/records?recordId=${record.id}`)')
     expect(practiceApplicationPage).not.toContain('<button class="btn-view" @click="viewApplication(app.id)">')
     expect(practiceApplicationPage).not.toContain('class="btn-view"\n                          @click="viewApplication(app.id)"')
 
     expect(practiceRecordPage).toContain('const route = useRoute()')
     expect(practiceRecordPage).toContain('const activeRecordId = ref(String(route.query.recordId || \'1\'))')
-    expect(practiceRecordPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(record.id)">')
-    expect(practiceRecordPage).toContain('v-if="record.currentStatus === \'已归档\'"')
-    expect(practiceRecordPage).toContain('@click="viewArchive(record.id)"')
+    expect(practiceRecordPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
+    expect(practiceRecordPage).toContain('v-if="row.currentStatus === \'已归档\'"')
+    expect(practiceRecordPage).toContain('@click="viewArchive(row.id)"')
     expect(practiceRecordPage).toContain('router.push(`/admin/archive/processing?recordId=practice-${id}`)')
     expect(archiveProcessingPage).toContain('const route = useRoute()')
     expect(archiveProcessingPage).toContain('const selectedRecordId = ref(String(route.query.recordId || \'2\'))')
@@ -598,7 +598,7 @@ describe('admin visual action guardrails', () => {
 
     expect(practiceTrackingPage).toContain('variant="ghost"')
     expect(practiceTrackingPage).toContain('size="sm"')
-    expect(practiceTrackingPage).toContain('@click="viewRecord(tracking.id)"')
+    expect(practiceTrackingPage).toContain('@click="viewRecord(row.id)"')
     expect(practiceTrackingPage).toContain('router.push(`/admin/practice/records?recordId=${record.id}`)')
     expect(practiceTrackingPage).not.toContain('class="btn-view"\n                        @click="viewRecord(tracking.id)"')
   })
@@ -613,8 +613,8 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for practice state-changing row actions', () => {
     expect(practiceApplicationPage).toContain('class="row-action-group"')
-    expect(practiceApplicationPage).toContain('<Button size="sm" @click="approveApplication(app.id)">同意</Button>')
-    expect(practiceApplicationPage).toContain('<Button variant="danger" size="sm" @click="returnApplication(app.id)">')
+    expect(practiceApplicationPage).toContain('<Button size="sm" @click="approveApplication(row.id)">同意</Button>')
+    expect(practiceApplicationPage).toContain('<Button variant="danger" size="sm" @click="returnApplication(row.id)">')
     expect(practiceApplicationPage).not.toContain('class="btn-action-group"')
     expect(practiceApplicationPage).not.toContain('class="btn-approve"')
     expect(practiceApplicationPage).not.toContain('class="btn-return"')
@@ -622,22 +622,22 @@ describe('admin visual action guardrails', () => {
     expect(practiceRecordPage).toContain('class="row-action-group"')
     expect(practiceRecordPage).toContain('variant="secondary"')
     expect(practiceRecordPage).toContain('size="sm"')
-    expect(practiceRecordPage).toContain('@click="remindMaterial(record.id)"')
+    expect(practiceRecordPage).toContain('@click="remindMaterial(row.id)"')
     expect(practiceRecordPage).toContain('<Button')
-    expect(practiceRecordPage).toContain('@click="confirmArchive(record.id)"')
+    expect(practiceRecordPage).toContain('@click="confirmArchive(row.id)"')
     expect(practiceRecordPage).not.toContain('class="btn-action-group"')
     expect(practiceRecordPage).not.toContain('class="btn-remind"')
     expect(practiceRecordPage).not.toContain('class="btn-confirm"')
 
-    expect(practiceTrackingPage).toContain('v-if="tracking.currentProgress === \'未启动申请\'"')
+    expect(practiceTrackingPage).toContain('v-if="row.currentProgress === \'未启动申请\'"')
     expect(practiceTrackingPage).toContain('variant="secondary"')
-    expect(practiceTrackingPage).toContain('@click="remindApply(tracking.id)"')
+    expect(practiceTrackingPage).toContain('@click="remindApply(row.id)"')
     expect(practiceTrackingPage).not.toContain('class="btn-remind"')
   })
 
   it('uses the shared Button component for virtual lab room detail actions', () => {
     expect(virtualLabRoomPage).toContain('<Button @click="viewDetail(room.id)">查看详情</Button>')
-    expect(virtualLabRoomPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(room.id)">查看详情</Button>')
+    expect(virtualLabRoomPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">查看详情</Button>')
     expect(virtualLabRoomPage).not.toContain('<button class="btn-detail" @click="viewDetail(room.id)">查看详情</button>')
     expect(virtualLabRoomPage).not.toContain('<button class="btn-view" @click="viewDetail(room.id)">查看详情</button>')
   })
@@ -648,11 +648,11 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabRoomDetailPage).toContain('<Button @click="inviteTeacher">邀请教师</Button>')
     expect(virtualLabRoomDetailPage).toContain('<Button variant="secondary" @click="createActivity">新建教研活动</Button>')
     expect(virtualLabRoomDetailPage).toContain('<Button size="sm" @click="inviteTeacher">邀请教师</Button>')
-    expect(virtualLabRoomDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewTeacher(member.id)">查看教师</Button>')
-    expect(virtualLabRoomDetailPage).toContain('v-if="member.role !== \'负责人\'"')
+    expect(virtualLabRoomDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewTeacher(row.id)">查看教师</Button>')
+    expect(virtualLabRoomDetailPage).toContain('v-if="row.role !== \'负责人\'"')
     expect(virtualLabRoomDetailPage).toContain('variant="danger"')
-    expect(virtualLabRoomDetailPage).toContain('@click="removeMember(member.id)"')
-    expect(virtualLabRoomDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewActivity(activity.id)">查看活动</Button>')
+    expect(virtualLabRoomDetailPage).toContain('@click="removeMember(row.id)"')
+    expect(virtualLabRoomDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewActivity(row.id)">查看活动</Button>')
     expect(virtualLabRoomDetailPage).toContain('<Button variant="outline" @click="viewRecord(record.id)">查看记录</Button>')
     expect(virtualLabRoomDetailPage).not.toContain('<button class="btn-secondary" @click="editInfo">编辑信息</button>')
     expect(virtualLabRoomDetailPage).not.toContain('<button class="btn-primary" @click="inviteTeacher">邀请教师</button>')
@@ -672,7 +672,7 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabActivityDetailPage).toContain('function showAllActivityParticipants()')
     expect(virtualLabActivityDetailPage).toContain('showAllParticipants.value = true')
     expect(virtualLabActivityDetailPage).toContain('selectedMaterialId.value = id')
-    expect(virtualLabActivityDetailPage).toContain(':class="{ active: selectedMaterialId === material.id }"')
+    expect(virtualLabActivityDetailPage).toContain(':row-class-name="materialRowClassName"')
     expect(virtualLabActivityDetailPage).toContain('v-if="selectedMaterial" class="material-detail-panel"')
     expect(virtualLabActivityDetailPage).toContain('资料详情：{{ selectedMaterial.name }}')
     expect(virtualLabActivityDetailPage).toContain('async function copyMeetingNo()')
@@ -681,8 +681,8 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabActivityDetailPage).toContain('<Button variant="outline" @click="editActivity">编辑活动</Button>')
     expect(virtualLabActivityDetailPage).toContain('<Button @click="viewMeetingRecord">查看会议记录</Button>')
     expect(virtualLabActivityDetailPage).toContain('<Button v-if="!showAllParticipants" variant="ghost" @click="showAllActivityParticipants">查看全部({{ participants.length }}) ›</Button>')
-    expect(virtualLabActivityDetailPage).toContain('v-for="participant in displayedParticipants"')
-    expect(virtualLabActivityDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button>')
+    expect(virtualLabActivityDetailPage).toContain(':data="displayedParticipants"')
+    expect(virtualLabActivityDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewMaterial(row.id)">查看</Button>')
     expect(virtualLabActivityDetailPage).toContain('<Button @click="viewRecord">查看记录 →</Button>')
     expect(virtualLabActivityDetailPage).toContain('<Button @click="viewRecord">形成并查看记录 →</Button>')
     expect(virtualLabActivityDetailPage).not.toContain('<button class="btn-secondary" @click="editActivity">编辑活动</button>')
@@ -705,7 +705,7 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabRecordDetailPage).toContain('function showAllRecordParticipants()')
     expect(virtualLabRecordDetailPage).toContain('showAllParticipants.value = true')
     expect(virtualLabRecordDetailPage).toContain('selectedMaterialId.value = id')
-    expect(virtualLabRecordDetailPage).toContain(':class="{ active: selectedMaterialId === material.id }"')
+    expect(virtualLabRecordDetailPage).toContain(':row-class-name="materialRowClassName"')
     expect(virtualLabRecordDetailPage).toContain('v-if="selectedMaterial" class="material-detail-panel"')
     expect(virtualLabRecordDetailPage).toContain('来源资料详情：{{ selectedMaterial.name }}')
     expect(virtualLabRecordDetailPage).toContain('<Button variant="outline" @click="viewSourceActivity">查看来源活动</Button>')
@@ -713,8 +713,8 @@ describe('admin visual action guardrails', () => {
     expect(virtualLabRecordDetailPage).toContain('<Button @click="sendToArchive">生成档案待确认</Button>')
     expect(virtualLabRecordDetailPage).toContain('router.push(`/admin/archive/processing?recordId=virtual-lab-${recordId.value}`)')
     expect(virtualLabRecordDetailPage).toContain('<Button v-if="!showAllParticipants" variant="ghost" @click="showAllRecordParticipants">查看全部 ›</Button>')
-    expect(virtualLabRecordDetailPage).toContain('v-for="record in displayedParticipationRecords"')
-    expect(virtualLabRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button>')
+    expect(virtualLabRecordDetailPage).toContain(':data="displayedParticipationRecords"')
+    expect(virtualLabRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewMaterial(row.id)">查看</Button>')
     expect(virtualLabRecordDetailPage).not.toContain('<button class="btn-secondary" @click="viewSourceActivity">查看来源活动</button>')
     expect(virtualLabRecordDetailPage).not.toContain('<button class="btn-primary" @click="viewSourceMaterials">查看来源资料</button>')
     expect(virtualLabRecordDetailPage).not.toContain('<button class="btn-primary" @click="sendToArchive">生成档案待确认</button>')
@@ -736,14 +736,14 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for reflection row and related-record actions', () => {
-    expect(reflectionOverviewPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(reflection.id)">')
+    expect(reflectionOverviewPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
     expect(reflectionOverviewPage).toContain('<Button class="related-records-action" variant="outline" size="lg" @click="viewRelatedRecords">')
     expect(reflectionOverviewPage).not.toContain('<button class="btn-view" @click="viewDetail(reflection.id)">')
     expect(reflectionOverviewPage).not.toContain('<button class="btn-view-related" @click="viewRelatedRecords">')
 
     expect(reflectionDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(reflectionDetailPage).toContain('<Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>')
-    expect(reflectionDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedDetail(related.id)">')
+    expect(reflectionDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedDetail(row.id)">')
     expect(reflectionDetailPage).toContain('<Button variant="ghost" @click="viewMoreRelated">')
     expect(reflectionDetailPage).toContain('<Button class="source-data-action" variant="outline" size="lg" @click="viewSourceData">')
     expect(reflectionDetailPage).toContain('sendReflectionToArchive(reflectionId)')
@@ -756,7 +756,7 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for training plan table row actions', () => {
-    expect(trainingPlanPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(plan.id)">')
+    expect(trainingPlanPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
     expect(trainingPlanPage).not.toContain('<button class="btn-view" @click="viewDetail(plan.id)">')
   })
 
@@ -779,19 +779,19 @@ describe('admin visual action guardrails', () => {
     expect(trainingPlanDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(trainingPlanDetailPage).toContain('<Button class="detail-back-action" variant="ghost" @click="goBack">‹ 返回列表</Button>')
     expect(trainingPlanDetailPage).toContain('variant="ghost"')
-    expect(trainingPlanDetailPage).toContain('@click="viewTeacherDetail(participant.id)"')
+    expect(trainingPlanDetailPage).toContain('@click="viewTeacherDetail(row.id)"')
     expect(trainingPlanDetailPage).toContain('<Button')
-    expect(trainingPlanDetailPage).toContain('v-if="participant.applicationStatus === \'待处理\'"')
+    expect(trainingPlanDetailPage).toContain('v-if="row.applicationStatus === \'待处理\'"')
     expect(trainingPlanDetailPage).toContain('variant="secondary"')
     expect(trainingPlanDetailPage).toContain('size="sm"')
-    expect(trainingPlanDetailPage).toContain('@click="handleApplication(participant.id)"')
+    expect(trainingPlanDetailPage).toContain('@click="handleApplication(row.id)"')
     expect(trainingPlanDetailPage).not.toContain('<button class="btn-back" @click="goBack">‹ 返回列表</button>')
     expect(trainingPlanDetailPage).not.toContain('class="btn-view"\n                          @click="viewTeacherDetail(participant.id)"')
     expect(trainingPlanDetailPage).not.toContain('class="btn-handle"\n                          @click="handleApplication(participant.id)"')
   })
 
   it('uses the shared Button component for training record table row actions', () => {
-    expect(trainingRecordPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(record.id)">')
+    expect(trainingRecordPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
     expect(trainingRecordPage).not.toContain('<button class="btn-view" @click="viewDetail(record.id)">')
   })
 
@@ -799,40 +799,40 @@ describe('admin visual action guardrails', () => {
     expect(trainingRecordDetailPage).toContain('import { Button } from \'@/components/ui\'')
     expect(trainingRecordDetailPage).toContain('<Button size="sm" @click="uploadMaterial">')
     expect(trainingRecordDetailPage).toContain('operationMessage.fromStore(trainingState)')
-    expect(trainingRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedRecord(related.id)">')
+    expect(trainingRecordDetailPage).toContain('<Button variant="ghost" size="sm" @click="viewRelatedRecord(row.id)">')
     expect(trainingRecordDetailPage).not.toContain('.btn-back')
     expect(trainingRecordDetailPage).not.toContain('<button class="btn-upload" @click="uploadMaterial">')
     expect(trainingRecordDetailPage).not.toContain('class="btn-view"\n                          @click="viewRelatedRecord(related.id)"')
   })
 
   it('uses the shared Button component for training resource table row actions', () => {
-    expect(trainingResourcePage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(resource.id)">')
+    expect(trainingResourcePage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
     expect(trainingResourcePage).not.toContain('<button class="btn-view" @click="viewDetail(resource.id)">')
   })
 
   it('uses the shared Button component for training demand table row actions', () => {
-    expect(trainingDemandPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(demand.id)">')
+    expect(trainingDemandPage).toContain('<Button variant="ghost" size="sm" @click="viewDetail(row.id)">')
     expect(trainingDemandPage).toContain('<Button')
     expect(trainingDemandPage).toContain('variant="secondary"')
     expect(trainingDemandPage).toContain('size="sm"')
-    expect(trainingDemandPage).toContain('@click="matchDemand(demand.id)"')
+    expect(trainingDemandPage).toContain('@click="matchDemand(row.id)"')
     expect(trainingDemandPage).not.toContain('<button class="btn-view" @click="viewDetail(demand.id)">')
     expect(trainingDemandPage).not.toContain('class="btn-view"\n                          @click="matchDemand(demand.id)"')
   })
 
   it('uses the shared Button component for training application table row actions', () => {
-    expect(trainingApplicationPage).toContain(`                        <Button
-                          v-if="app.status === '待处理'"
-                          variant="secondary"
-                          size="sm"
-                          @click="handleApplication(app.id)"
-                        >`)
-    expect(trainingApplicationPage).toContain(`                        <Button
-                          v-else
-                          variant="ghost"
-                          size="sm"
-                          @click="viewDetail(app.id)"
-                        >`)
+    expect(trainingApplicationPage).toContain(`                      <Button
+                        v-if="row.status === '待处理'"
+                        variant="secondary"
+                        size="sm"
+                        @click="handleApplication(row.id)"
+                      >`)
+    expect(trainingApplicationPage).toContain(`                      <Button
+                        v-else
+                        variant="ghost"
+                        size="sm"
+                        @click="viewDetail(row.id)"
+                      >`)
     expect(trainingApplicationPage).not.toContain('class="btn-handle"\n                          @click="handleApplication(app.id)"')
     expect(trainingApplicationPage).not.toContain('class="btn-view"\n                          @click="viewDetail(app.id)"')
   })

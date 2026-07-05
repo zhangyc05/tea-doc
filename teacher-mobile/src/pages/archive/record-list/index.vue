@@ -48,10 +48,6 @@ function goArchiveQuery() {
   uni.navigateTo({ url: '/pages/archive/record-query/index' })
 }
 
-function selectStatus(status: (typeof statusFilters)[number]['key']) {
-  selectedStatus.value = status
-}
-
 function goRecord(record: MobileArchiveRecord) {
   uni.navigateTo({
     url: `/pages/archive/record-detail/index?recordId=${record.id}`,
@@ -75,15 +71,14 @@ function goRecord(record: MobileArchiveRecord) {
     </MobileCard>
 
     <view class="toolbar">
-      <button
+      <wd-tabs v-model="selectedStatus" class="toolbar-tabs" color="#13a95b" inactive-color="#526079" :line-width="0">
+      <wd-tab
         v-for="status in statusFilters"
         :key="status.key"
-        class="toolbar-chip"
-        :class="{ 'toolbar-chip--active': selectedStatus === status.key }"
-        @tap="selectStatus(status.key)"
-      >
-        {{ status.label }}
-      </button>
+        :name="status.key"
+        :title="status.label"
+      />
+      </wd-tabs>
       <MobileActionButton class="toolbar-search" variant="link" arrow @tap="goArchiveQuery">
         搜索
       </MobileActionButton>
@@ -225,7 +220,19 @@ function goRecord(record: MobileArchiveRecord) {
   padding-bottom: 4rpx;
 }
 
-.toolbar-chip {
+.toolbar-tabs {
+  flex: 0 0 auto;
+}
+
+.toolbar-tabs :deep(.wd-tabs__nav) {
+  gap: 14rpx;
+}
+
+.toolbar-tabs :deep(.wd-tabs__nav-container) {
+  background: transparent;
+}
+
+.toolbar-tabs :deep(.wd-tabs__nav-item) {
   height: 58rpx;
   flex: 0 0 auto;
   margin: 0;
@@ -239,12 +246,12 @@ function goRecord(record: MobileArchiveRecord) {
   line-height: 54rpx;
 }
 
-.toolbar-chip::after {
+.toolbar-tabs :deep(.wd-tabs__container),
+.toolbar-tabs :deep(.wd-tabs__line) {
   display: none;
-  border: 0;
 }
 
-.toolbar-chip--active {
+.toolbar-tabs :deep(.wd-tabs__nav-item.is-active) {
   border-color: #13a95b;
   background: #e7faef;
   color: #13864b;

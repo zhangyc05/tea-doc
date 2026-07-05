@@ -104,7 +104,7 @@ function goActivityDetail() {
             <text class="file-name">设备调试案例素材.pdf</text>
             <text class="file-meta">PDF · 3.2MB　|　提交时间：2026-06-03 12:45</text>
           </view>
-          <view class="row-arrow"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </button>
       </MobileCard>
 

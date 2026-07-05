@@ -75,34 +75,40 @@ function submitDraft() {
 
     <MobileCard class="section-card">
       <text class="section-title">发展目标</text>
-      <textarea
+      <wd-textarea
         v-model="target"
         class="plan-textarea"
         auto-height
-        maxlength="240"
+        :maxlength="240"
         placeholder="填写本年度发展目标"
+        show-word-limit
+        no-border
       />
     </MobileCard>
 
     <MobileCard class="section-card">
       <text class="section-title">行动安排</text>
-      <textarea
+      <wd-textarea
         v-model="actions"
         class="plan-textarea"
         auto-height
-        maxlength="300"
+        :maxlength="300"
         placeholder="填写培训、实践、教研等行动安排"
+        show-word-limit
+        no-border
       />
     </MobileCard>
 
     <MobileCard class="section-card">
       <text class="section-title">佐证材料</text>
-      <textarea
+      <wd-textarea
         v-model="evidence"
         class="plan-textarea"
         auto-height
-        maxlength="240"
+        :maxlength="240"
         placeholder="填写后续计划关联的材料或记录"
+        show-word-limit
+        no-border
       />
     </MobileCard>
 
@@ -204,18 +210,30 @@ function submitDraft() {
 }
 
 .plan-textarea {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 168rpx;
+  display: block;
   margin-top: 20rpx;
-  padding: 22rpx;
   border: 2rpx solid #e2edf8;
   border-radius: 24rpx;
   background: #f7fbff;
+}
+
+.plan-textarea :deep(.wd-textarea) {
+  padding: 22rpx;
+  background: transparent;
+}
+
+.plan-textarea :deep(.wd-textarea__inner) {
+  min-height: 168rpx;
   color: #17233d;
   font-size: 26rpx;
   font-weight: 800;
   line-height: 1.55;
+}
+
+.plan-textarea :deep(.wd-textarea__count) {
+  padding: 0 22rpx 18rpx 0;
+  color: #778197;
+  font-size: 22rpx;
 }
 
 .status-desc {

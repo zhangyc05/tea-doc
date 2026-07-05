@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { calculateTeacherAbilityProfile, getAbilityProfileTeacherDetailMock } from '@/services/mock/ability-profile'
@@ -142,43 +143,37 @@ function switchTeacher() {
 
         <div class="dimension-column">
           <h2>能力维度说明</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>维度</th>
-                <th>发展指数</th>
-                <th>指数构成</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="dim in abilityDimensions" :key="dim.dimension">
-                <td class="dimension-name">{{ dim.dimension }}</td>
-                <td class="number-cell">{{ dim.index }}</td>
-                <td>{{ dim.composition }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <AdminTable
+            class="profile-detail-table"
+            :data="abilityDimensions"
+            empty-text="暂无能力维度数据"
+          >
+            <AdminTableColumn label="维度" min-width="120">
+              <template #default="{ row }">
+                <span class="dimension-name">{{ row.dimension }}</span>
+              </template>
+            </AdminTableColumn>
+            <AdminTableColumn label="发展指数" min-width="100" align="center">
+              <template #default="{ row }">
+                <span class="number-cell">{{ row.index }}</span>
+              </template>
+            </AdminTableColumn>
+            <AdminTableColumn prop="composition" label="指数构成" min-width="260" />
+          </AdminTable>
         </div>
       </section>
 
       <section class="panel support-panel">
         <h2>支持方向</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>对应发展特征</th>
-              <th>支持方向</th>
-              <th>支持重点</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in supportDirections" :key="item.feature">
-              <td>{{ item.feature }}</td>
-              <td>{{ item.direction }}</td>
-              <td>{{ item.focus }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <AdminTable
+          class="profile-detail-table support-direction-table"
+          :data="supportDirections"
+          empty-text="暂无支持方向"
+        >
+          <AdminTableColumn prop="feature" label="对应发展特征" min-width="160" />
+          <AdminTableColumn prop="direction" label="支持方向" min-width="180" />
+          <AdminTableColumn prop="focus" label="支持重点" min-width="300" />
+        </AdminTable>
       </section>
     </div>
   </AdminLayout>
@@ -564,41 +559,6 @@ dd {
   min-width: 0;
 }
 
-table {
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid #dde6f1;
-  border-radius: var(--radius-admin-panel);
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-th,
-td {
-  height: 40px;
-  padding: 0 18px;
-  border-right: 1px solid #dde6f1;
-  border-bottom: 1px solid #dde6f1;
-  color: #25334d;
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-th {
-  background: var(--color-admin-bg-soft);
-  color: #10213d;
-  font-weight: 800;
-}
-
-tr:last-child td {
-  border-bottom: 0;
-}
-
-th:last-child,
-td:last-child {
-  border-right: 0;
-}
-
 .dimension-name,
 .number-cell {
   color: #1677ff;
@@ -612,14 +572,6 @@ td:last-child {
 
 .support-panel {
   margin-top: var(--space-admin-lg);
-}
-
-.support-panel th:nth-child(1) {
-  width: 19%;
-}
-
-.support-panel th:nth-child(2) {
-  width: 22%;
 }
 
 @media (max-width: 1500px) {

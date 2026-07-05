@@ -139,7 +139,7 @@ function openLearningResource(recordId = 'digital-teaching-record') {
             </view>
           </view>
           <MobileActionButton class="mine-row__button" variant="outline" @tap="goSummary(item.id)">{{ item.action }}</MobileActionButton>
-          <view class="row-arrow"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
       </MobileCard>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../components/MobileActionButton.vue'
 import MobileCard from '../../components/MobileCard.vue'
+import MobileIcon from '../../components/MobileIcon.vue'
 import MobilePageShell from '../../components/MobilePageShell.vue'
 
 const abilityItems = [
@@ -8,7 +9,7 @@ const abilityItems = [
   { label: '教研', value: 68, tone: 'blue', icon: 'cap' },
   { label: '实践', value: 79, tone: 'teal', icon: 'case' },
   { label: '服务', value: 72, tone: 'orange', icon: 'heart' },
-]
+] as const
 
 const archiveMenus = [
   { title: '已入档记录', desc: '查看已确认并入档的个人记录', tone: 'green', icon: 'file', route: '/pages/archive/index' },
@@ -20,14 +21,28 @@ const archiveMenus = [
     route: '/pages/archive/correction/progress/index?recordId=certificate-digital-literacy&status=pending-verify',
   },
   { title: '这些记录会怎么用', desc: '了解画像、聘期要求和报告会如何使用记录', tone: 'orange', icon: 'help', route: '/pages/archive/record-query/index' },
-]
+] as const
 
 const serviceMenus = [
   { title: '账号与安全', tone: 'green', icon: 'shield' },
   { title: 'AI 辅助说明', tone: 'purple', icon: 'bot' },
   { title: '帮助与反馈', tone: 'blue', icon: 'service' },
   { title: '关于平台', tone: 'gray', icon: 'info' },
-]
+] as const
+
+const abilityProgressColors = {
+  green: '#0ec165',
+  blue: '#1776ee',
+  teal: '#12b8a6',
+  orange: '#ff7b18',
+} as const
+
+const menuIconNameMap = {
+  shield: 'secured',
+  bot: 'bot',
+  service: 'service',
+  info: 'info',
+} as const
 
 function goArchiveMenu(route: string) {
   uni.navigateTo({ url: route })
@@ -54,7 +69,7 @@ function showServiceFeedback(target: string) {
     <view class="page-head">
       <text class="page-head__title">我的</text>
       <button class="setting-button" aria-label="设置" @tap="showServiceFeedback('设置')">
-        <view class="setting-button__gear"></view>
+        <MobileIcon class="setting-button__icon" name="setting" tone="dark" size="md" shape="none" />
       </button>
     </view>
 
@@ -87,16 +102,10 @@ function showServiceFeedback(target: string) {
       <view class="ability-grid">
         <view v-for="item in abilityItems" :key="item.label" class="ability-item">
           <view class="ability-item__head">
-            <view class="ability-icon" :class="`ability-icon--${item.tone} ability-icon--${item.icon}`"></view>
+            <MobileIcon class="ability-icon" :name="item.icon" :tone="item.tone" size="plain" shape="none" />
             <text>{{ item.label }} {{ item.value }}</text>
           </view>
-          <view class="ability-track">
-            <view
-              class="ability-track__bar"
-              :class="`ability-track__bar--${item.tone}`"
-              :style="{ width: `${item.value}%` }"
-            ></view>
-          </view>
+          <wd-progress class="ability-progress" :percentage="item.value" :color="abilityProgressColors[item.tone]" hide-text />
         </view>
       </view>
       <MobileActionButton class="card-link" variant="link" arrow @tap="goAbilityProfile">查看画像</MobileActionButton>
@@ -105,10 +114,7 @@ function showServiceFeedback(target: string) {
     <MobileCard class="report-card">
       <text class="section-title">我的发展报告</text>
       <view class="report-card__content">
-        <view class="report-visual">
-          <view class="report-visual__paper"></view>
-          <view class="report-visual__chart"></view>
-        </view>
+        <MobileIcon class="report-visual" name="chart" tone="green" size="md" />
         <view class="report-card__body">
           <text class="report-title">2026 年度发展报告草稿已生成</text>
           <text class="report-desc">基于已入档记录整理，可查看后确认</text>
@@ -120,21 +126,21 @@ function showServiceFeedback(target: string) {
     <MobileCard class="menu-card">
       <text class="section-title">档案记录</text>
       <view v-for="item in archiveMenus" :key="item.title" class="menu-row" @tap="goArchiveMenu(item.route)">
-        <view class="menu-icon" :class="`menu-icon--${item.tone} menu-icon--${item.icon}`"></view>
+        <MobileIcon class="menu-icon" :name="item.icon" :tone="item.tone" size="plain" />
         <view class="menu-row__body">
           <text class="menu-row__title">{{ item.title }}</text>
           <text class="menu-row__desc">{{ item.desc }}</text>
         </view>
-        <view class="menu-row__arrow"></view>
+        <wd-icon class="menu-row__arrow" name="chevron-right" size="28rpx" color="#8b94a5" />
       </view>
     </MobileCard>
 
     <MobileCard class="service-card">
       <text class="section-title">系统服务</text>
       <view v-for="item in serviceMenus" :key="item.title" class="service-row" @tap="showServiceFeedback(item.title)">
-        <view class="service-icon" :class="`service-icon--${item.tone} service-icon--${item.icon}`"></view>
+        <MobileIcon class="service-icon" :name="menuIconNameMap[item.icon]" :tone="item.tone" size="plain" shape="none" />
         <text class="service-row__title">{{ item.title }}</text>
-        <view class="menu-row__arrow"></view>
+        <wd-icon class="menu-row__arrow" name="chevron-right" size="28rpx" color="#8b94a5" />
       </view>
     </MobileCard>
   </MobilePageShell>
@@ -193,34 +199,9 @@ function showServiceFeedback(target: string) {
   border: 0;
 }
 
-.setting-button__gear {
-  position: absolute;
-  inset: 10rpx;
-  border: 5rpx solid #0d1430;
-  border-radius: 50%;
-}
-
-.setting-button__gear::before {
-  position: absolute;
-  inset: 14rpx;
-  border: 5rpx solid #0d1430;
-  border-radius: 50%;
-  content: '';
-}
-
-.setting-button__gear::after {
-  position: absolute;
-  top: -9rpx;
-  left: 20rpx;
-  width: 10rpx;
-  height: 13rpx;
-  border-radius: 8rpx;
-  background: #0d1430;
-  box-shadow:
-    0 58rpx 0 #0d1430,
-    29rpx 29rpx 0 #0d1430,
-    -29rpx 29rpx 0 #0d1430;
-  content: '';
+.setting-button__icon {
+  width: 72rpx;
+  height: 72rpx;
 }
 
 .profile-card,
@@ -445,57 +426,22 @@ function showServiceFeedback(target: string) {
 }
 
 .ability-icon {
-  position: relative;
   width: 32rpx;
   height: 32rpx;
   flex: 0 0 32rpx;
-  border-radius: 8rpx;
-  background: currentColor;
 }
 
-.ability-icon--green {
-  color: $teacher-mobile-primary;
-}
-
-.ability-icon--blue {
-  color: $teacher-mobile-info;
-}
-
-.ability-icon--teal {
-  color: #12b8a6;
-}
-
-.ability-icon--orange {
-  color: $teacher-mobile-warning;
-}
-
-.ability-track {
-  height: 8rpx;
+.ability-progress {
   margin-top: 11rpx;
-  overflow: hidden;
-  border-radius: 999rpx;
+}
+
+.ability-progress :deep(.wd-progress__outer) {
+  height: 8rpx;
   background: #dfe5ee;
 }
 
-.ability-track__bar {
-  height: 100%;
-  border-radius: inherit;
-}
-
-.ability-track__bar--green {
-  background: $teacher-mobile-primary;
-}
-
-.ability-track__bar--blue {
-  background: $teacher-mobile-info;
-}
-
-.ability-track__bar--teal {
-  background: #12b8a6;
-}
-
-.ability-track__bar--orange {
-  background: $teacher-mobile-warning;
+.ability-progress :deep(.wd-progress__inner) {
+  border-radius: 999rpx;
 }
 
 .report-card {
@@ -509,51 +455,9 @@ function showServiceFeedback(target: string) {
 }
 
 .report-visual {
-  position: relative;
   width: 82rpx;
   height: 82rpx;
   flex: 0 0 82rpx;
-  border-radius: 20rpx;
-  background: #e5fbf0;
-}
-
-.report-visual__paper {
-  position: absolute;
-  top: 18rpx;
-  left: 22rpx;
-  width: 48rpx;
-  height: 58rpx;
-  border-radius: 8rpx;
-  background: #9eeec6;
-}
-
-.report-visual__paper::before,
-.report-visual__paper::after {
-  position: absolute;
-  left: 12rpx;
-  width: 24rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: #13aa60;
-  content: '';
-}
-
-.report-visual__paper::before {
-  top: 16rpx;
-}
-
-.report-visual__paper::after {
-  top: 34rpx;
-}
-
-.report-visual__chart {
-  position: absolute;
-  right: 14rpx;
-  bottom: 14rpx;
-  width: 28rpx;
-  height: 28rpx;
-  border-radius: 50%;
-  background: conic-gradient(#12b85f 0 75%, #d5f7e5 75% 100%);
 }
 
 .report-card__body {
@@ -601,31 +505,9 @@ function showServiceFeedback(target: string) {
 }
 
 .menu-icon {
-  position: relative;
   width: 44rpx;
   height: 44rpx;
   flex: 0 0 44rpx;
-  border-radius: 14rpx;
-  background: #e7faef;
-  color: $teacher-mobile-primary;
-}
-
-.menu-icon::before {
-  position: absolute;
-  inset: 12rpx 14rpx;
-  border-radius: 5rpx;
-  background: currentColor;
-  content: '';
-}
-
-.menu-icon--blue {
-  background: #edf6ff;
-  color: $teacher-mobile-info;
-}
-
-.menu-icon--orange {
-  background: #fff1e8;
-  color: $teacher-mobile-warning;
 }
 
 .menu-row__body {
@@ -654,12 +536,12 @@ function showServiceFeedback(target: string) {
 }
 
 .menu-row__arrow {
-  width: 18rpx;
-  height: 18rpx;
+  display: flex;
+  width: 28rpx;
+  height: 28rpx;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 18rpx;
-  border-top: 4rpx solid #8b94a5;
-  border-right: 4rpx solid #8b94a5;
-  transform: rotate(45deg);
 }
 
 .service-row {
@@ -670,28 +552,9 @@ function showServiceFeedback(target: string) {
 }
 
 .service-icon {
-  position: relative;
   width: 30rpx;
   height: 30rpx;
   flex: 0 0 30rpx;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.service-icon--green {
-  color: $teacher-mobile-primary;
-}
-
-.service-icon--purple {
-  color: #7664e8;
-}
-
-.service-icon--blue {
-  color: $teacher-mobile-info;
-}
-
-.service-icon--gray {
-  color: #6b7280;
 }
 
 .service-row__title {

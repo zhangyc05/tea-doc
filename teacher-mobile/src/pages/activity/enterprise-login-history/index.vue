@@ -94,7 +94,7 @@ function supplementMaterial() {
             <text>已记录 <text class="green">9 天</text> 过程日志</text>
             <button class="log-link" @tap="goLogDetail">
               <text>查看日志</text>
-              <view class="link-arrow"></view>
+              <wd-icon name="chevron-right" size="20rpx" color="#079653" />
             </button>
           </view>
         </view>
@@ -144,7 +144,7 @@ function supplementMaterial() {
         <view class="section-head attachment-head" @tap="showAttachmentFeedback">
           <view class="section-icon section-icon--clip"></view>
           <text class="section-title">附件资料</text>
-          <view class="section-chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <text class="uploaded">已上传 2 份</text>
 

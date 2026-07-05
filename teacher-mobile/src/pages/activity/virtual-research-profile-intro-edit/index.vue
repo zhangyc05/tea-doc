@@ -46,6 +46,12 @@ const steps = [
   { title: '已归档入档', time: '待完成', state: 'todo' },
 ]
 
+function getStepStatus(state: string) {
+  if (state === 'done') return 'finished'
+  if (state === 'active') return 'process'
+  return undefined
+}
+
 function goBack() {
   uni.navigateBack()
 }
@@ -182,19 +188,15 @@ function previewMaterial(fileName: string) {
           <text class="section-title">当前状态</text>
         </view>
         <view class="divider"></view>
-        <view class="timeline">
-          <view
-            v-for="(step, index) in steps"
+        <wd-steps class="timeline" :active="2" align-center>
+          <wd-step
+            v-for="step in steps"
             :key="step.title"
-            class="timeline-step"
-            :class="`timeline-step--${step.state}`"
-          >
-            <view class="step-dot" aria-hidden="true"></view>
-            <view v-if="index < steps.length - 1" class="step-line" aria-hidden="true"></view>
-            <text class="step-title">{{ step.title }}</text>
-            <text class="step-time">{{ step.time }}</text>
-          </view>
-        </view>
+            :title="step.title"
+            :description="step.time"
+            :status="getStepStatus(step.state)"
+          />
+        </wd-steps>
         <view class="archive-tip">
           <view class="info-icon" aria-hidden="true"></view>
           <text>归档后将生成教研活动记录并计入你的成长档案，可用于能力画像、岗位/聘期对照和个人发展报告。</text>
@@ -869,69 +871,10 @@ function previewMaterial(fileName: string) {
 }
 
 .timeline {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 28rpx;
 }
 
-.timeline-step {
-  position: relative;
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  flex-direction: column;
-  color: #7b8495;
-  text-align: center;
-}
-
-.step-dot {
-  position: relative;
-  z-index: 2;
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 50%;
-  background: #dfe5ee;
-}
-
-.timeline-step--done .step-dot,
-.timeline-step--active .step-dot {
-  background: #1d77f2;
-}
-
-.timeline-step--done .step-dot::before {
-  position: absolute;
-  top: 10rpx;
-  left: 9rpx;
-  width: 14rpx;
-  height: 8rpx;
-  border-bottom: 4rpx solid #fff;
-  border-left: 4rpx solid #fff;
-  transform: rotate(-45deg);
-  content: '';
-}
-
-.timeline-step--active .step-dot::before {
-  position: absolute;
-  inset: 9rpx;
-  border: 3rpx solid #fff;
-  border-radius: 50%;
-  content: '';
-}
-
-.step-line {
-  position: absolute;
-  top: 17rpx;
-  left: calc(50% + 18rpx);
-  width: calc(100% - 36rpx);
-  height: 3rpx;
-  background: #1d77f2;
-}
-
-.timeline-step--todo .step-line {
-  background: #dfe5ee;
-}
-
-.step-title {
+.timeline :deep(.wd-step__title) {
   margin-top: 18rpx;
   color: #44516a;
   font-size: 22rpx;
@@ -939,17 +882,21 @@ function previewMaterial(fileName: string) {
   line-height: 1.2;
 }
 
-.step-time {
+.timeline :deep(.wd-step__description) {
   margin-top: 10rpx;
   color: #62708a;
   font-size: 20rpx;
   line-height: 1.2;
 }
 
-.timeline-step--active .step-title,
-.timeline-step--active .step-time {
+.timeline :deep(.wd-step.is-process .wd-step__title),
+.timeline :deep(.wd-step.is-process .wd-step__description) {
   color: #1675f2;
   font-weight: 900;
+}
+
+.timeline :deep(.wd-step__icon) {
+  color: #1d77f2;
 }
 
 .archive-tip {

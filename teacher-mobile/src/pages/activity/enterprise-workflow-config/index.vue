@@ -63,7 +63,7 @@ function goEnterpriseLogList() {
         <view class="practice-row" @tap="showPracticeFeedback">
           <view class="mini-icon mini-icon--building"></view>
           <text class="practice-title">山东某智能装备有限公司企业实践</text>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <view class="practice-meta">
           <view class="mini-icon mini-icon--bag"></view>

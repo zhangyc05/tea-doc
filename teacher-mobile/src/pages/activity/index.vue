@@ -120,7 +120,7 @@ function showRecentFeedback() {
           <text>聘期第 2 年</text>
         </view>
       </view>
-      <view class="chevron"></view>
+      <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
     </view>
 
     <MobileCard class="section-card start-card">

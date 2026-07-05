@@ -120,7 +120,7 @@ function goContributionConfirm() {
             </view>
             <text class="activity-title">{{ item.title }}</text>
             <text class="activity-time">{{ item.time }}</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 import { saveEnterprisePlanDraft, submitEnterprisePlan } from '../../../domain/enterprise'
@@ -78,15 +79,15 @@ function submitPlan() {
           <text class="prompt-text">计划前往山东智联装备有限公司开展实践，岗位为现场工程师助理，时间 2026-06-03 至 2026-06-14，主要参与产线流程观察、设备调试记录、项目文档学习和现场工程师交流，希望提升现场工程项目理解能力。</text>
           <view class="prompt-tools">
             <view class="tool-item">
-              <view class="tool-icon tool-icon--voice"></view>
+              <MobileIcon class="tool-icon" name="mic" tone="dark" size="plain" shape="none" />
               <text>语音</text>
             </view>
             <view class="tool-item">
-              <view class="tool-icon tool-icon--camera"></view>
+              <MobileIcon class="tool-icon" name="camera" tone="dark" size="plain" shape="none" />
               <text>拍照</text>
             </view>
             <view class="tool-item">
-              <view class="tool-icon tool-icon--upload"></view>
+              <MobileIcon class="tool-icon" name="upload" tone="dark" size="plain" shape="none" />
               <text>上传</text>
             </view>
           </view>
@@ -476,76 +477,8 @@ function submitPlan() {
 }
 
 .tool-icon {
-  position: relative;
   width: 32rpx;
   height: 32rpx;
-}
-
-.tool-icon--voice::before {
-  position: absolute;
-  left: 10rpx;
-  top: 0;
-  width: 12rpx;
-  height: 22rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 999rpx;
-  content: '';
-}
-
-.tool-icon--voice::after {
-  position: absolute;
-  left: 6rpx;
-  bottom: 0;
-  width: 20rpx;
-  height: 14rpx;
-  border-bottom: 4rpx solid currentColor;
-  border-left: 4rpx solid currentColor;
-  border-right: 4rpx solid currentColor;
-  border-radius: 0 0 999rpx 999rpx;
-  content: '';
-}
-
-.tool-icon--camera::before {
-  position: absolute;
-  inset: 7rpx 2rpx 4rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 7rpx;
-  content: '';
-}
-
-.tool-icon--camera::after {
-  position: absolute;
-  left: 11rpx;
-  top: 13rpx;
-  width: 10rpx;
-  height: 10rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 50%;
-  content: '';
-}
-
-.tool-icon--upload::before {
-  position: absolute;
-  left: 5rpx;
-  right: 5rpx;
-  bottom: 4rpx;
-  height: 16rpx;
-  border: 4rpx solid currentColor;
-  border-top: 0;
-  border-radius: 0 0 8rpx 8rpx;
-  content: '';
-}
-
-.tool-icon--upload::after {
-  position: absolute;
-  left: 9rpx;
-  top: 3rpx;
-  width: 14rpx;
-  height: 14rpx;
-  border-top: 4rpx solid currentColor;
-  border-left: 4rpx solid currentColor;
-  content: '';
-  transform: rotate(45deg);
 }
 
 .file-chip {

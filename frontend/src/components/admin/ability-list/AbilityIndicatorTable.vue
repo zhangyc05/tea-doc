@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { Button } from '@/components/ui'
 import {
   getAbilityIndicatorStatusClass,
   getAbilityIndicatorStatusLabel,
@@ -42,6 +44,10 @@ function getStatusBadgeClass(status: AbilityIndicator['status']) {
 function getStatusText(status: AbilityIndicator['status']) {
   return getAbilityIndicatorStatusLabel(status)
 }
+
+function indicatorRowClassName() {
+  return 'admin-table-row'
+}
 </script>
 
 <template>
@@ -61,52 +67,34 @@ function getStatusText(status: AbilityIndicator['status']) {
     </header>
 
     <div class="admin-table-container">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>指标名称</th>
-            <th>新手</th>
-            <th>胜任</th>
-            <th>骨干</th>
-            <th>名师</th>
-            <th>{{ basisColumnTitle }}</th>
-            <th>状态</th>
-            <th v-if="showAction">操作</th>
-          </tr>
-        </thead>
-        <tbody v-if="rows.length">
-          <tr
-            v-for="row in rows"
-            :key="row.key"
-            class="admin-table-row"
-            @click="handleRowClick(row)"
-          >
-            <td class="name-cell">{{ row.name }}</td>
-            <td>{{ row.novice }}</td>
-            <td>{{ row.competent }}</td>
-            <td>{{ row.backbone }}</td>
-            <td>{{ row.expert }}</td>
-            <td>{{ row.basisLabel }}</td>
-            <td>
+      <AdminTable
+        :data="rows"
+        row-key="key"
+        :row-class-name="indicatorRowClassName"
+        empty-text="当前能力节点暂无指标，请从优化建议或基准模板维护中补充。"
+        @row-click="handleRowClick"
+      >
+        <AdminTableColumn prop="name" label="指标名称" min-width="220" />
+        <AdminTableColumn prop="novice" label="新手" min-width="110" align="center" />
+        <AdminTableColumn prop="competent" label="胜任" min-width="110" align="center" />
+        <AdminTableColumn prop="backbone" label="骨干" min-width="110" align="center" />
+        <AdminTableColumn prop="expert" label="名师" min-width="110" align="center" />
+        <AdminTableColumn prop="basisLabel" :label="basisColumnTitle" min-width="160" align="center" />
+        <AdminTableColumn label="状态" min-width="110" align="center">
+          <template #default="{ row }">
               <span class="badge-status" :class="getStatusBadgeClass(row.status)">
                 {{ getStatusText(row.status) }}
               </span>
-            </td>
-            <td v-if="showAction">
-              <button class="btn-link" @click.stop="handleEdit(row)">
-                {{ actionText }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-        <tbody v-else>
-          <tr>
-            <td class="empty-cell" :colspan="showAction ? 8 : 7">
-              当前能力节点暂无指标，请从优化建议或基准模板维护中补充。
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          </template>
+        </AdminTableColumn>
+        <AdminTableColumn v-if="showAction" label="操作" min-width="110" align="center" fixed="right">
+          <template #default="{ row }">
+            <Button variant="ghost" size="sm" @click.stop="handleEdit(row)">
+              {{ actionText }}
+            </Button>
+          </template>
+        </AdminTableColumn>
+      </AdminTable>
     </div>
   </section>
 </template>

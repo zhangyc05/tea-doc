@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingResourceDraft,
   getTrainingState,
+  type TrainingResource,
 } from '@/stores/admin/trainingStore'
 
 const trainingState = getTrainingState()
@@ -20,6 +22,13 @@ const selectedSource = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeResourceId = ref('1')
+const currentPage = ref(1)
+const pageSize = 10
+
+const statusOptions = ['全部', '可用', '信息待完善', '已停用'].map((value) => ({ label: value, value }))
+const directionOptions = ['全部', '数字化教学', 'AI 课程建设', '实践教学', '课程思政'].map((value) => ({ label: value, value }))
+const levelOptions = ['全部', '国家级', '省级', '市级', '校级', '企业培训'].map((value) => ({ label: value, value }))
+const sourceOptions = ['全部', '校内建设', '外部机构', '企业合作', '公开课程'].map((value) => ({ label: value, value }))
 
 // 统计数据
 const stats = computed(() => ({
@@ -86,6 +95,10 @@ function resetFilters() {
 function viewDetail(id: string) {
   activeResourceId.value = id
   trainingState.operationMessage = '已在右侧展示资源摘要。'
+}
+
+function resourceRowClassName({ row }: { row: TrainingResource }) {
+  return activeResourceId.value === row.id ? 'resource-row active' : 'resource-row'
 }
 
 function addResource() {
@@ -167,49 +180,24 @@ function showIncompleteResources() {
                 <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">资源状态</label>
-                    <select v-model="selectedStatus" class="filter-select">
-                      <option>全部</option>
-                      <option>可用</option>
-                      <option>信息待完善</option>
-                      <option>已停用</option>
-                    </select>
+                    <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">培训方向</label>
-                    <select v-model="selectedDirection" class="filter-select">
-                      <option>全部</option>
-                      <option>数字化教学</option>
-                      <option>AI 课程建设</option>
-                      <option>实践教学</option>
-                      <option>课程思政</option>
-                    </select>
+                    <AdminSelect v-model="selectedDirection" class="filter-select" :options="directionOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">培训级别</label>
-                    <select v-model="selectedLevel" class="filter-select">
-                      <option>全部</option>
-                      <option>国家级</option>
-                      <option>省级</option>
-                      <option>市级</option>
-                      <option>校级</option>
-                      <option>企业培训</option>
-                    </select>
+                    <AdminSelect v-model="selectedLevel" class="filter-select" :options="levelOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">资源来源</label>
-                    <select v-model="selectedSource" class="filter-select">
-                      <option>全部</option>
-                      <option>校内建设</option>
-                      <option>外部机构</option>
-                      <option>企业合作</option>
-                      <option>公开课程</option>
-                    </select>
+                    <AdminSelect v-model="selectedSource" class="filter-select" :options="sourceOptions" />
                   </div>
                 </template>
                 <template #search>
-                  <input
+                  <AdminInput
                     v-model="searchQuery"
-                    type="text"
                     placeholder="搜索资源名称/培训机构/关键词"
                     class="search-input"
                     @keyup.enter="applyFilters"
@@ -227,64 +215,46 @@ function showIncompleteResources() {
 
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="resource-table">
-                  <thead>
-                    <tr>
-                      <th>资源名称</th>
-                      <th>培训方向</th>
-                      <th>级别 / 学时</th>
-                      <th>培训机构</th>
-                      <th>适合对象</th>
-                      <th>资源来源</th>
-                      <th>资源状态</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="resource in filteredResources"
-                      :key="resource.id"
-                      :class="{ active: activeResourceId === resource.id }"
-                    >
-                      <td class="resource-name">{{ resource.name }}</td>
-                      <td>{{ resource.direction }}</td>
-                      <td>{{ resource.level }} / {{ resource.hours }}</td>
-                      <td>{{ resource.institution }}</td>
-                      <td>{{ resource.target }}</td>
-                      <td>{{ resource.source }}</td>
-                      <td>
-                        <StatusBadge :status="resource.status" />
-                      </td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewDetail(resource.id)">
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredResources.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训资源" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="resource-table"
+                  :data="filteredResources"
+                  :row-class-name="resourceRowClassName"
+                  empty-text="暂无符合条件的培训资源"
+                >
+                  <AdminTableColumn label="资源名称" min-width="210">
+                    <template #default="{ row }">
+                      <span class="resource-name">{{ row.name }}</span>
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="direction" label="培训方向" min-width="110" />
+                  <AdminTableColumn label="级别 / 学时" min-width="120">
+                    <template #default="{ row }">
+                      {{ row.level }} / {{ row.hours }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="institution" label="培训机构" min-width="160" />
+                  <AdminTableColumn prop="target" label="适合对象" min-width="120" />
+                  <AdminTableColumn prop="source" label="资源来源" min-width="100" />
+                  <AdminTableColumn label="资源状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.status" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
-              <div class="pagination-row">
-                <span>共 {{ stats.total }} 条</span>
-                <select class="page-size" aria-label="每页条数">
-                  <option>10条/页</option>
-                </select>
-                <span class="page-button" aria-label="上一页">‹</span>
-                <span class="page-button active" aria-current="page">1</span>
-                <span class="page-button">2</span>
-                <span class="page-button">3</span>
-                <span class="page-button">4</span>
-                <span class="page-button">5</span>
-                <span class="page-button">6</span>
-                <span class="page-button">7</span>
-                <span class="page-button" aria-label="下一页">›</span>
-                <span>前往</span>
-                <input class="page-input" value="1" aria-label="页码" readonly />
-                <span>页</span>
-              </div>
+              <AdminPagination
+                v-model:current-page="currentPage"
+                class="pagination-row"
+                :page-size="pageSize"
+                :total="filteredResources.length"
+              />
             </div>
           </div>
 
@@ -601,7 +571,7 @@ function showIncompleteResources() {
   border-right: none;
 }
 
-.resource-table tr.active td {
+:deep(.resource-row.active) {
   background: #f4f8ff;
 }
 
@@ -661,43 +631,6 @@ function showIncompleteResources() {
   padding: 16px 16px 20px;
   color: #52617a;
   font-size: 13px;
-}
-
-.page-size,
-.page-input {
-  height: 34px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-admin-text-strong);
-}
-
-.page-size {
-  width: 120px;
-  padding: 0 12px;
-}
-
-.page-input {
-  width: 54px;
-  text-align: center;
-}
-
-.page-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-admin-text-strong);
-  font-weight: 700;
-}
-
-.page-button.active {
-  background: #eef5ff;
-  color: var(--color-admin-primary);
 }
 
 .sidebar {

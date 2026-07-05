@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
   addSupplementMaterial,
@@ -128,23 +129,25 @@ function submitContribution() {
           <text class="section-title">可补充说明（选填）</text>
         </view>
         <view class="textarea-box">
-          <textarea
+          <wd-textarea
             class="supplement-textarea"
             placeholder="如果识别不完整，可补充一句说明"
             placeholder-class="textarea-placeholder"
-            maxlength="120"
+            :maxlength="120"
+            show-word-limit
+            no-border
           />
           <view class="input-tools">
             <button class="tool-button" @tap="addVoiceMaterial">
-              <view class="tool-icon tool-icon--mic"></view>
+              <MobileIcon class="tool-icon" name="mic" tone="dark" size="plain" shape="none" />
               <text>语音</text>
             </button>
             <button class="tool-button" @tap="addPhotoMaterial">
-              <view class="tool-icon tool-icon--camera"></view>
+              <MobileIcon class="tool-icon" name="camera" tone="dark" size="plain" shape="none" />
               <text>拍照</text>
             </button>
             <button class="tool-button" @tap="addUploadMaterial">
-              <view class="tool-icon tool-icon--upload"></view>
+              <MobileIcon class="tool-icon" name="upload" tone="dark" size="plain" shape="none" />
               <text>上传</text>
             </button>
           </view>
@@ -172,7 +175,7 @@ function submitContribution() {
       <button class="missing-link" @tap="goSupplementContribution">
         <view class="missing-icon"></view>
         <text>补充遗漏内容</text>
-        <view class="link-arrow"></view>
+        <wd-icon name="chevron-right" size="20rpx" color="#079653" />
       </button>
     </view>
 
@@ -660,17 +663,29 @@ function submitContribution() {
 }
 
 .supplement-textarea {
-  width: 100%;
-  height: 178rpx;
+  display: block;
+}
+
+.supplement-textarea :deep(.wd-textarea) {
   padding: 26rpx;
-  box-sizing: border-box;
+  background: transparent;
+}
+
+.supplement-textarea :deep(.wd-textarea__inner) {
+  min-height: 178rpx;
   color: #111827;
   font-size: 28rpx;
   line-height: 1.5;
 }
 
-.textarea-placeholder {
+:deep(.textarea-placeholder) {
   color: #8a95aa;
+}
+
+.supplement-textarea :deep(.wd-textarea__count) {
+  padding: 0 26rpx 18rpx 0;
+  color: #8a95aa;
+  font-size: 22rpx;
 }
 
 .input-tools {
@@ -694,62 +709,8 @@ function submitContribution() {
 }
 
 .tool-icon {
-  position: relative;
   width: 30rpx;
   height: 30rpx;
-  color: #344560;
-}
-
-.tool-icon--mic::before {
-  left: 10rpx;
-  top: 2rpx;
-  width: 10rpx;
-  height: 18rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 10rpx;
-}
-
-.tool-icon--mic::after {
-  left: 7rpx;
-  bottom: 2rpx;
-  width: 16rpx;
-  height: 10rpx;
-  border-bottom: 4rpx solid currentColor;
-  border-radius: 0 0 12rpx 12rpx;
-}
-
-.tool-icon--camera::before {
-  inset: 7rpx 2rpx 4rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 5rpx;
-}
-
-.tool-icon--camera::after {
-  left: 11rpx;
-  top: 12rpx;
-  width: 8rpx;
-  height: 8rpx;
-  border: 3rpx solid currentColor;
-  border-radius: 50%;
-}
-
-.tool-icon--upload::before {
-  left: 5rpx;
-  bottom: 4rpx;
-  width: 20rpx;
-  height: 12rpx;
-  border: 4rpx solid currentColor;
-  border-top: 0;
-  border-radius: 0 0 6rpx 6rpx;
-}
-
-.tool-icon--upload::after {
-  left: 13rpx;
-  top: 4rpx;
-  width: 4rpx;
-  height: 18rpx;
-  background: currentColor;
-  box-shadow: -6rpx 5rpx 0 -1rpx currentColor, 6rpx 5rpx 0 -1rpx currentColor;
 }
 
 .direction-list {

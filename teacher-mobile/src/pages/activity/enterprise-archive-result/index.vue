@@ -28,6 +28,12 @@ const steps = [
   { title: '审核通过', time: '待完成', state: 'pending' },
 ]
 
+function getStepStatus(state: string) {
+  if (state === 'done') return 'finished'
+  if (state === 'current') return 'process'
+  return undefined
+}
+
 const overviewRows = [
   { label: '实践名称', value: '山东某智能装备有限公司企业实践', type: 'bag' },
   { label: '实践岗位', value: '软件开发工程师', type: 'position' },
@@ -81,14 +87,15 @@ function goArchivePendingList() {
           </view>
         </view>
 
-        <view class="stepper">
-          <view class="step-line"></view>
-          <view v-for="item in steps" :key="item.title" class="step-item" :class="`step-item--${item.state}`">
-            <view class="step-dot"></view>
-            <text class="step-title">{{ item.title }}</text>
-            <text class="step-time">{{ item.time }}</text>
-          </view>
-        </view>
+        <wd-steps class="stepper" :active="2" align-center>
+          <wd-step
+            v-for="item in steps"
+            :key="item.title"
+            :title="item.title"
+            :description="item.time"
+            :status="getStepStatus(item.state)"
+          />
+        </wd-steps>
 
         <view class="status-box">
           <view>
@@ -107,7 +114,7 @@ function goArchivePendingList() {
           <view class="head-icon head-icon--overview"></view>
           <text class="card-title">本次实践概览</text>
           <text class="detail-link" @tap="viewArchiveRecord">查看详情</text>
-          <view class="link-arrow"></view>
+          <wd-icon name="chevron-right" size="20rpx" color="#079653" />
         </view>
 
         <view class="overview-list">
@@ -332,8 +339,6 @@ function goArchivePendingList() {
 
 .result-title,
 .result-desc,
-.step-title,
-.step-time,
 .status-label,
 .status-text,
 .card-title,
@@ -358,94 +363,25 @@ function goArchivePendingList() {
 }
 
 .stepper {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   margin-top: 44rpx;
 }
 
-.step-line {
-  position: absolute;
-  right: 12%;
-  left: 8%;
-  top: 16rpx;
-  height: 4rpx;
-  background: linear-gradient(90deg, #82e2b5 0 66%, #d8dbe0 66% 100%);
-}
-
-.step-item {
-  position: relative;
-  min-width: 0;
-  text-align: center;
-}
-
-.step-dot {
-  position: relative;
-  z-index: 1;
-  width: 34rpx;
-  height: 34rpx;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: #d2d4d8;
-}
-
-.step-item--done .step-dot {
-  background: #08a85c;
-}
-
-.step-item--done .step-dot::before,
-.step-item--current .step-dot::before {
-  position: absolute;
-  content: '';
-}
-
-.step-item--done .step-dot::before {
-  left: 10rpx;
-  top: 11rpx;
-  width: 14rpx;
-  height: 8rpx;
-  border-bottom: 5rpx solid #fff;
-  border-left: 5rpx solid #fff;
-  transform: rotate(-45deg);
-}
-
-.step-item--current .step-dot {
-  width: 60rpx;
-  height: 60rpx;
-  margin-top: -13rpx;
-  border: 12rpx solid #fff0d9;
-  background: #ff9700;
-}
-
-.step-item--current .step-dot::before {
-  inset: 11rpx;
-  border: 5rpx solid #fff;
-  border-radius: 50%;
-}
-
-.step-item--current .step-dot::after {
-  position: absolute;
-  left: 28rpx;
-  top: 20rpx;
-  width: 5rpx;
-  height: 15rpx;
-  border-radius: 999rpx;
-  background: #fff;
-  box-shadow: 7rpx 11rpx 0 -1rpx #fff;
-  content: '';
-}
-
-.step-title {
+.stepper :deep(.wd-step__title) {
   margin-top: 26rpx;
   font-size: 25rpx;
   font-weight: 900;
   line-height: 1.24;
 }
 
-.step-time {
+.stepper :deep(.wd-step__description) {
   margin-top: 16rpx;
   color: #6b7280;
   font-size: 24rpx;
+  line-height: 1.2;
+}
+
+.stepper :deep(.wd-step__icon) {
+  color: #08a85c;
 }
 
 .status-box {
@@ -872,11 +808,6 @@ function goArchivePendingList() {
   .result-desc,
   .overview-value {
     font-size: 25rpx;
-  }
-
-  .step-title,
-  .step-time {
-    font-size: 21rpx;
   }
 
   .status-box {

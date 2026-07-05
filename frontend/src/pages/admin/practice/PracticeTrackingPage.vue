@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
+import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
@@ -10,6 +11,7 @@ import {
   failPracticeExportTask,
   getPracticeState,
   remindPracticeApplication,
+  type PracticeTracking,
 } from '@/stores/admin/practiceStore'
 
 const router = useRouter()
@@ -25,6 +27,11 @@ const selectedStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeTrackingId = ref('1')
+const yearOptions = ['2026 年度', '2025 年度', '2024 年度'].map((value) => ({ label: value, value }))
+const departmentOptions = ['全部', '智能制造学院', '电子信息学院', '汽车工程学院'].map((value) => ({ label: value, value }))
+const majorOptions = ['全部', '机电一体化技术', '工业机器人技术', '软件技术专业'].map((value) => ({ label: value, value }))
+const completionOptions = ['全部', '已完成 30 天', '未完成 30 天'].map((value) => ({ label: value, value }))
+const statusOptions = ['全部', '未启动申请', '待审核申请', '实践中', '已完成'].map((value) => ({ label: value, value }))
 
 // 统计数据
 const annualStats = computed(() => ({
@@ -59,6 +66,10 @@ const filteredTrackings = computed(() => {
 const activeTracking = computed(() => {
   return trackings.value.find((tracking) => tracking.id === activeTrackingId.value) ?? trackings.value[0]
 })
+
+function trackingRowClassName({ row }: { row: PracticeTracking }) {
+  return activeTrackingId.value === row.id ? 'tracking-row active' : 'tracking-row'
+}
 
 const latestTrackingExportTask = computed(() => {
   return practiceState.exportTasks.find(task => task.type === '教师实践跟踪名单')
@@ -188,53 +199,28 @@ function applyFilters() {
             <template #fields>
               <div class="filter-item">
                 <label class="filter-label">年度</label>
-                <select v-model="selectedYear" class="filter-select">
-                  <option>2026 年度</option>
-                  <option>2025 年度</option>
-                  <option>2024 年度</option>
-                </select>
+                <AdminSelect v-model="selectedYear" class="filter-select" :options="yearOptions" />
               </div>
               <div class="filter-item">
                 <label class="filter-label">院系</label>
-                <select v-model="selectedDepartment" class="filter-select">
-                  <option>全部</option>
-                  <option>智能制造学院</option>
-                  <option>电子信息学院</option>
-                  <option>汽车工程学院</option>
-                </select>
+                <AdminSelect v-model="selectedDepartment" class="filter-select" :options="departmentOptions" />
               </div>
               <div class="filter-item">
                 <label class="filter-label">专业 / 教研室</label>
-                <select v-model="selectedMajor" class="filter-select">
-                  <option>全部</option>
-                  <option>机电一体化技术</option>
-                  <option>工业机器人技术</option>
-                  <option>软件技术专业</option>
-                </select>
+                <AdminSelect v-model="selectedMajor" class="filter-select" :options="majorOptions" />
               </div>
               <div class="filter-item">
                 <label class="filter-label">完成情况</label>
-                <select v-model="selectedCompletion" class="filter-select">
-                  <option>全部</option>
-                  <option>已完成 30 天</option>
-                  <option>未完成 30 天</option>
-                </select>
+                <AdminSelect v-model="selectedCompletion" class="filter-select" :options="completionOptions" />
               </div>
               <div class="filter-item">
                 <label class="filter-label">当前状态</label>
-                <select v-model="selectedStatus" class="filter-select">
-                  <option>全部</option>
-                  <option>未启动申请</option>
-                  <option>待审核申请</option>
-                  <option>实践中</option>
-                  <option>已完成</option>
-                </select>
+                <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
               </div>
             </template>
             <template #search>
-              <input
+              <AdminInput
                 v-model="searchQuery"
-                type="text"
                 placeholder="搜索教师姓名 / 工号"
                 class="search-input"
                 @keyup.enter="applyFilters"
@@ -252,80 +238,72 @@ function applyFilters() {
           <!-- 数据表格 -->
           <div class="table-section">
             <div class="table-container">
-              <table class="tracking-table">
-                <thead>
-                  <tr>
-                    <th>教师</th>
-                    <th>年度实践</th>
-                    <th>完成情况</th>
-                    <th>当前进展</th>
-                    <th>最近动作</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="tracking in filteredTrackings"
-                    :key="tracking.id"
-                    :class="{ active: activeTrackingId === tracking.id }"
-                  >
-                    <td>{{ tracking.teacher }}</td>
-                    <td>
-                      <div class="practice-org">{{ tracking.department }} / {{ tracking.major }}</div>
-                      <div class="practice-days">已计入 {{ tracking.completedDays }} 天，还差 {{ tracking.remainingDays }} 天</div>
-                    </td>
-                    <td>
-                      <span
-                        class="completion-badge"
-                        :class="tracking.remainingDays === 0 ? 'done' : 'undone'"
-                      >
-                        {{ tracking.remainingDays === 0 ? '已完成 30 天' : '未完成 30 天' }}
-                      </span>
-                    </td>
-                    <td>
-                      <StatusBadge :status="tracking.currentProgress" />
-                    </td>
-                    <td>{{ tracking.recentAction }}</td>
-                    <td>
-                      <Button
-                        v-if="tracking.currentProgress === '未启动申请'"
-                        variant="secondary"
-                        size="sm"
-                        @click="remindApply(tracking.id)"
-                      >
-                        提醒申请
-                      </Button>
-                      <Button
-                        v-else-if="tracking.currentProgress === '待审核申请'"
-                        variant="ghost"
-                        size="sm"
-                        @click="viewRecord(tracking.id)"
-                      >
-                        查看申请
-                      </Button>
-                      <Button
-                        v-else-if="tracking.currentProgress === '实践中'"
-                        variant="ghost"
-                        size="sm"
-                        @click="viewRecord(tracking.id)"
-                      >
-                        查看申请
-                      </Button>
-                      <Button
-                        v-else-if="tracking.currentProgress === '已完成'"
-                        variant="ghost"
-                        size="sm"
-                        @click="viewRecord(tracking.id)"
-                      >
-                        查看记录
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr v-if="filteredTrackings.length === 0">
-                    <EmptyState as="td" variant="cell" :colspan="6" title="暂无符合条件的教师实践记录" />
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable
+                class="tracking-table"
+                :data="filteredTrackings"
+                :row-class-name="trackingRowClassName"
+                empty-text="暂无符合条件的教师实践记录"
+              >
+                <AdminTableColumn prop="teacher" label="教师" min-width="90" />
+                <AdminTableColumn label="年度实践" min-width="260">
+                  <template #default="{ row }">
+                    <div class="practice-org">{{ row.department }} / {{ row.major }}</div>
+                    <div class="practice-days">已计入 {{ row.completedDays }} 天，还差 {{ row.remainingDays }} 天</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="完成情况" min-width="150">
+                  <template #default="{ row }">
+                    <span
+                      class="completion-badge"
+                      :class="row.remainingDays === 0 ? 'done' : 'undone'"
+                    >
+                      {{ row.remainingDays === 0 ? '已完成 30 天' : '未完成 30 天' }}
+                    </span>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="当前进展" min-width="140">
+                  <template #default="{ row }">
+                    <StatusBadge :status="row.currentProgress" />
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="recentAction" label="最近动作" min-width="170" />
+                <AdminTableColumn label="操作" min-width="120" fixed="right">
+                  <template #default="{ row }">
+                    <Button
+                      v-if="row.currentProgress === '未启动申请'"
+                      variant="secondary"
+                      size="sm"
+                      @click="remindApply(row.id)"
+                    >
+                      提醒申请
+                    </Button>
+                    <Button
+                      v-else-if="row.currentProgress === '待审核申请'"
+                      variant="ghost"
+                      size="sm"
+                      @click="viewRecord(row.id)"
+                    >
+                      查看申请
+                    </Button>
+                    <Button
+                      v-else-if="row.currentProgress === '实践中'"
+                      variant="ghost"
+                      size="sm"
+                      @click="viewRecord(row.id)"
+                    >
+                      查看申请
+                    </Button>
+                    <Button
+                      v-else-if="row.currentProgress === '已完成'"
+                      variant="ghost"
+                      size="sm"
+                      @click="viewRecord(row.id)"
+                    >
+                      查看记录
+                    </Button>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
           </div>
           <div class="selected-summary" v-if="activeTracking">
@@ -625,7 +603,7 @@ function applyFilters() {
   border-right: none;
 }
 
-.tracking-table tr.active td {
+:deep(.tracking-row.active) {
   background: #f4f8ff;
 }
 

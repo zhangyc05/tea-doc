@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 import { saveEnterpriseLog, saveEnterpriseLogDraft } from '../../../domain/enterprise'
@@ -91,7 +92,7 @@ function saveLog() {
         </view>
         <view class="other-date" @tap="showDraftFeedback('补记其他日期')">
           <text>补记其他日期</text>
-          <view class="chevron chevron--green"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#13a95b" />
         </view>
       </MobileCard>
 
@@ -103,9 +104,9 @@ function saveLog() {
         <view class="textarea-box">
           <text class="placeholder">可以写今天参与的工作、观察到的流程、学到的方法或新的收获……</text>
           <view class="tool-row">
-            <view class="tool-item"><view class="tool-icon tool-icon--voice"></view><text>语音</text></view>
-            <view class="tool-item"><view class="tool-icon tool-icon--camera"></view><text>拍照</text></view>
-            <view class="tool-item"><view class="tool-icon tool-icon--clip"></view><text>上传资料</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="mic" tone="dark" size="plain" shape="none" /><text>语音</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="camera" tone="dark" size="plain" shape="none" /><text>拍照</text></view>
+            <view class="tool-item"><MobileIcon class="tool-icon" name="upload" tone="dark" size="plain" shape="none" /><text>上传资料</text></view>
           </view>
         </view>
       </MobileCard>
@@ -138,7 +139,7 @@ function saveLog() {
               <view class="material-row">
                 <view class="photo-thumb"></view>
                 <text class="material-name">项目讨论照片 1 张</text>
-                <view class="chevron"></view>
+                <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
               </view>
             </view>
           </view>
@@ -457,10 +458,6 @@ function saveLog() {
   height: 32rpx;
   border: 4rpx solid currentColor;
   border-radius: 50%;
-}
-
-.tool-icon--clip {
-  color: #687386;
 }
 
 .ai-card {

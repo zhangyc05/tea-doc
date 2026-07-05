@@ -1,7 +1,8 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
 	import { useRoute } from 'vue-router'
-	import { DetailSheet, EmptyState, StatusBadge } from '@/components/common'
+	import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+	import { DetailSheet, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
@@ -145,6 +146,10 @@
 	function getStatusLabel(status: RequirementMappingStatus) {
 		return getRequirementMappingStatusLabel(status)
 	}
+
+	function mappingRowClassName({ row }: { row: RequirementMapping }) {
+		return selectedMapping.value?.id === row.id ? 'admin-table-row active' : 'admin-table-row'
+	}
 </script>
 
 <template>
@@ -256,44 +261,39 @@
 					</div>
 
 					<div class="admin-table-container">
-						<table class="admin-table">
-							<thead>
-								<tr>
-									<th>要求项</th>
-									<th>对应能力指标</th>
-									<th>要求等级</th>
-									<th>制度补充条件</th>
-									<th>确认状态</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr
-							v-for="mapping in mappings"
-									:key="mapping.id"
-									class="admin-table-row"
-									:class="{ active: selectedMapping?.id === mapping.id }"
-									@click="selectMapping(mapping)"
-								>
-									<td>{{ mapping.requirementText }}</td>
-									<td>{{ mapping.indicatorDimension }} / {{ mapping.indicatorName }}</td>
-									<td><span class="level-badge" :class="getLevelBadgeClass(mapping.level)">{{ mapping.level }}</span></td>
-									<td>{{ mapping.documentCondition }}</td>
-									<td>
-										<StatusBadge :status="mapping.confirmStatus" :label="getStatusLabel(mapping.confirmStatus)" />
-									</td>
-									<td>
-										<div class="row-actions">
-											<Button variant="ghost" size="sm" @click.stop="openEditDrawer(mapping)">编辑</Button>
-											<Button variant="danger" size="sm" @click.stop="selectMapping(mapping); deleteMapping()">删除</Button>
-										</div>
-									</td>
-								</tr>
-								<tr v-if="mappings.length === 0">
-									<EmptyState as="td" variant="cell" :colspan="6" title="暂无要求项映射" />
-								</tr>
-							</tbody>
-						</table>
+						<AdminTable
+							:data="mappings"
+							row-key="id"
+							:row-class-name="mappingRowClassName"
+							empty-text="暂无要求项映射"
+							@row-click="selectMapping"
+						>
+							<AdminTableColumn prop="requirementText" label="要求项" min-width="190" />
+							<AdminTableColumn label="对应能力指标" min-width="220">
+								<template #default="{ row }">
+									{{ row.indicatorDimension }} / {{ row.indicatorName }}
+								</template>
+							</AdminTableColumn>
+							<AdminTableColumn label="要求等级" min-width="100">
+								<template #default="{ row }">
+									<span class="level-badge" :class="getLevelBadgeClass(row.level)">{{ row.level }}</span>
+								</template>
+							</AdminTableColumn>
+							<AdminTableColumn prop="documentCondition" label="制度补充条件" min-width="180" />
+							<AdminTableColumn label="确认状态" min-width="120">
+								<template #default="{ row }">
+									<StatusBadge :status="row.confirmStatus" :label="getStatusLabel(row.confirmStatus)" />
+								</template>
+							</AdminTableColumn>
+							<AdminTableColumn label="操作" min-width="150" fixed="right">
+								<template #default="{ row }">
+									<div class="row-actions">
+										<Button variant="ghost" size="sm" @click.stop="openEditDrawer(row)">编辑</Button>
+										<Button variant="danger" size="sm" @click.stop="selectMapping(row); deleteMapping()">删除</Button>
+									</div>
+								</template>
+							</AdminTableColumn>
+						</AdminTable>
 					</div>
 
 					<div class="table-footer">

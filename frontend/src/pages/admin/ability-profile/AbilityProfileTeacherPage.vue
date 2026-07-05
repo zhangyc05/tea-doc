@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput, AdminPagination, AdminSelect } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getAbilityProfileTeacherListMock } from '@/services/mock/ability-profile'
 
@@ -21,6 +22,10 @@ const titles = teacherListProfile.titles
 const teacherTypes = teacherListProfile.teacherTypes
 const focusTypes = teacherListProfile.focusTypes
 const teachers = teacherListProfile.teachers
+const collegeOptions = colleges.map((value) => ({ label: value, value }))
+const titleOptions = titles.map((value) => ({ label: value, value }))
+const teacherTypeOptions = teacherTypes.map((value) => ({ label: value, value }))
+const focusTypeOptions = focusTypes.map((value) => ({ label: value, value }))
 
 const currentPage = ref(1)
 const pageSize = 12
@@ -93,33 +98,25 @@ function getAvatarTone(index: number): string {
       <section class="filter-card">
         <div class="search-control">
           <span class="search-icon">⌕</span>
-          <input v-model="searchQuery" type="text" placeholder="搜索教师姓名 / 工号" @keyup.enter="applySearch" />
+          <AdminInput v-model="searchQuery" placeholder="搜索教师姓名 / 工号" @keyup.enter="applySearch" />
           <button type="button" class="search-button" aria-label="搜索" @click="applySearch">⌕</button>
         </div>
 
         <div class="filter-field">
           <span>学院</span>
-          <select v-model="selectedCollege" @change="applySearch">
-            <option v-for="college in colleges" :key="college" :value="college">{{ college }}</option>
-          </select>
+          <AdminSelect v-model="selectedCollege" :options="collegeOptions" @change="applySearch" />
         </div>
         <div class="filter-field">
           <span>职称</span>
-          <select v-model="selectedTitle" @change="applySearch">
-            <option v-for="title in titles" :key="title" :value="title">{{ title }}</option>
-          </select>
+          <AdminSelect v-model="selectedTitle" :options="titleOptions" @change="applySearch" />
         </div>
         <div class="filter-field">
           <span>教师类型</span>
-          <select v-model="selectedType" @change="applySearch">
-            <option v-for="type in teacherTypes" :key="type" :value="type">{{ type }}</option>
-          </select>
+          <AdminSelect v-model="selectedType" :options="teacherTypeOptions" @change="applySearch" />
         </div>
         <div class="filter-field">
           <span>关注类型</span>
-          <select v-model="selectedFocus" @change="applySearch">
-            <option v-for="focus in focusTypes" :key="focus" :value="focus">{{ focus }}</option>
-          </select>
+          <AdminSelect v-model="selectedFocus" :options="focusTypeOptions" @change="applySearch" />
         </div>
 
         <button type="button" class="reset-button" aria-label="重置筛选" @click="resetFilters">↻</button>
@@ -212,23 +209,12 @@ function getAvatarTone(index: number): string {
         </div>
       </section>
 
-      <footer class="pagination-bar">
-        <span>共 {{ total }} 条</span>
-        <select :value="pageSize" aria-label="每页条数">
-          <option>{{ pageSize }} 条/页</option>
-        </select>
-        <button type="button" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">&lt;</button>
-        <button
-          v-for="page in pageNumbers"
-          :key="page"
-          type="button"
-          :class="{ 'active-page': currentPage === page }"
-          @click="goToPage(page)"
-        >
-          {{ page }}
-        </button>
-        <button type="button" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">&gt;</button>
-      </footer>
+      <AdminPagination
+        v-model:current-page="currentPage"
+        class="pagination-bar"
+        :page-size="pageSize"
+        :total="total"
+      />
     </div>
   </AdminLayout>
 </template>
@@ -293,8 +279,7 @@ function getAvatarTone(index: number): string {
 }
 
 .search-control input,
-.filter-field select,
-.pagination-bar select {
+.filter-field select {
   min-width: 0;
   border: 0;
   outline: none;
@@ -660,35 +645,6 @@ function getAvatarTone(index: number): string {
   border-radius: var(--radius-lg);
   color: #64748b;
   font-size: 13px;
-}
-
-.pagination-bar select,
-.pagination-bar button {
-  height: 30px;
-  border: 1px solid #dfe6ef;
-  border-radius: var(--radius-sm);
-  background: #ffffff;
-  color: #526176;
-}
-
-.pagination-bar select {
-  padding: 0 8px;
-}
-
-.pagination-bar button {
-  min-width: 30px;
-  cursor: pointer;
-}
-
-.pagination-bar button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.pagination-bar .active-page {
-  border-color: #1677ff;
-  background: #1677ff;
-  color: #ffffff;
 }
 
 @media (max-width: 1500px) {

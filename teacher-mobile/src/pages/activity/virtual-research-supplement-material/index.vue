@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
   addSupplementMaterial,
@@ -122,7 +123,7 @@ function submitAgain() {
               <text class="row-title">{{ item.title }}</text>
               <text class="row-desc">{{ item.desc }}</text>
             </view>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>
@@ -144,15 +145,15 @@ function submitAgain() {
         <text class="section-title">补充材料</text>
         <view class="tool-grid">
           <button class="tool-button" @tap="handleSupplementUpload('上传')">
-            <view class="tool-icon tool-icon--upload"></view>
+            <MobileIcon class="tool-icon" name="upload" tone="blue" size="plain" shape="none" />
             <text>上传资料</text>
           </button>
           <button class="tool-button" @tap="handleSupplementUpload('拍照')">
-            <view class="tool-icon tool-icon--camera"></view>
+            <MobileIcon class="tool-icon" name="camera" tone="blue" size="plain" shape="none" />
             <text>拍照</text>
           </button>
           <button class="tool-button" @tap="showVoiceFeedback">
-            <view class="tool-icon tool-icon--mic"></view>
+            <MobileIcon class="tool-icon" name="mic" tone="blue" size="plain" shape="none" />
             <text>语音说明</text>
           </button>
         </view>
@@ -165,13 +166,14 @@ function submitAgain() {
         </view>
         <view class="textarea-box">
           <text class="textarea-label">补充说明</text>
-          <textarea
+          <wd-textarea
             class="supplement-textarea"
             placeholder="可以补充一句你的实际参与内容，AI 会帮你整理成归档说明"
             placeholder-class="textarea-placeholder"
-            maxlength="300"
+            :maxlength="300"
+            show-word-limit
+            no-border
           />
-          <text class="counter">0/300</text>
         </view>
         <view class="ai-card">
           <view class="ai-icon"></view>
@@ -658,57 +660,6 @@ function submitAgain() {
 .tool-icon {
   width: 30rpx;
   height: 30rpx;
-  color: currentColor;
-}
-
-.tool-icon--upload::before {
-  inset: 12rpx 3rpx 3rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 10rpx;
-}
-
-.tool-icon--upload::after {
-  left: 10rpx;
-  top: 2rpx;
-  width: 10rpx;
-  height: 19rpx;
-  background: currentColor;
-  clip-path: polygon(50% 0, 100% 38%, 70% 38%, 70% 100%, 30% 100%, 30% 38%, 0 38%);
-}
-
-.tool-icon--camera::before {
-  inset: 8rpx 2rpx 4rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 5rpx;
-}
-
-.tool-icon--camera::after {
-  left: 11rpx;
-  top: 12rpx;
-  width: 8rpx;
-  height: 8rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 50%;
-}
-
-.tool-icon--mic::before {
-  left: 9rpx;
-  top: 0;
-  width: 12rpx;
-  height: 20rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 10rpx;
-}
-
-.tool-icon--mic::after {
-  left: 5rpx;
-  bottom: 0;
-  width: 20rpx;
-  height: 15rpx;
-  border-right: 4rpx solid currentColor;
-  border-bottom: 4rpx solid currentColor;
-  border-left: 4rpx solid currentColor;
-  border-radius: 0 0 12rpx 12rpx;
 }
 
 .textarea-box {
@@ -727,10 +678,16 @@ function submitAgain() {
 }
 
 .supplement-textarea {
-  width: 100%;
-  height: 128rpx;
-  box-sizing: border-box;
+  display: block;
+}
+
+.supplement-textarea :deep(.wd-textarea) {
   padding: 16rpx 20rpx 28rpx;
+  background: transparent;
+}
+
+.supplement-textarea :deep(.wd-textarea__inner) {
+  min-height: 128rpx;
   color: #111827;
   font-size: 26rpx;
   line-height: 1.42;
@@ -740,10 +697,8 @@ function submitAgain() {
   color: #8a94a9;
 }
 
-.counter {
-  position: absolute;
-  right: 20rpx;
-  bottom: 18rpx;
+.supplement-textarea :deep(.wd-textarea__count) {
+  padding: 0 20rpx 18rpx 0;
   color: #8a94a9;
   font-size: 22rpx;
 }

@@ -369,10 +369,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 / 基准 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/index.vue` | `效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png` | 统一入口页大标题、卡片标题和内容卡密度 |
-| `teacher-mobile/src/pages/todo/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜待办首页.png` | 收敛问候标题，避免挤压首屏待办内容，统一卡片标题 |
-| `teacher-mobile/src/pages/archive/index.vue` | `效果图/教师手机端/1档案/教师端手机｜档案｜档案首页.png` | 统一档案入口大标题和分区标题，保留搜索与分类首屏节奏 |
-| `teacher-mobile/src/pages/profile/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜我的主页.png` | 补齐显式入口页 Shell 背景、安全区和标题层级 |
+| `teacher-mobile/src/pages/activity/index.vue` | `效果图/已实现/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png` | 统一入口页大标题、卡片标题和内容卡密度 |
+| `teacher-mobile/src/pages/todo/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜待办首页.png` | 收敛问候标题，避免挤压首屏待办内容，统一卡片标题 |
+| `teacher-mobile/src/pages/archive/index.vue` | `效果图/已实现/教师手机端/1档案/教师端手机｜档案｜档案首页.png` | 统一档案入口大标题和分区标题，保留搜索与分类首屏节奏 |
+| `teacher-mobile/src/pages/profile/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜我的主页.png` | 补齐显式入口页 Shell 背景、安全区和标题层级 |
 | `teacher-mobile/src/pages/assistant/index.vue` | AI 助手无独立首页目标图，按全局入口页基准和补充档案目标图体系处理 | 补齐显式入口页 Shell、安全区、主卡圆角和分区标题 |
 
 新增 `verify-mobile-entry-visual-baseline.mjs` 覆盖 5 个一级入口页，检查目标图存在、统一 Shell、首屏关键模块、标题层级、内容卡圆角和底部安全区。
@@ -383,10 +383,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/training/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修首页.png` | 提高顶部首屏高度，统一分区标题到活动二级入口密度 |
+| `teacher-mobile/src/pages/activity/training/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修首页.png` | 提高顶部首屏高度，统一分区标题到活动二级入口密度 |
 | `teacher-mobile/src/pages/activity/enterprise-overview/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜年度概览.png` | 提升主标题与分区标题层级，统一年度概览、待处理和记录卡片圆角 |
-| `teacher-mobile/src/pages/activity/virtual-research-room/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜我的教研室.png` | 修正底部 Tab 当前态，统一页面底部安全区、主标题、统计卡和待处理卡密度 |
-| `teacher-mobile/src/pages/activity/reflection-start/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜开始方式.png` | 提高顶部首屏高度，统一开始方式卡片圆角和标题层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-room/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜我的教研室.png` | 修正底部 Tab 当前态，统一页面底部安全区、主标题、统计卡和待处理卡密度 |
+| `teacher-mobile/src/pages/activity/reflection-start/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜开始方式.png` | 提高顶部首屏高度，统一开始方式卡片圆角和标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 9 个入口页。
 
@@ -396,10 +396,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/training-demand/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜提交培训需求.png` | 提高头部高度、底部操作预留和表单卡片密度，统一分区标题层级 |
-| `teacher-mobile/src/pages/activity/training-found/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜我已找到想参加的培训.png` | 提高头部高度、底部操作预留和需求说明卡片密度，统一分区标题层级 |
-| `teacher-mobile/src/pages/activity/training-demand-result/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求已提交.png` | 增加 Tab 页底部安全区，强化成功卡标题和进度卡片密度 |
-| `teacher-mobile/src/pages/activity/training-summary/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训总结.png` | 增加固定提交区底部预留，统一课程卡、归档准备和总结草稿标题层级 |
+| `teacher-mobile/src/pages/activity/training-demand/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜提交培训需求.png` | 提高头部高度、底部操作预留和表单卡片密度，统一分区标题层级 |
+| `teacher-mobile/src/pages/activity/training-found/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜我已找到想参加的培训.png` | 提高头部高度、底部操作预留和需求说明卡片密度，统一分区标题层级 |
+| `teacher-mobile/src/pages/activity/training-demand-result/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求已提交.png` | 增加 Tab 页底部安全区，强化成功卡标题和进度卡片密度 |
+| `teacher-mobile/src/pages/activity/training-summary/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训总结.png` | 增加固定提交区底部预留，统一课程卡、归档准备和总结草稿标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 13 个页面。
 
@@ -409,10 +409,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/training-list/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修.png` | 增加 Tab 页底部安全区，统一推荐培训、我的培训和空态入口卡片密度 |
-| `teacher-mobile/src/pages/activity/training-application/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训申请.png` | 增加结果页底部操作预留，提高成功卡、摘要卡和进度卡标题层级 |
-| `teacher-mobile/src/pages/activity/training-archive-result/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训材料归档提交结果.png` | 增加页面底部安全区，强化归档结果主标题和提交 / 进度卡片密度 |
-| `teacher-mobile/src/pages/activity/training-need-result/index.vue` | `效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求提交.png` | 提高头部占位、底部操作预留、成功标题和进度标题层级 |
+| `teacher-mobile/src/pages/activity/training-list/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修.png` | 增加 Tab 页底部安全区，统一推荐培训、我的培训和空态入口卡片密度 |
+| `teacher-mobile/src/pages/activity/training-application/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训申请.png` | 增加结果页底部操作预留，提高成功卡、摘要卡和进度卡标题层级 |
+| `teacher-mobile/src/pages/activity/training-archive-result/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训材料归档提交结果.png` | 增加页面底部安全区，强化归档结果主标题和提交 / 进度卡片密度 |
+| `teacher-mobile/src/pages/activity/training-need-result/index.vue` | `效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求提交.png` | 提高头部占位、底部操作预留、成功标题和进度标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 17 个页面；培训进修链 9 个页面已全部纳入视觉基准守卫。
 
@@ -422,10 +422,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/reflection-course/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择学期课程.png` | 增加固定操作区底部预留，统一范围、课程、依据和补充卡片密度 |
-| `teacher-mobile/src/pages/activity/reflection-evidence/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择反思依据.png` | 增加固定操作区底部预留，提高本次课、依据列表和补充区标题层级 |
-| `teacher-mobile/src/pages/activity/reflection-scope/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜反思范围.png` | 增加固定操作区底部预留，统一阶段范围、阶段依据和补充卡片密度 |
-| `teacher-mobile/src/pages/activity/reflection-self/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜自主反思.png` | 增加底部操作预留，统一自主反思卡片内距、标题层级和范围卡高度 |
+| `teacher-mobile/src/pages/activity/reflection-course/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择学期课程.png` | 增加固定操作区底部预留，统一范围、课程、依据和补充卡片密度 |
+| `teacher-mobile/src/pages/activity/reflection-evidence/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择反思依据.png` | 增加固定操作区底部预留，提高本次课、依据列表和补充区标题层级 |
+| `teacher-mobile/src/pages/activity/reflection-scope/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜反思范围.png` | 增加固定操作区底部预留，统一阶段范围、阶段依据和补充卡片密度 |
+| `teacher-mobile/src/pages/activity/reflection-self/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜自主反思.png` | 增加底部操作预留，统一自主反思卡片内距、标题层级和范围卡高度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 21 个页面。
 
@@ -435,10 +435,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/reflection-guide-chat/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜AI引导对话.png` | 增加底部安全区，统一依据卡、聊天卡、要点卡和生成草稿按钮密度 |
-| `teacher-mobile/src/pages/activity/reflection-ai-chat/index.vue` | `效果图/教师手机端/2活动/1教学反思/教学反思-AI对话.png` | 增加底部安全区，统一自主反思模式卡、线索卡和输入卡标题层级 |
-| `teacher-mobile/src/pages/activity/reflection-draft/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜报告草稿编辑.png` | 增加底部安全区，统一草稿来源、报告编辑卡和底部确认区密度 |
-| `teacher-mobile/src/pages/activity/reflection-success/index.vue` | `效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜确认成功.png` | 增加底部安全区，强化成功卡主标题和后续动作卡片密度 |
+| `teacher-mobile/src/pages/activity/reflection-guide-chat/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜AI引导对话.png` | 增加底部安全区，统一依据卡、聊天卡、要点卡和生成草稿按钮密度 |
+| `teacher-mobile/src/pages/activity/reflection-ai-chat/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教学反思-AI对话.png` | 增加底部安全区，统一自主反思模式卡、线索卡和输入卡标题层级 |
+| `teacher-mobile/src/pages/activity/reflection-draft/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜报告草稿编辑.png` | 增加底部安全区，统一草稿来源、报告编辑卡和底部确认区密度 |
+| `teacher-mobile/src/pages/activity/reflection-success/index.vue` | `效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜确认成功.png` | 增加底部安全区，强化成功卡主标题和后续动作卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 25 个页面；教学反思链 9 个页面已全部纳入视觉基准守卫。
 
@@ -449,9 +449,9 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
 | `teacher-mobile/src/pages/activity/enterprise-list/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜年度列表.png` | 强化年度列表主标题、当前待处理、实践记录和历史补充卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-plan-submit/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜提交实践计划.png` | 增加固定操作区底部预留，统一要求卡、输入卡、AI 整理卡和补充资料卡标题层级 |
-| `teacher-mobile/src/pages/activity/enterprise-plan-confirm/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划确认提交.png` | 增加底部操作预留，统一确认摘要、提交信息和审核流程卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-plan-approved/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划已通过.png` | 增加底部操作预留，强化通过结果、实践计划、确认内容和下一步卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-submit/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜提交实践计划.png` | 增加固定操作区底部预留，统一要求卡、输入卡、AI 整理卡和补充资料卡标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-confirm/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划确认提交.png` | 增加底部操作预留，统一确认摘要、提交信息和审核流程卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-approved/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划已通过.png` | 增加底部操作预留，强化通过结果、实践计划、确认内容和下一步卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 29 个页面。
 
@@ -461,10 +461,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/enterprise-proof-upload/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜上传实践证明.png` | 增加固定操作区底部预留，统一上传说明、材料类型、上传方式和预览卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-proof-supplement/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充实践证明.png` | 增加底部安全区，统一档案摘要、上传方式、已上传材料和提示区标题层级 |
-| `teacher-mobile/src/pages/activity/enterprise-progress-detail/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜进行中详情.png` | 增加页面底部安全区和头部高度，统一实践摘要、计划、今日处理、日志和附件卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-log-record/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录实践日志.png` | 增加固定操作区底部预留和头部高度，强化实践摘要、日志日期、输入区和 AI 草稿标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-proof-upload/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜上传实践证明.png` | 增加固定操作区底部预留，统一上传说明、材料类型、上传方式和预览卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-proof-supplement/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充实践证明.png` | 增加底部安全区，统一档案摘要、上传方式、已上传材料和提示区标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-progress-detail/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜进行中详情.png` | 增加页面底部安全区和头部高度，统一实践摘要、计划、今日处理、日志和附件卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-log-record/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录实践日志.png` | 增加固定操作区底部预留和头部高度，强化实践摘要、日志日期、输入区和 AI 草稿标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 33 个页面。
 
@@ -474,10 +474,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/enterprise-plan-rejected/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png` | 增加固定操作区底部预留，统一退回提示、退回信息、计划详情、需修改内容和附件卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-supplement-needed/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜需要补充材料.png` | 增加底部操作预留，强化补充状态、核验反馈、已提交材料、重新补充材料和说明区标题层级 |
-| `teacher-mobile/src/pages/activity/enterprise-resupplement/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜重新补充材料.png` | 增加固定操作区底部预留，统一需补充提示、记录摘要、反馈、材料和重新上传区卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-archive-result/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜归档提交结果.png` | 增加底部操作预留和内容顶部间距，强化归档结果、实践概览和提交内容卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-rejected/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png` | 增加固定操作区底部预留，统一退回提示、退回信息、计划详情、需修改内容和附件卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-supplement-needed/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜需要补充材料.png` | 增加底部操作预留，强化补充状态、核验反馈、已提交材料、重新补充材料和说明区标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-resupplement/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜重新补充材料.png` | 增加固定操作区底部预留，统一需补充提示、记录摘要、反馈、材料和重新上传区卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-archive-result/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜归档提交结果.png` | 增加底部操作预留和内容顶部间距，强化归档结果、实践概览和提交内容卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 37 个页面。
 
@@ -487,10 +487,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/enterprise-history-supplement/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充历史实践.png` | 增加固定操作区底部预留，强化企业实践主标题、年度要求、输入信息、AI 整理记录和证明材料卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-supplement-submitted/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充材料已提交.png` | 增加底部操作预留，强化提交成功卡、已提交材料和核验说明标题层级 |
-| `teacher-mobile/src/pages/activity/enterprise-history-confirmed/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践已确认.png` | 增加底部操作预留和成功头部高度，统一本次历史实践、已确认内容、年度记录更新和后续可查看卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-archive-success/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录已入档.png` | 增加底部操作预留，强化记录已提交结果、已提交材料、入档材料和确认后可用于卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-history-supplement/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充历史实践.png` | 增加固定操作区底部预留，强化企业实践主标题、年度要求、输入信息、AI 整理记录和证明材料卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-supplement-submitted/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充材料已提交.png` | 增加底部操作预留，强化提交成功卡、已提交材料和核验说明标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-history-confirmed/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践已确认.png` | 增加底部操作预留和成功头部高度，统一本次历史实践、已确认内容、年度记录更新和后续可查看卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-archive-success/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录已入档.png` | 增加底部操作预留，强化记录已提交结果、已提交材料、入档材料和确认后可用于卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 41 个页面。
 
@@ -500,9 +500,9 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/enterprise-history-supplement-needed/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践需补充材料.png` | 增加底部操作预留，强化历史补充退回标题、退回信息、本次历史实践和需补充材料卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-archive-edit/index.vue` | `效果图/教师手机端/2活动/3企业实践/企业实践-修改档案信息.png` | 增加固定操作区与底部 Tab 预留，统一档案草稿、基本信息、实践内容、补充说明和相关材料卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-import-export/index.vue` | `效果图/教师手机端/2活动/3企业实践/导入导出页面.png` | 增加固定操作区与底部 Tab 预留，强化实践计划已提交结果卡和计划 / AI 整理 / 当前状态卡片标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-history-supplement-needed/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践需补充材料.png` | 增加底部操作预留，强化历史补充退回标题、退回信息、本次历史实践和需补充材料卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-archive-edit/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/企业实践-修改档案信息.png` | 增加固定操作区与底部 Tab 预留，统一档案草稿、基本信息、实践内容、补充说明和相关材料卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-import-export/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/导入导出页面.png` | 增加固定操作区与底部 Tab 预留，强化实践计划已提交结果卡和计划 / AI 整理 / 当前状态卡片标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 44 个页面。
 
@@ -512,10 +512,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/enterprise-log-list/index.vue` | `效果图/教师手机端/2活动/3企业实践/企业实践-实践日志.png` | 增加底部安全区，强化实践日志头部、日志摘要、时间线日志卡和返回详情按钮密度 |
-| `teacher-mobile/src/pages/activity/enterprise-workflow-config/index.vue` | `效果图/教师手机端/2活动/3企业实践/工作流配置.png` | 增加底部安全区，统一日志详情结果卡、所属实践、日志内容、附件资料和 AI 摘要卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-login-history/index.vue` | `效果图/教师手机端/2活动/3企业实践/登录历史页面.png` | 增加固定操作区底部预留，强化实践总结、归档准备、AI 总结草稿和附件资料卡片标题层级 |
-| `teacher-mobile/src/pages/activity/enterprise-advanced-search/index.vue` | `效果图/教师手机端/2活动/3企业实践/高级搜索页面.png` | 增加固定操作区底部预留，统一缺材料提示、实践信息、还需要补充、上传材料和补充说明卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-log-list/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/企业实践-实践日志.png` | 增加底部安全区，强化实践日志头部、日志摘要、时间线日志卡和返回详情按钮密度 |
+| `teacher-mobile/src/pages/activity/enterprise-workflow-config/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/工作流配置.png` | 增加底部安全区，统一日志详情结果卡、所属实践、日志内容、附件资料和 AI 摘要卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-login-history/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/登录历史页面.png` | 增加固定操作区底部预留，强化实践总结、归档准备、AI 总结草稿和附件资料卡片标题层级 |
+| `teacher-mobile/src/pages/activity/enterprise-advanced-search/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/高级搜索页面.png` | 增加固定操作区底部预留，统一缺材料提示、实践信息、还需要补充、上传材料和补充说明卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 48 个页面。
 
@@ -525,10 +525,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-invitation/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研室邀请.png` | 增加固定操作区底部预留，强化教研室邀请主卡、简介、近期活动和加入后参与卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-activity-list/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动列表.png` | 增加底部安全区，强化学期统计、当前处理、筛选标签、活动卡和规则提示密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-ongoing/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜进行中.png` | 增加固定操作区底部预留，统一活动头部、活动说明、我的任务、会议安排和过程材料卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-confirm/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜待确认贡献.png` | 增加固定操作区底部预留，强化贡献确认头部、系统整理、待确认贡献和已有材料卡片标题层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-invitation/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研室邀请.png` | 增加固定操作区底部预留，强化教研室邀请主卡、简介、近期活动和加入后参与卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-activity-list/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动列表.png` | 增加底部安全区，强化学期统计、当前处理、筛选标签、活动卡和规则提示密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-ongoing/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜进行中.png` | 增加固定操作区底部预留，统一活动头部、活动说明、我的任务、会议安排和过程材料卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-confirm/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜待确认贡献.png` | 增加固定操作区底部预留，强化贡献确认头部、系统整理、待确认贡献和已有材料卡片标题层级 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 52 个页面。
 
@@ -538,10 +538,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-confirm-contribution/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献确认.png` | 增加固定操作区底部预留，强化 AI 识别贡献、补充说明、确认后去向和底部确认按钮密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-contribution-detail/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献详情.png` | 增加底部安全区，统一已确认贡献头部、所属活动、贡献说明、系统依据和关联材料卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-contribution-confirm/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜确认教研贡献.png` | 增加固定操作区和底部 Tab 预留，强化活动信息、系统整理、待确认贡献和关联材料卡片标题层级 |
-| `teacher-mobile/src/pages/activity/virtual-research-contribution-submitted/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜贡献确认已提交.png` | 增加固定操作区底部预留，统一提交成功、活动摘要、已确认贡献、当前状态和归档后查看卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-confirm-contribution/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献确认.png` | 增加固定操作区底部预留，强化 AI 识别贡献、补充说明、确认后去向和底部确认按钮密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-contribution-detail/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献详情.png` | 增加底部安全区，统一已确认贡献头部、所属活动、贡献说明、系统依据和关联材料卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-contribution-confirm/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜确认教研贡献.png` | 增加固定操作区和底部 Tab 预留，强化活动信息、系统整理、待确认贡献和关联材料卡片标题层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-contribution-submitted/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜贡献确认已提交.png` | 增加固定操作区底部预留，统一提交成功、活动摘要、已确认贡献、当前状态和归档后查看卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 56 个页面。
 
@@ -551,10 +551,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-supplement-submitted/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜补充已提交.png` | 增加固定操作区底部预留，统一补充已提交、活动摘要、补充贡献、已识别贡献和当前状态卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-supplement-material/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充教研活动材料.png` | 增加固定操作区和底部 Tab 预留，强化活动信息、退回说明、需要补充、已有依据和补充材料标题层级 |
-| `teacher-mobile/src/pages/activity/virtual-research-stage-submitted/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜阶段材料已提交.png` | 增加固定操作区底部预留，统一阶段材料结果、活动摘要、已提交材料、AI 说明、当前状态和后续处理卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-archive-result/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动归档结果.png` | 增加固定操作区底部预留，统一归档结果、已确认贡献、归档材料、归档去向和底部操作卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-activity-detail-supplement-submitted/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜补充已提交.png` | 增加固定操作区底部预留，统一补充已提交、活动摘要、补充贡献、已识别贡献和当前状态卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-supplement-material/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充教研活动材料.png` | 增加固定操作区和底部 Tab 预留，强化活动信息、退回说明、需要补充、已有依据和补充材料标题层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-stage-submitted/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜阶段材料已提交.png` | 增加固定操作区底部预留，统一阶段材料结果、活动摘要、已提交材料、AI 说明、当前状态和后续处理卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-archive-result/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动归档结果.png` | 增加固定操作区底部预留，统一归档结果、已确认贡献、归档材料、归档去向和底部操作卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 60 个页面。
 
@@ -564,10 +564,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-resubmitted/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充材料已重新提交.png` | 增加固定操作区底部预留，统一重新提交结果、活动摘要、补充内容、已有依据和当前状态卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-archive-result-v1/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教研活动归档结果-版本一.png` | 强化归档结果头部、活动信息、已确认贡献、归档材料和归档去向卡片圆角与标题层级 |
-| `teacher-mobile/src/pages/activity/virtual-research-archived-confirmed/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动已归档｜贡献已确认.png` | 增加固定操作区底部预留，统一贡献已确认头部、活动信息、贡献列表、归档材料和归档去向卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-profile-complete/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/个人资料完善.png` | 修正底部 Tab 当前态为活动链，强化教研室详情主卡、当前处理、教研活动和过程材料密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-resubmitted/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充材料已重新提交.png` | 增加固定操作区底部预留，统一重新提交结果、活动摘要、补充内容、已有依据和当前状态卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-archive-result-v1/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教研活动归档结果-版本一.png` | 强化归档结果头部、活动信息、已确认贡献、归档材料和归档去向卡片圆角与标题层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-archived-confirmed/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动已归档｜贡献已确认.png` | 增加固定操作区底部预留，统一贡献已确认头部、活动信息、贡献列表、归档材料和归档去向卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-profile-complete/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/个人资料完善.png` | 修正底部 Tab 当前态为活动链，强化教研室详情主卡、当前处理、教研活动和过程材料密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 64 个页面。
 
@@ -577,10 +577,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-basic-info-edit/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/基本信息编辑.png` | 修正底部 Tab 当前态为活动链，增加底部操作预留，强化贡献提交结果、教研活动、已确认贡献和当前状态卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-profile-intro-edit/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/个人简介编辑.png` | 增加固定操作区底部预留，统一成员资料头部、教研活动、个人贡献、关联材料和归档状态卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-basic-info-edit/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/基本信息编辑.png` | 修正底部 Tab 当前态为活动链，增加底部操作预留，强化贡献提交结果、教研活动、已确认贡献和当前状态卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-profile-intro-edit/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/个人简介编辑.png` | 增加固定操作区底部预留，统一成员资料头部、教研活动、个人贡献、关联材料和归档状态卡片密度 |
 | `teacher-mobile/src/pages/activity/virtual-research-teacher-archive-detail/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/教师档案详情.png` | 增加页面底部安全区，强化最近更新筛选、日期分组、更新记录卡片圆角和记录标题层级 |
-| `teacher-mobile/src/pages/activity/virtual-research-position-management/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/岗位管理页面.png` | 修正底部 Tab 当前态为活动链，强化已加入教研室主卡、待处理任务、可查看入口和固定操作区密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-position-management/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/岗位管理页面.png` | 修正底部 Tab 当前态为活动链，强化已加入教研室主卡、待处理任务、可查看入口和固定操作区密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 68 个页面。
 
@@ -590,10 +590,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-work-experience-management/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/工作经历管理.png` | 强化贡献详情主卡、所属教研活动、系统确认依据、关联材料和确认记录卡片层级 |
-| `teacher-mobile/src/pages/activity/virtual-research-skill-management/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/技能特长管理.png` | 增加固定操作区底部预留，统一补充遗漏贡献、已识别贡献、补充表单、依据和材料卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-award-management/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/获奖情况管理.png` | 增加固定操作区底部预留，统一阶段材料活动信息、任务、上传、说明和提交后说明卡片密度 |
-| `teacher-mobile/src/pages/activity/virtual-research-role-assignment/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/角色分配页面.png` | 修正底部 Tab 当前态为活动链，强化教研室仪表盘统计、待处理、教研室和最近活动卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-work-experience-management/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/工作经历管理.png` | 强化贡献详情主卡、所属教研活动、系统确认依据、关联材料和确认记录卡片层级 |
+| `teacher-mobile/src/pages/activity/virtual-research-skill-management/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/技能特长管理.png` | 增加固定操作区底部预留，统一补充遗漏贡献、已识别贡献、补充表单、依据和材料卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-award-management/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/获奖情况管理.png` | 增加固定操作区底部预留，统一阶段材料活动信息、任务、上传、说明和提交后说明卡片密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-role-assignment/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/角色分配页面.png` | 修正底部 Tab 当前态为活动链，强化教研室仪表盘统计、待处理、教研室和最近活动卡片密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 72 个页面。
 
@@ -603,7 +603,7 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/virtual-research-advanced-settings/index.vue` | `效果图/教师手机端/2活动/4虚拟教研/高级设置页面.png` | 按当前源码业务语义作为个人发展报告本地模拟操作页验收，强化成长概况、主要成果、能力雷达、发展建议和固定操作区密度 |
+| `teacher-mobile/src/pages/activity/virtual-research-advanced-settings/index.vue` | `效果图/已实现/教师手机端/2活动/4虚拟教研/高级设置页面.png` | 按当前源码业务语义作为个人发展报告本地模拟操作页验收，强化成长概况、主要成果、能力雷达、发展建议和固定操作区密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 73 个页面；虚拟教研链 26 个页面已全部纳入视觉基线。
 
@@ -614,10 +614,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
 | `teacher-mobile/src/pages/todo/all/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜全部待办.png` | 补充底部 Tab 安全区，统一筛选胶囊、待办列表卡片、标题和操作按钮密度 |
-| `teacher-mobile/src/pages/todo/dynamics/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜全部动态.png` | 补充底部 Tab 安全区，强化动态分组标题、动态卡片圆角和列表内距 |
-| `teacher-mobile/src/pages/todo/dynamics-filter/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜全部动态筛选.png` | 补充底部安全区，统一动态卡片、筛选抽屉选项和抽屉操作按钮密度 |
-| `teacher-mobile/src/pages/todo/certificate-detail/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜待确认记录详情｜培训证书.png` | 补充底部安全区，统一证书摘要、信息、材料、确认卡片和确认按钮层级 |
-| `teacher-mobile/src/pages/todo/certificate-edit/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜编辑待确认记录.png` | 补充底部安全区，统一摘要、表单、材料、说明卡片和提交 / 取消按钮密度 |
+| `teacher-mobile/src/pages/todo/dynamics/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜全部动态.png` | 补充底部 Tab 安全区，强化动态分组标题、动态卡片圆角和列表内距 |
+| `teacher-mobile/src/pages/todo/dynamics-filter/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜全部动态筛选.png` | 补充底部安全区，统一动态卡片、筛选抽屉选项和抽屉操作按钮密度 |
+| `teacher-mobile/src/pages/todo/certificate-detail/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜待确认记录详情｜培训证书.png` | 补充底部安全区，统一证书摘要、信息、材料、确认卡片和确认按钮层级 |
+| `teacher-mobile/src/pages/todo/certificate-edit/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜编辑待确认记录.png` | 补充底部安全区，统一摘要、表单、材料、说明卡片和提交 / 取消按钮密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 78 个页面。
 
@@ -627,9 +627,9 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/todo/certificate-submit/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜修改已提交｜培训证书.png` | 补充固定操作区底部预留，统一提交结果、修改内容、材料、进度、接下来卡片密度 |
-| `teacher-mobile/src/pages/todo/certificate-archive-success/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜入档成功｜培训证书.png` | 将底部操作固定到安全区，统一等待入档头部、确认记录和后续动作区密度 |
-| `teacher-mobile/src/pages/todo/certificate-removed/index.vue` | `效果图/教师手机端/0待办/教师端手机｜待办｜已移出待确认页.png` | 补充底部操作安全区，统一移出结果头部、记录卡、后续说明和返回入口密度 |
+| `teacher-mobile/src/pages/todo/certificate-submit/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜修改已提交｜培训证书.png` | 补充固定操作区底部预留，统一提交结果、修改内容、材料、进度、接下来卡片密度 |
+| `teacher-mobile/src/pages/todo/certificate-archive-success/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜入档成功｜培训证书.png` | 将底部操作固定到安全区，统一等待入档头部、确认记录和后续动作区密度 |
+| `teacher-mobile/src/pages/todo/certificate-removed/index.vue` | `效果图/已实现/教师手机端/0待办/教师端手机｜待办｜已移出待确认页.png` | 补充底部操作安全区，统一移出结果头部、记录卡、后续说明和返回入口密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 81 个页面；待办链 9 个页面已全部纳入视觉基线。
 
@@ -640,10 +640,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
 | `teacher-mobile/src/pages/archive/record-query/index.vue` | `效果图/教师手机端/1档案/教师端手机｜档案｜档案记录查询.png` | 补充底部安全区，统一搜索框、分类筛选和结果记录卡片密度 |
-| `teacher-mobile/src/pages/archive/category/index.vue` | `效果图/教师手机端/1档案/分类管理页面.png` | 增加底部固定按钮预留，统一分类概览、指标、重点内容和近期记录密度 |
-| `teacher-mobile/src/pages/archive/basic-info-detail/index.vue` | `效果图/教师手机端/1档案/基本信息/基本信息档案详情.png` | 补充详情页底部操作预留，统一摘要、任职信息、来源追溯、材料和引用范围卡片密度 |
+| `teacher-mobile/src/pages/archive/category/index.vue` | `效果图/已实现/教师手机端/1档案/分类管理页面.png` | 增加底部固定按钮预留，统一分类概览、指标、重点内容和近期记录密度 |
+| `teacher-mobile/src/pages/archive/basic-info-detail/index.vue` | `效果图/已实现/教师手机端/1档案/基本信息/基本信息档案详情.png` | 补充详情页底部操作预留，统一摘要、任职信息、来源追溯、材料和引用范围卡片密度 |
 | `teacher-mobile/src/pages/archive/record-list/index.vue` | `效果图/教师手机端/1档案/记录列表页面.png` | 补充列表底部安全区，统一状态筛选、汇总卡、记录卡片和空状态密度 |
-| `teacher-mobile/src/pages/archive/draft-list/index.vue` | `效果图/教师手机端/1档案/成长档案-档案草稿.png` | 补充草稿列表底部安全区，统一草稿 / 待确认汇总、记录卡和空状态密度 |
+| `teacher-mobile/src/pages/archive/draft-list/index.vue` | `效果图/已实现/教师手机端/1档案/成长档案-档案草稿.png` | 补充草稿列表底部安全区，统一草稿 / 待确认汇总、记录卡和空状态密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 86 个页面。
 
@@ -654,10 +654,10 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
 | `teacher-mobile/src/pages/archive/correction/apply/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正申请.png` | 补充底部固定操作区预留，统一原档案、更正原因、说明、关联材料和提交口径卡片密度 |
-| `teacher-mobile/src/pages/archive/correction/submitted/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png` | 补充底部固定操作区预留，统一提交结果、申请记录和后续处理进度密度 |
-| `teacher-mobile/src/pages/archive/correction/progress/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png` | 补充底部固定操作区预留，统一摘要、申请信息和时间线密度 |
-| `teacher-mobile/src/pages/archive/correction/result/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png` | 补充底部固定操作区预留，统一结果状态、关联档案和结果说明密度 |
-| `teacher-mobile/src/pages/archive/correction/supplement/index.vue` | `效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png` | 补充底部固定操作区预留，统一需补充摘要、补充说明和材料列表密度 |
+| `teacher-mobile/src/pages/archive/correction/submitted/index.vue` | `效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png` | 补充底部固定操作区预留，统一提交结果、申请记录和后续处理进度密度 |
+| `teacher-mobile/src/pages/archive/correction/progress/index.vue` | `效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png` | 补充底部固定操作区预留，统一摘要、申请信息和时间线密度 |
+| `teacher-mobile/src/pages/archive/correction/result/index.vue` | `效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png` | 补充底部固定操作区预留，统一结果状态、关联档案和结果说明密度 |
+| `teacher-mobile/src/pages/archive/correction/supplement/index.vue` | `效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png` | 补充底部固定操作区预留，统一需补充摘要、补充说明和材料列表密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 91 个页面。
 
@@ -667,11 +667,11 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/archive/record-detail/index.vue` | `效果图/教师手机端/1档案/个人成长记录.png` | 补充详情页固定操作区底部预留，统一档案摘要、关键信息、来源追溯、材料和引用卡片密度 |
-| `teacher-mobile/src/pages/archive/development-plan-edit/index.vue` | `效果图/教师手机端/1档案/发展计划编辑.png` | 补充编辑页固定操作区底部预留，统一发展目标、行动安排、佐证材料和提交状态卡片密度 |
-| `teacher-mobile/src/pages/assistant/archive-supplement/index.vue` | `效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png` | 补充底部安全区，统一建议材料、补充说明、材料信息和提交按钮密度 |
-| `teacher-mobile/src/pages/assistant/archive-supplement-submitted/index.vue` | `效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png` | 补充底部安全区，统一提交结果、当前状态和后续操作按钮密度 |
-| `teacher-mobile/src/pages/profile/ability-profile/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png` | 补充底部安全区，统一能力画像主卡、维度分布、短板提示、推荐方向和对照入口密度 |
+| `teacher-mobile/src/pages/archive/record-detail/index.vue` | `效果图/已实现/教师手机端/1档案/个人成长记录.png` | 补充详情页固定操作区底部预留，统一档案摘要、关键信息、来源追溯、材料和引用卡片密度 |
+| `teacher-mobile/src/pages/archive/development-plan-edit/index.vue` | `效果图/已实现/教师手机端/1档案/发展计划编辑.png` | 补充编辑页固定操作区底部预留，统一发展目标、行动安排、佐证材料和提交状态卡片密度 |
+| `teacher-mobile/src/pages/assistant/archive-supplement/index.vue` | `效果图/已实现/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png` | 补充底部安全区，统一建议材料、补充说明、材料信息和提交按钮密度 |
+| `teacher-mobile/src/pages/assistant/archive-supplement-submitted/index.vue` | `效果图/已实现/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png` | 补充底部安全区，统一提交结果、当前状态和后续操作按钮密度 |
+| `teacher-mobile/src/pages/profile/ability-profile/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png` | 补充底部安全区，统一能力画像主卡、维度分布、短板提示、推荐方向和对照入口密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 96 个页面。
 
@@ -681,12 +681,12 @@ node teacher-mobile/scripts/verify-ux-action-closure.mjs
 
 | 页面 | 目标图 | 处理 |
 | --- | --- | --- |
-| `teacher-mobile/src/pages/activity/room-entry-state/index.vue` | `效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png` | 统一教研室入口状态页标题层级、开始卡、成长活动和最近活动卡片密度 |
-| `teacher-mobile/src/pages/activity/enterprise-plan-edit/index.vue` | `效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png` | 补充底部安全区，统一退回信息、计划表单、AI 整理结果、补充资料和提交按钮密度 |
-| `teacher-mobile/src/pages/profile/ability-profile/records/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png` | 补充底部安全区，统一画像引用记录说明、记录卡片和档案详情入口密度 |
-| `teacher-mobile/src/pages/profile/development-report/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png` | 补充底部安全区，统一报告主卡、能力摘要、依据记录、建议行动和对照入口密度 |
-| `teacher-mobile/src/pages/profile/target-position/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png` | 补充底部安全区，统一目标岗位、已满足要求、缺口要求、证据入口和建议行动密度 |
-| `teacher-mobile/src/pages/profile/tenure-requirement/index.vue` | `效果图/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png` | 补充底部安全区，统一聘期完成度、已完成证据、缺失证据和建议行动密度 |
+| `teacher-mobile/src/pages/activity/room-entry-state/index.vue` | `效果图/已实现/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png` | 统一教研室入口状态页标题层级、开始卡、成长活动和最近活动卡片密度 |
+| `teacher-mobile/src/pages/activity/enterprise-plan-edit/index.vue` | `效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png` | 补充底部安全区，统一退回信息、计划表单、AI 整理结果、补充资料和提交按钮密度 |
+| `teacher-mobile/src/pages/profile/ability-profile/records/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png` | 补充底部安全区，统一画像引用记录说明、记录卡片和档案详情入口密度 |
+| `teacher-mobile/src/pages/profile/development-report/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png` | 补充底部安全区，统一报告主卡、能力摘要、依据记录、建议行动和对照入口密度 |
+| `teacher-mobile/src/pages/profile/target-position/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png` | 补充底部安全区，统一目标岗位、已满足要求、缺口要求、证据入口和建议行动密度 |
+| `teacher-mobile/src/pages/profile/tenure-requirement/index.vue` | `效果图/已实现/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png` | 补充底部安全区，统一聘期完成度、已完成证据、缺失证据和建议行动密度 |
 
 `verify-mobile-entry-visual-baseline.mjs` 已扩展为覆盖 102 个页面；教师手机端当前 102 个页面已全部纳入视觉基准守卫。
 

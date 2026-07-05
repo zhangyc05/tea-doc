@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import { addStageMaterial, getMobileVirtualResearchState, saveStageMaterialDraft, submitStageMaterial } from '../../../domain/virtualResearch'
 
@@ -8,7 +9,7 @@ const uploadActions = [
   { icon: 'folder', title: '上传资料', desc: '支持 PDF/Word/PPT 等' },
   { icon: 'camera', title: '拍照', desc: '拍摄纸质或屏幕内容' },
   { icon: 'mic', title: '语音说明', desc: '语音转文字并保存' },
-]
+] as const
 
 const virtualResearchState = getMobileVirtualResearchState()
 
@@ -116,7 +117,7 @@ function submitMaterial() {
         </view>
         <view class="upload-actions">
           <button v-for="item in uploadActions" :key="item.title" class="upload-action" @tap="handleUploadAction(item.title)">
-            <view class="upload-action-icon" :class="`upload-action-icon--${item.icon}`"></view>
+            <MobileIcon class="upload-action-icon" :name="item.icon" tone="blue" size="plain" shape="none" />
             <text class="upload-title">{{ item.title }}</text>
             <text class="upload-desc">{{ item.desc }}</text>
           </button>
@@ -597,71 +598,6 @@ function submitMaterial() {
   width: 42rpx;
   height: 42rpx;
   margin: 0 auto 10rpx;
-  color: #2f78f5;
-}
-
-.upload-action-icon--folder::before {
-  left: 2rpx;
-  top: 13rpx;
-  width: 38rpx;
-  height: 25rpx;
-  border-radius: 6rpx;
-  background: currentColor;
-}
-
-.upload-action-icon--folder::after {
-  left: 7rpx;
-  top: 7rpx;
-  width: 22rpx;
-  height: 10rpx;
-  border-radius: 6rpx 6rpx 0 0;
-  background: currentColor;
-}
-
-.upload-action-icon--camera {
-  color: #0db766;
-}
-
-.upload-action-icon--camera::before {
-  left: 3rpx;
-  top: 12rpx;
-  width: 36rpx;
-  height: 25rpx;
-  border-radius: 7rpx;
-  background: currentColor;
-}
-
-.upload-action-icon--camera::after {
-  left: 15rpx;
-  top: 18rpx;
-  width: 12rpx;
-  height: 12rpx;
-  border: 4rpx solid #fff;
-  border-radius: 50%;
-}
-
-.upload-action-icon--mic {
-  color: #f08300;
-}
-
-.upload-action-icon--mic::before {
-  left: 15rpx;
-  top: 3rpx;
-  width: 12rpx;
-  height: 25rpx;
-  border-radius: 14rpx;
-  background: currentColor;
-}
-
-.upload-action-icon--mic::after {
-  left: 11rpx;
-  bottom: 5rpx;
-  width: 20rpx;
-  height: 16rpx;
-  border-bottom: 5rpx solid currentColor;
-  border-left: 5rpx solid currentColor;
-  border-right: 5rpx solid currentColor;
-  border-radius: 0 0 14rpx 14rpx;
 }
 
 .upload-title {

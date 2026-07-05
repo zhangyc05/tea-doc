@@ -43,16 +43,14 @@ function navigateTo(url: string) {
         <text>总体完成度</text>
         <text class="progress-number">68%</text>
       </view>
-      <view class="progress-track">
-        <view class="progress-bar"></view>
-      </view>
+      <wd-progress class="tenure-progress" :percentage="68" color="#ff9f43" hide-text />
     </MobileCard>
 
     <MobileCard class="section-card">
       <text class="section-title">已完成证据</text>
       <view v-for="item in completed" :key="item.recordId" class="evidence-row" @tap="navigateTo(`/pages/archive/record-detail/index?recordId=${item.recordId}`)">
         <text>{{ item.title }}</text>
-        <view class="row-arrow"></view>
+        <wd-icon class="row-arrow" name="chevron-right" size="28rpx" color="#9aa5b8" />
       </view>
       <MobileActionButton class="wide-action" variant="outline" arrow @tap="navigateTo('/pages/profile/ability-profile/records/index?from=tenure-requirement')">
         查看全部证据
@@ -133,19 +131,17 @@ function navigateTo(url: string) {
   font-size: 34rpx;
 }
 
-.progress-track {
-  height: 16rpx;
+.tenure-progress {
   margin-top: 14rpx;
-  overflow: hidden;
-  border-radius: 999rpx;
+}
+
+.tenure-progress :deep(.wd-progress__outer) {
+  height: 16rpx;
   background: #edf3f7;
 }
 
-.progress-bar {
-  width: 68%;
-  height: 100%;
-  border-radius: inherit;
-  background: #ff9f43;
+.tenure-progress :deep(.wd-progress__inner) {
+  border-radius: 999rpx;
 }
 
 .evidence-row,
@@ -161,11 +157,11 @@ function navigateTo(url: string) {
 }
 
 .row-arrow {
-  width: 18rpx;
-  height: 18rpx;
-  border-top: 5rpx solid #9aa5b8;
-  border-right: 5rpx solid #9aa5b8;
-  transform: rotate(45deg);
+  display: flex;
+  width: 28rpx;
+  height: 28rpx;
+  align-items: center;
+  justify-content: center;
 }
 
 .wide-action {

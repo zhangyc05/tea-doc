@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
+import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approvePracticeApplication,
   getPracticeState,
   returnPracticeApplication,
+  type PracticeApplication,
 } from '@/stores/admin/practiceStore'
 
 const router = useRouter()
@@ -22,6 +24,10 @@ const selectedTime = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeApplicationId = ref('1')
+const yearOptions = ['2026 年度', '2025 年度', '2024 年度'].map((value) => ({ label: value, value }))
+const departmentOptions = ['全部', '智能制造学院', '电子信息学院', '汽车工程学院', '财经商贸学院'].map((value) => ({ label: value, value }))
+const statusOptions = ['全部', '待审核', '已同意', '退回修改', '已撤回'].map((value) => ({ label: value, value }))
+const timeOptions = ['全部', '2026-07', '2026-06', '2026-05'].map((value) => ({ label: value, value }))
 // 统计数据
 const stats = computed(() => ({
   pending: practiceState.applications.filter(app => app.status === '待审核').length,
@@ -67,6 +73,10 @@ function resetFilters() {
 function viewApplication(id: string) {
   activeApplicationId.value = id
   practiceState.operationMessage = '已在表格中定位该实践申请。'
+}
+
+function applicationRowClassName({ row }: { row: PracticeApplication }) {
+  return activeApplicationId.value === row.id ? 'application-row active' : 'application-row'
 }
 
 function viewRecordForApplication(id: string) {
@@ -145,46 +155,24 @@ function applyFilters() {
             <template #fields>
               <label class="filter-item">
                 <span class="filter-label">年度：</span>
-                <select v-model="selectedYear" class="filter-select">
-                  <option>2026 年度</option>
-                  <option>2025 年度</option>
-                  <option>2024 年度</option>
-                </select>
+                <AdminSelect v-model="selectedYear" class="filter-select" :options="yearOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">院系：</span>
-                <select v-model="selectedDepartment" class="filter-select">
-                  <option>全部</option>
-                  <option>智能制造学院</option>
-                  <option>电子信息学院</option>
-                  <option>汽车工程学院</option>
-                  <option>财经商贸学院</option>
-                </select>
+                <AdminSelect v-model="selectedDepartment" class="filter-select" :options="departmentOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">申请状态：</span>
-                <select v-model="selectedStatus" class="filter-select">
-                  <option>全部</option>
-                  <option>待审核</option>
-                  <option>已同意</option>
-                  <option>退回修改</option>
-                  <option>已撤回</option>
-                </select>
+                <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">实践时间：</span>
-                <select v-model="selectedTime" class="filter-select">
-                  <option>全部</option>
-                  <option>2026-07</option>
-                  <option>2026-06</option>
-                  <option>2026-05</option>
-                </select>
+                <AdminSelect v-model="selectedTime" class="filter-select" :options="timeOptions" />
               </label>
             </template>
             <template #search>
-              <input
+              <AdminInput
                 v-model="searchQuery"
-                type="text"
                 placeholder="搜索教师姓名 / 工号 / 实践单位"
                 class="search-input"
                 @keyup.enter="applyFilters"
@@ -202,97 +190,82 @@ function applyFilters() {
           <!-- 数据表格 -->
           <div class="table-section">
             <div class="table-container">
-              <table class="application-table">
-                <thead>
-                  <tr>
-                    <th>申请教师</th>
-                    <th>年度实践情况</th>
-                    <th>实践单位 / 岗位</th>
-                    <th>实践时间 / 预计天数</th>
-                    <th>申请状态</th>
-                    <th>申请时间</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="app in filteredApplications"
-                    :key="app.id"
-                    :class="{ active: activeApplicationId === app.id }"
-                  >
-                    <td>
-                      <div class="teacher-name">{{ app.teacher }}</div>
-                      <div class="sub-text">工号：{{ app.teacherNo }}</div>
-                      <div class="sub-text">{{ app.department }}</div>
-                    </td>
-                    <td>
-                      <div>已计入 {{ app.annualStatus.match(/已计入\s*(\d+)/)?.[1] ?? '0' }} 天</div>
-                      <div class="remaining-days">还差 {{ app.remainingDays }} 天</div>
-                    </td>
-                    <td>
-                      <div class="company-name">{{ app.company }}</div>
-                      <div class="sub-text">{{ app.position }}</div>
-                    </td>
-                    <td>
-                      <div>{{ app.practicePeriod.split('，')[0] }}</div>
-                      <div class="sub-text">预计 {{ app.estimatedDays }} 天</div>
-                    </td>
-                    <td>
-                      <StatusBadge :status="app.status" />
-                    </td>
-                    <td>{{ app.applyTime }}</td>
-                    <td>
-                      <div
-                        v-if="app.status === '待审核'"
-                        class="row-action-group"
+              <AdminTable
+                class="application-table"
+                :data="filteredApplications"
+                :row-class-name="applicationRowClassName"
+                empty-text="暂无符合条件的实践申请"
+              >
+                <AdminTableColumn label="申请教师" min-width="150">
+                  <template #default="{ row }">
+                    <div class="teacher-name">{{ row.teacher }}</div>
+                    <div class="sub-text">工号：{{ row.teacherNo }}</div>
+                    <div class="sub-text">{{ row.department }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="年度实践情况" min-width="130">
+                  <template #default="{ row }">
+                    <div>已计入 {{ row.annualStatus.match(/已计入\s*(\d+)/)?.[1] ?? '0' }} 天</div>
+                    <div class="remaining-days">还差 {{ row.remainingDays }} 天</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="实践单位 / 岗位" min-width="190">
+                  <template #default="{ row }">
+                    <div class="company-name">{{ row.company }}</div>
+                    <div class="sub-text">{{ row.position }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="实践时间 / 预计天数" min-width="180">
+                  <template #default="{ row }">
+                    <div>{{ row.practicePeriod.split('，')[0] }}</div>
+                    <div class="sub-text">预计 {{ row.estimatedDays }} 天</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="申请状态" min-width="110">
+                  <template #default="{ row }">
+                    <StatusBadge :status="row.status" />
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="applyTime" label="申请时间" min-width="130" />
+                <AdminTableColumn label="操作" min-width="220" fixed="right">
+                  <template #default="{ row }">
+                    <div
+                      v-if="row.status === '待审核'"
+                      class="row-action-group"
+                    >
+                      <Button variant="ghost" size="sm" @click="viewApplication(row.id)">
+                        查看申请
+                      </Button>
+                      <Button size="sm" @click="approveApplication(row.id)">同意</Button>
+                      <Button variant="danger" size="sm" @click="returnApplication(row.id)">
+                        退回修改
+                      </Button>
+                    </div>
+                    <div v-else class="row-action-group">
+                      <Button variant="ghost" size="sm" @click="viewApplication(row.id)">
+                        查看申请
+                      </Button>
+                      <Button
+                        v-if="row.status === '已同意'"
+                        variant="ghost"
+                        size="sm"
+                        @click="viewRecordForApplication(row.id)"
                       >
-                        <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
-                          查看申请
-                        </Button>
-                        <Button size="sm" @click="approveApplication(app.id)">同意</Button>
-                        <Button variant="danger" size="sm" @click="returnApplication(app.id)">
-                          退回修改
-                        </Button>
-                      </div>
-                      <div v-else class="row-action-group">
-                        <Button variant="ghost" size="sm" @click="viewApplication(app.id)">
-                          查看申请
-                        </Button>
-                        <Button
-                          v-if="app.status === '已同意'"
-                          variant="ghost"
-                          size="sm"
-                          @click="viewRecordForApplication(app.id)"
-                        >
-                          查看记录
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr v-if="filteredApplications.length === 0">
-                    <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的实践申请" />
-                  </tr>
-                </tbody>
-              </table>
+                        查看记录
+                      </Button>
+                    </div>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
 
             <!-- 分页区域 -->
-            <div class="pagination-section">
-              <div class="pagination-info">
-                共 {{ total }} 条
-              </div>
-              <div class="pagination-controls">
-                <span class="page-button" aria-label="上一页">‹</span>
-                <span class="page-button active" aria-current="page">{{ currentPage }}</span>
-                <span class="page-button" aria-label="下一页">›</span>
-                <span>前往</span>
-                <input class="page-input" value="1" aria-label="页码" readonly />
-                <span>页</span>
-                <select class="page-size" aria-label="每页条数">
-                  <option>{{ pageSize }} 条/页</option>
-                </select>
-              </div>
-            </div>
+            <AdminPagination
+              v-model:current-page="currentPage"
+              class="pagination-section"
+              :page-size="pageSize"
+              :total="total"
+            />
             <div class="selected-summary" v-if="activeApplication">
               当前查看：{{ activeApplication.teacher }}，{{ activeApplication.status }}，{{ activeApplication.company }}。
             </div>
@@ -559,7 +532,7 @@ function applyFilters() {
   border-right: none;
 }
 
-.application-table tr.active td {
+:deep(.application-row.active) {
   background: #f4f8ff;
 }
 
@@ -647,39 +620,6 @@ function applyFilters() {
   align-items: center;
   color: #52617a;
   font-size: 13px;
-}
-
-.page-button,
-.page-input,
-.page-size {
-  height: 34px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-admin-text-strong);
-}
-
-.page-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  font-weight: 700;
-}
-
-.page-button.active {
-  background: var(--color-admin-primary);
-  border-color: var(--color-admin-primary);
-  color: #fff;
-}
-
-.page-input {
-  width: 52px;
-  text-align: center;
-}
-
-.page-size {
-  width: 108px;
 }
 
 .selected-summary {

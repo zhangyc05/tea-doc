@@ -39,26 +39,20 @@ function showTodoAction(item: MobileTodoItem) {
   }
 }
 
-function selectFilter(index: number) {
-  activeFilterIndex.value = index
-}
 </script>
 
 <template>
   <MobilePageShell class="all-todo-page" active="todo">
     <MobileNavbar title="全部待办" @back="goBack" />
 
-    <view class="filter-row">
-      <button
+    <wd-tabs v-model="activeFilterIndex" class="filter-row" color="#04a851" inactive-color="#4d5871" :line-width="0">
+      <wd-tab
         v-for="(filter, index) in filters"
         :key="filter"
-        class="filter-pill"
-        :class="{ 'filter-pill--active': index === activeFilterIndex }"
-        @tap="selectFilter(index)"
-      >
-        {{ filter }}
-      </button>
-    </view>
+        :name="index"
+        :title="filter"
+      />
+    </wd-tabs>
 
     <MobileCard class="todo-list-card">
       <view v-for="item in filteredTodos" :key="item.id" class="todo-list-row">
@@ -107,21 +101,13 @@ function selectFilter(index: number) {
 }
 
 .back-button,
-.filter-pill {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
 .back-button {
   position: relative;
   width: 72rpx;
   height: 72rpx;
 }
 
-.back-button::after,
-.filter-pill::after {
+.back-button::after {
   display: none;
   border: 0;
 }
@@ -149,18 +135,23 @@ function selectFilter(index: number) {
 }
 
 .filter-row {
-  justify-content: space-between;
-  gap: 18rpx;
   margin: 20rpx 6rpx 24rpx;
 }
 
-.filter-pill {
-  display: flex;
+.filter-row :deep(.wd-tabs__nav) {
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.filter-row :deep(.wd-tabs__nav-container) {
+  background: transparent;
+}
+
+.filter-row :deep(.wd-tabs__nav-item) {
   box-sizing: border-box;
   height: 58rpx;
   min-width: 128rpx;
-  align-items: center;
-  justify-content: center;
+  margin: 0;
   padding: 0 22rpx;
   border-radius: 16rpx;
   background: rgba(247, 249, 253, 0.92);
@@ -171,10 +162,15 @@ function selectFilter(index: number) {
   white-space: nowrap;
 }
 
-.filter-pill--active {
+.filter-row :deep(.wd-tabs__nav-item.is-active) {
   border: 2rpx solid $teacher-mobile-primary;
   background: #ebfff3;
   color: $teacher-mobile-primary-dark;
+}
+
+.filter-row :deep(.wd-tabs__container),
+.filter-row :deep(.wd-tabs__line) {
+  display: none;
 }
 
 .todo-list-card {
@@ -254,12 +250,15 @@ function selectFilter(index: number) {
 
 @media (max-width: 374px) {
   .filter-row {
-    gap: 10rpx;
     margin-right: 0;
     margin-left: 0;
   }
 
-  .filter-pill {
+  .filter-row :deep(.wd-tabs__nav) {
+    gap: 10rpx;
+  }
+
+  .filter-row :deep(.wd-tabs__nav-item) {
     min-width: 118rpx;
     padding: 0 14rpx;
     font-size: 25rpx;

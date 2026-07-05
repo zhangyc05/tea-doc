@@ -109,7 +109,7 @@ function submitAgain() {
           </view>
         </view>
         <view class="upload-drop" @tap="showUploadFeedback">
-          <view class="upload-plus">+</view>
+          <wd-icon class="upload-plus" name="upload" size="32rpx" color="#08a85c" />
           <text>上传新的证明材料</text>
         </view>
       </MobileCard>
@@ -120,14 +120,13 @@ function submitAgain() {
           <text class="section-title">补充说明</text>
           <text class="optional-tag">可选</text>
         </view>
-        <view class="textarea-box">
-          <textarea
-            class="remark-input"
-            placeholder="请输入补充说明，例如：本次补充上传了盖章页"
-            :maxlength="200"
-          />
-          <text class="textarea-count">0/200</text>
-        </view>
+        <wd-textarea
+          class="remark-input"
+          placeholder="请输入补充说明，例如：本次补充上传了盖章页"
+          :maxlength="200"
+          show-word-limit
+          no-border
+        />
       </MobileCard>
 
       <view class="notice-card">
@@ -679,14 +678,11 @@ function submitAgain() {
 }
 
 .upload-plus {
+  display: flex;
   width: 32rpx;
   height: 32rpx;
-  border: 3rpx solid currentColor;
-  border-radius: 50%;
-  font-size: 28rpx;
-  font-weight: 900;
-  line-height: 27rpx;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .section-icon--edit::before {
@@ -717,29 +713,28 @@ function submitAgain() {
   font-weight: 900;
 }
 
-.textarea-box {
-  position: relative;
+.remark-input {
+  display: block;
   margin: 24rpx 14rpx 0 84rpx;
-  min-height: 102rpx;
   border: 2rpx solid #e1e6ed;
   border-radius: 14rpx;
   background: #fbfcfe;
 }
 
-.remark-input {
-  width: 100%;
-  height: 102rpx;
+.remark-input :deep(.wd-textarea) {
   padding: 20rpx 24rpx 30rpx;
+  background: transparent;
+}
+
+.remark-input :deep(.wd-textarea__inner) {
+  min-height: 102rpx;
   color: #344054;
   font-size: 26rpx;
   line-height: 1.45;
-  box-sizing: border-box;
 }
 
-.textarea-count {
-  position: absolute;
-  right: 20rpx;
-  bottom: 12rpx;
+.remark-input :deep(.wd-textarea__count) {
+  padding: 0 20rpx 12rpx 0;
   color: #8a94a6;
   font-size: 24rpx;
 }

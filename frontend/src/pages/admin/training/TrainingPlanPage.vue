@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, DetailSheet, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { AdminCheckboxGroup, AdminDatePicker, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, DetailSheet, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -9,6 +10,7 @@ import { getTrainingPlanPageMock } from '@/services/mock/training'
 import {
   createTrainingPlan,
   getTrainingState,
+  type TrainingPlan,
 } from '@/stores/admin/trainingStore'
 
 const router = useRouter()
@@ -36,6 +38,12 @@ const {
   materialOptions,
 } = getTrainingPlanPageMock()
 
+const organizationOptions = organizations.map((value) => ({ label: value, value }))
+const statusOptions = statuses.map((value) => ({ label: value, value }))
+const yearOptions = years.map((value) => ({ label: value, value }))
+const participationOptions = participationModes.map((value) => ({ label: value, value }))
+const applicationSelectOptions = applicationOptions.map((value) => ({ label: value, value }))
+
 // 统计数据
 const stats = computed(() => ({
   total: trainingState.plans.length,
@@ -55,6 +63,10 @@ function closeDrawer() {
 
 function viewDetail(id: string) {
   router.push(`/admin/training/plans/${id}`)
+}
+
+function participantRate(plan: TrainingPlan) {
+  return Math.round(plan.currentParticipants / plan.maxParticipants * 100)
 }
 
 function saveDraft() {
@@ -89,7 +101,7 @@ const newPlan = ref({
   participation: '自主报名',
   needApplication: '不需要',
   quota: '',
-  materialRequirements: [],
+  materialRequirements: [] as string[],
   description: '',
 })
 
@@ -185,41 +197,24 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                 <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
-                    <select v-model="selectedOrganization" class="filter-select">
-                      <option v-for="org in organizations" :key="org" :value="org">
-                        {{ org }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedOrganization" class="filter-select" :options="organizationOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">计划状态</label>
-                    <select v-model="selectedStatus" class="filter-select">
-                      <option v-for="status in statuses" :key="status" :value="status">
-                        {{ status }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">培训时间</label>
-                    <select v-model="selectedYear" class="filter-select">
-                      <option v-for="year in years" :key="year" :value="year">
-                        {{ year }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedYear" class="filter-select" :options="yearOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">参与方式</label>
-                    <select v-model="selectedParticipation" class="filter-select">
-                      <option v-for="mode in participationModes" :key="mode" :value="mode">
-                        {{ mode }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedParticipation" class="filter-select" :options="participationOptions" />
                   </div>
                 </template>
                 <template #search>
-                  <input
+                  <AdminInput
                     v-model="searchQuery"
-                    type="text"
                     placeholder="搜索计划名称、培训方向、培训资源"
                     class="search-input"
                   />
@@ -234,46 +229,41 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="plan-table">
-                  <thead>
-                    <tr>
-                      <th>计划名称</th>
-                      <th>培训方向</th>
-                      <th>面向对象</th>
-                      <th>培训时间</th>
-                      <th>参与方式</th>
-                      <th>当前状态</th>
-                      <th>参与情况</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="plan in filteredPlans" :key="plan.id">
-                      <td>{{ plan.name }}</td>
-                      <td>{{ plan.direction }}</td>
-                      <td>{{ plan.target }}</td>
-                      <td>{{ plan.startDate }} 至 {{ plan.endDate }}</td>
-                      <td>{{ plan.participation }}</td>
-                      <td>
-                        <StatusBadge :status="plan.status" />
-                      </td>
-                      <td>
-                        <div class="participant-cell">
-                          <span>{{ plan.currentParticipants }} / {{ plan.maxParticipants }} 人</span>
-                          <small>{{ Math.round(plan.currentParticipants / plan.maxParticipants * 100) }}%</small>
-                        </div>
-                      </td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewDetail(plan.id)">
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredPlans.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训计划" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="plan-table"
+                  :data="filteredPlans"
+                  empty-text="暂无符合条件的培训计划"
+                >
+                  <AdminTableColumn prop="name" label="计划名称" min-width="170" />
+                  <AdminTableColumn prop="direction" label="培训方向" min-width="110" />
+                  <AdminTableColumn prop="target" label="面向对象" min-width="170" />
+                  <AdminTableColumn label="培训时间" min-width="170">
+                    <template #default="{ row }">
+                      {{ row.startDate }} 至 {{ row.endDate }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="participation" label="参与方式" min-width="100" />
+                  <AdminTableColumn label="当前状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.status" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="参与情况" min-width="120">
+                    <template #default="{ row }">
+                      <div class="participant-cell">
+                        <span>{{ row.currentParticipants }} / {{ row.maxParticipants }} 人</span>
+                        <small>{{ participantRate(row) }}%</small>
+                      </div>
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
               <div class="table-footer">
                 <span>共 {{ filteredPlans.length }} 条</span>
@@ -318,66 +308,59 @@ function createPlanFromForm(mode: 'draft' | 'published') {
         <div class="form-section">
           <div class="form-item">
                 <label class="form-label">计划名称</label>
-                <input v-model="newPlan.name" type="text" class="form-input" placeholder="请输入计划名称" />
+                <AdminInput v-model="newPlan.name" class="form-input" placeholder="请输入计划名称" />
               </div>
               <div class="form-item">
                 <label class="form-label">培训方向</label>
-                <input v-model="newPlan.direction" type="text" class="form-input" placeholder="请输入培训方向" />
+                <AdminInput v-model="newPlan.direction" class="form-input" placeholder="请输入培训方向" />
               </div>
               <div class="form-item">
                 <label class="form-label">关联需求</label>
-                <input v-model="newPlan.relatedDemand" type="text" class="form-input" placeholder="请输入关联需求" />
+                <AdminInput v-model="newPlan.relatedDemand" class="form-input" placeholder="请输入关联需求" />
               </div>
               <div class="form-item">
                 <label class="form-label">关联资源</label>
-                <input v-model="newPlan.relatedResource" type="text" class="form-input" placeholder="请输入关联资源" />
+                <AdminInput v-model="newPlan.relatedResource" class="form-input" placeholder="请输入关联资源" />
               </div>
               <div class="form-item">
                 <label class="form-label">面向对象</label>
-                <input v-model="newPlan.target" type="text" class="form-input" placeholder="请输入面向对象" />
+                <AdminInput v-model="newPlan.target" class="form-input" placeholder="请输入面向对象" />
               </div>
               <div class="form-row">
                 <div class="form-item">
                   <label class="form-label">培训开始时间</label>
-                  <input v-model="newPlan.startDate" type="date" class="form-input" />
+                  <AdminDatePicker v-model="newPlan.startDate" class="form-input" />
                 </div>
                 <div class="form-item">
                   <label class="form-label">培训结束时间</label>
-                  <input v-model="newPlan.endDate" type="date" class="form-input" />
+                  <AdminDatePicker v-model="newPlan.endDate" class="form-input" />
                 </div>
               </div>
               <div class="form-item">
                 <label class="form-label">参与方式</label>
-                <select v-model="newPlan.participation" class="form-select">
-                  <option v-for="mode in participationModes" :key="mode" :value="mode">
-                    {{ mode }}
-                  </option>
-                </select>
+                <AdminSelect v-model="newPlan.participation" class="form-select" :options="participationOptions" />
               </div>
               <div class="form-item">
                 <label class="form-label">是否需要申请处理</label>
-                <select v-model="newPlan.needApplication" class="form-select">
-                  <option v-for="option in applicationOptions" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
+                <AdminSelect v-model="newPlan.needApplication" class="form-select" :options="applicationSelectOptions" />
               </div>
               <div class="form-item">
                 <label class="form-label">计划名额</label>
-                <input v-model="newPlan.quota" type="number" class="form-input" placeholder="请输入计划名额" />
+                <AdminInput v-model="newPlan.quota" type="number" class="form-input" placeholder="请输入计划名额" />
               </div>
               <div class="form-item">
                 <label class="form-label">材料要求</label>
-                <div class="checkbox-group">
-                  <label v-for="option in materialOptions" :key="option" class="checkbox-item">
-                    <input type="checkbox" :value="option" v-model="newPlan.materialRequirements" />
-                    <span>{{ option }}</span>
-                  </label>
-                </div>
+                <AdminCheckboxGroup v-model="newPlan.materialRequirements" class="checkbox-group" :options="materialOptions" />
               </div>
               <div class="form-item">
                 <label class="form-label">计划说明</label>
-                <textarea v-model="newPlan.description" class="form-textarea" placeholder="请输入计划说明" rows="4"></textarea>
+                <AdminInput
+                  v-model="newPlan.description"
+                  type="textarea"
+                  class="form-textarea"
+                  placeholder="请输入计划说明"
+                  :rows="4"
+                />
               </div>
         </div>
         <template #footer>

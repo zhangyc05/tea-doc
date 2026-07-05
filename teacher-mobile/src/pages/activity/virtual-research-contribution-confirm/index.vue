@@ -124,7 +124,7 @@ function submitContribution() {
           <button class="supplement-row" @tap="goSupplementContribution">
             <view class="pen-icon"></view>
             <text>补充遗漏或材料</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>
@@ -135,7 +135,7 @@ function submitContribution() {
           <button v-for="file in files" :key="file" class="file-row" @tap="showFileFeedback(file)">
             <view class="file-icon"></view>
             <text>{{ file }}</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>

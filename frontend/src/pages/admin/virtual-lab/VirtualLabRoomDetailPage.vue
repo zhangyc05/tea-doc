@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminPagination, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -22,6 +23,10 @@ const virtualLabState = getVirtualLabState()
 
 const roomId = computed(() => String(route.params.roomId ?? 'smart-manufacturing'))
 const operationMessage = useOperationMessage()
+const memberPage = ref(1)
+const activityPage = ref(1)
+const recordPage = ref(1)
+const pageSize = 10
 
 const roomInfo = computed(() => getVirtualLabRoom(roomId.value))
 const members = computed(() => getVirtualLabMembersByRoom(roomId.value))
@@ -134,50 +139,38 @@ function viewRecord(id: string) {
               <Button size="sm" @click="inviteTeacher">邀请教师</Button>
             </div>
             <div class="table-container">
-              <table class="data-table member-table">
-                <thead>
-                  <tr>
-                    <th>教师</th>
-                    <th>教研室角色</th>
-                    <th>参与活动</th>
-                    <th>已形成记录</th>
-                    <th>最近参与</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="member in members" :key="member.id">
-                    <td>
-                      <div class="primary-text">{{ member.name }}</div>
-                      <div class="sub-text">{{ member.college }}</div>
-                    </td>
-                    <td>{{ member.role }}</td>
-                    <td>{{ member.activitiesParticipated }}</td>
-                    <td>{{ member.recordsFormed }}</td>
-                    <td>{{ member.recentParticipation }}</td>
-                    <td>
-                      <Button variant="ghost" size="sm" @click="viewTeacher(member.id)">查看教师</Button>
+              <AdminTable :data="members" row-key="id" empty-text="暂无成员">
+                <AdminTableColumn label="教师" min-width="130">
+                  <template #default="{ row }">
+                      <div class="primary-text">{{ row.name }}</div>
+                      <div class="sub-text">{{ row.college }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="role" label="教研室角色" min-width="110" />
+                <AdminTableColumn prop="activitiesParticipated" label="参与活动" min-width="90" />
+                <AdminTableColumn prop="recordsFormed" label="已形成记录" min-width="100" />
+                <AdminTableColumn prop="recentParticipation" label="最近参与" min-width="140" />
+                <AdminTableColumn label="操作" min-width="150" fixed="right">
+                  <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewTeacher(row.id)">查看教师</Button>
                       <Button
-                        v-if="member.role !== '负责人'"
+                        v-if="row.role !== '负责人'"
                         variant="danger"
                         size="sm"
-                        @click="removeMember(member.id)"
+                        @click="removeMember(row.id)"
                       >
                         移出
                       </Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
             <div class="table-footer">
-              <span>共 {{ members.length }} 条</span>
-              <div class="pager">
-                <span class="pager-button" aria-label="上一页">‹</span>
-                <span class="pager-current" aria-current="page">1</span>
-                <span class="pager-button" aria-label="下一页">›</span>
-                <span class="pager-size">10 条/页</span>
-              </div>
+              <AdminPagination
+                v-model:current-page="memberPage"
+                :page-size="pageSize"
+                :total="members.length"
+              />
             </div>
           </div>
 
@@ -186,43 +179,30 @@ function viewRecord(id: string) {
               <h2>近期教研活动</h2>
             </div>
             <div class="table-container">
-              <table class="data-table activity-table">
-                <thead>
-                  <tr>
-                    <th>活动名称</th>
-                    <th>时间</th>
-                    <th>会议方式</th>
-                    <th>参与情况</th>
-                    <th>记录形成</th>
-                    <th>最近更新</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="activity in activities" :key="activity.id">
-                    <td>{{ activity.name }}</td>
-                    <td>{{ activity.time }}</td>
-                    <td>{{ activity.meetingMethod }}</td>
-                    <td>{{ activity.participation }}</td>
-                    <td>
-                      <StatusBadge :status="activity.recordStatus" />
-                    </td>
-                    <td>{{ activity.recentUpdate }}</td>
-                    <td>
-                      <Button variant="ghost" size="sm" @click="viewActivity(activity.id)">查看活动</Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable :data="activities" row-key="id" empty-text="暂无教研活动">
+                <AdminTableColumn prop="name" label="活动名称" min-width="170" />
+                <AdminTableColumn prop="time" label="时间" min-width="140" />
+                <AdminTableColumn prop="meetingMethod" label="会议方式" min-width="110" />
+                <AdminTableColumn prop="participation" label="参与情况" min-width="110" />
+                <AdminTableColumn label="记录形成" min-width="110">
+                  <template #default="{ row }">
+                    <StatusBadge :status="row.recordStatus" />
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="recentUpdate" label="最近更新" min-width="140" />
+                <AdminTableColumn label="操作" min-width="110" fixed="right">
+                  <template #default="{ row }">
+                    <Button variant="ghost" size="sm" @click="viewActivity(row.id)">查看活动</Button>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
             <div class="table-footer">
-              <span>共 {{ activities.length }} 条</span>
-              <div class="pager">
-                <span class="pager-button" aria-label="上一页">‹</span>
-                <span class="pager-current" aria-current="page">1</span>
-                <span class="pager-button" aria-label="下一页">›</span>
-                <span class="pager-size">10 条/页</span>
-              </div>
+              <AdminPagination
+                v-model:current-page="activityPage"
+                :page-size="pageSize"
+                :total="activities.length"
+              />
             </div>
           </div>
         </div>
@@ -258,13 +238,11 @@ function viewRecord(id: string) {
             </article>
           </div>
           <div class="table-footer">
-            <span>共 {{ records.length }} 条</span>
-            <div class="pager">
-              <span class="pager-button" aria-label="上一页">‹</span>
-              <span class="pager-current" aria-current="page">1</span>
-              <span class="pager-button" aria-label="下一页">›</span>
-              <span class="pager-size">10 条/页</span>
-            </div>
+            <AdminPagination
+              v-model:current-page="recordPage"
+              :page-size="pageSize"
+              :total="records.length"
+            />
           </div>
         </div>
       </section>
@@ -563,42 +541,6 @@ function viewRecord(id: string) {
   border-top: 1px solid #e8eef7;
   color: #4d5d75;
   font-size: 13px;
-}
-
-.pager {
-  display: flex;
-  align-items: center;
-  gap: var(--space-admin-xs);
-}
-
-.pager-button,
-.pager-current {
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #d7e2f2;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: #8a98ad;
-}
-
-.pager-current {
-  border-color: var(--color-admin-primary);
-  background: var(--color-admin-primary);
-  color: #fff;
-}
-
-.pager-size {
-  min-width: 78px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #d7e2f2;
-  border-radius: var(--radius-sm);
-  background: #fff;
 }
 
 .records-card {

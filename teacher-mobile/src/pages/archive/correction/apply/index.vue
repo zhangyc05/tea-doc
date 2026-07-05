@@ -4,6 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 
 import MobileActionButton from '../../../../components/MobileActionButton.vue'
 import MobileCard from '../../../../components/MobileCard.vue'
+import MobileIcon from '../../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../../components/MobileStatusTag.vue'
@@ -33,10 +34,6 @@ function goRecordDetail() {
   uni.navigateTo({
     url: `/pages/archive/record-detail/index?recordId=${record.value.id}`,
   })
-}
-
-function selectReason(reason: string) {
-  selectedReason.value = reason
 }
 
 function submitCorrection() {
@@ -76,29 +73,29 @@ function submitCorrection() {
 
     <MobileCard class="section-card">
       <text class="section-title">更正原因</text>
-      <view class="reason-grid">
-        <button
+      <wd-radio-group v-model="selectedReason" class="reason-grid" shape="button" checked-color="#1677ff">
+        <wd-radio
           v-for="reason in reasonOptions"
           :key="reason"
+          :value="reason"
           class="reason-chip"
-          :class="{ 'reason-chip--active': selectedReason === reason }"
-          @tap="selectReason(reason)"
         >
           {{ reason }}
-        </button>
-      </view>
+        </wd-radio>
+      </wd-radio-group>
     </MobileCard>
 
     <MobileCard class="section-card">
       <text class="section-title">补充说明</text>
-      <textarea
+      <wd-textarea
         v-model="description"
         class="description-input"
-        maxlength="200"
+        :maxlength="200"
         placeholder="说明需要更正的字段、原内容和建议调整内容"
         placeholder-class="description-placeholder"
+        show-word-limit
+        no-border
       />
-      <text class="description-count">{{ description.length }}/200</text>
     </MobileCard>
 
     <MobileCard class="section-card">
@@ -107,7 +104,7 @@ function submitCorrection() {
         <text class="section-hint">沿用原档案材料</text>
       </view>
       <view v-for="material in record.materials" :key="material.name" class="material-row">
-        <view class="material-icon"></view>
+        <MobileIcon class="material-icon" name="file" tone="orange" size="plain" />
         <view class="material-body">
           <text class="material-name">{{ material.name }}</text>
           <text class="material-meta">{{ material.meta }}</text>
@@ -171,8 +168,7 @@ function submitCorrection() {
 .record-meta-label,
 .section-hint,
 .material-meta,
-.notice-desc,
-.description-count {
+.notice-desc {
   color: #66728a;
   font-size: 24rpx;
   line-height: 1.38;
@@ -248,54 +244,61 @@ function submitCorrection() {
 }
 
 .reason-chip {
-  display: flex;
   height: 76rpx;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 0 18rpx;
+}
+
+.reason-chip :deep(.wd-radio) {
+  width: 100%;
+  height: 76rpx;
   border: 2rpx solid $teacher-mobile-card-border;
   border-radius: 18rpx;
   background: #fff;
-  color: #526079;
+}
+
+.reason-chip :deep(.wd-radio.is-checked) {
+  border-color: #1677ff;
+  background: #e8f1ff;
+}
+
+.reason-chip :deep(.wd-radio__label) {
+  color: #1663d6;
   font-size: 25rpx;
   font-weight: 900;
   line-height: 1.2;
 }
 
-.reason-chip::after {
+.reason-chip :deep(.wd-radio__shape) {
   display: none;
-  border: 0;
-}
-
-.reason-chip--active {
-  border-color: #1677ff;
-  background: #e8f1ff;
-  color: #1663d6;
 }
 
 .description-input {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 190rpx;
+  display: block;
   margin-top: 20rpx;
-  padding: 22rpx;
   border: 2rpx solid $teacher-mobile-card-border;
   border-radius: 20rpx;
   background: #f8fbff;
+}
+
+.description-input :deep(.wd-textarea) {
+  padding: 22rpx;
+  background: transparent;
+}
+
+.description-input :deep(.wd-textarea__inner) {
+  min-height: 190rpx;
   color: #10172d;
   font-size: 26rpx;
   line-height: 1.45;
 }
 
-.description-placeholder {
+:deep(.description-placeholder) {
   color: #9aa5b8;
 }
 
-.description-count {
-  display: block;
-  margin-top: 12rpx;
-  text-align: right;
+.description-input :deep(.wd-textarea__count) {
+  padding: 0 22rpx 18rpx 0;
+  color: #778197;
+  font-size: 22rpx;
 }
 
 .material-row {

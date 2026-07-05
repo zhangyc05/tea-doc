@@ -114,9 +114,9 @@ function submitAgain() {
         </view>
         <text class="upload-desc">请补充带单位盖章或签字的证明材料，提交后将再次进入部门核验。</text>
         <view class="upload-entry" @tap="goSupplement">
-          <view class="upload-icon"></view>
+          <wd-icon class="upload-icon" name="upload" size="42rpx" color="#08a85c" />
           <text>去补充材料</text>
-          <view class="chevron"></view>
+          <wd-icon class="chevron" name="chevron-right" size="26rpx" color="#526079" />
         </view>
       </MobileCard>
 
@@ -125,14 +125,13 @@ function submitAgain() {
           <view class="accent-line"></view>
           <text class="section-title">补充说明（可选）</text>
         </view>
-        <view class="textarea-box">
-          <textarea
-            class="remark-input"
-            placeholder="例如：已补充加盖公章的证明材料。"
-            :maxlength="200"
-          />
-          <text class="textarea-count">0/200</text>
-        </view>
+        <wd-textarea
+          class="remark-input"
+          placeholder="例如：已补充加盖公章的证明材料。"
+          :maxlength="200"
+          show-word-limit
+          no-border
+        />
       </MobileCard>
     </view>
 
@@ -470,49 +469,28 @@ function submitAgain() {
 }
 
 .upload-icon {
-  position: relative;
+  display: flex;
   width: 42rpx;
-  height: 34rpx;
+  height: 42rpx;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-}
-
-.upload-icon::before {
-  position: absolute;
-  left: 2rpx;
-  top: 12rpx;
-  width: 38rpx;
-  height: 24rpx;
-  border-radius: 15rpx;
-  background: currentColor;
-  box-shadow: -8rpx 6rpx 0 -2rpx currentColor, 10rpx 7rpx 0 -2rpx currentColor;
-  content: '';
-}
-
-.upload-icon::after {
-  position: absolute;
-  left: 18rpx;
-  top: 3rpx;
-  width: 7rpx;
-  height: 29rpx;
-  border-radius: 999rpx;
-  background: #fff;
-  box-shadow: -9rpx 10rpx 0 -2rpx #fff, 9rpx 10rpx 0 -2rpx #fff;
-  content: '';
 }
 
 .chevron {
   position: absolute;
   right: 26rpx;
   top: 50%;
-  width: 20rpx;
-  height: 20rpx;
-  border-top: 5rpx solid #526079;
-  border-right: 5rpx solid #526079;
-  transform: translateY(-50%) rotate(45deg);
+  display: flex;
+  width: 26rpx;
+  height: 26rpx;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
 }
 
-.textarea-box {
-  position: relative;
+.remark-input {
+  display: block;
   min-height: 110rpx;
   margin-top: 22rpx;
   border: 2rpx solid #e1e6ed;
@@ -520,20 +498,20 @@ function submitAgain() {
   background: #fbfcfe;
 }
 
-.remark-input {
-  width: 100%;
-  height: 110rpx;
+.remark-input :deep(.wd-textarea) {
   padding: 22rpx 24rpx 34rpx;
-  box-sizing: border-box;
+  background: transparent;
+}
+
+.remark-input :deep(.wd-textarea__inner) {
+  min-height: 110rpx;
   color: #344054;
   font-size: 26rpx;
   line-height: 1.45;
 }
 
-.textarea-count {
-  position: absolute;
-  right: 20rpx;
-  bottom: 12rpx;
+.remark-input :deep(.wd-textarea__count) {
+  padding: 0 20rpx 12rpx 0;
   color: #8a94a6;
   font-size: 24rpx;
 }

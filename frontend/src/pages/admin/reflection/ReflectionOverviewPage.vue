@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, EmptyState } from '@/components/common'
+import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionOverviewMock } from '@/services/mock/reflection'
@@ -21,6 +22,9 @@ const activeIssueKeyword = ref(String(route.query.keyword || ''))
 const organizations = reflectionOverview.organizations
 const semesters = reflectionOverview.semesters
 const triggers = reflectionOverview.triggers
+const organizationOptions = organizations.map((value) => ({ label: value, value }))
+const semesterOptions = semesters.map((value) => ({ label: value, value }))
+const triggerOptions = triggers.map((value) => ({ label: value, value }))
 const receivedReflections = getReflectionRecords()
 const reflections = computed(() => {
   const existingIds = new Set(receivedReflections.map(item => item.id))
@@ -154,34 +158,21 @@ function viewRelatedRecords() {
                 <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
-                    <select v-model="selectedOrganization" class="filter-select">
-                      <option v-for="org in organizations" :key="org" :value="org">
-                        {{ org }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedOrganization" class="filter-select" :options="organizationOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">学期</label>
-                    <select v-model="selectedSemester" class="filter-select">
-                      <option v-for="semester in semesters" :key="semester" :value="semester">
-                        {{ semester }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedSemester" class="filter-select" :options="semesterOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">触发来源</label>
-                    <select v-model="selectedTrigger" class="filter-select">
-                      <option v-for="trigger in triggers" :key="trigger" :value="trigger">
-                        {{ trigger }}
-                      </option>
-                    </select>
+                    <AdminSelect v-model="selectedTrigger" class="filter-select" :options="triggerOptions" />
                   </div>
                 </template>
                 <template #search>
                   <div class="search-row">
-                    <input
+                    <AdminInput
                       v-model="searchQuery"
-                      type="text"
                       placeholder="搜索教师、课程、反思主题"
                       class="search-input"
                     />
@@ -199,39 +190,37 @@ function viewRelatedRecords() {
 
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="reflection-table">
-                  <thead>
-                    <tr>
-                      <th>教师</th>
-                      <th>院系 / 专业</th>
-                      <th>课程 / 班级</th>
-                      <th>反思主题</th>
-                      <th>触发来源</th>
-                      <th>提交时间</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reflection in filteredReflections" :key="reflection.id">
-                      <td>{{ reflection.teacher }}</td>
-                      <td>{{ reflection.department }} / {{ reflection.major }}</td>
-                      <td>{{ reflection.course }} / {{ reflection.class }}</td>
-                      <td>{{ reflection.theme }}</td>
-                      <td>
-                        <span class="trigger-badge">{{ reflection.trigger }}</span>
-                      </td>
-                      <td>{{ reflection.submitTime }}</td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewDetail(reflection.id)">
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredReflections.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="7" title="未找到符合条件的反思记录" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="reflection-table"
+                  :data="filteredReflections"
+                  empty-text="未找到符合条件的反思记录"
+                >
+                  <AdminTableColumn prop="teacher" label="教师" min-width="80" />
+                  <AdminTableColumn label="院系 / 专业" min-width="190">
+                    <template #default="{ row }">
+                      {{ row.department }} / {{ row.major }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="课程 / 班级" min-width="170">
+                    <template #default="{ row }">
+                      {{ row.course }} / {{ row.class }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="theme" label="反思主题" min-width="190" />
+                  <AdminTableColumn label="触发来源" min-width="110">
+                    <template #default="{ row }">
+                      <span class="trigger-badge">{{ row.trigger }}</span>
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="submitTime" label="提交时间" min-width="150" />
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
             </div>
           </div>

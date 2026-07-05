@@ -176,7 +176,7 @@ function handleTodoAction(action: string) {
           <text class="section-title">最近教研活动</text>
           <button class="all-link" @tap="goResearchActivityList">
             <text>全部</text>
-            <view class="link-arrow" aria-hidden="true"></view>
+            <wd-icon name="chevron-right" size="20rpx" color="#079653" />
           </button>
         </view>
         <MobileCard class="activity-card">
@@ -187,7 +187,7 @@ function handleTodoAction(action: string) {
               <text class="activity-desc">{{ item.desc }}</text>
             </view>
             <text class="activity-status" :class="`activity-status--${item.tone}`">{{ item.status }}</text>
-            <view class="row-arrow" aria-hidden="true"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </MobileCard>
       </view>

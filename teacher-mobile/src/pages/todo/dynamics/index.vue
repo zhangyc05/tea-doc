@@ -23,6 +23,10 @@ const categoryOptions = ['全部', '培训与研修', '教学实践', '教学改
 const todoState = getTodoState()
 const todoDynamics = computed(() => getFilteredTodoDynamics())
 const resultCount = computed(() => todoDynamics.value.length)
+const activeTypeIndex = computed({
+  get: () => Math.max(0, filters.indexOf(todoState.dynamicFilter.type)),
+  set: index => selectType(filters[Number(index)] || '全部'),
+})
 const groups = computed(() => {
   const groupLabels: Array<MobileTodoDynamic['group']> = ['今天', '昨天', '更早']
   return groupLabels
@@ -88,17 +92,9 @@ function showDynamic(item: MobileTodoDynamic) {
       </template>
     </MobileNavbar>
 
-    <view class="filter-tabs">
-      <button
-        v-for="(filter, index) in filters"
-        :key="filter"
-        class="filter-tab"
-        :class="{ 'filter-tab--active': todoState.dynamicFilter.type === filter }"
-        @tap="selectType(filter)"
-      >
-        {{ filter }}
-      </button>
-    </view>
+    <wd-tabs v-model="activeTypeIndex" class="filter-tabs" color="#04a851" inactive-color="#111827" :line-width="0">
+      <wd-tab v-for="(filter, index) in filters" :key="filter" :name="index" :title="filter" />
+    </wd-tabs>
 
     <view v-for="group in groups" :key="group.label" class="date-group">
       <view class="date-head">
@@ -117,61 +113,78 @@ function showDynamic(item: MobileTodoDynamic) {
           <text class="dynamic-category" :class="`dynamic-category--${item.tone}`">{{ item.category }}</text>
         </view>
         <text class="dynamic-time">{{ item.time }}</text>
-        <view class="dynamic-arrow"></view>
+        <wd-icon class="dynamic-arrow" name="chevron-right" size="26rpx" color="#050812" />
       </MobileCard>
     </view>
 
-    <view v-if="isFilterOpen" class="filter-overlay" @tap="closeFilter"></view>
-    <view v-if="isFilterOpen" class="filter-drawer">
+    <wd-popup v-model="isFilterOpen" position="bottom" safe-area-inset-bottom :z-index="80" custom-class="filter-popup">
+    <view class="filter-drawer">
       <view class="drawer-handle"></view>
       <view class="drawer-head">
         <text class="drawer-title">筛选</text>
-        <button class="drawer-close" aria-label="关闭筛选" @tap="closeFilter"></button>
+        <button class="drawer-close" aria-label="关闭筛选" @tap="closeFilter">
+          <wd-icon name="close" size="36rpx" color="#5b6472" />
+        </button>
       </view>
 
       <view class="filter-section">
         <text class="filter-section__title">时间范围</text>
-        <view class="option-row option-row--time">
-          <button
+        <wd-radio-group
+          class="option-row option-row--time option-radio-group"
+          :model-value="todoState.dynamicFilter.time"
+          shape="button"
+          checked-color="#04a851"
+          @change="selectTime"
+        >
+          <wd-radio
             v-for="option in timeOptions"
             :key="option"
-            class="option-pill"
-            :class="{ 'option-pill--active': todoState.dynamicFilter.time === option }"
-            @tap="selectTime(option)"
+            class="option-radio"
+            :value="option"
           >
             {{ option }}
-          </button>
-        </view>
+          </wd-radio>
+        </wd-radio-group>
       </view>
 
       <view class="filter-section">
         <text class="filter-section__title">更新类型</text>
-        <view class="option-row">
-          <button
+        <wd-radio-group
+          class="option-row option-radio-group"
+          :model-value="todoState.dynamicFilter.type"
+          shape="button"
+          checked-color="#04a851"
+          @change="selectType"
+        >
+          <wd-radio
             v-for="option in typeOptions"
             :key="option"
-            class="option-pill option-pill--compact"
-            :class="{ 'option-pill--active': todoState.dynamicFilter.type === option }"
-            @tap="selectType(option)"
+            class="option-radio option-radio--compact"
+            :value="option"
           >
             {{ option }}
-          </button>
-        </view>
+          </wd-radio>
+        </wd-radio-group>
       </view>
 
       <view class="filter-section">
         <text class="filter-section__title">相关分类</text>
-        <view class="option-grid">
-          <button
+        <wd-radio-group
+          class="option-grid option-radio-group"
+          :model-value="todoState.dynamicFilter.category"
+          shape="button"
+          checked-color="#04a851"
+          @change="selectCategory"
+        >
+          <wd-radio
             v-for="option in categoryOptions"
             :key="option"
-            class="option-pill option-pill--grid"
-            :class="{ 'option-pill--active': todoState.dynamicFilter.category === option }"
-            @tap="selectCategory(option)"
+            class="option-radio option-radio--grid"
+            :value="option"
           >
             {{ option }}
-          </button>
-        </view>
+          </wd-radio>
+        </wd-radio-group>
       </view>
 
       <view class="drawer-actions">
@@ -179,6 +192,7 @@ function showDynamic(item: MobileTodoDynamic) {
         <MobileActionButton class="drawer-action drawer-action--apply" variant="primary" @tap="applyFilter">查看结果（{{ resultCount }}）</MobileActionButton>
       </view>
     </view>
+    </wd-popup>
   </MobilePageShell>
 </template>
 
@@ -193,7 +207,6 @@ function showDynamic(item: MobileTodoDynamic) {
 
 .nav-head,
 .filter-button,
-.filter-tabs,
 .date-head,
 .date-title,
 .dynamic-card {
@@ -207,37 +220,16 @@ function showDynamic(item: MobileTodoDynamic) {
   justify-content: space-between;
 }
 
-.back-button,
-.filter-button,
-.filter-tab {
+.filter-button {
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
 }
 
-.back-button {
-  position: relative;
-  width: 72rpx;
-  height: 72rpx;
-}
-
-.back-button::after,
-.filter-button::after,
-.filter-tab::after {
+.filter-button::after {
   display: none;
   border: 0;
-}
-
-.back-button__icon {
-  position: absolute;
-  top: 20rpx;
-  left: 22rpx;
-  width: 28rpx;
-  height: 28rpx;
-  border-bottom: 6rpx solid #0b122a;
-  border-left: 6rpx solid #0b122a;
-  transform: rotate(45deg);
 }
 
 .nav-title {
@@ -265,7 +257,6 @@ function showDynamic(item: MobileTodoDynamic) {
 
 .filter-tabs {
   height: 74rpx;
-  justify-content: space-between;
   margin: 10rpx -6rpx 24rpx;
   padding: 8rpx 10rpx;
   border: 1rpx solid #edf1f6;
@@ -274,24 +265,32 @@ function showDynamic(item: MobileTodoDynamic) {
   box-shadow: 0 14rpx 38rpx rgba(34, 48, 80, 0.06);
 }
 
-.filter-tab {
-  display: flex;
-  height: 58rpx;
-  min-width: 118rpx;
-  align-items: center;
-  justify-content: center;
-  border-radius: 30rpx;
-  color: #111827;
-  font-size: 27rpx;
-  font-weight: 900;
-  line-height: 1;
-  white-space: nowrap;
+.filter-tabs :deep(.wd-tabs__nav) {
+  background: transparent;
 }
 
-.filter-tab--active {
+.filter-tabs :deep(.wd-tabs__nav-container) {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-item) {
+  height: 58rpx;
+  min-width: 118rpx;
+  border-radius: 30rpx;
+  font-size: 27rpx;
+  font-weight: 900;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-item.is-active) {
   background: linear-gradient(135deg, #16c96c, #02ad53);
   color: #fff;
   box-shadow: 0 12rpx 28rpx rgba(5, 181, 85, 0.22);
+}
+
+.filter-tabs :deep(.wd-tabs__container),
+.filter-tabs :deep(.wd-tabs__line) {
+  display: none;
 }
 
 .date-group {
@@ -391,28 +390,16 @@ function showDynamic(item: MobileTodoDynamic) {
 }
 
 .dynamic-arrow {
+  display: flex;
   flex: 0 0 auto;
-  width: 18rpx;
-  height: 18rpx;
+  width: 26rpx;
+  height: 26rpx;
+  align-items: center;
+  justify-content: center;
   margin-left: 16rpx;
-  border-top: 6rpx solid #050812;
-  border-right: 6rpx solid #050812;
-  transform: rotate(45deg);
-}
-
-.filter-overlay {
-  position: fixed;
-  z-index: 80;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.58);
 }
 
 .filter-drawer {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 81;
   padding: 26rpx 34rpx calc(28rpx + env(safe-area-inset-bottom));
   border-radius: 48rpx 48rpx 0 0;
   background: #fff;
@@ -446,36 +433,15 @@ function showDynamic(item: MobileTodoDynamic) {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
   width: 58rpx;
   height: 58rpx;
+  align-items: center;
+  justify-content: center;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-}
-
-.drawer-close::before,
-.drawer-close::after {
-  position: absolute;
-  top: 27rpx;
-  left: 11rpx;
-  width: 38rpx;
-  height: 4rpx;
-  border-radius: 999rpx;
-  background: #5b6472;
-  content: '';
-}
-
-.drawer-close::before {
-  transform: rotate(45deg);
-}
-
-.drawer-close::after {
-  transform: rotate(-45deg);
-}
-
-.drawer-close::after {
-  border: 0;
 }
 
 .filter-section {
@@ -507,13 +473,14 @@ function showDynamic(item: MobileTodoDynamic) {
   row-gap: 24rpx;
 }
 
-.option-pill {
-  display: flex;
+.option-radio-group :deep(.wd-radio) {
+  margin: 0;
+}
+
+.option-radio :deep(.wd-radio__label) {
   box-sizing: border-box;
   height: 74rpx;
   min-width: 120rpx;
-  align-items: center;
-  justify-content: center;
   margin: 0;
   padding: 0 18rpx;
   border: 1rpx solid #e0e5ed;
@@ -522,30 +489,30 @@ function showDynamic(item: MobileTodoDynamic) {
   color: #2b3240;
   font-size: 28rpx;
   font-weight: 700;
-  line-height: 1;
+  line-height: 74rpx;
+  text-align: center;
   white-space: nowrap;
 }
 
-.option-pill::after {
-  display: none;
-  border: 0;
-}
-
-.option-pill--compact {
+.option-radio--compact :deep(.wd-radio__label) {
   min-width: 116rpx;
   padding: 0 14rpx;
 }
 
-.option-pill--grid {
+.option-radio--grid :deep(.wd-radio__label) {
   width: 100%;
   min-width: 0;
 }
 
-.option-pill--active {
+.option-radio :deep(.wd-radio.is-checked .wd-radio__label) {
   border: 2rpx solid $teacher-mobile-primary;
   background: #effff5;
   color: $teacher-mobile-primary-dark;
   font-weight: 900;
+}
+
+.option-radio :deep(.wd-radio__shape) {
+  display: none;
 }
 
 .drawer-actions {
@@ -573,7 +540,7 @@ function showDynamic(item: MobileTodoDynamic) {
     margin-left: -10rpx;
   }
 
-  .filter-tab {
+  .filter-tabs :deep(.wd-tabs__nav-item) {
     min-width: 100rpx;
     font-size: 24rpx;
   }
@@ -613,11 +580,12 @@ function showDynamic(item: MobileTodoDynamic) {
     gap: 12rpx;
   }
 
-  .option-pill {
+  .option-radio :deep(.wd-radio__label) {
     height: 66rpx;
     min-width: 116rpx;
     padding: 0 14rpx;
     font-size: 24rpx;
+    line-height: 66rpx;
   }
 
   .option-grid {

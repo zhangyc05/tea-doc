@@ -125,25 +125,11 @@ function goApplicationDetail() {
           <view class="section-icon section-icon--progress"></view>
           <text class="section-title">当前进度</text>
         </view>
-        <view class="steps">
-          <view class="step step--done">
-            <view class="step__dot"><view class="step__check"></view></view>
-            <text class="step__title">申请已提交</text>
-            <text class="step__sub">已完成</text>
-          </view>
-          <view class="step-line step-line--active"></view>
-          <view class="step step--current">
-            <view class="step__dot"><text>2</text></view>
-            <text class="step__title">业务部门确认</text>
-            <text class="step__sub">{{ progressSubText }}</text>
-          </view>
-          <view class="step-line"></view>
-          <view class="step">
-            <view class="step__dot"><text>3</text></view>
-            <text class="step__title">通过后参加培训</text>
-            <text class="step__sub">后续</text>
-          </view>
-        </view>
+        <wd-steps class="steps" :active="1" align-center>
+          <wd-step title="申请已提交" description="已完成" status="finished" />
+          <wd-step title="业务部门确认" :description="progressSubText" status="process" />
+          <wd-step title="通过后参加培训" description="后续" />
+        </wd-steps>
         <text class="progress-desc">确认结果会通过系统消息提醒你。通过后，可在“我的培训”中查看培训安排并记录学习过程。</text>
       </MobileCard>
     </view>
@@ -591,79 +577,30 @@ function goApplicationDetail() {
 }
 
 .steps {
-  gap: 14rpx;
   margin-top: 8rpx;
 }
 
-.step {
-  min-width: 0;
-  flex: 1;
-  text-align: center;
-}
-
-.step__dot {
-  display: flex;
-  width: 48rpx;
-  height: 48rpx;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 14rpx;
-  border: 3rpx solid #dfe5ef;
-  border-radius: 50%;
-  background: #fff;
-  color: #8a94a8;
-  font-size: 27rpx;
-  font-weight: 900;
-}
-
-.step--done .step__dot,
-.step--current .step__dot {
-  border-color: rgba(14, 193, 101, 0.38);
-  background: $teacher-mobile-primary;
-  color: #fff;
-  box-shadow: 0 0 0 8rpx rgba(14, 193, 101, 0.12);
-}
-
-.step__check {
-  width: 19rpx;
-  height: 11rpx;
-  border-bottom: 5rpx solid #fff;
-  border-left: 5rpx solid #fff;
-  transform: rotate(-45deg);
-}
-
-.step__title {
-  display: block;
+.steps :deep(.wd-step__title) {
   color: #19243a;
   font-size: 23rpx;
   font-weight: 800;
   line-height: 1.25;
 }
 
-.step__sub {
-  display: block;
+.steps :deep(.wd-step__description) {
   margin-top: 8rpx;
   color: #8a94a8;
   font-size: 22rpx;
   line-height: 1.25;
 }
 
-.step--current .step__sub {
+.steps :deep(.wd-step.is-process .wd-step__description) {
   color: $teacher-mobile-primary-dark;
   font-weight: 900;
 }
 
-.step-line {
-  width: 94rpx;
-  height: 0;
-  flex: 0 1 94rpx;
-  border-top: 3rpx dashed #cdd5e1;
-  transform: translateY(-47rpx);
-}
-
-.step-line--active {
-  border-top-style: solid;
-  border-color: $teacher-mobile-primary;
+.steps :deep(.wd-step__icon) {
+  color: $teacher-mobile-primary;
 }
 
 .progress-desc {
@@ -744,15 +681,10 @@ function goApplicationDetail() {
   }
 
   .steps {
-    gap: 8rpx;
+    margin-top: 4rpx;
   }
 
-  .step-line {
-    width: 48rpx;
-    flex-basis: 48rpx;
-  }
-
-  .step__title {
+  .steps :deep(.wd-step__title) {
     font-size: 21rpx;
   }
 

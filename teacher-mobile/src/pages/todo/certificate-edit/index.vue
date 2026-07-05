@@ -31,9 +31,8 @@ function replaceMaterial() {
   uni.showToast({ title: '材料已更换，提交后核验', icon: 'none' })
 }
 
-function updateField(label: string, event: unknown) {
-  const value = (event as { detail?: { value?: string } }).detail?.value || ''
-  updateTodoCertificateField(label, value)
+function updateFieldValue(label: string, value: string | number) {
+  updateTodoCertificateField(label, String(value))
 }
 </script>
 
@@ -68,8 +67,14 @@ function updateField(label: string, event: unknown) {
       <text class="section-title">可修改信息</text>
       <view v-for="item in editableInfo" :key="item.label" class="field-row">
         <text class="field-label">{{ item.label }}：</text>
-        <input class="field-input" :value="item.value" @input="updateField(item.label, $event)" />
-        <text class="edit-icon">✎</text>
+        <wd-input
+          class="field-input"
+          :model-value="item.value"
+          no-border
+          clearable
+          @update:model-value="updateFieldValue(item.label, $event)"
+        />
+        <MobileIcon class="edit-icon" name="edit" tone="gray" size="plain" shape="none" />
       </view>
     </MobileCard>
 
@@ -90,15 +95,14 @@ function updateField(label: string, event: unknown) {
         <text class="section-title">补充说明</text>
         <text class="optional-text">（选填）</text>
       </view>
-      <view class="textarea-wrap">
-        <textarea
-          class="note-textarea"
-          maxlength="200"
-          placeholder="如需说明修改原因，可补充一句说明"
-          placeholder-class="note-placeholder"
-        />
-        <text class="note-count">0/200</text>
-      </view>
+      <wd-textarea
+        class="note-textarea"
+        :maxlength="200"
+        placeholder="如需说明修改原因，可补充一句说明"
+        placeholder-class="note-placeholder"
+        show-word-limit
+        no-border
+      />
     </MobileCard>
 
     <view class="submit-tip">
@@ -342,16 +346,23 @@ function updateField(label: string, event: unknown) {
 .field-input {
   min-width: 0;
   flex: 1;
+}
+
+.field-input :deep(.wd-input) {
+  padding: 0;
+  background: transparent;
+}
+
+.field-input :deep(.wd-input__inner) {
   color: #20283a;
   font-size: 24rpx;
   line-height: 52rpx;
 }
 
 .edit-icon {
+  width: 29rpx;
+  height: 29rpx;
   margin-left: 12rpx;
-  color: #6d7584;
-  font-size: 29rpx;
-  line-height: 1;
 }
 
 .material-row {
@@ -405,19 +416,21 @@ function updateField(label: string, event: unknown) {
   font-size: 25rpx;
 }
 
-.textarea-wrap {
-  position: relative;
-  height: 76rpx;
+.note-textarea {
+  display: block;
   margin-top: 12rpx;
-  padding: 16rpx 24rpx;
   border: 1rpx solid #dfe5ef;
   border-radius: 14rpx;
   background: rgba(255, 255, 255, 0.86);
 }
 
-.note-textarea {
-  width: 100%;
-  height: 100%;
+.note-textarea :deep(.wd-textarea) {
+  padding: 16rpx 24rpx;
+  background: transparent;
+}
+
+.note-textarea :deep(.wd-textarea__inner) {
+  min-height: 76rpx;
   color: #20283a;
   font-size: 25rpx;
   line-height: 1.45;
@@ -427,10 +440,8 @@ function updateField(label: string, event: unknown) {
   color: #a1aaba;
 }
 
-.note-count {
-  position: absolute;
-  right: 24rpx;
-  bottom: 18rpx;
+.note-textarea :deep(.wd-textarea__count) {
+  padding: 0 24rpx 18rpx 0;
   color: #6e7889;
   font-size: 22rpx;
 }

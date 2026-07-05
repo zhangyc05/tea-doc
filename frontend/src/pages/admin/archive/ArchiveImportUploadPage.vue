@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminUpload } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
@@ -21,8 +22,6 @@ const route = useRoute()
 const archiveState = getArchiveState()
 
 const currentStep = ref(1)
-const isDragging = ref(false)
-const fileInput = ref<HTMLInputElement | null>(null)
 const uploadedFiles = computed(() => archiveState.uploadedFiles)
 
 const steps = ['上传资料', '系统识别', '确认结果', '生成待处理记录']
@@ -40,41 +39,6 @@ const totalSize = computed(() => {
     return total + Number.parseFloat(file.size)
   }, 0).toFixed(1)
 })
-
-function handleDragEnter(event: DragEvent) {
-  event.preventDefault()
-  isDragging.value = true
-}
-
-function handleDragLeave(event: DragEvent) {
-  event.preventDefault()
-  isDragging.value = false
-}
-
-function handleDragOver(event: DragEvent) {
-  event.preventDefault()
-}
-
-function handleDrop(event: DragEvent) {
-  event.preventDefault()
-  isDragging.value = false
-  const files = Array.from(event.dataTransfer?.files || [])
-  appendFiles(files)
-}
-
-function selectFiles() {
-  fileInput.value?.click()
-}
-
-function importFromFolder() {
-  fileInput.value?.click()
-}
-
-function handleFileChange(event: Event) {
-  const input = event.target as HTMLInputElement
-  appendFiles(Array.from(input.files || []))
-  input.value = ''
-}
 
 function appendFiles(files: File[]) {
   const mapped = files.map((file, index): ArchiveUploadedFile => {
@@ -154,22 +118,10 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
       <section class="content-grid">
         <article class="upload-panel">
           <h2>上传资料</h2>
-          <input
-            ref="fileInput"
-            type="file"
-            multiple
-            class="file-input"
-            accept=".xlsx,.xls,.pdf,.doc,.docx,.png,.jpg,.jpeg,.zip"
-            @change="handleFileChange"
-          />
-
-          <div
+          <AdminUpload
             class="upload-zone"
-            :class="{ dragging: isDragging }"
-            @dragenter="handleDragEnter"
-            @dragleave="handleDragLeave"
-            @dragover="handleDragOver"
-            @drop="handleDrop"
+            accept=".xlsx,.xls,.pdf,.doc,.docx,.png,.jpg,.jpeg,.zip"
+            @select="appendFiles"
           >
             <div class="folder-art">
               <span class="paper paper-one"></span>
@@ -182,14 +134,14 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
               <p>可一次上传台账、名单、证书扫描件、项目材料、评审结果、通知文件等资料。</p>
             </div>
             <div class="upload-actions">
-              <Button class="upload-action-button" type="button" variant="outline" size="lg" @click="selectFiles">
+              <Button class="upload-action-button" type="button" variant="outline" size="lg">
                 ▣ 选择文件
               </Button>
-              <Button class="upload-action-button" type="button" variant="outline" size="lg" @click="importFromFolder">
+              <Button class="upload-action-button" type="button" variant="outline" size="lg">
                 ▣ 从本地文件夹导入
               </Button>
             </div>
-          </div>
+          </AdminUpload>
 
           <div class="file-card">
             <header>
@@ -360,23 +312,9 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
   font-weight: 800;
 }
 
-.file-input {
-  display: none;
-}
-
 .upload-zone {
   min-height: 198px;
-  padding: var(--space-admin-card-gap);
-  border: 1px dashed #b9ccec;
-  border-radius: var(--radius-lg);
-  background: #fbfdff;
   text-align: center;
-  transition: border-color 0.16s ease, background 0.16s ease;
-}
-
-.upload-zone.dragging {
-  border-color: #1677ff;
-  background: #f0f7ff;
 }
 
 .folder-art {

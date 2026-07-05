@@ -17,6 +17,15 @@ function collectVueFiles(dir: string): string[] {
   })
 }
 
+function fileExists(path: string) {
+  try {
+    statSync(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
 describe('Element Plus admin integration', () => {
   it('installs Element Plus and loads its styles through the app entry', () => {
     const packageJson = JSON.parse(readProjectFile('frontend/package.json'))
@@ -41,8 +50,18 @@ describe('Element Plus admin integration', () => {
     const guide = readProjectFile('frontend/docs/admin-design-system-guide.md')
 
     expect(guide).toContain('Element Plus')
+    expect(guide).toContain('Element Plus 优先')
     expect(guide).toContain('复杂控件底座')
     expect(guide).toContain('不得在管理端页面中直接散用')
+  })
+
+  it('keeps Element Plus usage behind admin-ui adapters', () => {
+    expect(fileExists(`${repoRoot}/frontend/src/components/admin-ui/index.ts`)).toBe(true)
+
+    const guide = readProjectFile('frontend/docs/admin-design-system-guide.md')
+
+    expect(guide).toContain('frontend/src/components/admin-ui')
+    expect(guide).toContain('自研只做业务封装和必要适配')
   })
 
   it('keeps admin pages behind local component and business wrappers', () => {
@@ -52,5 +71,111 @@ describe('Element Plus admin integration', () => {
     })
 
     expect(directImports).toEqual([])
+  })
+
+  it('migrates the first training filter batch to admin-ui controls', () => {
+    const firstBatchPages = [
+      'frontend/src/pages/admin/training/TrainingApplicationPage.vue',
+      'frontend/src/pages/admin/training/TrainingDemandPage.vue',
+      'frontend/src/pages/admin/training/TrainingPlanPage.vue',
+      'frontend/src/pages/admin/training/TrainingRecordPage.vue',
+      'frontend/src/pages/admin/training/TrainingResourcePage.vue',
+      'frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue',
+    ]
+
+    for (const page of firstBatchPages) {
+      const source = readProjectFile(page)
+
+      expect(source).toContain('@/components/admin-ui')
+      expect(source).not.toMatch(/<select[\s>]/)
+      expect(source).not.toMatch(/<input[\s>]/)
+      expect(source).not.toMatch(/<textarea[\s>]/)
+    }
+  })
+
+  it('migrates the second admin filter batch to admin-ui controls', () => {
+    const secondBatchPages = [
+      'frontend/src/pages/admin/ability-profile/AbilityProfileTeacherPage.vue',
+      'frontend/src/pages/admin/archive/ArchiveQueryPage.vue',
+      'frontend/src/pages/admin/practice/PracticeApplicationPage.vue',
+      'frontend/src/pages/admin/practice/PracticeRecordPage.vue',
+      'frontend/src/pages/admin/practice/PracticeTrackingPage.vue',
+      'frontend/src/pages/admin/reflection/ReflectionOverviewPage.vue',
+      'frontend/src/pages/admin/reports/ReportCenterPage.vue',
+      'frontend/src/pages/admin/virtual-lab/VirtualLabRoomPage.vue',
+    ]
+
+    for (const page of secondBatchPages) {
+      const source = readProjectFile(page)
+
+      expect(source).toContain('@/components/admin-ui')
+      expect(source).not.toMatch(/<select[\s>]/)
+      expect(source).not.toMatch(/<input[\s>]/)
+      expect(source).not.toMatch(/<textarea[\s>]/)
+    }
+  })
+
+  it('migrates manual pagination surfaces to the admin pagination adapter', () => {
+    const paginationPages = [
+      'frontend/src/pages/admin/ability-profile/AbilityProfileTeacherPage.vue',
+      'frontend/src/pages/admin/practice/PracticeApplicationPage.vue',
+      'frontend/src/pages/admin/training/TrainingApplicationPage.vue',
+      'frontend/src/pages/admin/training/TrainingRecordPage.vue',
+      'frontend/src/pages/admin/training/TrainingResourcePage.vue',
+      'frontend/src/pages/admin/virtual-lab/VirtualLabRoomDetailPage.vue',
+    ]
+
+    for (const page of paginationPages) {
+      const source = readProjectFile(page)
+
+      expect(source).toContain('AdminPagination')
+      expect(source).not.toContain('page-button')
+      expect(source).not.toContain('.page-size')
+      expect(source).not.toContain('class="page-size')
+      expect(source).not.toContain('page-input')
+    }
+  })
+
+  it('migrates archive upload selection to the admin upload adapter', () => {
+    const source = readProjectFile('frontend/src/pages/admin/archive/ArchiveImportUploadPage.vue')
+
+    expect(source).toContain('AdminUpload')
+    expect(source).not.toMatch(/<input[\s>]/)
+    expect(source).not.toContain('type="file"')
+  })
+
+  it('migrates archive processing search and record list to admin-ui adapters', () => {
+    const source = readProjectFile('frontend/src/pages/admin/archive/ArchiveProcessingPage.vue')
+
+    expect(source).toContain('AdminInput')
+    expect(source).toContain('AdminTable')
+    expect(source).toContain('AdminTableColumn')
+    expect(source).not.toMatch(/<input[\s>]/)
+    expect(source).not.toMatch(/<table[\s>]/)
+  })
+
+  it('migrates first table pages to the admin table adapter', () => {
+    const tablePages = [
+      'frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue',
+      'frontend/src/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue',
+      'frontend/src/pages/admin/archive/ArchiveProcessingPage.vue',
+      'frontend/src/pages/admin/practice/PracticeApplicationPage.vue',
+      'frontend/src/pages/admin/practice/PracticeRecordPage.vue',
+      'frontend/src/pages/admin/practice/PracticeTrackingPage.vue',
+      'frontend/src/pages/admin/reflection/ReflectionOverviewPage.vue',
+      'frontend/src/pages/admin/training/TrainingApplicationPage.vue',
+      'frontend/src/pages/admin/training/TrainingDemandPage.vue',
+      'frontend/src/pages/admin/training/TrainingPlanPage.vue',
+      'frontend/src/pages/admin/training/TrainingRecordPage.vue',
+      'frontend/src/pages/admin/training/TrainingResourcePage.vue',
+    ]
+
+    for (const page of tablePages) {
+      const source = readProjectFile(page)
+
+      expect(source).toContain('AdminTable')
+      expect(source).toContain('AdminTableColumn')
+      expect(source).not.toMatch(/<table[\s>]/)
+    }
   })
 })

@@ -10,7 +10,14 @@ const dimensions = [
   { name: '教研协作', score: 76, desc: '虚拟教研贡献持续增加', tone: 'blue' },
   { name: '企业实践', score: 63, desc: '实践天数和岗位证明仍需补齐', tone: 'orange' },
   { name: '社会服务', score: 70, desc: '服务记录稳定，但影响力材料偏少', tone: 'purple' },
-]
+] as const
+
+const scoreColors = {
+  green: '#0ec165',
+  blue: '#4c8dff',
+  orange: '#ff9f43',
+  purple: '#8b6cff',
+} as const
 
 const weaknesses = [
   '企业实践岗位证明缺少最近一次部门核验结果',
@@ -61,9 +68,7 @@ function navigateTo(url: string) {
           <text class="dimension-name">{{ item.name }}</text>
           <text class="dimension-score">{{ item.score }}</text>
         </view>
-        <view class="score-track">
-          <view class="score-bar" :class="`score-bar--${item.tone}`" :style="{ width: `${item.score}%` }"></view>
-        </view>
+        <wd-progress class="score-progress" :percentage="item.score" :color="scoreColors[item.tone]" hide-text />
         <text class="dimension-desc">{{ item.desc }}</text>
       </view>
     </MobileCard>
@@ -71,7 +76,7 @@ function navigateTo(url: string) {
     <MobileCard class="section-card">
       <text class="section-title">短板提示</text>
       <view v-for="item in weaknesses" :key="item" class="warning-row">
-        <view class="warning-dot"></view>
+        <wd-icon class="warning-icon" name="warning" size="28rpx" color="#ff9f43" />
         <text>{{ item }}</text>
       </view>
     </MobileCard>
@@ -180,33 +185,17 @@ function navigateTo(url: string) {
   font-weight: 900;
 }
 
-.score-track {
-  height: 14rpx;
+.score-progress {
   margin: 14rpx 0 10rpx;
-  overflow: hidden;
-  border-radius: 999rpx;
+}
+
+.score-progress :deep(.wd-progress__outer) {
+  height: 14rpx;
   background: #edf3f7;
 }
 
-.score-bar {
-  height: 100%;
-  border-radius: inherit;
-}
-
-.score-bar--green {
-  background: #0ec165;
-}
-
-.score-bar--blue {
-  background: #4c8dff;
-}
-
-.score-bar--orange {
-  background: #ff9f43;
-}
-
-.score-bar--purple {
-  background: #8b6cff;
+.score-progress :deep(.wd-progress__inner) {
+  border-radius: 999rpx;
 }
 
 .warning-row {
@@ -218,13 +207,11 @@ function navigateTo(url: string) {
   line-height: 1.55;
 }
 
-.warning-dot {
+.warning-icon {
   flex: 0 0 auto;
-  width: 14rpx;
-  height: 14rpx;
+  width: 28rpx;
+  height: 28rpx;
   margin-top: 12rpx;
-  border-radius: 999rpx;
-  background: #ff9f43;
 }
 
 .recommend-desc {

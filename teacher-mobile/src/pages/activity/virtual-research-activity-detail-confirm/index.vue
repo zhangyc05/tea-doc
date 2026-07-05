@@ -157,7 +157,7 @@ function submitContribution() {
               <text class="contribution-desc">说明：{{ item.desc }}</text>
             </view>
             <text class="data-chip">已关联依据</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>
@@ -167,7 +167,7 @@ function submitContribution() {
           <text class="block-title">已有材料 <text class="block-subtitle">（可用于归档）</text></text>
           <button class="view-all" @tap="goContributionConfirm">
             <text>查看全部</text>
-            <view class="link-arrow"></view>
+            <wd-icon name="chevron-right" size="20rpx" color="#079653" />
           </button>
         </view>
         <scroll-view class="file-scroll" scroll-x>

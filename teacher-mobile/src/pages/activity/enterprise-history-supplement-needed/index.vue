@@ -93,7 +93,7 @@ function submitAgain() {
           <text class="card-title">本次历史实践</text>
           <text class="muted-title">（已提交内容）</text>
           <button class="detail-button" @tap="showHelp">查看详情</button>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <view class="practice-list">
           <view v-for="item in practiceRows" :key="item.label" class="practice-row">
@@ -115,7 +115,7 @@ function submitAgain() {
               <text class="material-desc">{{ item.desc }}</text>
             </view>
             <text class="missing-text">未上传</text>
-            <view class="chevron chevron--orange"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#ff7a1a" />
           </view>
         </view>
 

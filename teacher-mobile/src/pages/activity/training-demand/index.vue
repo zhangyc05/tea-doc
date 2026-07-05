@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 import { submitTrainingDemand } from '../../../domain/training'
@@ -50,13 +51,14 @@ function saveDraft() {
           <text class="section-title">你想怎么提出需求？</text>
         </view>
 
+        <wd-radio-group class="mode-group" model-value="found-training" checked-color="#04a851">
         <view class="mode-option">
           <view class="option-icon option-icon--person"></view>
           <view class="mode-option__body">
             <text class="mode-option__title">我想提升某项能力</text>
             <text class="mode-option__desc">还没确定具体培训，系统帮你整理需求说明</text>
           </view>
-          <view class="radio"></view>
+          <wd-radio class="mode-radio" value="ability-demand" />
         </view>
 
         <view class="mode-option mode-option--active">
@@ -65,8 +67,9 @@ function saveDraft() {
             <text class="mode-option__title">我已找到想参加的培训</text>
             <text class="mode-option__desc">填写培训名称、地点或链接，提交学校确认</text>
           </view>
-          <view class="radio radio--checked"></view>
+          <wd-radio class="mode-radio" value="found-training" />
         </view>
+        </wd-radio-group>
       </MobileCard>
 
       <MobileCard class="form-card">
@@ -76,18 +79,32 @@ function saveDraft() {
         </view>
         <text class="section-desc">把培训通知、链接或想参加的信息告诉 AI，系统会自动帮你整理</text>
         <view class="input-box">
-          <textarea
+          <wd-textarea
             class="input-box__textarea"
-            maxlength="300"
-            value=""
+            :maxlength="300"
+            model-value=""
             placeholder="说说你想参加的培训，或粘贴通知内容..."
             placeholder-class="input-box__placeholder"
+            show-word-limit
+            no-border
           />
           <view class="input-actions">
-            <view class="input-action input-action--voice">语音</view>
-            <view class="input-action input-action--photo">拍照</view>
-            <view class="input-action input-action--upload">上传</view>
-            <view class="input-action input-action--link">链接</view>
+            <view class="input-action">
+              <MobileIcon class="input-action__icon" name="mic" tone="dark" size="plain" shape="none" />
+              <text>语音</text>
+            </view>
+            <view class="input-action">
+              <MobileIcon class="input-action__icon" name="camera" tone="dark" size="plain" shape="none" />
+              <text>拍照</text>
+            </view>
+            <view class="input-action">
+              <MobileIcon class="input-action__icon" name="upload" tone="dark" size="plain" shape="none" />
+              <text>上传</text>
+            </view>
+            <view class="input-action">
+              <MobileIcon class="input-action__icon" name="link" tone="dark" size="plain" shape="none" />
+              <text>链接</text>
+            </view>
           </view>
         </view>
         <text class="example-text">例如：我想参加 6 月在南京举办的数字化教学研修班</text>
@@ -449,30 +466,17 @@ function saveDraft() {
   content: '';
 }
 
-.radio {
+.mode-radio {
+  flex: 0 0 auto;
+}
+
+.mode-radio :deep(.wd-radio__label) {
+  display: none;
+}
+
+.mode-radio :deep(.wd-radio__shape) {
   width: 34rpx;
   height: 34rpx;
-  flex: 0 0 auto;
-  border: 3rpx solid #ccd5e4;
-  border-radius: 50%;
-}
-
-.radio--checked {
-  position: relative;
-  border-color: $teacher-mobile-primary;
-  background: $teacher-mobile-primary;
-}
-
-.radio--checked::before {
-  position: absolute;
-  top: 8rpx;
-  left: 7rpx;
-  width: 16rpx;
-  height: 9rpx;
-  border-bottom: 4rpx solid #fff;
-  border-left: 4rpx solid #fff;
-  content: '';
-  transform: rotate(-45deg);
 }
 
 .input-box {
@@ -484,8 +488,16 @@ function saveDraft() {
 }
 
 .input-box__textarea {
-  width: 100%;
-  height: 126rpx;
+  display: block;
+}
+
+.input-box__textarea :deep(.wd-textarea) {
+  padding: 0;
+  background: transparent;
+}
+
+.input-box__textarea :deep(.wd-textarea__inner) {
+  min-height: 126rpx;
   color: #10172d;
   font-size: 27rpx;
   line-height: 1.45;
@@ -493,6 +505,12 @@ function saveDraft() {
 
 :deep(.input-box__placeholder) {
   color: #98a3b6;
+}
+
+.input-box__textarea :deep(.wd-textarea__count) {
+  padding: 0;
+  color: #7a8597;
+  font-size: 22rpx;
 }
 
 .input-actions {
@@ -503,29 +521,16 @@ function saveDraft() {
 }
 
 .input-action {
-  position: relative;
-  padding-left: 28rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
   font-size: 24rpx;
   font-weight: 800;
 }
 
-.input-action::before {
-  position: absolute;
-  top: 3rpx;
-  left: 0;
+.input-action__icon {
   width: 20rpx;
   height: 20rpx;
-  border: 3rpx solid currentColor;
-  border-radius: 6rpx;
-  content: '';
-}
-
-.input-action--voice::before {
-  border-radius: 10rpx 10rpx 6rpx 6rpx;
-}
-
-.input-action--link::before {
-  border-radius: 50%;
 }
 
 .example-text {

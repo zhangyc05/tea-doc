@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import {
   addSupplementMaterial,
@@ -23,7 +24,7 @@ const materialActions = [
   { icon: 'upload', title: '上传资料' },
   { icon: 'camera', title: '拍照' },
   { icon: 'mic', title: '语音说明' },
-]
+] as const
 
 const virtualResearchState = getMobileVirtualResearchState()
 
@@ -163,7 +164,7 @@ function submitContributionSupplement() {
             class="material-action"
             @tap="handleSupplementMaterialAction(item.title)"
           >
-            <view class="material-icon" :class="`material-icon--${item.icon}`"></view>
+            <MobileIcon class="material-icon" :name="item.icon" tone="green" size="plain" shape="none" />
             <text>{{ item.title }}</text>
           </button>
         </view>
@@ -656,65 +657,6 @@ function submitContributionSupplement() {
 .material-icon {
   width: 34rpx;
   height: 34rpx;
-  color: #08b85a;
-}
-
-.material-icon--upload::before {
-  left: 5rpx;
-  bottom: 5rpx;
-  width: 24rpx;
-  height: 14rpx;
-  border: 4rpx solid currentColor;
-  border-top: 0;
-  border-radius: 0 0 6rpx 6rpx;
-}
-
-.material-icon--upload::after {
-  left: 12rpx;
-  top: 4rpx;
-  width: 10rpx;
-  height: 18rpx;
-  border-left: 5rpx solid currentColor;
-  border-top: 5rpx solid currentColor;
-  transform: rotate(45deg);
-}
-
-.material-icon--camera::before {
-  left: 4rpx;
-  top: 10rpx;
-  width: 26rpx;
-  height: 19rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 6rpx;
-}
-
-.material-icon--camera::after {
-  left: 13rpx;
-  top: 15rpx;
-  width: 8rpx;
-  height: 8rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 50%;
-}
-
-.material-icon--mic::before {
-  left: 12rpx;
-  top: 3rpx;
-  width: 11rpx;
-  height: 20rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 12rpx;
-}
-
-.material-icon--mic::after {
-  left: 9rpx;
-  bottom: 4rpx;
-  width: 17rpx;
-  height: 13rpx;
-  border-bottom: 4rpx solid currentColor;
-  border-left: 4rpx solid currentColor;
-  border-right: 4rpx solid currentColor;
-  border-radius: 0 0 14rpx 14rpx;
 }
 
 .notice-text {

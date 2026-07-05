@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -165,24 +166,15 @@ function viewRelatedRecord(recordId: string) {
               </div>
               <div class="card-body">
                 <p v-if="operationMessage.text.value" class="material-message">{{ operationMessage.text.value }}</p>
-                <table class="material-table">
-                  <thead>
-                    <tr>
-                      <th>材料名称</th>
-                      <th>状态</th>
-                      <th>上传时间</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(material, index) in certificateMaterials" :key="index">
-                      <td>{{ material.name }}</td>
-                      <td>
-                        <StatusBadge :status="material.status" />
-                      </td>
-                      <td>{{ material.uploadTime }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable :data="certificateMaterials" empty-text="暂无证书材料">
+                  <AdminTableColumn prop="name" label="材料名称" min-width="180" />
+                  <AdminTableColumn label="状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.status" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="uploadTime" label="上传时间" min-width="150" />
+                </AdminTable>
               </div>
             </div>
 
@@ -192,32 +184,27 @@ function viewRelatedRecord(recordId: string) {
                 <h2 class="card-title">相关培训记录</h2>
               </div>
               <div class="card-body">
-                <table class="related-table">
-                  <thead>
-                    <tr>
-                      <th>记录名称</th>
-                      <th>对象</th>
-                      <th>级别 / 学时</th>
-                      <th>材料情况</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="related in relatedRecords" :key="related.id">
-                      <td>{{ related.name }}</td>
-                      <td>{{ related.teacher }}</td>
-                      <td>{{ related.level }} / {{ related.hours }}</td>
-                      <td>
-                        <StatusBadge :status="related.materialStatus" />
-                      </td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewRelatedRecord(related.id)">
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable :data="relatedRecords" row-key="id" empty-text="暂无相关培训记录">
+                  <AdminTableColumn prop="name" label="记录名称" min-width="180" />
+                  <AdminTableColumn prop="teacher" label="对象" min-width="90" />
+                  <AdminTableColumn label="级别 / 学时" min-width="120">
+                    <template #default="{ row }">
+                      {{ row.level }} / {{ row.hours }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="材料情况" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.materialStatus" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewRelatedRecord(row.id)">
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
             </div>
           </div>

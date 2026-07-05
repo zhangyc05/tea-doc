@@ -68,7 +68,7 @@ function goAiInterpretation() {
           <text class="evidence-title">{{ record.title }}</text>
           <text class="evidence-meta">引用维度：{{ record.dimension }}</text>
         </view>
-        <view class="row-arrow"></view>
+        <wd-icon class="row-arrow" name="chevron-right" size="28rpx" color="#9aa5b8" />
       </view>
       <MobileActionButton class="wide-action" variant="outline" arrow @tap="navigateTo('/pages/profile/ability-profile/records/index?from=development-report')">
         查看全部依据
@@ -172,11 +172,11 @@ function goAiInterpretation() {
 }
 
 .row-arrow {
-  width: 18rpx;
-  height: 18rpx;
-  border-top: 5rpx solid #9aa5b8;
-  border-right: 5rpx solid #9aa5b8;
-  transform: rotate(45deg);
+  display: flex;
+  width: 28rpx;
+  height: 28rpx;
+  align-items: center;
+  justify-content: center;
 }
 
 .wide-action {

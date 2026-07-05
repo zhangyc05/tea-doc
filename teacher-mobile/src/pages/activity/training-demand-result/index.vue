@@ -92,30 +92,11 @@ function showSubmitContentFeedback() {
           <view class="section-icon section-icon--chart"></view>
           <text class="section-title">当前进度</text>
         </view>
-        <view class="timeline">
-          <view class="timeline__track"></view>
-          <view class="timeline-step timeline-step--done">
-            <view class="timeline-step__dot">1</view>
-            <view class="timeline-step__body">
-              <text class="timeline-step__title">需求已提交</text>
-              <text class="timeline-step__time">2026-03-08 10:30</text>
-            </view>
-          </view>
-          <view class="timeline-step">
-            <view class="timeline-step__dot">2</view>
-            <view class="timeline-step__body">
-              <text class="timeline-step__title">部门确认中</text>
-              <text class="timeline-step__desc">{{ demandProgressText }}</text>
-            </view>
-          </view>
-          <view class="timeline-step">
-            <view class="timeline-step__dot">3</view>
-            <view class="timeline-step__body">
-              <text class="timeline-step__title">匹配培训资源 / 确认结果</text>
-              <text class="timeline-step__desc">确认结果将通过系统消息通知你</text>
-            </view>
-          </view>
-        </view>
+        <wd-steps class="timeline" :active="1" vertical>
+          <wd-step title="需求已提交" description="2026-03-08 10:30" status="finished" />
+          <wd-step title="部门确认中" :description="demandProgressText" status="process" />
+          <wd-step title="匹配培训资源 / 确认结果" description="确认结果将通过系统消息通知你" />
+        </wd-steps>
       </MobileCard>
 
       <view class="notice-box">
@@ -170,7 +151,6 @@ function showSubmitContentFeedback() {
 .success-card,
 .section-head,
 .submit-row,
-.timeline-step,
 .notice-box,
 .page-actions {
   display: flex;
@@ -322,54 +302,10 @@ function showSubmitContentFeedback() {
 }
 
 .timeline {
-  position: relative;
-  padding: 2rpx 0 0 42rpx;
+  padding: 2rpx 0 0 12rpx;
 }
 
-.timeline__track {
-  position: absolute;
-  top: 30rpx;
-  bottom: 34rpx;
-  left: 26rpx;
-  width: 2rpx;
-  background: #cad2de;
-}
-
-.timeline-step {
-  position: relative;
-  align-items: flex-start;
-  gap: 28rpx;
-  padding-bottom: 32rpx;
-}
-
-.timeline-step:last-child {
-  padding-bottom: 0;
-}
-
-.timeline-step__dot {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  width: 46rpx;
-  height: 46rpx;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  border: 3rpx solid #cbd3de;
-  border-radius: 50%;
-  background: #fff;
-  color: #1d2940;
-  font-size: 24rpx;
-  font-weight: 800;
-}
-
-.timeline-step--done .timeline-step__dot {
-  border-color: $teacher-mobile-primary;
-  background: $teacher-mobile-primary;
-  color: #fff;
-}
-
-.timeline-step__title {
+.timeline :deep(.wd-step__title) {
   display: block;
   color: #10172d;
   font-size: 30rpx;
@@ -377,17 +313,16 @@ function showSubmitContentFeedback() {
   line-height: 1.35;
 }
 
-.timeline-step--done .timeline-step__title {
-  color: $teacher-mobile-primary-dark;
-}
-
-.timeline-step__time,
-.timeline-step__desc {
+.timeline :deep(.wd-step__description) {
   display: block;
   margin-top: 6rpx;
   color: #657089;
   font-size: 26rpx;
   line-height: 1.38;
+}
+
+.timeline :deep(.wd-step__icon) {
+  color: $teacher-mobile-primary;
 }
 
 .notice-box {

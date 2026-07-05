@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 
 const filters = ['全部', '记录确认', '材料更新', '草稿保存', '其他']
@@ -96,10 +97,6 @@ function goBack() {
   uni.navigateBack()
 }
 
-function selectFilter(index: number) {
-  activeFilterIndex.value = index
-}
-
 function showArchiveFilterFeedback() {
   activeFilterIndex.value = 0
   uni.showToast({
@@ -121,23 +118,20 @@ function showRecordFeedback(title: string) {
     <MobileNavbar title="最近更新" size="compact" @back="goBack">
       <template #right>
         <button class="filter-button" @tap="showArchiveFilterFeedback">
-          <view class="filter-icon"></view>
+          <MobileIcon class="filter-icon" name="filter" tone="dark" size="plain" shape="none" />
           <text>筛选</text>
         </button>
       </template>
     </MobileNavbar>
 
-    <view class="filter-tabs">
-      <button
+    <wd-tabs v-model="activeFilterIndex" class="filter-tabs" color="#02a950" inactive-color="#111827" :line-width="0">
+      <wd-tab
         v-for="(item, index) in filters"
         :key="item"
-        class="filter-tab"
-        :class="{ 'filter-tab--active': index === activeFilterIndex }"
-        @tap="selectFilter(index)"
-      >
-        {{ item }}
-      </button>
-    </view>
+        :name="index"
+        :title="item"
+      />
+    </wd-tabs>
 
     <view class="content">
       <view v-for="group in groups" :key="group.title" class="date-group">
@@ -159,7 +153,7 @@ function showRecordFeedback(title: string) {
             </view>
             <view class="record-side">
               <text class="record-time">{{ item.time }}</text>
-              <view class="row-arrow"></view>
+              <wd-icon class="row-arrow" name="chevron-right" size="24rpx" color="#050812" />
             </view>
           </button>
         </MobileCard>
@@ -182,7 +176,6 @@ function showRecordFeedback(title: string) {
 }
 
 .filter-button,
-.filter-tab,
 .update-row {
   margin: 0;
   padding: 0;
@@ -191,7 +184,6 @@ function showRecordFeedback(title: string) {
 }
 
 .filter-button::after,
-.filter-tab::after,
 .update-row::after {
   display: none;
 }
@@ -206,7 +198,6 @@ function showRecordFeedback(title: string) {
   line-height: 1;
 }
 
-.filter-icon,
 .record-icon,
 .row-arrow,
 .green-dot {
@@ -217,41 +208,15 @@ function showRecordFeedback(title: string) {
 .filter-icon {
   width: 34rpx;
   height: 34rpx;
-  color: #111827;
 }
 
-.filter-icon::before,
-.filter-icon::after,
 .record-icon::before,
-.record-icon::after,
-.row-arrow::before {
+.record-icon::after {
   position: absolute;
   content: '';
 }
 
-.filter-icon::before {
-  left: 2rpx;
-  top: 2rpx;
-  width: 29rpx;
-  height: 22rpx;
-  border: 5rpx solid currentColor;
-  border-bottom: 0;
-  clip-path: polygon(0 0, 100% 0, 63% 100%, 37% 100%);
-}
-
-.filter-icon::after {
-  left: 14rpx;
-  top: 20rpx;
-  width: 7rpx;
-  height: 13rpx;
-  border-radius: 5rpx;
-  background: currentColor;
-}
-
 .filter-tabs {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0;
   margin: 20rpx 22rpx 34rpx;
   padding: 10rpx;
   border: 1rpx solid #e7ebf2;
@@ -260,11 +225,18 @@ function showRecordFeedback(title: string) {
   box-shadow: 0 12rpx 34rpx rgba(35, 51, 87, 0.06);
 }
 
-.filter-tab {
-  display: flex;
+.filter-tabs :deep(.wd-tabs__nav) {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-container) {
+  background: transparent;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-item) {
   height: 66rpx;
-  align-items: center;
-  justify-content: center;
   border-radius: 999rpx;
   color: #111827;
   font-size: 31rpx;
@@ -272,11 +244,16 @@ function showRecordFeedback(title: string) {
   white-space: nowrap;
 }
 
-.filter-tab--active {
+.filter-tabs :deep(.wd-tabs__nav-item.is-active) {
   background: linear-gradient(135deg, #09bd62, #02a950);
   box-shadow: 0 14rpx 26rpx rgba(2, 169, 80, 0.24);
   color: #fff;
   font-weight: 900;
+}
+
+.filter-tabs :deep(.wd-tabs__container),
+.filter-tabs :deep(.wd-tabs__line) {
+  display: none;
 }
 
 .content {
@@ -539,16 +516,11 @@ function showRecordFeedback(title: string) {
 }
 
 .row-arrow {
+  display: flex;
   width: 22rpx;
   height: 22rpx;
-  color: #050812;
-}
-
-.row-arrow::before {
-  inset: 0;
-  border-top: 5rpx solid currentColor;
-  border-right: 5rpx solid currentColor;
-  transform: rotate(45deg);
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 430px) {
@@ -568,7 +540,7 @@ function showRecordFeedback(title: string) {
     padding: 7rpx;
   }
 
-  .filter-tab {
+  .filter-tabs :deep(.wd-tabs__nav-item) {
     height: 50rpx;
     font-size: 23rpx;
   }
@@ -634,11 +606,11 @@ function showRecordFeedback(title: string) {
 }
 
 @media (max-width: 374px) {
-  .filter-tabs {
+  .filter-tabs :deep(.wd-tabs__nav) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .filter-tab {
+  .filter-tabs :deep(.wd-tabs__nav-item) {
     font-size: 20rpx;
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { AdminInput, AdminSelect } from '@/components/admin-ui'
 import { EmptyState, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -23,6 +24,9 @@ const selectedStatus = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const operationMessage = useOperationMessage()
+const targetOptions = ['全部', '全校教师', '智能制造学院', '全校', '虚拟教研室', '教师发展管理'].map((value) => ({ label: value, value }))
+const periodOptions = ['全部', '2026 年度', '2025 年度', '2024 年度'].map((value) => ({ label: value, value }))
+const reportStatusOptions = ['全部', '已生成', '待更新', '数据不足'].map((value) => ({ label: value, value }))
 
 const tabs = ['全部', '分析报告', '分析大屏', '专题解读', '数据问答']
 const selectedReport = computed(() => reportState.reports.find(report => report.id === reportState.selectedReportId) ?? null)
@@ -111,36 +115,18 @@ function openAiAssistant() {
           <div class="filters">
             <label class="filter-item">
               <span>对象：</span>
-              <select v-model="selectedTarget">
-                <option>全部</option>
-                <option>全校教师</option>
-                <option>智能制造学院</option>
-                <option>全校</option>
-                <option>虚拟教研室</option>
-                <option>教师发展管理</option>
-              </select>
+              <AdminSelect v-model="selectedTarget" :options="targetOptions" />
             </label>
             <label class="filter-item">
               <span>周期：</span>
-              <select v-model="selectedPeriod">
-                <option>全部</option>
-                <option>2026 年度</option>
-                <option>2025 年度</option>
-                <option>2024 年度</option>
-              </select>
+              <AdminSelect v-model="selectedPeriod" :options="periodOptions" />
             </label>
             <label class="filter-item">
               <span>状态：</span>
-              <select v-model="selectedStatus">
-                <option>全部</option>
-                <option>已生成</option>
-                <option>待更新</option>
-                <option>数据不足</option>
-              </select>
+              <AdminSelect v-model="selectedStatus" :options="reportStatusOptions" />
             </label>
-            <input
+            <AdminInput
               v-model="searchQuery"
-              type="text"
               placeholder="搜索报告名称 / 分析问题"
               class="search-input"
               @keyup.enter="applyFilters"

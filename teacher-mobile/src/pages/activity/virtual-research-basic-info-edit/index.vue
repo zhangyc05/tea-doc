@@ -97,7 +97,7 @@ function goContributionDetail() {
             <text class="contribution-title">{{ item.title }}</text>
             <text class="contribution-source">{{ item.source }}</text>
           </view>
-          <view class="row-arrow" aria-hidden="true"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </button>
       </MobileCard>
 

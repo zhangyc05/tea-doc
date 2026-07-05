@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
+import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getTrainingState } from '@/stores/admin/trainingStore'
@@ -26,6 +27,13 @@ const selectedDirection = ref('全部')
 const selectedMaterialStatus = ref('全部')
 const searchQuery = ref('')
 const reminderMessage = ref('')
+const currentPage = ref(1)
+const pageSize = 10
+
+const organizationOptions = ['全校', '智能制造学院', '电子信息学院'].map((value) => ({ label: value, value }))
+const yearOptions = ['2026 年度', '2025 年度', '2024 年度'].map((value) => ({ label: value, value }))
+const directionOptions = ['全部', '数字化教学', '实践教学', 'AI 赋能课程建设', '课程思政'].map((value) => ({ label: value, value }))
+const materialStatusOptions = ['全部', '记录完整', '待总结', '证书待补', '学习中'].map((value) => ({ label: value, value }))
 
 function resetFilters() {
   selectedOrganization.value = '全校'
@@ -122,45 +130,24 @@ const filteredRecords = computed(() => {
                 <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
-                    <select v-model="selectedOrganization" class="filter-select">
-                      <option>全校</option>
-                      <option>智能制造学院</option>
-                      <option>电子信息学院</option>
-                    </select>
+                    <AdminSelect v-model="selectedOrganization" class="filter-select" :options="organizationOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">培训年度</label>
-                    <select v-model="selectedYear" class="filter-select">
-                      <option>2026 年度</option>
-                      <option>2025 年度</option>
-                      <option>2024 年度</option>
-                    </select>
+                    <AdminSelect v-model="selectedYear" class="filter-select" :options="yearOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">培训方向</label>
-                    <select v-model="selectedDirection" class="filter-select">
-                      <option>全部</option>
-                      <option>数字化教学</option>
-                      <option>实践教学</option>
-                      <option>AI 赋能课程建设</option>
-                      <option>课程思政</option>
-                    </select>
+                    <AdminSelect v-model="selectedDirection" class="filter-select" :options="directionOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">材料情况</label>
-                    <select v-model="selectedMaterialStatus" class="filter-select">
-                      <option>全部</option>
-                      <option>记录完整</option>
-                      <option>待总结</option>
-                      <option>证书待补</option>
-                      <option>学习中</option>
-                    </select>
+                    <AdminSelect v-model="selectedMaterialStatus" class="filter-select" :options="materialStatusOptions" />
                   </div>
                 </template>
                 <template #search>
-                  <input
+                  <AdminInput
                     v-model="searchQuery"
-                    type="text"
                     placeholder="搜索教师、培训名称"
                     class="search-input"
                   />
@@ -175,45 +162,40 @@ const filteredRecords = computed(() => {
 
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="record-table">
-                  <thead>
-                    <tr>
-                      <th>教师</th>
-                      <th>院系 / 专业</th>
-                      <th>所属计划</th>
-                      <th>培训时间</th>
-                      <th>学时</th>
-                      <th>材料情况</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="record in filteredRecords" :key="record.id">
-                      <td>{{ record.teacher }}</td>
-                      <td>{{ record.department }} / {{ record.major }}</td>
-                      <td>{{ record.planName }}</td>
-                      <td>{{ record.trainingDate }}</td>
-                      <td>{{ record.hours }}</td>
-                      <td>
-                        <StatusBadge :status="record.materialStatus" />
-                      </td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewDetail(record.id)">
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredRecords.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的培训记录" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="record-table"
+                  :data="filteredRecords"
+                  empty-text="暂无符合条件的培训记录"
+                >
+                  <AdminTableColumn prop="teacher" label="教师" min-width="90" />
+                  <AdminTableColumn label="院系 / 专业" min-width="170">
+                    <template #default="{ row }">
+                      {{ row.department }} / {{ row.major }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="planName" label="所属计划" min-width="210" />
+                  <AdminTableColumn prop="trainingDate" label="培训时间" min-width="150" />
+                  <AdminTableColumn prop="hours" label="学时" min-width="80" />
+                  <AdminTableColumn label="材料情况" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.materialStatus" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
-              <div class="table-footer">
-                <span>共 {{ filteredRecords.length }} 条</span>
-                <span class="page-button active" aria-current="page">1</span>
-                <span>10 条/页</span>
-              </div>
+              <AdminPagination
+                v-model:current-page="currentPage"
+                class="table-footer"
+                :page-size="pageSize"
+                :total="filteredRecords.length"
+              />
             </div>
           </div>
 
@@ -557,18 +539,6 @@ const filteredRecords = computed(() => {
   padding: 18px 24px 24px;
   color: var(--color-admin-text-subtle);
   font-size: 14px;
-}
-
-.page-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  background: var(--color-admin-primary-hover);
-  color: #fff;
-  font-weight: 900;
 }
 
 .sidebar {

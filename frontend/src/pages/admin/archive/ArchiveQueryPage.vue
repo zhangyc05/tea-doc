@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput, AdminSelect } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import queryHeroArt from '@/assets/admin/archive-query-assets/archive-query-hero-art.png'
@@ -181,9 +182,8 @@ function getTeacherAvatar(teacherId: string) {
         <div class="filter-content">
           <div class="filter-row">
             <div class="search-area">
-              <input
+              <AdminInput
                 v-model="searchKeyword"
-                type="text"
                 class="search-input"
                 placeholder="搜索教师姓名 / 工号 / 所属部门"
               />
@@ -199,11 +199,11 @@ function getTeacherAvatar(teacherId: string) {
                   <img class="filter-icon" :src="iconFilterCollege" alt="" />
                   学院
                 </label>
-                <select v-model="collegeFilter" class="filter-select">
-                  <option v-for="option in collegeOptions" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
+                <AdminSelect
+                  v-model="collegeFilter"
+                  class="filter-select"
+                  :options="collegeOptions.map((value) => ({ label: value, value }))"
+                />
               </div>
 
               <div class="filter-group">
@@ -211,11 +211,11 @@ function getTeacherAvatar(teacherId: string) {
                   <img class="filter-icon" :src="iconFilterTitle" alt="" />
                   职称
                 </label>
-                <select v-model="titleFilter" class="filter-select">
-                  <option v-for="option in titleOptions" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
+                <AdminSelect
+                  v-model="titleFilter"
+                  class="filter-select"
+                  :options="titleOptions.map((value) => ({ label: value, value }))"
+                />
               </div>
 
               <div class="filter-group">
@@ -223,11 +223,11 @@ function getTeacherAvatar(teacherId: string) {
                   <img class="filter-icon" :src="iconFilterUpdate" alt="" />
                   更新情况
                 </label>
-                <select v-model="updateFilter" class="filter-select">
-                  <option v-for="option in updateOptions" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
+                <AdminSelect
+                  v-model="updateFilter"
+                  class="filter-select"
+                  :options="updateOptions.map((value) => ({ label: value, value }))"
+                />
               </div>
 
               <Button variant="outline" @click="resetFilters">

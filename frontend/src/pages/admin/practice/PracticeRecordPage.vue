@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CompactFilterBar, EmptyState, StatusBadge } from '@/components/common'
+import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
@@ -11,6 +12,7 @@ import {
   failPracticeExportTask,
   getPracticeState,
   remindPracticeMaterial,
+  type PracticeRecord,
 } from '@/stores/admin/practiceStore'
 
 const router = useRouter()
@@ -24,6 +26,9 @@ const selectedDays = ref('全部')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeRecordId = ref(String(route.query.recordId || '1'))
+const departmentOptions = ['全部', '智能制造学院', '电子信息学院', '汽车工程学院'].map((value) => ({ label: value, value }))
+const statusOptions = ['全部', '实践中', '待提交总结', '待企业评价', '待归档确认', '已归档'].map((value) => ({ label: value, value }))
+const daysOptions = ['全部', '已计入', '待确认计入', '暂未计入'].map((value) => ({ label: value, value }))
 
 // 统计数据
 const stats = computed(() => ({
@@ -70,6 +75,10 @@ function resetFilters() {
 function viewDetail(id: string) {
   activeRecordId.value = id
   practiceState.operationMessage = '已在表格中定位该实践记录。'
+}
+
+function recordRowClassName({ row }: { row: PracticeRecord }) {
+  return activeRecordId.value === row.id ? 'record-row active' : 'record-row'
 }
 
 function remindMaterial(id: string) {
@@ -167,38 +176,20 @@ function applyFilters() {
             <template #fields>
               <label class="filter-item">
                 <span class="filter-label">院系范围：</span>
-                <select v-model="selectedDepartment" class="filter-select">
-                  <option>全部</option>
-                  <option>智能制造学院</option>
-                  <option>电子信息学院</option>
-                  <option>汽车工程学院</option>
-                </select>
+                <AdminSelect v-model="selectedDepartment" class="filter-select" :options="departmentOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">实践状态：</span>
-                <select v-model="selectedStatus" class="filter-select">
-                  <option>全部</option>
-                  <option>实践中</option>
-                  <option>待提交总结</option>
-                  <option>待企业评价</option>
-                  <option>待归档确认</option>
-                  <option>已归档</option>
-                </select>
+                <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">计入 30 天：</span>
-                <select v-model="selectedDays" class="filter-select">
-                  <option>全部</option>
-                  <option>已计入</option>
-                  <option>待确认计入</option>
-                  <option>暂未计入</option>
-                </select>
+                <AdminSelect v-model="selectedDays" class="filter-select" :options="daysOptions" />
               </label>
             </template>
             <template #search>
-              <input
+              <AdminInput
                 v-model="searchQuery"
-                type="text"
                 placeholder="搜索教师、实践单位"
                 class="search-input"
                 @keyup.enter="applyFilters"
@@ -216,76 +207,66 @@ function applyFilters() {
           <!-- 数据表格 -->
           <div class="table-section">
             <div class="table-container">
-              <table class="record-table">
-                <thead>
-                  <tr>
-                    <th>教师</th>
-                    <th>实践单位 / 岗位</th>
-                    <th>实践周期</th>
-                    <th>材料状态</th>
-                    <th>当前状态</th>
-                    <th>计入 30 天</th>
-                    <th>最近动作</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="record in filteredRecords"
-                    :key="record.id"
-                    :class="{ active: activeRecordId === record.id }"
-                  >
-                    <td>
-                      <div class="teacher-name">{{ record.teacher }}</div>
-                      <div class="sub-text">{{ record.department }} / {{ record.major }}</div>
-                    </td>
-                    <td>
-                      <div class="company-name">{{ record.company }}</div>
-                      <div class="sub-text">{{ record.position }}</div>
-                    </td>
-                    <td>{{ record.practicePeriod }}</td>
-                    <td>{{ record.materialStatus }}</td>
-                    <td>
-                      <StatusBadge :status="record.currentStatus" />
-                    </td>
-                    <td>{{ record.countedDays }}</td>
-                    <td>{{ record.recentAction }}</td>
-                    <td>
-                      <div class="row-action-group">
-                        <Button variant="ghost" size="sm" @click="viewDetail(record.id)">
-                          查看详情
-                        </Button>
-                        <Button
-                          v-if="record.currentStatus === '待提交总结' || record.currentStatus === '待企业评价' || record.currentStatus === '实践中'"
-                          variant="secondary"
-                          size="sm"
-                          @click="remindMaterial(record.id)"
-                        >
-                          提醒补材料
-                        </Button>
-                        <Button
-                          v-if="record.currentStatus === '待归档确认'"
-                          size="sm"
-                          @click="confirmArchive(record.id)"
-                        >
-                          确认归档
-                        </Button>
-                        <Button
-                          v-if="record.currentStatus === '已归档'"
-                          variant="ghost"
-                          size="sm"
-                          @click="viewArchive(record.id)"
-                        >
-                          查看档案
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr v-if="filteredRecords.length === 0">
-                    <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的实践记录" />
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable
+                class="record-table"
+                :data="filteredRecords"
+                :row-class-name="recordRowClassName"
+                empty-text="暂无符合条件的实践记录"
+              >
+                <AdminTableColumn label="教师" min-width="150">
+                  <template #default="{ row }">
+                    <div class="teacher-name">{{ row.teacher }}</div>
+                    <div class="sub-text">{{ row.department }} / {{ row.major }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="实践单位 / 岗位" min-width="190">
+                  <template #default="{ row }">
+                    <div class="company-name">{{ row.company }}</div>
+                    <div class="sub-text">{{ row.position }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="practicePeriod" label="实践周期" min-width="150" />
+                <AdminTableColumn prop="materialStatus" label="材料状态" min-width="110" />
+                <AdminTableColumn label="当前状态" min-width="120">
+                  <template #default="{ row }">
+                    <StatusBadge :status="row.currentStatus" />
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="countedDays" label="计入 30 天" min-width="110" />
+                <AdminTableColumn prop="recentAction" label="最近动作" min-width="150" />
+                <AdminTableColumn label="操作" min-width="220" fixed="right">
+                  <template #default="{ row }">
+                    <div class="row-action-group">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看详情
+                      </Button>
+                      <Button
+                        v-if="row.currentStatus === '待提交总结' || row.currentStatus === '待企业评价' || row.currentStatus === '实践中'"
+                        variant="secondary"
+                        size="sm"
+                        @click="remindMaterial(row.id)"
+                      >
+                        提醒补材料
+                      </Button>
+                      <Button
+                        v-if="row.currentStatus === '待归档确认'"
+                        size="sm"
+                        @click="confirmArchive(row.id)"
+                      >
+                        确认归档
+                      </Button>
+                      <Button
+                        v-if="row.currentStatus === '已归档'"
+                        variant="ghost"
+                        size="sm"
+                        @click="viewArchive(row.id)"
+                      >
+                        查看档案
+                      </Button>
+                    </div>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
 
             <div class="selected-summary" v-if="activeRecord">
@@ -570,7 +551,7 @@ function applyFilters() {
   border-right: none;
 }
 
-.record-table tr.active td {
+:deep(.record-row.active) {
   background: #f4f8ff;
 }
 

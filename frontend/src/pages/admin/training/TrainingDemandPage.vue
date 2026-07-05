@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   addTrainingDemand,
   getTrainingState,
   matchTrainingDemand,
+  type TrainingDemand,
 } from '@/stores/admin/trainingStore'
 
 const trainingState = getTrainingState()
@@ -20,6 +22,11 @@ const stats = {
   fromTeacher: 28,
   fromManagement: 16,
 }
+
+const organizationOptions = ['全校', '智能制造学院', '电子信息学院'].map((value) => ({ label: value, value }))
+const sourceOptions = ['全部', '能力画像观察', '教师主动提出', '管理主动添加'].map((value) => ({ label: value, value }))
+const directionOptions = ['全部', '数字化教学', 'AI 赋能课程建设', '实践教学', '课程思政'].map((value) => ({ label: value, value }))
+const matchStatusOptions = ['全部', '已匹配', '待匹配', '暂不处理'].map((value) => ({ label: value, value }))
 
 const demands = computed(() => trainingState.demands)
 
@@ -71,6 +78,10 @@ function viewDetail(id: string) {
 function applyFilters() {
   appliedSearchQuery.value = searchQuery.value
   trainingState.operationMessage = `已筛选出 ${filteredDemands.value.length} 条需求。`
+}
+
+function demandRowClassName({ row }: { row: TrainingDemand }) {
+  return activeDemandId.value === row.id ? 'demand-row active' : 'demand-row'
 }
 
 function addDemand() {
@@ -154,46 +165,25 @@ function matchDemand(id: string) {
                 <template #fields>
                   <div class="filter-item">
                     <label class="filter-label">组织范围</label>
-                    <select v-model="selectedOrganization" class="filter-select">
-                      <option>全校</option>
-                      <option>智能制造学院</option>
-                      <option>电子信息学院</option>
-                    </select>
+                    <AdminSelect v-model="selectedOrganization" class="filter-select" :options="organizationOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">需求来源</label>
-                    <select v-model="selectedSource" class="filter-select">
-                      <option>全部</option>
-                      <option>能力画像观察</option>
-                      <option>教师主动提出</option>
-                      <option>管理主动添加</option>
-                    </select>
+                    <AdminSelect v-model="selectedSource" class="filter-select" :options="sourceOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">需求方向</label>
-                    <select v-model="selectedDirection" class="filter-select">
-                      <option>全部</option>
-                      <option>数字化教学</option>
-                      <option>AI 赋能课程建设</option>
-                      <option>实践教学</option>
-                      <option>课程思政</option>
-                    </select>
+                    <AdminSelect v-model="selectedDirection" class="filter-select" :options="directionOptions" />
                   </div>
                   <div class="filter-item">
                     <label class="filter-label">匹配状态</label>
-                    <select v-model="selectedMatchStatus" class="filter-select">
-                      <option>全部</option>
-                      <option>已匹配</option>
-                      <option>待匹配</option>
-                      <option>暂不处理</option>
-                    </select>
+                    <AdminSelect v-model="selectedMatchStatus" class="filter-select" :options="matchStatusOptions" />
                   </div>
                 </template>
 
                 <template #search>
-                  <input
+                  <AdminInput
                     v-model="searchQuery"
-                    type="text"
                     placeholder="搜索教师、需求关键词"
                     class="search-input"
                     @keyup.enter="applyFilters"
@@ -212,51 +202,42 @@ function matchDemand(id: string) {
 
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="demand-table">
-                  <thead>
-                    <tr>
-                      <th>需求对象</th>
-                      <th>院系 / 专业</th>
-                      <th>需求方向</th>
-                      <th>需求来源</th>
-                      <th>匹配状态</th>
-                      <th>建议资源</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="demand in filteredDemands"
-                      :key="demand.id"
-                      :class="{ active: activeDemandId === demand.id }"
-                    >
-                      <td>{{ demand.teacher }}</td>
-                      <td>{{ demand.department }} / {{ demand.major }}</td>
-                      <td>{{ demand.direction }}</td>
-                      <td>{{ demand.source }}</td>
-                      <td>
-                        <StatusBadge :status="demand.matchStatus" />
-                      </td>
-                      <td>{{ demand.suggestedResource }}</td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewDetail(demand.id)">
-                          查看
-                        </Button>
-                        <Button
-                          v-if="demand.matchStatus === '待匹配'"
-                          variant="secondary"
-                          size="sm"
-                          @click="matchDemand(demand.id)"
-                        >
-                          匹配资源
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredDemands.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的培训需求" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="demand-table"
+                  :data="filteredDemands"
+                  :row-class-name="demandRowClassName"
+                  empty-text="暂无符合条件的培训需求"
+                >
+                  <AdminTableColumn prop="teacher" label="需求对象" min-width="90" />
+                  <AdminTableColumn label="院系 / 专业" min-width="210">
+                    <template #default="{ row }">
+                      {{ row.department }} / {{ row.major }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="direction" label="需求方向" min-width="140" />
+                  <AdminTableColumn prop="source" label="需求来源" min-width="120" />
+                  <AdminTableColumn label="匹配状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.matchStatus" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="suggestedResource" label="建议资源" min-width="190" />
+                  <AdminTableColumn label="操作" min-width="140" fixed="right">
+                    <template #default="{ row }">
+                      <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
+                        查看
+                      </Button>
+                      <Button
+                        v-if="row.matchStatus === '待匹配'"
+                        variant="secondary"
+                        size="sm"
+                        @click="matchDemand(row.id)"
+                      >
+                        匹配资源
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
             </div>
           </div>
@@ -557,7 +538,7 @@ function matchDemand(id: string) {
   border-right: none;
 }
 
-.demand-table tr.active td {
+:deep(.demand-row.active) {
   background: #f4f8ff;
 }
 

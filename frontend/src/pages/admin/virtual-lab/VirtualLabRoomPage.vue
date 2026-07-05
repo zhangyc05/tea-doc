@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, EmptyState } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
-import { createVirtualLabRoom, getVirtualLabState } from '@/stores/admin/virtualLabStore'
+import { createVirtualLabRoom, getVirtualLabState, type VirtualLabRoom } from '@/stores/admin/virtualLabStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,6 +19,9 @@ const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const viewMode = ref<'card' | 'table'>('card')
 const operationMessage = useOperationMessage()
+const departmentOptions = ['全部', '智能制造学院', '交通工程学院', '现代服务学院', '教育学院', '教务处'].map((value) => ({ label: value, value }))
+const majorOptions = ['全部', '智能制造专业群', '工业机器人技术专业', '新能源汽车专业群', '电子商务专业群', '学前教育专业群'].map((value) => ({ label: value, value }))
+const activityOptions = ['全部', '进行中活动', '已形成记录'].map((value) => ({ label: value, value }))
 
 const stats = computed(() => ({
   totalRooms: virtualLabState.rooms.length,
@@ -69,6 +73,10 @@ function applyFilters() {
 
 function viewDetail(roomId: string) {
   router.push(`/admin/virtual-lab/rooms/${roomId}`)
+}
+
+function roomRowKey(row: VirtualLabRoom) {
+  return row.id
 }
 </script>
 
@@ -136,39 +144,20 @@ function viewDetail(roomId: string) {
             <template #fields>
               <label class="filter-item">
                 <span class="filter-label">院系：</span>
-                <select v-model="selectedDepartment" class="filter-select">
-                  <option>全部</option>
-                  <option>智能制造学院</option>
-                  <option>交通工程学院</option>
-                  <option>现代服务学院</option>
-                  <option>教育学院</option>
-                  <option>教务处</option>
-                </select>
+                <AdminSelect v-model="selectedDepartment" class="filter-select" :options="departmentOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">专业群：</span>
-                <select v-model="selectedMajor" class="filter-select">
-                  <option>全部</option>
-                  <option>智能制造专业群</option>
-                  <option>工业机器人技术专业</option>
-                  <option>新能源汽车专业群</option>
-                  <option>电子商务专业群</option>
-                  <option>学前教育专业群</option>
-                </select>
+                <AdminSelect v-model="selectedMajor" class="filter-select" :options="majorOptions" />
               </label>
               <label class="filter-item">
                 <span class="filter-label">活动情况：</span>
-                <select v-model="selectedActivity" class="filter-select">
-                  <option>全部</option>
-                  <option>进行中活动</option>
-                  <option>已形成记录</option>
-                </select>
+                <AdminSelect v-model="selectedActivity" class="filter-select" :options="activityOptions" />
               </label>
             </template>
             <template #search>
-              <input
+              <AdminInput
                 v-model="searchQuery"
-                type="text"
                 placeholder="搜索教研室名称、负责人、教研方向"
                 class="search-input"
                 @keyup.enter="applyFilters"
@@ -232,48 +221,48 @@ function viewDetail(roomId: string) {
             </div>
 
             <div v-else class="table-container">
-              <table class="room-table">
-                <thead>
-                  <tr>
-                    <th>教研室</th>
-                    <th>归属 / 方向</th>
-                    <th>负责人 / 成员</th>
-                    <th>活动与记录</th>
-                    <th>最近动态</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="room in filteredRooms" :key="room.id">
-                    <td>
-                      <div class="room-title">{{ room.name }}</div>
-                      <div class="sub-text">线上教研</div>
-                    </td>
-                    <td>
-                      <div>{{ room.affiliation }}</div>
-                      <div class="sub-text">{{ room.direction }}</div>
-                    </td>
-                    <td>
-                      <div>{{ room.leader }}</div>
-                      <div class="sub-text">{{ room.members }} 人</div>
-                    </td>
-                    <td>
-                      <span class="metric-pill active">活动 {{ room.inProgressActivities }}</span>
-                      <span class="metric-pill record">记录 {{ room.recordsCount }}</span>
-                    </td>
-                    <td>
-                      <div>{{ room.recentActivity }}</div>
-                      <div class="sub-text">{{ room.recentTime }}</div>
-                    </td>
-                    <td>
-                      <Button variant="ghost" size="sm" @click="viewDetail(room.id)">查看详情</Button>
-                    </td>
-                  </tr>
-                  <tr v-if="filteredRooms.length === 0">
-                    <EmptyState as="td" variant="cell" :colspan="6" title="暂无符合条件的教研室" />
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable
+                class="room-table"
+                :data="filteredRooms"
+                :row-key="roomRowKey"
+                empty-text="暂无符合条件的教研室"
+              >
+                <AdminTableColumn label="教研室" min-width="210">
+                  <template #default="{ row }">
+                    <div class="room-title">{{ row.name }}</div>
+                    <div class="sub-text">线上教研</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="归属 / 方向" min-width="240">
+                  <template #default="{ row }">
+                    <div>{{ row.affiliation }}</div>
+                    <div class="sub-text">{{ row.direction }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="负责人 / 成员" min-width="140">
+                  <template #default="{ row }">
+                    <div>{{ row.leader }}</div>
+                    <div class="sub-text">{{ row.members }} 人</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="活动与记录" min-width="170">
+                  <template #default="{ row }">
+                    <span class="metric-pill active">活动 {{ row.inProgressActivities }}</span>
+                    <span class="metric-pill record">记录 {{ row.recordsCount }}</span>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="最近动态" min-width="180">
+                  <template #default="{ row }">
+                    <div>{{ row.recentActivity }}</div>
+                    <div class="sub-text">{{ row.recentTime }}</div>
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn label="操作" min-width="100" fixed="right">
+                  <template #default="{ row }">
+                    <Button variant="ghost" size="sm" @click="viewDetail(row.id)">查看详情</Button>
+                  </template>
+                </AdminTableColumn>
+              </AdminTable>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { Button } from '@/components/ui'
@@ -110,6 +111,10 @@ function getDimensionMeta(dimension: string) {
 function getDistributionTone(index: number) {
   return ['novice', 'competent', 'backbone', 'expert'][index] || 'novice'
 }
+
+function focusRowClassName({ row }: { row: { name: string } }) {
+  return focusedGroupObject.value === row.name ? 'focused-row' : ''
+}
 </script>
 
 <template>
@@ -189,45 +194,45 @@ function getDistributionTone(index: number) {
             <h2>能力维度说明</h2>
             <span>（点击维度名称可查看下钻）</span>
           </div>
-          <table class="dimension-table">
-            <thead>
-              <tr>
-                <th>维度</th>
-                <th>发展指数</th>
-                <th>指数构成（能力要素）</th>
-                <th>全校教师分布</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="dim in abilityDimensions" :key="dim.dimension">
-                <td>
-                  <div class="dimension-name" :class="getDimensionMeta(dim.dimension).tone">
-                    <span class="dimension-icon" aria-hidden="true">
-                      <img class="dimension-icon-img" :src="getDimensionMeta(dim.dimension).iconSrc" alt="" />
-                    </span>
-                    <strong>{{ dim.dimension }}</strong>
-                  </div>
-                </td>
-                <td class="index-cell">{{ dim.index }}</td>
-                <td>{{ dim.composition }}</td>
-                <td>
-                  <div class="distribution-labels">
-                    <span v-for="dist in dim.distribution" :key="dist.label">
-                      {{ dist.label }} {{ dist.percentage }}%
-                    </span>
-                  </div>
-                  <div class="distribution-track">
-                    <span
-                      v-for="(dist, index) in dim.distribution"
-                      :key="dist.label"
-                      :class="getDistributionTone(index)"
-                      :style="{ width: `${dist.percentage}%` }"
-                    ></span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <AdminTable
+            class="dimension-table"
+            :data="abilityDimensions"
+            empty-text="暂无能力维度数据"
+          >
+            <AdminTableColumn label="维度" min-width="150">
+              <template #default="{ row }">
+                <div class="dimension-name" :class="getDimensionMeta(row.dimension).tone">
+                  <span class="dimension-icon" aria-hidden="true">
+                    <img class="dimension-icon-img" :src="getDimensionMeta(row.dimension).iconSrc" alt="" />
+                  </span>
+                  <strong>{{ row.dimension }}</strong>
+                </div>
+              </template>
+            </AdminTableColumn>
+            <AdminTableColumn label="发展指数" min-width="100" align="center">
+              <template #default="{ row }">
+                <span class="index-cell">{{ row.index }}</span>
+              </template>
+            </AdminTableColumn>
+            <AdminTableColumn prop="composition" label="指数构成（能力要素）" min-width="260" />
+            <AdminTableColumn label="全校教师分布" min-width="320">
+              <template #default="{ row }">
+                <div class="distribution-labels">
+                  <span v-for="dist in row.distribution" :key="dist.label">
+                    {{ dist.label }} {{ dist.percentage }}%
+                  </span>
+                </div>
+                <div class="distribution-track">
+                  <span
+                    v-for="(dist, index) in row.distribution"
+                    :key="dist.label"
+                    :class="getDistributionTone(index)"
+                    :style="{ width: `${dist.percentage}%` }"
+                  ></span>
+                </div>
+              </template>
+            </AdminTableColumn>
+          </AdminTable>
         </div>
       </section>
 
@@ -287,43 +292,36 @@ function getDistributionTone(index: number) {
             <h3>暂无重点关注对象</h3>
             <p>当前筛选口径下未识别到需要重点展示的对象。</p>
           </div>
-          <table v-else class="focus-table">
-            <thead>
-              <tr>
-                <th>对象</th>
-                <th>关注类型</th>
-                <th>关联维度 / 要素</th>
-                <th>为什么关注</th>
-                <th>下一步</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="item in focusData[focusObjects]"
-                :key="item.name"
-                :class="{ 'focused-row': focusedGroupObject === item.name }"
-              >
-                <td>{{ item.name }}</td>
-                <td>
-                  <span
-                    class="focus-type"
-                    :class="{
-                      'support': item.type === '重点支持',
-                      'advantage': item.type === '优势巩固',
-                      'attention': item.type === '需关注',
-                    }"
-                  >
-                    {{ item.type }}
-                  </span>
-                </td>
-                <td>{{ item.dimension }}</td>
-                <td>{{ item.reason }}</td>
-                <td>
-                  <Button variant="ghost" size="sm" @click="viewProfile(item.name)">查看画像</Button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <AdminTable
+            v-else
+            class="focus-table"
+            :data="focusData[focusObjects]"
+            :row-class-name="focusRowClassName"
+            empty-text="暂无重点关注对象"
+          >
+            <AdminTableColumn prop="name" label="对象" min-width="120" />
+            <AdminTableColumn label="关注类型" min-width="110">
+              <template #default="{ row }">
+                <span
+                  class="focus-type"
+                  :class="{
+                    'support': row.type === '重点支持',
+                    'advantage': row.type === '优势巩固',
+                    'attention': row.type === '需关注',
+                  }"
+                >
+                  {{ row.type }}
+                </span>
+              </template>
+            </AdminTableColumn>
+            <AdminTableColumn prop="dimension" label="关联维度 / 要素" min-width="170" />
+            <AdminTableColumn prop="reason" label="为什么关注" min-width="250" />
+            <AdminTableColumn label="下一步" min-width="110" fixed="right">
+              <template #default="{ row }">
+                <Button variant="ghost" size="sm" @click="viewProfile(row.name)">查看画像</Button>
+              </template>
+            </AdminTableColumn>
+          </AdminTable>
           <button class="more-btn" @click="viewMoreObjects">查看更多对象 ↓</button>
         </article>
       </section>
@@ -609,62 +607,6 @@ function getDistributionTone(index: number) {
   font-weight: 800;
 }
 
-.dimension-table,
-.focus-table {
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-admin-panel);
-  border-collapse: separate;
-  border-spacing: 0;
-  table-layout: fixed;
-}
-
-.dimension-table th,
-.focus-table th {
-  height: 42px;
-  background: #f7faff;
-  color: var(--color-text-primary);
-  font-size: 13px;
-  font-weight: 950;
-  text-align: left;
-}
-
-.dimension-table th,
-.dimension-table td,
-.focus-table th,
-.focus-table td {
-  border-right: 1px solid var(--color-card-border-soft);
-  border-bottom: 1px solid var(--color-card-border-soft);
-  padding: 9px 12px;
-  vertical-align: middle;
-}
-
-.dimension-table th:last-child,
-.dimension-table td:last-child,
-.focus-table th:last-child,
-.focus-table td:last-child {
-  border-right: 0;
-}
-
-.dimension-table tr:last-child td,
-.focus-table tr:last-child td {
-  border-bottom: 0;
-}
-
-.dimension-table td,
-.focus-table td {
-  color: var(--color-text-primary);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.dimension-table th:nth-child(1) { width: 18%; }
-.dimension-table th:nth-child(2) { width: 12%; }
-.dimension-table th:nth-child(3) { width: 32%; }
-.dimension-table th:nth-child(4) { width: 38%; }
-
 .dimension-name {
   display: inline-flex;
   align-items: center;
@@ -862,12 +804,6 @@ function getDistributionTone(index: number) {
   color: var(--color-primary);
 }
 
-.focus-table th:nth-child(1) { width: 18%; }
-.focus-table th:nth-child(2) { width: 16%; }
-.focus-table th:nth-child(3) { width: 22%; }
-.focus-table th:nth-child(4) { width: 31%; }
-.focus-table th:nth-child(5) { width: 13%; }
-
 .group-empty {
   display: grid;
   justify-items: center;
@@ -892,7 +828,7 @@ function getDistributionTone(index: number) {
   margin: 0;
 }
 
-.focused-row td {
+:deep(.focused-row) {
   background: var(--color-admin-bg);
 }
 

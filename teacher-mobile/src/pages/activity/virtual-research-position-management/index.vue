@@ -85,7 +85,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
               <text class="source-tag">任务分工</text>
             </view>
           </view>
-          <view class="row-arrow row-arrow--green" aria-hidden="true"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#13a95b" />
         </MobileCard>
       </view>
 
@@ -103,7 +103,7 @@ function goMemberEntry(entry: { title: string; url: string }) {
               <text class="view-title">{{ entry.title }}</text>
               <text class="view-desc">{{ entry.desc }}</text>
             </view>
-            <view class="row-arrow" aria-hidden="true"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </MobileCard>
       </view>

@@ -99,9 +99,7 @@ function goFollowItem(title: string) {
           <view class="year-copy">
             <text class="year-title">2026 年度企业实践</text>
             <text class="year-desc">已计入 28 / 30 天</text>
-            <view class="progress-bar">
-              <view class="progress-fill"></view>
-            </view>
+            <wd-progress class="progress-bar" :percentage="93" color="#08a85c" hide-text />
             <text class="year-tip">还差 2 天即可达成年度目标</text>
           </view>
           <view class="calendar-ok"></view>
@@ -117,7 +115,7 @@ function goFollowItem(title: string) {
               <text class="follow-title">{{ item.title }}</text>
               <text class="follow-desc">{{ item.desc }}</text>
             </view>
-            <view class="chevron"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>
@@ -539,16 +537,15 @@ function goFollowItem(title: string) {
 .progress-bar {
   height: 13rpx;
   margin-top: 18rpx;
-  overflow: hidden;
-  border-radius: 999rpx;
+}
+
+.progress-bar :deep(.wd-progress__outer) {
+  height: 13rpx;
   background: #e1e5ea;
 }
 
-.progress-fill {
-  width: 93%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #08a85c, #0abf66);
+.progress-bar :deep(.wd-progress__inner) {
+  border-radius: 999rpx;
 }
 
 .year-tip {

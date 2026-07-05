@@ -152,7 +152,7 @@ function goResearchRoom() {
               <text class="file-meta">{{ file.meta }}</text>
             </view>
             <text class="file-status">{{ file.status }}</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>

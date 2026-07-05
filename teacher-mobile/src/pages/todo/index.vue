@@ -45,10 +45,9 @@ function showNoticeFeedback() {
         <text class="hero-meta hero-meta--period">2026 年度发展周期 ｜ 聘期第 2 年</text>
       </view>
       <button class="notice-button" aria-label="消息通知" @tap="showNoticeFeedback">
-        <view class="notice-button__icon-wrap">
-          <MobileIcon class="notice-button__icon" name="bell" tone="dark" size="plain" shape="none" />
-          <view class="notice-button__badge">5</view>
-        </view>
+        <wd-badge class="notice-button__badge-wrap" :model-value="5" type="danger" :top="4" :right="4">
+          <MobileIcon class="notice-button__icon" name="bell" tone="dark" size="md" shape="none" />
+        </wd-badge>
       </button>
     </view>
 
@@ -184,10 +183,10 @@ function showNoticeFeedback() {
   border: 0;
 }
 
-.notice-button__icon-wrap {
+.notice-button__badge-wrap {
   position: absolute;
-  right: 8rpx;
-  bottom: 8rpx;
+  top: 16rpx;
+  right: 14rpx;
   width: 58rpx;
   height: 58rpx;
 }
@@ -195,22 +194,6 @@ function showNoticeFeedback() {
 .notice-button__icon {
   width: 58rpx;
   height: 58rpx;
-}
-
-.notice-button__badge {
-  position: absolute;
-  top: -28rpx;
-  right: -23rpx;
-  display: flex;
-  width: 50rpx;
-  height: 50rpx;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #ff1f39;
-  color: #fff;
-  font-size: 28rpx;
-  font-weight: 900;
 }
 
 .section-card {

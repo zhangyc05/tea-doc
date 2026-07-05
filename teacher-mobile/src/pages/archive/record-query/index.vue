@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import {
   getArchiveRecordStatusLabel,
@@ -12,7 +13,7 @@ import {
 type Tone = 'green' | 'teal' | 'orange' | 'purple' | 'blue'
 type IconType = 'calendar' | 'file' | 'chart' | 'book' | 'lab' | 'cup' | 'person' | 'briefcase'
 
-const filters = ['全部', '教学工作', '教研科研', '企业实践', '成果荣誉', '个人发展']
+const filters = ['全部', '教学工作', '教研科研', '企业实践', '成果荣誉', '个人发展'] as const
 
 const categoryVisuals: Record<ConcreteArchiveCategoryKey, {
   tone: Tone
@@ -28,8 +29,10 @@ const categoryVisuals: Record<ConcreteArchiveCategoryKey, {
   assessment: { tone: 'green', icon: 'chart' },
 }
 
-const selectedFilter = ref(filters[0])
+const selectedFilterIndex = ref(0)
 const queryText = ref('成长记录')
+
+const selectedFilter = computed(() => filters[selectedFilterIndex.value] || filters[0])
 
 const filteredRecords = computed(() => {
   return searchArchiveRecords(queryText.value, selectedFilter.value)
@@ -41,11 +44,7 @@ function goBack() {
 
 function clearQuery() {
   queryText.value = ''
-  selectedFilter.value = filters[0]
-}
-
-function selectFilter(filter: string) {
-  selectedFilter.value = filter
+  selectedFilterIndex.value = 0
 }
 
 function getRecordMeta(record: MobileArchiveRecord) {
@@ -57,6 +56,14 @@ function showRecord(recordId: string) {
     url: `/pages/archive/record-detail/index?recordId=${recordId}`,
   })
 }
+
+const tagColors: Record<Tone, { color: string; bgColor: string }> = {
+  green: { color: '#0aa84f', bgColor: '#dcfce7' },
+  teal: { color: '#079786', bgColor: '#d9fbf4' },
+  orange: { color: '#d97706', bgColor: '#fff0c7' },
+  purple: { color: '#8b35dc', bgColor: '#f0e4ff' },
+  blue: { color: '#1d70d6', bgColor: '#e1efff' },
+}
 </script>
 
 <template>
@@ -64,41 +71,40 @@ function showRecord(recordId: string) {
 
     <view class="search-head">
       <button class="back-button" aria-label="返回" @tap="goBack">
-        <view class="back-button__icon"></view>
+        <wd-icon name="chevron-left" size="40rpx" color="#0b122a" />
       </button>
       <view class="search-box">
-        <view class="search-icon"></view>
+        <MobileIcon class="search-icon" name="search" tone="gray" size="plain" shape="none" />
         <text class="query-text">{{ queryText || '输入关键词' }}</text>
-        <button class="clear-button" aria-label="清除关键词" @tap="clearQuery">×</button>
-        <view class="mic-icon"></view>
+        <button class="clear-button" aria-label="清除关键词" @tap="clearQuery">
+          <wd-icon name="close" size="24rpx" color="#fff" />
+        </button>
+        <MobileIcon class="mic-icon" name="sound" tone="dark" size="plain" shape="none" />
       </view>
     </view>
 
     <text class="result-count">找到 {{ filteredRecords.length }} 条相关记录</text>
 
-    <view class="filter-tabs">
-      <button
-        v-for="(filter, index) in filters"
-        :key="filter"
-        class="filter-tab"
-        :class="{ 'filter-tab--active': selectedFilter === filter }"
-        @tap="selectFilter(filter)"
-      >
-        {{ filter }}
-      </button>
-    </view>
+    <wd-tabs v-model="selectedFilterIndex" class="filter-tabs" color="#04a851" inactive-color="#111827" slidable="always" :line-width="0">
+      <wd-tab v-for="(filter, index) in filters" :key="filter" :name="index" :title="filter" />
+    </wd-tabs>
 
     <view class="record-list">
       <view v-for="record in filteredRecords" :key="record.id" class="record-card" @tap="showRecord(record.id)">
-        <view class="record-icon" :class="[`record-icon--${categoryVisuals[record.category].tone}`, `record-icon--${categoryVisuals[record.category].icon}`]">
-          <view class="record-icon__glyph"></view>
-        </view>
+        <MobileIcon class="record-icon" :name="categoryVisuals[record.category].icon" :tone="categoryVisuals[record.category].tone" size="md" />
         <view class="record-body">
-          <text class="record-tag" :class="`record-tag--${categoryVisuals[record.category].tone}`">{{ record.categoryName }}</text>
+          <wd-tag
+            class="record-tag"
+            round
+            :color="tagColors[categoryVisuals[record.category].tone].color"
+            :bg-color="tagColors[categoryVisuals[record.category].tone].bgColor"
+          >
+            {{ record.categoryName }}
+          </wd-tag>
           <text class="record-title">{{ record.title }}</text>
           <text class="record-meta">{{ getRecordMeta(record) }}</text>
         </view>
-        <view class="record-arrow"></view>
+        <wd-icon class="record-arrow" name="chevron-right" size="28rpx" color="#7b8495" />
       </view>
       <view v-if="filteredRecords.length === 0" class="empty-card">
         <text class="empty-title">暂无匹配档案</text>
@@ -122,7 +128,6 @@ function showRecord(recordId: string) {
 
 .search-head,
 .search-box,
-.filter-tabs,
 .record-card {
   display: flex;
   align-items: center;
@@ -135,7 +140,6 @@ function showRecord(recordId: string) {
 }
 
 .back-button,
-.filter-tab,
 .clear-button {
   margin: 0;
   padding: 0;
@@ -144,28 +148,18 @@ function showRecord(recordId: string) {
 }
 
 .back-button::after,
-.filter-tab::after,
 .clear-button::after {
   display: none;
   border: 0;
 }
 
 .back-button {
-  position: relative;
+  display: flex;
   width: 44rpx;
   height: 76rpx;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 44rpx;
-}
-
-.back-button__icon {
-  position: absolute;
-  top: 22rpx;
-  left: 9rpx;
-  width: 30rpx;
-  height: 30rpx;
-  border-bottom: 6rpx solid #0b122a;
-  border-left: 6rpx solid #0b122a;
-  transform: rotate(45deg);
 }
 
 .search-box {
@@ -181,24 +175,9 @@ function showRecord(recordId: string) {
 }
 
 .search-icon {
-  position: relative;
   width: 36rpx;
   height: 36rpx;
   flex: 0 0 36rpx;
-  border: 5rpx solid #9aa3b5;
-  border-radius: 50%;
-}
-
-.search-icon::after {
-  position: absolute;
-  right: -10rpx;
-  bottom: -7rpx;
-  width: 17rpx;
-  height: 5rpx;
-  border-radius: 6rpx;
-  background: #9aa3b5;
-  content: '';
-  transform: rotate(45deg);
 }
 
 .query-text {
@@ -229,36 +208,9 @@ function showRecord(recordId: string) {
 }
 
 .mic-icon {
-  position: relative;
   width: 26rpx;
   height: 38rpx;
   flex: 0 0 26rpx;
-  border: 5rpx solid #111827;
-  border-top-width: 7rpx;
-  border-radius: 18rpx;
-}
-
-.mic-icon::before {
-  position: absolute;
-  right: -11rpx;
-  bottom: -8rpx;
-  left: -11rpx;
-  height: 24rpx;
-  border: 5rpx solid #111827;
-  border-top: 0;
-  border-radius: 0 0 18rpx 18rpx;
-  content: '';
-}
-
-.mic-icon::after {
-  position: absolute;
-  bottom: -17rpx;
-  left: 7rpx;
-  width: 13rpx;
-  height: 5rpx;
-  border-radius: 5rpx;
-  background: #111827;
-  content: '';
 }
 
 .result-count {
@@ -270,35 +222,41 @@ function showRecord(recordId: string) {
 }
 
 .filter-tabs {
-  gap: 22rpx;
   margin-bottom: 28rpx;
 }
 
-.filter-tab {
-  display: flex;
+.filter-tabs :deep(.wd-tabs__nav) {
+  background: transparent;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-container) {
+  gap: 18rpx;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-item) {
   min-width: 128rpx;
   height: 62rpx;
-  align-items: center;
-  justify-content: center;
   padding: 0 26rpx;
   border: 1rpx solid #e0e6ef;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.92);
-  color: #111827;
+  box-shadow: 0 10rpx 28rpx rgba(35, 51, 87, 0.04);
   font-size: 26rpx;
   font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
-  box-shadow: 0 10rpx 28rpx rgba(35, 51, 87, 0.04);
 }
 
-.filter-tab--active {
+.filter-tabs :deep(.wd-tabs__nav-item.is-active) {
   min-width: 98rpx;
   border-color: transparent;
   background: linear-gradient(135deg, #16c96c, #02ad53);
+  box-shadow: 0 14rpx 30rpx rgba(5, 181, 85, 0.24);
   color: #fff;
   font-weight: 900;
-  box-shadow: 0 14rpx 30rpx rgba(5, 181, 85, 0.24);
+}
+
+.filter-tabs :deep(.wd-tabs__container),
+.filter-tabs :deep(.wd-tabs__line) {
+  display: none;
 }
 
 .record-list {
@@ -342,95 +300,9 @@ function showRecord(recordId: string) {
 }
 
 .record-icon {
-  position: relative;
   width: 76rpx;
   height: 76rpx;
   flex: 0 0 76rpx;
-  border-radius: 20rpx;
-  background: #e7faef;
-  color: $teacher-mobile-primary;
-}
-
-.record-icon--teal {
-  background: #e4fbf6;
-  color: #0aa995;
-}
-
-.record-icon--orange {
-  background: #fff6de;
-  color: #eab308;
-}
-
-.record-icon--purple {
-  background: #f2e8ff;
-  color: #9b5de5;
-}
-
-.record-icon--blue {
-  background: #eaf3ff;
-  color: #1d70d6;
-}
-
-.record-icon__glyph {
-  position: absolute;
-  inset: 21rpx;
-  border-radius: 6rpx;
-  background: currentColor;
-}
-
-.record-icon--calendar .record-icon__glyph::before,
-.record-icon--file .record-icon__glyph::before,
-.record-icon--chart .record-icon__glyph::before {
-  position: absolute;
-  background: #fff;
-  content: '';
-}
-
-.record-icon--calendar .record-icon__glyph::before {
-  right: 5rpx;
-  bottom: 5rpx;
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-}
-
-.record-icon--file .record-icon__glyph {
-  border-radius: 5rpx;
-}
-
-.record-icon--file .record-icon__glyph::before {
-  top: 8rpx;
-  left: 8rpx;
-  width: 18rpx;
-  height: 4rpx;
-  box-shadow: 0 10rpx 0 #fff;
-}
-
-.record-icon--chart .record-icon__glyph {
-  background:
-    linear-gradient(currentColor 0 0) 0 20rpx / 7rpx 15rpx no-repeat,
-    linear-gradient(currentColor 0 0) 14rpx 12rpx / 7rpx 23rpx no-repeat,
-    linear-gradient(currentColor 0 0) 28rpx 4rpx / 7rpx 31rpx no-repeat;
-}
-
-.record-icon--book .record-icon__glyph {
-  border-radius: 50% 8rpx 8rpx 50%;
-}
-
-.record-icon--lab .record-icon__glyph {
-  clip-path: polygon(35% 0, 65% 0, 65% 40%, 100% 100%, 0 100%, 35% 40%);
-}
-
-.record-icon--cup .record-icon__glyph {
-  border-radius: 7rpx 7rpx 15rpx 15rpx;
-}
-
-.record-icon--person .record-icon__glyph {
-  border-radius: 50% 50% 8rpx 8rpx;
-}
-
-.record-icon--briefcase .record-icon__glyph {
-  border-radius: 6rpx;
 }
 
 .record-body {
@@ -439,36 +311,10 @@ function showRecord(recordId: string) {
 }
 
 .record-tag {
-  display: inline-flex;
-  align-items: center;
   height: 30rpx;
-  padding: 0 10rpx;
-  border-radius: 8rpx;
-  background: #dcfce7;
-  color: #0aa84f;
   font-size: 20rpx;
   font-weight: 900;
   line-height: 1;
-}
-
-.record-tag--teal {
-  background: #d9fbf4;
-  color: #079786;
-}
-
-.record-tag--orange {
-  background: #fff0c7;
-  color: #d97706;
-}
-
-.record-tag--purple {
-  background: #f0e4ff;
-  color: #8b35dc;
-}
-
-.record-tag--blue {
-  background: #e1efff;
-  color: #1d70d6;
 }
 
 .record-title {
@@ -495,12 +341,12 @@ function showRecord(recordId: string) {
 }
 
 .record-arrow {
-  width: 20rpx;
-  height: 20rpx;
-  flex: 0 0 20rpx;
-  border-top: 5rpx solid #7b8495;
-  border-right: 5rpx solid #7b8495;
-  transform: rotate(45deg);
+  display: flex;
+  width: 28rpx;
+  height: 28rpx;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28rpx;
 }
 
 @media (max-width: 374px) {
@@ -517,13 +363,13 @@ function showRecord(recordId: string) {
     gap: 12rpx;
   }
 
-  .filter-tab {
+  .filter-tabs :deep(.wd-tabs__nav-item) {
     min-width: 108rpx;
     padding: 0 18rpx;
     font-size: 23rpx;
   }
 
-  .filter-tab--active {
+  .filter-tabs :deep(.wd-tabs__nav-item.is-active) {
     min-width: 84rpx;
   }
 

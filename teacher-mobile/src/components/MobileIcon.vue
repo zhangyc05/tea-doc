@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type MobileIconTone = 'blue' | 'orange' | 'purple' | 'green' | 'dark'
+type MobileIconTone = 'blue' | 'orange' | 'purple' | 'green' | 'teal' | 'gray' | 'dark'
 type MobileIconName =
+  | 'id'
   | 'file'
   | 'clock'
   | 'folder'
@@ -10,6 +11,7 @@ type MobileIconName =
   | 'note'
   | 'check'
   | 'book'
+  | 'calendar'
   | 'star'
   | 'building'
   | 'edit'
@@ -18,6 +20,27 @@ type MobileIconName =
   | 'seed'
   | 'chart'
   | 'secured'
+  | 'search'
+  | 'sound'
+  | 'grid'
+  | 'lab'
+  | 'briefcase'
+  | 'person'
+  | 'heart'
+  | 'cup'
+  | 'growth'
+  | 'gift'
+  | 'cap'
+  | 'case'
+  | 'help'
+  | 'service'
+  | 'setting'
+  | 'bot'
+  | 'info'
+  | 'upload'
+  | 'camera'
+  | 'mic'
+  | 'link'
 type MobileIconSize = 'sm' | 'md' | 'lg' | 'plain'
 type MobileIconShape = 'rounded' | 'circle' | 'none'
 
@@ -36,6 +59,7 @@ const props = withDefaults(
 )
 
 const iconNameMap: Record<MobileIconName, string> = {
+  id: 'user-circle',
   file: 'file',
   clock: 'clock',
   folder: 'folder',
@@ -43,6 +67,7 @@ const iconNameMap: Record<MobileIconName, string> = {
   note: 'note',
   check: 'check-circle',
   book: 'books',
+  calendar: 'calendar',
   star: 'star',
   building: 'home',
   edit: 'edit-outline',
@@ -51,6 +76,27 @@ const iconNameMap: Record<MobileIconName, string> = {
   seed: 'tips',
   chart: 'chart-bar',
   secured: 'secured',
+  search: 'search',
+  sound: 'sound',
+  grid: 'view-module',
+  lab: 'detection',
+  briefcase: 'bags',
+  person: 'user-circle',
+  heart: 'heart',
+  cup: 'gift',
+  growth: 'chart-bar',
+  gift: 'gift',
+  cap: 'evaluation',
+  case: 'bags',
+  help: 'help-circle',
+  service: 'service',
+  setting: 'setting',
+  bot: 'chat',
+  info: 'info-circle',
+  upload: 'upload',
+  camera: 'camera',
+  mic: 'sound',
+  link: 'link',
 }
 
 const iconColorMap: Record<MobileIconTone, string> = {
@@ -58,6 +104,8 @@ const iconColorMap: Record<MobileIconTone, string> = {
   orange: '#ff6c1a',
   purple: '#7a49f5',
   green: '#13a95b',
+  teal: '#12b8a6',
+  gray: '#6b7280',
   dark: '#111827',
 }
 
@@ -129,6 +177,14 @@ const iconSize = computed(() => iconSizeMap[props.size])
 
 .mobile-icon--green:not(.mobile-icon--none) {
   background: #e7faef;
+}
+
+.mobile-icon--teal:not(.mobile-icon--none) {
+  background: #e5fbf8;
+}
+
+.mobile-icon--gray:not(.mobile-icon--none) {
+  background: #eef2f7;
 }
 
 .mobile-icon--dark:not(.mobile-icon--none) {

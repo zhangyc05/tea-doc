@@ -105,20 +105,15 @@ function showSubmitContentFeedback() {
           <view class="section-icon section-icon--chart"></view>
           <text class="section-title">当前进度</text>
         </view>
-        <view class="timeline">
-          <view class="timeline__track"></view>
-          <view v-for="(step, index) in progressSteps" :key="step.title" class="timeline-step" :class="{ 'timeline-step--done': step.done }">
-            <view class="timeline-step__state">
-              <view v-if="step.done" class="timeline-check"></view>
-              <text v-else>{{ index + 1 }}</text>
-            </view>
-            <view class="timeline-step__dot"></view>
-            <view class="timeline-step__body">
-              <text class="timeline-step__title">{{ step.title }}</text>
-              <text class="timeline-step__desc">{{ index === 1 ? demandProgressText : step.desc }}</text>
-            </view>
-          </view>
-        </view>
+        <wd-steps class="timeline" :active="1" vertical>
+          <wd-step
+            v-for="(step, index) in progressSteps"
+            :key="step.title"
+            :title="step.title"
+            :description="index === 1 ? demandProgressText : step.desc"
+            :status="step.done ? 'finished' : index === 1 ? 'process' : undefined"
+          />
+        </wd-steps>
       </MobileCard>
 
       <view class="notice-box">
@@ -238,7 +233,6 @@ function showSubmitContentFeedback() {
 .success-card,
 .section-head,
 .submit-row,
-.timeline-step,
 .notice-box,
 .page-actions,
 .status-pill {
@@ -283,8 +277,6 @@ function showSubmitContentFeedback() {
 .section-title,
 .submit-row__label,
 .submit-row__value,
-.timeline-step__title,
-.timeline-step__desc,
 .notice-copy text {
   display: block;
 }
@@ -475,78 +467,25 @@ function showSubmitContentFeedback() {
 }
 
 .timeline {
-  position: relative;
-  padding-left: 84rpx;
+  padding-left: 12rpx;
 }
 
-.timeline__track {
-  position: absolute;
-  top: 52rpx;
-  bottom: 52rpx;
-  left: 31rpx;
-  width: 2rpx;
-  border-left: 3rpx dashed #d4dbe6;
-}
-
-.timeline-step {
-  position: relative;
-  align-items: flex-start;
-  gap: 26rpx;
-  padding-bottom: 38rpx;
-}
-
-.timeline-step:last-child {
-  padding-bottom: 0;
-}
-
-.timeline-step__state {
-  display: flex;
-  width: 48rpx;
-  height: 48rpx;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: #eef3f9;
-  color: #6c7891;
-  font-size: 28rpx;
-  font-weight: 900;
-}
-
-.timeline-step--done .timeline-step__state {
-  background: $teacher-mobile-primary;
-}
-
-.timeline-check {
-  width: 22rpx;
-  height: 13rpx;
-  border-bottom: 6rpx solid #fff;
-  border-left: 6rpx solid #fff;
-  transform: rotate(-45deg);
-}
-
-.timeline-step__dot {
-  position: absolute;
-  top: 61rpx;
-  left: -57rpx;
-  width: 18rpx;
-  height: 18rpx;
-  border-radius: 50%;
-  background: #d4dbe6;
-}
-
-.timeline-step__title {
+.timeline :deep(.wd-step__title) {
   color: #10172d;
   font-size: 30rpx;
   font-weight: 900;
   line-height: 1.35;
 }
 
-.timeline-step__desc {
+.timeline :deep(.wd-step__description) {
   margin-top: 8rpx;
   color: #52607a;
   font-size: 26rpx;
   line-height: 1.4;
+}
+
+.timeline :deep(.wd-step__icon) {
+  color: $teacher-mobile-primary;
 }
 
 .notice-box {

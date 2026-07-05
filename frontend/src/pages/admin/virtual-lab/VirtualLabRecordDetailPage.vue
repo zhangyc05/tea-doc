@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -27,6 +28,10 @@ const displayedParticipationRecords = computed(() => showAllParticipants.value ?
 const sourceMaterials = computed(() => getVirtualLabMaterialsByActivity(recordInfo.value.sourceActivityId))
 const selectedMaterialId = ref(sourceMaterials.value[0]?.id ?? '')
 const selectedMaterial = computed(() => sourceMaterials.value.find(item => item.id === selectedMaterialId.value) ?? null)
+
+function materialRowClassName({ row }: { row: { id: string } }) {
+  return selectedMaterialId.value === row.id ? 'active' : ''
+}
 
 function viewSourceActivity() {
   router.push(`/admin/virtual-lab/activities/${recordInfo.value.sourceActivityId}`)
@@ -123,27 +128,17 @@ function sendToArchive() {
               <h2>参与记录</h2>
             </div>
             <div class="table-container">
-              <table class="participation-table">
-                <thead>
-                  <tr>
-                    <th>教师</th>
-                    <th>参与来源</th>
-                    <th>记录内容</th>
-                    <th>来源依据</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="record in displayedParticipationRecords" :key="record.id">
-                    <td>
-                      <span class="avatar">{{ record.avatar }}</span>
-                      {{ record.teacher }}
-                    </td>
-                    <td>{{ record.participationType }}</td>
-                    <td>{{ record.contribution }}</td>
-                    <td>{{ record.relatedMaterials }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <AdminTable :data="displayedParticipationRecords" row-key="id" empty-text="暂无参与记录">
+                <AdminTableColumn label="教师" min-width="100">
+                  <template #default="{ row }">
+                    <span class="avatar">{{ row.avatar }}</span>
+                    {{ row.teacher }}
+                  </template>
+                </AdminTableColumn>
+                <AdminTableColumn prop="participationType" label="参与来源" min-width="120" />
+                <AdminTableColumn prop="contribution" label="记录内容" min-width="220" />
+                <AdminTableColumn prop="relatedMaterials" label="来源依据" min-width="160" />
+              </AdminTable>
             </div>
             <div class="participation-footer">
               <span>共 {{ participationRecords.length }} 位教师参与记录</span>
@@ -157,37 +152,28 @@ function sendToArchive() {
             <h2>来源资料</h2>
           </div>
           <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>资料名称</th>
-                  <th>资料类型</th>
-                  <th>来源</th>
-                  <th>形成时间</th>
-                  <th>说明</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="material in sourceMaterials"
-                  :key="material.id"
-                  :class="{ active: selectedMaterialId === material.id }"
-                >
-                  <td>
-                    <span class="file-icon" :class="material.tone">▤</span>
-                    {{ material.name }}
-                  </td>
-                  <td>{{ material.type }}</td>
-                  <td>{{ material.source }}</td>
-                  <td>{{ material.time }}</td>
-                  <td>{{ material.description }}</td>
-                  <td>
-                    <Button variant="ghost" size="sm" @click="viewMaterial(material.id)">查看</Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <AdminTable
+              :data="sourceMaterials"
+              row-key="id"
+              :row-class-name="materialRowClassName"
+              empty-text="暂无来源资料"
+            >
+              <AdminTableColumn label="资料名称" min-width="180">
+                <template #default="{ row }">
+                  <span class="file-icon" :class="row.tone">▤</span>
+                  {{ row.name }}
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn prop="type" label="资料类型" min-width="100" />
+              <AdminTableColumn prop="source" label="来源" min-width="120" />
+              <AdminTableColumn prop="time" label="形成时间" min-width="140" />
+              <AdminTableColumn prop="description" label="说明" min-width="220" />
+              <AdminTableColumn label="操作" min-width="90" fixed="right">
+                <template #default="{ row }">
+                  <Button variant="ghost" size="sm" @click="viewMaterial(row.id)">查看</Button>
+                </template>
+              </AdminTableColumn>
+            </AdminTable>
           </div>
           <div v-if="selectedMaterial" class="material-detail-panel">
             <h3>来源资料详情：{{ selectedMaterial.name }}</h3>

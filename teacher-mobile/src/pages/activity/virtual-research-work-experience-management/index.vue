@@ -102,7 +102,7 @@ function goResearchRecord() {
               <view class="file-icon" :class="`file-icon--${file.type}`">{{ file.type === 'word' ? 'W' : '' }}</view>
               <text class="row-title">{{ file.name }}</text>
               <text class="view-link">查看</text>
-              <view class="row-arrow"></view>
+              <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
             </button>
           </view>
         </MobileCard>

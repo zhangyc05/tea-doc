@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AdminInput, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -145,6 +146,10 @@ function viewSupplement() {
 function countByStatus(status: ArchiveProcessingRecord['status']) {
   return archiveState.processingRecords.filter(record => record.status === status).length
 }
+
+function recordRowClassName({ row }: { row: ArchiveProcessingRecord }) {
+  return selectedRecord.value?.id === row.id ? 'record-row selected' : 'record-row'
+}
 </script>
 
 <template>
@@ -244,9 +249,8 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
           <div class="list-header">
             <h2 class="list-title">处理记录列表</h2>
             <div class="search-box">
-              <input
+              <AdminInput
                 v-model="searchKeyword"
-                type="text"
                 class="search-input"
                 placeholder="搜索记录名称 / 教师姓名"
               />
@@ -263,36 +267,31 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
           </div>
 
           <div class="records-table">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>记录名称</th>
-                  <th>关联教师</th>
-                  <th>建议归档维度</th>
-                  <th>来源</th>
-                  <th>当前状态</th>
-                  <th>更新时间</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="record in processingRecords"
-                  :key="record.id"
-                  class="record-row"
-                  :class="{ selected: selectedRecord?.id === record.id }"
-                  @click="selectRecord(record)"
-                >
-                  <td class="record-name">{{ record.name }}</td>
-                  <td>{{ record.teacher }}</td>
-                  <td>{{ record.dimension }}</td>
-                  <td>{{ record.source }}</td>
-                  <td>
-                    <StatusBadge :status="record.status" />
-                  </td>
-                  <td class="update-time">{{ record.updateTime }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <AdminTable
+              class="admin-table"
+              :data="processingRecords"
+              :row-class-name="recordRowClassName"
+              @row-click="selectRecord"
+            >
+              <AdminTableColumn prop="name" label="记录名称" min-width="180">
+                <template #default="{ row }">
+                  <span class="record-name">{{ row.name }}</span>
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn prop="teacher" label="关联教师" min-width="100" />
+              <AdminTableColumn prop="dimension" label="建议归档维度" min-width="130" />
+              <AdminTableColumn prop="source" label="来源" min-width="100" />
+              <AdminTableColumn label="当前状态" min-width="110">
+                <template #default="{ row }">
+                  <StatusBadge :status="row.status" />
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn prop="updateTime" label="更新时间" min-width="110">
+                <template #default="{ row }">
+                  <span class="update-time">{{ row.updateTime }}</span>
+                </template>
+              </AdminTableColumn>
+            </AdminTable>
           </div>
         </main>
 
@@ -671,16 +670,16 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   border-bottom: 1px solid var(--color-card-border);
 }
 
-.record-row {
+:deep(.record-row) {
   cursor: pointer;
   transition: background 0.16s ease;
 }
 
-.record-row:hover {
+:deep(.record-row:hover) {
   background: #f8fafc;
 }
 
-.record-row.selected {
+:deep(.record-row.selected) {
   background: #eff6ff;
 }
 
@@ -1191,7 +1190,7 @@ function countByStatus(status: ArchiveProcessingRecord['status']) {
   line-height: 1.35;
 }
 
-.record-row.selected {
+:deep(.record-row.selected) {
   background: #eef5ff;
   box-shadow: inset 3px 0 0 var(--color-primary);
 }

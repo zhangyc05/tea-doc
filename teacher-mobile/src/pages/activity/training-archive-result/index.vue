@@ -98,25 +98,11 @@ function goArchivePendingList() {
 
       <MobileCard class="progress-card">
         <text class="section-title">当前进度</text>
-        <view class="progress-steps">
-          <view class="progress-line progress-line--done"></view>
-          <view class="progress-line progress-line--pending"></view>
-          <view class="progress-step progress-step--done">
-            <view class="progress-dot"></view>
-            <text class="progress-title">材料已提交</text>
-            <text class="progress-desc">2026-05-21 09:41</text>
-          </view>
-          <view class="progress-step progress-step--active">
-            <view class="progress-dot"></view>
-            <text class="progress-title">归档确认中</text>
-            <text class="progress-desc">等待部门或系统确认</text>
-          </view>
-          <view class="progress-step">
-            <view class="progress-dot"></view>
-            <text class="progress-title">进入成长档案</text>
-            <text class="progress-desc">确认后自动入档</text>
-          </view>
-        </view>
+        <wd-steps class="progress-steps" :active="1" align-center>
+          <wd-step title="材料已提交" description="2026-05-21 09:41" status="finished" />
+          <wd-step title="归档确认中" description="等待部门或系统确认" status="process" />
+          <wd-step title="进入成长档案" description="确认后自动入档" />
+        </wd-steps>
         <view class="warning-tip">
           <view class="warning-tip__icon"></view>
           <view>
@@ -487,79 +473,11 @@ function goArchivePendingList() {
 }
 
 .progress-steps {
-  position: relative;
-  justify-content: space-between;
   margin-top: 34rpx;
   padding-top: 10rpx;
 }
 
-.progress-line {
-  position: absolute;
-  top: 35rpx;
-  height: 4rpx;
-  border-radius: 4rpx;
-}
-
-.progress-line--done {
-  left: 16%;
-  width: 35%;
-  background: $teacher-mobile-primary;
-}
-
-.progress-line--pending {
-  left: 51%;
-  width: 34%;
-  background: #d7dde8;
-}
-
-.progress-step {
-  position: relative;
-  z-index: 1;
-  width: 31%;
-  min-width: 0;
-  text-align: center;
-}
-
-.progress-dot {
-  position: relative;
-  width: 44rpx;
-  height: 44rpx;
-  margin: 0 auto;
-  border: 6rpx solid #d7dde8;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.progress-step--done .progress-dot,
-.progress-step--active .progress-dot {
-  border-color: $teacher-mobile-primary;
-}
-
-.progress-step--done .progress-dot {
-  background: $teacher-mobile-primary;
-}
-
-.progress-step--done .progress-dot::before {
-  position: absolute;
-  top: 12rpx;
-  left: 10rpx;
-  width: 16rpx;
-  height: 9rpx;
-  border-bottom: 5rpx solid #fff;
-  border-left: 5rpx solid #fff;
-  content: '';
-  transform: rotate(-45deg);
-}
-
-.progress-step--active .progress-dot::before {
-  position: absolute;
-  inset: 7rpx;
-  border-radius: 50%;
-  background: $teacher-mobile-primary;
-  content: '';
-}
-
-.progress-title {
+.progress-steps :deep(.wd-step__title) {
   margin-top: 26rpx;
   color: #17233c;
   font-size: 28rpx;
@@ -567,15 +485,19 @@ function goArchivePendingList() {
   line-height: 1.35;
 }
 
-.progress-step--active .progress-title {
+.progress-steps :deep(.wd-step.is-process .wd-step__title) {
   color: $teacher-mobile-primary-dark;
 }
 
-.progress-desc {
+.progress-steps :deep(.wd-step__description) {
   margin-top: 12rpx;
   color: #72809a;
   font-size: 25rpx;
   line-height: 1.35;
+}
+
+.progress-steps :deep(.wd-step__icon) {
+  color: $teacher-mobile-primary;
 }
 
 .warning-tip {

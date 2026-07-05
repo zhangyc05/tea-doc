@@ -87,25 +87,11 @@ function showSubmitRecord() {
         <text class="submit-record__title">{{ record.title }}</text>
         <text class="submit-record__meta">{{ record.submittedAt }} ｜ {{ record.status }} ｜ {{ record.adminStoreRefs.join(' / ') }}</text>
       </view>
-      <view class="progress-line">
-        <view class="progress-step progress-step--done">
-          <view class="step-dot">✓</view>
-          <text class="step-title">1. 已提交修改</text>
-          <text class="step-desc">2026-05-15 09:21</text>
-        </view>
-        <view class="progress-connector progress-connector--active"></view>
-        <view class="progress-step progress-step--active">
-          <view class="step-dot">2</view>
-          <text class="step-title">2. 部门核验</text>
-          <text class="step-desc">进行中</text>
-        </view>
-        <view class="progress-connector"></view>
-        <view class="progress-step">
-          <view class="step-dot">3</view>
-          <text class="step-title">3. 入档</text>
-          <text class="step-desc">待完成</text>
-        </view>
-      </view>
+      <wd-steps class="progress-line" :active="1" align-center>
+        <wd-step title="1. 已提交修改" description="2026-05-15 09:21" status="finished" />
+        <wd-step title="2. 部门核验" description="进行中" status="process" />
+        <wd-step title="3. 入档" description="待完成" />
+      </wd-steps>
     </MobileCard>
 
     <MobileCard class="next-card">
@@ -324,9 +310,7 @@ function showSubmitRecord() {
 }
 
 .record-state,
-.change-new,
-.progress-step--active .step-title,
-.progress-step--active .step-desc {
+.change-new {
   color: $teacher-mobile-primary-dark;
 }
 
@@ -408,59 +392,21 @@ function showSubmitRecord() {
   padding: 0 8rpx;
 }
 
-.progress-step {
-  display: flex;
-  width: 140rpx;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-.step-dot {
-  display: flex;
-  width: 36rpx;
-  height: 36rpx;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #e8edf4;
-  color: #718096;
-  font-size: 23rpx;
-  font-weight: 900;
-}
-
-.progress-step--done .step-dot,
-.progress-step--active .step-dot {
-  background: linear-gradient(180deg, #17c96d, #08ad55);
-  color: #fff;
-}
-
-.step-title {
-  margin-top: 6rpx;
+.progress-line :deep(.wd-step__title) {
   color: #2c3851;
   font-size: 21rpx;
   font-weight: 800;
   line-height: 1.25;
 }
 
-.step-desc {
-  margin-top: 3rpx;
+.progress-line :deep(.wd-step__description) {
   color: #73819c;
   font-size: 19rpx;
   line-height: 1.2;
 }
 
-.progress-connector {
-  width: 78rpx;
-  height: 0;
-  align-self: flex-start;
-  margin-top: 18rpx;
-  border-top: 3rpx dashed #aab7cc;
-}
-
-.progress-connector--active {
-  border-top-style: solid;
-  border-top-color: $teacher-mobile-primary;
+.progress-line :deep(.wd-step__icon) {
+  color: $teacher-mobile-primary;
 }
 
 .next-body {
@@ -551,12 +497,5 @@ function showSubmitRecord() {
     font-size: 23rpx;
   }
 
-  .progress-step {
-    width: 138rpx;
-  }
-
-  .progress-connector {
-    width: 58rpx;
-  }
 }
 </style>

@@ -53,24 +53,23 @@ describe('EmptyState', () => {
     ]
 
     for (const pageSource of pageSources) {
-      expect(pageSource).toContain('EmptyState')
-      expect(pageSource).toContain('<EmptyState as="td" variant="cell"')
+      expect(pageSource).toContain('empty-text=')
       expect(pageSource).not.toContain('class="empty-cell"')
     }
   })
 
   it('is used by the third table empty-state batch', () => {
-    const pageSources = [
+    const migratedPageSources = [
       trainingPlanPageSource,
       practiceRecordPageSource,
       practiceTrackingPageSource,
     ]
 
-    for (const pageSource of pageSources) {
-      expect(pageSource).toContain('EmptyState')
-      expect(pageSource).toContain('<EmptyState as="td" variant="cell"')
+    for (const pageSource of migratedPageSources) {
+      expect(pageSource).toContain('empty-text=')
       expect(pageSource).not.toContain('class="empty-cell"')
     }
+
   })
 
   it('is used by the remaining admin empty-state batch', () => {
@@ -92,8 +91,7 @@ describe('EmptyState', () => {
   })
 
   it('uses a table-cell empty state for the reflection overview table', () => {
-    expect(reflectionOverviewPageSource).toContain('EmptyState')
-    expect(reflectionOverviewPageSource).toContain('<EmptyState as="td" variant="cell" :colspan="7"')
+    expect(reflectionOverviewPageSource).toContain('empty-text="未找到符合条件的反思记录"')
     expect(reflectionOverviewPageSource).not.toContain('<EmptyState v-if="filteredReflections.length === 0" title="未找到符合条件的反思记录" />')
   })
 })

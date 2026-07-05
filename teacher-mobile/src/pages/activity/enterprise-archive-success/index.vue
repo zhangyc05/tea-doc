@@ -97,7 +97,7 @@ function goArchivePendingList() {
             <text class="file-meta">PDF | 2.4MB</text>
           </view>
           <text class="file-state">等待管理端确认</text>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
 
         <view class="audit-box">

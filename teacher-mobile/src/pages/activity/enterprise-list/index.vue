@@ -29,6 +29,10 @@ type RecordView = {
 const filters: EnterpriseFilter[] = ['全部', '进行中', '待归档', '已归档', '需补充']
 const enterpriseState = getMobileEnterpriseState()
 const records = computed<RecordView[]>(() => filteredEnterpriseRecords().map(toRecordView))
+const selectedFilter = computed({
+  get: () => enterpriseState.selectedFilter,
+  set: (value: EnterpriseFilter) => selectFilter(value),
+})
 
 function goBack() {
   uni.navigateBack()
@@ -158,15 +162,14 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
           </view>
         </view>
 
-        <view class="filter-row">
-          <text
+        <wd-tabs v-model="selectedFilter" class="filter-row" color="#04a851" inactive-color="#263b67" :line-width="0">
+          <wd-tab
             v-for="item in filters"
             :key="item"
-            class="filter-chip"
-            :class="{ 'filter-chip--active': item === enterpriseState.selectedFilter }"
-            @tap="selectFilter(item)"
-          >{{ item }}</text>
-        </view>
+            :name="item"
+            :title="item"
+          />
+        </wd-tabs>
 
         <view class="record-list">
           <view v-for="item in records" :key="item.id" class="record-row">
@@ -569,25 +572,40 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
 }
 
 .filter-row {
-  justify-content: space-between;
-  gap: 14rpx;
   margin-top: 26rpx;
 }
 
-.filter-chip {
+.filter-row :deep(.wd-tabs__nav) {
+  justify-content: space-between;
+  gap: 14rpx;
+  background: transparent;
+}
+
+.filter-row :deep(.wd-tabs__nav-container) {
+  height: auto;
+}
+
+.filter-row :deep(.wd-tabs__nav-item) {
   min-width: 98rpx;
+  height: auto;
   padding: 12rpx 16rpx;
   border-radius: 999rpx;
   background: #f2f4f8;
   color: #263b67;
   font-size: 25rpx;
+  line-height: 1;
   text-align: center;
 }
 
-.filter-chip--active {
+.filter-row :deep(.wd-tabs__nav-item.is-active) {
   background: #e3fbec;
   color: $teacher-mobile-primary-dark;
   font-weight: 900;
+}
+
+.filter-row :deep(.wd-tabs__container),
+.filter-row :deep(.wd-tabs__line) {
+  display: none;
 }
 
 .record-list {
@@ -791,11 +809,11 @@ function getRecordTone(status: EnterpriseRecordStatus): PracticeTone {
     font-size: 22rpx;
   }
 
-  .filter-row {
+  .filter-row :deep(.wd-tabs__nav) {
     gap: 8rpx;
   }
 
-  .filter-chip {
+  .filter-row :deep(.wd-tabs__nav-item) {
     min-width: 62rpx;
     padding: 9rpx 8rpx;
     font-size: 22rpx;

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { EmptyState, StatusBadge } from '@/components/common'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -132,6 +133,10 @@ function viewVersionHistory() {
     query: { versionHistory: '1' },
   })
 }
+
+function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
+  return selectedSuggestion.value?.id === row.id ? 'admin-table-row active' : 'admin-table-row'
+}
 </script>
 
 <template>
@@ -242,49 +247,43 @@ function viewVersionHistory() {
           </div>
 
           <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>来源</th>
-                  <th>问题类型</th>
-                  <th>关键位置</th>
-                  <th>建议内容</th>
-                  <th>来源依据</th>
-                  <th>处理状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="suggestion in filteredSuggestions"
-                  :key="suggestion.id"
-                  class="admin-table-row"
-                  :class="{ active: selectedSuggestion?.id === suggestion.id }"
-                  @click="selectSuggestion(suggestion)"
-                >
-                  <td><span class="source-badge" :class="suggestion.source">{{ suggestion.sourceLabel }}</span></td>
-                  <td><span class="issue-badge">{{ suggestion.issueType }}</span></td>
-                  <td>{{ suggestion.keyLocation }}</td>
-                  <td>{{ suggestion.content }}</td>
-                  <td>{{ suggestion.basis }}</td>
-                  <td>
-                    <StatusBadge :status="suggestion.status" />
-                  </td>
-                  <td>
+            <AdminTable
+              :data="filteredSuggestions"
+              row-key="id"
+              :row-class-name="suggestionRowClassName"
+              empty-text="暂无符合条件的优化建议"
+              @row-click="selectSuggestion"
+            >
+              <AdminTableColumn label="来源" min-width="100">
+                <template #default="{ row }">
+                  <span class="source-badge" :class="row.source">{{ row.sourceLabel }}</span>
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn label="问题类型" min-width="110">
+                <template #default="{ row }">
+                  <span class="issue-badge">{{ row.issueType }}</span>
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn prop="keyLocation" label="关键位置" min-width="150" />
+              <AdminTableColumn prop="content" label="建议内容" min-width="220" />
+              <AdminTableColumn prop="basis" label="来源依据" min-width="160" />
+              <AdminTableColumn label="处理状态" min-width="110">
+                <template #default="{ row }">
+                  <StatusBadge :status="row.status" />
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn label="操作" min-width="250" fixed="right">
+                <template #default="{ row }">
                     <div class="action-buttons">
-                      <Button variant="ghost" size="sm" @click.stop="handleAction('view', suggestion)">查看详情</Button>
-                      <Button v-if="suggestion.status === 'pending'" size="sm" @click.stop="handleAction('adopt', suggestion)">采纳</Button>
-                      <Button v-if="suggestion.status === 'pending'" variant="secondary" size="sm" @click.stop="handleAction('defer', suggestion)">暂缓</Button>
-                      <Button v-if="suggestion.status === 'pending'" variant="danger" size="sm" @click.stop="handleAction('reject', suggestion)">弃用</Button>
-                      <Button v-if="suggestion.status === 'adopted'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>
+                      <Button variant="ghost" size="sm" @click.stop="handleAction('view', row)">查看详情</Button>
+                      <Button v-if="row.status === 'pending'" size="sm" @click.stop="handleAction('adopt', row)">采纳</Button>
+                      <Button v-if="row.status === 'pending'" variant="secondary" size="sm" @click.stop="handleAction('defer', row)">暂缓</Button>
+                      <Button v-if="row.status === 'pending'" variant="danger" size="sm" @click.stop="handleAction('reject', row)">弃用</Button>
+                      <Button v-if="row.status === 'adopted'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>
                     </div>
-                  </td>
-                </tr>
-                <tr v-if="filteredSuggestions.length === 0">
-                  <EmptyState as="td" variant="cell" :colspan="7" title="暂无符合条件的优化建议" />
-                </tr>
-              </tbody>
-            </table>
+                </template>
+              </AdminTableColumn>
+            </AdminTable>
           </div>
         </section>
 

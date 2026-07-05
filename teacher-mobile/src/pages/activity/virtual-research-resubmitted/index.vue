@@ -113,7 +113,7 @@ function goContributionDetail() {
               <text class="item-line">提交时间： {{ item.time }}</text>
               <text v-if="item.ai" class="ai-line">✧ AI 已整理为归档说明</text>
             </view>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>

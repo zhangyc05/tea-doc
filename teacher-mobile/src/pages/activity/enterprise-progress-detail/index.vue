@@ -83,7 +83,7 @@ function goProofUpload() {
           <view class="section-icon section-icon--calendar"></view>
           <text class="section-title">实践计划</text>
           <text class="section-link" @tap="showDetailFeedback('实践计划详情')">查看详情</text>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <text class="plan-line"><text class="strong">实践目标：</text>了解企业软件开发流程，提升项目分析与编码能力。</text>
         <text class="plan-line"><text class="strong">重点内容：</text>需求分析、编码实现、单元测试、项目文档编写等。</text>
@@ -106,14 +106,14 @@ function goProofUpload() {
           <text class="section-title">实践日志</text>
           <text class="log-count">（已记录 8 天）</text>
           <text class="section-link" @tap="goLogList">查看全部</text>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <view class="log-list">
           <view v-for="item in logs" :key="item.date" class="log-row">
             <view class="timeline-dot"></view>
             <text class="log-date">{{ item.date }}</text>
             <text class="log-text">{{ item.text }}</text>
-            <view class="chevron"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>
@@ -123,7 +123,7 @@ function goProofUpload() {
           <view class="section-icon section-icon--folder"></view>
           <text class="section-title">附件资料</text>
           <text class="section-link" @tap="showDetailFeedback('附件资料')">查看全部</text>
-          <view class="chevron"></view>
+          <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
         </view>
         <view class="file-strip">
           <view v-for="item in files" :key="item.title" class="file-item">

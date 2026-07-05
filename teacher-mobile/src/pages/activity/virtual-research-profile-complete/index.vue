@@ -121,7 +121,7 @@ function goContributionConfirm() {
                 {{ item.action }}
               </MobileActionButton>
             </view>
-            <view class="row-arrow" aria-hidden="true"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </MobileCard>
       </view>
@@ -133,7 +133,7 @@ function goContributionConfirm() {
             <view class="material-icon" :class="`material-icon--${item.icon}`" aria-hidden="true"></view>
             <text class="material-title">{{ item.title }}</text>
             <text class="material-count">{{ item.count }}</text>
-            <view class="row-arrow" aria-hidden="true"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </MobileCard>
       </view>

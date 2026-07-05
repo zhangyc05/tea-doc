@@ -74,7 +74,7 @@ function goArchiveRecord() {
       >
         <MobileIcon class="next-icon" :name="item.icon" tone="green" size="sm" shape="circle" />
         <text class="next-text">{{ item.text }}</text>
-        <view class="row-arrow"></view>
+        <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
       </button>
     </MobileCard>
 

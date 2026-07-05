@@ -107,7 +107,7 @@ function goResearchRecord() {
               <text v-if="file.type === 'pdf'">PDF</text>
             </view>
             <text class="file-name">{{ file.name }}</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </view>
         </view>
       </MobileCard>

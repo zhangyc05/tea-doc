@@ -129,7 +129,7 @@ function returnToDetail() {
               <view class="material-icon" :class="`material-icon--${item.type}`"></view>
               <text>{{ item.material }}</text>
             </view>
-            <view class="chevron"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </MobileCard>
         </view>
       </view>

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { CompactFilterBar, EmptyState, InsightSidebar, StatusBadge } from '@/components/common'
+import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import {
   approveTrainingApplication,
   getTrainingState,
   rejectTrainingApplication,
+  type TrainingApplication,
 } from '@/stores/admin/trainingStore'
 
 const trainingState = getTrainingState()
@@ -29,6 +31,13 @@ const selectedYear = ref('2026 年度')
 const searchQuery = ref('')
 const appliedSearchQuery = ref('')
 const activeApplicationId = ref('1')
+const currentPage = ref(1)
+const pageSize = 10
+
+const organizationOptions = ['全校', '智能制造学院', '电子信息学院', '现代服务学院', '外语学院'].map((value) => ({ label: value, value }))
+const statusOptions = ['全部', '待处理', '已同意', '未同意', '已取消'].map((value) => ({ label: value, value }))
+const trainingOptions = ['全部', '数字化教学', 'AI 赋能', '双师型教师', '课程思政'].map((value) => ({ label: value, value }))
+const yearOptions = ['2026 年度', '2025 年度'].map((value) => ({ label: value, value }))
 
 const filteredApplications = computed(() => {
   const keyword = appliedSearchQuery.value.trim().toLowerCase()
@@ -56,6 +65,10 @@ function handleApplication(id: string) {
 function viewDetail(id: string) {
   activeApplicationId.value = id
   trainingState.operationMessage = '已在右侧展示申请摘要。'
+}
+
+function applicationRowClassName({ row }: { row: TrainingApplication }) {
+  return activeApplicationId.value === row.id ? 'application-row active' : 'application-row'
 }
 
 function applyFilters() {
@@ -142,44 +155,23 @@ function rejectCurrentApplication() {
                 <template #fields>
                   <label class="filter-field">
                     <span>组织范围：</span>
-                    <select v-model="selectedOrganization" class="filter-select">
-                      <option>全校</option>
-                      <option>智能制造学院</option>
-                      <option>电子信息学院</option>
-                      <option>现代服务学院</option>
-                      <option>外语学院</option>
-                    </select>
+                    <AdminSelect v-model="selectedOrganization" class="filter-select" :options="organizationOptions" />
                   </label>
                   <label class="filter-field">
                     <span>申请状态：</span>
-                    <select v-model="selectedStatus" class="filter-select">
-                      <option>全部</option>
-                      <option>待处理</option>
-                      <option>已同意</option>
-                      <option>未同意</option>
-                      <option>已取消</option>
-                    </select>
+                    <AdminSelect v-model="selectedStatus" class="filter-select" :options="statusOptions" />
                   </label>
                   <label class="filter-field">
                     <span>申请培训：</span>
-                    <select v-model="selectedTraining" class="filter-select">
-                      <option>全部</option>
-                      <option>数字化教学</option>
-                      <option>AI 赋能</option>
-                      <option>双师型教师</option>
-                      <option>课程思政</option>
-                    </select>
+                    <AdminSelect v-model="selectedTraining" class="filter-select" :options="trainingOptions" />
                   </label>
                   <label class="filter-field">
                     <span>申请时间：</span>
-                    <select v-model="selectedYear" class="filter-select">
-                      <option>2026 年度</option>
-                      <option>2025 年度</option>
-                    </select>
+                    <AdminSelect v-model="selectedYear" class="filter-select" :options="yearOptions" />
                   </label>
                 </template>
                 <template #search>
-                  <input
+                  <AdminInput
                     v-model="searchQuery"
                     class="search-input"
                     placeholder="搜索教师、培训名称、院系"
@@ -196,68 +188,55 @@ function rejectCurrentApplication() {
               </CompactFilterBar>
               <!-- 数据表格 -->
               <div class="table-container">
-                <table class="application-table">
-                  <thead>
-                    <tr>
-                      <th>申请人</th>
-                      <th>院系 / 专业</th>
-                      <th>申请培训</th>
-                      <th>申请理由</th>
-                      <th>申请时间</th>
-                      <th>计划名额</th>
-                      <th>申请状态</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="app in filteredApplications"
-                      :key="app.id"
-                      :class="{ active: activeApplicationId === app.id }"
-                    >
-                      <td>{{ app.applicant }}</td>
-                      <td>{{ app.department }} / {{ app.major }}</td>
-                      <td>{{ app.trainingName }}</td>
-                      <td>{{ app.reason }}</td>
-                      <td>{{ app.applyTime }}</td>
-                      <td>{{ app.quotaInfo }}</td>
-                      <td>
-                        <StatusBadge :status="app.status" />
-                      </td>
-                      <td>
-                        <Button
-                          v-if="app.status === '待处理'"
-                          variant="secondary"
-                          size="sm"
-                          @click="handleApplication(app.id)"
-                        >
-                          处理
-                        </Button>
-                        <Button
-                          v-else
-                          variant="ghost"
-                          size="sm"
-                          @click="viewDetail(app.id)"
-                        >
-                          查看
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr v-if="filteredApplications.length === 0">
-                      <EmptyState as="td" variant="cell" :colspan="8" title="暂无符合条件的培训申请" />
-                    </tr>
-                  </tbody>
-                </table>
+                <AdminTable
+                  class="application-table"
+                  :data="filteredApplications"
+                  :row-class-name="applicationRowClassName"
+                  empty-text="暂无符合条件的培训申请"
+                >
+                  <AdminTableColumn prop="applicant" label="申请人" min-width="90" />
+                  <AdminTableColumn label="院系 / 专业" min-width="170">
+                    <template #default="{ row }">
+                      {{ row.department }} / {{ row.major }}
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn prop="trainingName" label="申请培训" min-width="160" />
+                  <AdminTableColumn prop="reason" label="申请理由" min-width="180" />
+                  <AdminTableColumn prop="applyTime" label="申请时间" min-width="110" />
+                  <AdminTableColumn prop="quotaInfo" label="计划名额" min-width="100" />
+                  <AdminTableColumn label="申请状态" min-width="110">
+                    <template #default="{ row }">
+                      <StatusBadge :status="row.status" />
+                    </template>
+                  </AdminTableColumn>
+                  <AdminTableColumn label="操作" min-width="100" fixed="right">
+                    <template #default="{ row }">
+                      <Button
+                        v-if="row.status === '待处理'"
+                        variant="secondary"
+                        size="sm"
+                        @click="handleApplication(row.id)"
+                      >
+                        处理
+                      </Button>
+                      <Button
+                        v-else
+                        variant="ghost"
+                        size="sm"
+                        @click="viewDetail(row.id)"
+                      >
+                        查看
+                      </Button>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
               </div>
-              <div class="pagination-row">
-                <span>共 5 条</span>
-                <span class="page-button" aria-label="上一页">‹</span>
-                <span class="page-button active" aria-current="page">1</span>
-                <span class="page-button" aria-label="下一页">›</span>
-                <select class="page-size" aria-label="每页条数">
-                  <option>10条/页</option>
-                </select>
-              </div>
+              <AdminPagination
+                v-model:current-page="currentPage"
+                class="pagination-row"
+                :page-size="pageSize"
+                :total="filteredApplications.length"
+              />
             </div>
           </div>
 
@@ -562,7 +541,7 @@ function rejectCurrentApplication() {
   border-right: none;
 }
 
-.application-table tr.active td {
+:deep(.application-row.active) {
   background: #f4f8ff;
 }
 
@@ -620,34 +599,6 @@ function rejectCurrentApplication() {
   padding: 16px 20px 20px;
   color: #52617a;
   font-size: 13px;
-}
-
-.page-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 34px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-admin-text-strong);
-  font-weight: 700;
-}
-
-.page-button.active {
-  background: var(--color-admin-primary);
-  color: #fff;
-  border-color: var(--color-admin-primary);
-}
-
-.page-size {
-  width: 104px;
-  height: 34px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-admin-text-strong);
 }
 
 .sidebar {

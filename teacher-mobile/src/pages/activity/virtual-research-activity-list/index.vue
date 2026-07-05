@@ -28,13 +28,13 @@ const filters: Array<{ label: string; value: VirtualResearchFilter }> = [
 
 const virtualResearchState = getMobileVirtualResearchState()
 const activities = computed(() => filteredResearchActivities().map(toActivityView))
+const activeFilter = computed({
+  get: () => virtualResearchState.selectedFilter,
+  set: (filter: VirtualResearchFilter) => setVirtualResearchFilter(filter),
+})
 
 function goBack() {
   uni.navigateBack()
-}
-
-function selectFilter(filter: VirtualResearchFilter) {
-  setVirtualResearchFilter(filter)
 }
 
 function showFilterFeedback() {
@@ -158,17 +158,14 @@ function getTone(status: VirtualResearchActivity['status']): string {
         </MobileActionButton>
       </MobileCard>
 
-      <view class="filter-tabs">
-        <button
-          v-for="(item, index) in filters"
+      <wd-tabs v-model="activeFilter" class="filter-tabs" color="#10b966" inactive-color="#344560" slidable="always" :line-width="0">
+        <wd-tab
+          v-for="item in filters"
           :key="item.value"
-          class="filter-tab"
-          :class="{ 'filter-tab--active': item.value === virtualResearchState.selectedFilter }"
-          @tap="selectFilter(item.value)"
-        >
-          {{ item.label }}
-        </button>
-      </view>
+          :name="item.value"
+          :title="item.label"
+        />
+      </wd-tabs>
 
       <view class="card-list">
         <MobileCard v-for="item in activities" :key="item.id" class="activity-card">
@@ -177,7 +174,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
           <view class="activity-body">
             <view class="activity-head">
               <text class="activity-title">{{ item.title }}</text>
-              <view class="row-arrow"></view>
+              <wd-icon class="row-arrow" name="chevron-right" size="22rpx" color="#344560" />
             </view>
             <view class="meta-line">
               <view class="mini-icon mini-icon--calendar"></view>
@@ -215,7 +212,7 @@ function getTone(status: VirtualResearchActivity['status']): string {
         <text class="rule-text">系统已从会议纪要、任务分工和成果材料中识别教研贡献，请确认并补充关键材料，形成可归档记录。</text>
         <button class="rule-link" @tap="showResearchRule">
           <text>了解规则</text>
-          <view class="link-arrow"></view>
+          <wd-icon class="link-arrow" name="chevron-right" size="18rpx" color="#079653" />
         </button>
       </MobileCard>
     </view>
@@ -515,18 +512,18 @@ function getTone(status: VirtualResearchActivity['status']): string {
 }
 
 .filter-tabs {
-  display: flex;
-  gap: 18rpx;
-  overflow-x: auto;
   padding: 2rpx 0 4rpx;
-  scrollbar-width: none;
 }
 
-.filter-tabs::-webkit-scrollbar {
-  display: none;
+.filter-tabs :deep(.wd-tabs__nav) {
+  gap: 18rpx;
 }
 
-.filter-tab {
+.filter-tabs :deep(.wd-tabs__nav-container) {
+  background: transparent;
+}
+
+.filter-tabs :deep(.wd-tabs__nav-item) {
   flex: 0 0 auto;
   height: 60rpx;
   margin: 0;
@@ -540,11 +537,12 @@ function getTone(status: VirtualResearchActivity['status']): string {
   line-height: 60rpx;
 }
 
-.filter-tab::after {
+.filter-tabs :deep(.wd-tabs__container),
+.filter-tabs :deep(.wd-tabs__line) {
   display: none;
 }
 
-.filter-tab--active {
+.filter-tabs :deep(.wd-tabs__nav-item.is-active) {
   border: 2rpx solid #10b966;
   background: #f3fff8;
   color: #079653;
@@ -724,13 +722,10 @@ function getTone(status: VirtualResearchActivity['status']): string {
 
 .row-arrow,
 .link-arrow {
+  display: flex;
   flex: 0 0 auto;
-  width: 18rpx;
-  height: 18rpx;
-  border-top: 4rpx solid currentColor;
-  border-right: 4rpx solid currentColor;
-  color: #344560;
-  transform: rotate(45deg);
+  align-items: center;
+  justify-content: center;
 }
 
 .meta-line {
@@ -912,9 +907,8 @@ function getTone(status: VirtualResearchActivity['status']): string {
 }
 
 .link-arrow {
-  width: 14rpx;
-  height: 14rpx;
-  color: #079653;
+  width: 18rpx;
+  height: 18rpx;
 }
 
 @media (max-width: 430px) {
@@ -968,14 +962,14 @@ function getTone(status: VirtualResearchActivity['status']): string {
     font-size: 25rpx;
   }
 
-  .filter-tab {
+  .filter-tabs :deep(.wd-tabs__nav-item) {
     height: 56rpx;
     padding: 0 24rpx;
     font-size: 24rpx;
     line-height: 56rpx;
   }
 
-  .filter-tab--active {
+  .filter-tabs :deep(.wd-tabs__nav-item.is-active) {
     line-height: 52rpx;
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobileTabBar from '../../../components/MobileTabBar.vue'
 import { saveEnterpriseArchiveDraft, submitEnterpriseHistory } from '../../../domain/enterprise'
@@ -75,15 +76,15 @@ function goConfirmed() {
           <text class="prompt-text">2026 年 3 月 1 日至 3 月 8 日，我在济南智能制造实训基地参加设备调试与产线观察实践，主要学习设备调试流程、产线运行记录和现场安全规范，并形成了实践证明材料。</text>
           <view class="prompt-tools">
             <view class="tool-item">
-              <view class="tool-icon tool-icon--voice"></view>
+              <MobileIcon class="tool-icon" name="mic" tone="dark" size="plain" shape="none" />
               <text>语音</text>
             </view>
             <view class="tool-item">
-              <view class="tool-icon tool-icon--camera"></view>
+              <MobileIcon class="tool-icon" name="camera" tone="dark" size="plain" shape="none" />
               <text>拍照</text>
             </view>
             <view class="tool-item">
-              <view class="tool-icon tool-icon--upload"></view>
+              <MobileIcon class="tool-icon" name="upload" tone="dark" size="plain" shape="none" />
               <text>上传资料</text>
             </view>
           </view>
@@ -428,73 +429,11 @@ function goConfirmed() {
 }
 
 .tool-icon {
-  position: relative;
   width: 58rpx;
   height: 58rpx;
   border: 2rpx solid #ddf7e9;
   border-radius: 50%;
   background: #fafffd;
-}
-
-.tool-icon::before,
-.tool-icon::after {
-  position: absolute;
-  content: '';
-}
-
-.tool-icon--voice::before {
-  left: 21rpx;
-  top: 10rpx;
-  width: 16rpx;
-  height: 26rpx;
-  border: 5rpx solid currentColor;
-  border-radius: 999rpx;
-}
-
-.tool-icon--voice::after {
-  left: 16rpx;
-  bottom: 10rpx;
-  width: 26rpx;
-  height: 14rpx;
-  border-bottom: 5rpx solid currentColor;
-  border-left: 5rpx solid currentColor;
-  border-right: 5rpx solid currentColor;
-  border-radius: 0 0 999rpx 999rpx;
-}
-
-.tool-icon--camera::before {
-  inset: 17rpx 11rpx 12rpx;
-  border: 5rpx solid currentColor;
-  border-radius: 8rpx;
-}
-
-.tool-icon--camera::after {
-  left: 23rpx;
-  top: 24rpx;
-  width: 12rpx;
-  height: 12rpx;
-  border: 4rpx solid currentColor;
-  border-radius: 50%;
-}
-
-.tool-icon--upload::before {
-  left: 13rpx;
-  right: 13rpx;
-  bottom: 13rpx;
-  height: 16rpx;
-  border: 5rpx solid currentColor;
-  border-top: 0;
-  border-radius: 0 0 8rpx 8rpx;
-}
-
-.tool-icon--upload::after {
-  left: 21rpx;
-  top: 12rpx;
-  width: 16rpx;
-  height: 16rpx;
-  border-top: 5rpx solid currentColor;
-  border-left: 5rpx solid currentColor;
-  transform: rotate(45deg);
 }
 
 .file-chip {

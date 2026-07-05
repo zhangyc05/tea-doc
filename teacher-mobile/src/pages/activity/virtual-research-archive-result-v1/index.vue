@@ -121,7 +121,7 @@ function goResearchRoom() {
               <text class="contribution-title">{{ item.title }}</text>
               <text class="contribution-source">来源：{{ item.source }}</text>
             </view>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>
@@ -138,7 +138,7 @@ function goResearchRoom() {
             <view class="material-icon" :class="`material-icon--${item.icon}`"></view>
             <text class="material-name">{{ item.name }}</text>
             <text class="material-status">{{ item.status }}</text>
-            <view class="row-arrow"></view>
+            <wd-icon name="chevron-right" size="24rpx" color="#7b8495" />
           </button>
         </view>
       </MobileCard>

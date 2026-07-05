@@ -14,7 +14,7 @@
 ```txt
 页面：教师端手机｜活动｜活动首页
 源码：teacher-mobile/src/pages/activity/index.vue
-目标图：效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png
+目标图：效果图/已实现/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png
 ```
 
 H5 视觉验收视口：
@@ -154,8 +154,15 @@ node scripts/verify-mobile-entry-visual-baseline.mjs
 
 ## Wot Design Uni 使用边界
 
-Wot Design Uni 优先用于：
+手机端基础控件遵循“框架组件优先且必须使用”的规则：Wot Design Uni 已提供的控件，不再用页面局部 CSS 手写。
 
+必须使用 Wot Design Uni 或基于 Wot Design Uni 的项目封装：
+
+- 图标与徽标：`wd-icon`、`wd-badge`，或内部基于 `wd-icon` 的 `MobileIcon`。
+- 导航与底部导航：`wd-navbar`、`wd-tabbar`、`wd-tabbar-item`，或内部基于这些组件的 `MobileNavbar` / `MobileTabBar`。
+- 标签、徽章、进度、步骤：`wd-tag`、`wd-badge`、`wd-progress`、`wd-steps` / `wd-step`。
+- Tabs / 分段 / 筛选项：`wd-tabs` / `wd-tab`、`wd-segmented`、`wd-drop-menu`。
+- 弹层、抽屉、遮罩、动作面板：`wd-popup`、`wd-overlay`、`wd-action-sheet`、`wd-floating-panel`。
 - 表单输入
 - 选择器
 - 弹窗
@@ -164,7 +171,11 @@ Wot Design Uni 优先用于：
 - 日期时间
 - 单选、多选、开关
 
+页面局部 CSS 只允许负责布局、间距、背景、卡片组合和业务视觉编排；禁止用 `::before` / `::after`、`clip-path`、边框旋转等方式手绘框架已有的图标、徽标、标签、筛选控件、步骤点、进度条、关闭按钮、箭头控件。
+
 复杂首页结构、底部中间凸起 Tab、业务卡片布局，优先使用项目局部样式实现，以保证与目标图一致。
+
+纯装饰性业务插画可以保留局部 CSS 或改成资源图，但不能承载可复用控件语义；如果视觉元素表达的是图标、徽标、标签、进度或交互控件，必须回到框架组件。
 
 ## 校验命令
 

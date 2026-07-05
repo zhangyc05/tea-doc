@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getReflectionDetailMock } from '@/services/mock/reflection'
@@ -123,30 +124,19 @@ function sendToArchive() {
                 <h2 class="card-title">相关反思记录</h2>
               </div>
               <div class="card-body">
-                <table class="related-table">
-                  <thead>
-                    <tr>
-                      <th>反思主题</th>
-                      <th>关联课程</th>
-                      <th>触发来源</th>
-                      <th>提交时间</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="related in relatedReflections" :key="related.id">
-                      <td>{{ related.theme }}</td>
-                      <td>{{ related.course }}</td>
-                      <td>{{ related.trigger }}</td>
-                      <td>{{ related.submitTime }}</td>
-                      <td>
-                        <Button variant="ghost" size="sm" @click="viewRelatedDetail(related.id)">
+                <AdminTable :data="relatedReflections" row-key="id" empty-text="暂无相关反思记录">
+                  <AdminTableColumn prop="theme" label="反思主题" min-width="180" />
+                  <AdminTableColumn prop="course" label="关联课程" min-width="140" />
+                  <AdminTableColumn prop="trigger" label="触发来源" min-width="140" />
+                  <AdminTableColumn prop="submitTime" label="提交时间" min-width="150" />
+                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                    <template #default="{ row }">
+                        <Button variant="ghost" size="sm" @click="viewRelatedDetail(row.id)">
                           查看
                         </Button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                    </template>
+                  </AdminTableColumn>
+                </AdminTable>
                 <div class="card-footer">
                   <Button variant="ghost" @click="viewMoreRelated">
                     查看更多相关记录

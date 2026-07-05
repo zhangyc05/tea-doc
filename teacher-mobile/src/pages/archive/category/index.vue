@@ -4,6 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 
 import MobileActionButton from '../../../components/MobileActionButton.vue'
 import MobileCard from '../../../components/MobileCard.vue'
+import MobileIcon from '../../../components/MobileIcon.vue'
 import MobileNavbar from '../../../components/MobileNavbar.vue'
 import MobilePageShell from '../../../components/MobilePageShell.vue'
 import MobileStatusTag from '../../../components/MobileStatusTag.vue'
@@ -90,7 +91,7 @@ function goRecord(recordId: string) {
         </MobileActionButton>
       </view>
       <view class="focus-list">
-        <view v-for="item in current.focus" :key="item" class="focus-pill">{{ item }}</view>
+        <wd-tag v-for="item in current.focus" :key="item" class="focus-pill" round color="#14884d" bg-color="#eef8f3">{{ item }}</wd-tag>
       </view>
     </MobileCard>
 
@@ -117,12 +118,12 @@ function goRecord(recordId: string) {
         class="record-row"
         @tap="goRecord(record.id)"
       >
-        <view class="record-dot"></view>
+        <MobileIcon class="record-dot" name="check" tone="green" size="plain" shape="none" />
         <view class="record-body">
           <text class="record-title">{{ record.title }}</text>
           <text class="record-meta">{{ record.type }} ｜ {{ record.date }}</text>
         </view>
-        <view class="record-arrow"></view>
+        <wd-icon class="record-arrow" name="chevron-right" size="28rpx" color="#9aa4b6" />
       </view>
       <view v-if="records.length === 0" class="empty-state">
         <text class="empty-title">暂无近期记录</text>
@@ -296,10 +297,6 @@ function goRecord(recordId: string) {
 }
 
 .focus-pill {
-  padding: 12rpx 18rpx;
-  border-radius: 999rpx;
-  background: #eef8f3;
-  color: #14884d;
   font-size: 24rpx;
   font-weight: 900;
 }
@@ -314,12 +311,9 @@ function goRecord(recordId: string) {
 }
 
 .record-dot {
-  width: 18rpx;
-  height: 18rpx;
-  flex: 0 0 18rpx;
-  border-radius: 50%;
-  background: #13a95b;
-  box-shadow: 0 0 0 10rpx #e7faef;
+  width: 28rpx;
+  height: 28rpx;
+  flex: 0 0 28rpx;
 }
 
 .record-body {
@@ -344,12 +338,12 @@ function goRecord(recordId: string) {
 }
 
 .record-arrow {
-  width: 20rpx;
-  height: 20rpx;
-  flex: 0 0 20rpx;
-  border-top: 5rpx solid #9aa4b6;
-  border-right: 5rpx solid #9aa4b6;
-  transform: rotate(45deg);
+  display: flex;
+  width: 28rpx;
+  height: 28rpx;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28rpx;
 }
 
 .empty-state {
