@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useOperationMessage } from '@/lib/operationMessage'
@@ -160,7 +160,7 @@ function sendToArchive() {
             >
               <AdminTableColumn label="资料名称" min-width="180">
                 <template #default="{ row }">
-                  <span class="file-icon" :class="row.tone">▤</span>
+                  <span class="file-icon" :class="row.tone"><AdminIcon name="document" /></span>
                   {{ row.name }}
                 </template>
               </AdminTableColumn>
@@ -520,7 +520,11 @@ function sendToArchive() {
   justify-content: center;
   border-radius: 4px;
   color: #fff;
-  font-size: 13px;
+}
+
+.file-icon :deep(svg) {
+  width: 14px;
+  height: 14px;
 }
 
 .file-icon.blue {

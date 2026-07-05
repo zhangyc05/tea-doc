@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import trainingPlanPage from '@/pages/admin/training/TrainingPlanPage.vue?raw'
 import trainingPlanDetailPage from '@/pages/admin/training/TrainingPlanDetailPage.vue?raw'
 import trainingRecordDetailPage from '@/pages/admin/training/TrainingRecordDetailPage.vue?raw'
-import abilityListBaseOptimizationPage from '@/pages/admin/ability-list/AbilityListBaseOptimizationPage.vue?raw'
+import abilityListBasePage from '@/pages/admin/ability-list/AbilityListBasePage.vue?raw'
 import abilityListRequirementMappingPage from '@/pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
 import abilityProfileGroupPage from '@/pages/admin/ability-profile/AbilityProfileGroupPage.vue?raw'
 import archiveTeacherDetailPage from '@/pages/admin/archive/ArchiveTeacherDetailPage.vue?raw'
@@ -55,8 +55,8 @@ describe('useOperationMessage', () => {
   })
 
   it('is used by ability list action pages instead of local message refs', () => {
-    expect(abilityListBaseOptimizationPage).toContain("import { useOperationMessage } from '@/lib/operationMessage'")
-    expect(abilityListBaseOptimizationPage).not.toContain("const operationMessage = ref('')")
+    expect(abilityListBasePage).toContain("import { useOperationMessage } from '@/lib/operationMessage'")
+    expect(abilityListBasePage).not.toContain("const operationMessage = ref('')")
     expect(abilityListRequirementMappingPage).toContain("import { useOperationMessage } from '@/lib/operationMessage'")
     expect(abilityListRequirementMappingPage).not.toContain("const operationMessage = ref('')")
   })

@@ -44,10 +44,10 @@ const abilityTreeChildren = {
 }
 
 const suggestionSources: AbilityListOption[] = [
-  { key: 'all', label: '全部建议', icon: '●' },
-  { key: 'policy', label: '制度文件', icon: '▤' },
-  { key: 'feedback', label: '运行反馈', icon: '▣' },
-  { key: 'manual', label: '人工补充', icon: '▲' },
+  { key: 'all', label: '全部建议', icon: 'collection' },
+  { key: 'policy', label: '制度文件', icon: 'document' },
+  { key: 'feedback', label: '运行反馈', icon: 'data-analysis' },
+  { key: 'manual', label: '人工补充', icon: 'edit' },
 ]
 
 const filterTags: AbilityListOption[] = [
@@ -63,31 +63,31 @@ const impactCards: AbilityListImpactCard[] = [
   {
     title: '能力指标',
     description: '69 项指标将作为 2027 年度能力判断口径。',
-    icon: '◎',
+    icon: 'list',
     tone: 'blue',
   },
   {
     title: '岗位/聘期要求',
     description: '已带入岗位/聘期要求映射，发布后用于教师对照。',
-    icon: '▣',
+    icon: 'management',
     tone: 'purple',
   },
   {
     title: '发展活动',
     description: '教学反思、培训进修、企业实践、虚拟教研将按本版指标归类。',
-    icon: '▱',
+    icon: 'opportunity',
     tone: 'green',
   },
   {
     title: '成长档案',
     description: '新入档事实将优先关联本执行版指标。',
-    icon: '▤',
+    icon: 'folder',
     tone: 'orange',
   },
   {
     title: '画像与报告',
     description: '能力画像、岗位/聘期对照和分析报告将引用本版口径。',
-    icon: '◔',
+    icon: 'data-analysis',
     tone: 'blue',
   },
 ]

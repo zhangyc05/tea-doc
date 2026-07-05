@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { AdminIcon } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -32,7 +33,7 @@ function goBack() {
   <AdminLayout active-key="ability-list-execution">
     <div class="page-root">
       <section class="admin-hero">
-        <div class="hero-icon">▤</div>
+        <div class="hero-icon"><AdminIcon name="document" /></div>
         <div class="hero-content">
           <div class="hero-title-row">
             <h1 class="hero-title">{{ abilityListState.executionVersion.title }}</h1>
@@ -77,7 +78,7 @@ function goBack() {
             :key="card.title"
             class="impact-card"
           >
-            <div class="impact-icon" :class="card.tone">{{ card.icon }}</div>
+            <div class="impact-icon" :class="card.tone"><AdminIcon :name="card.icon" /></div>
             <h3 class="impact-title">{{ card.title }}</h3>
             <p class="impact-description">{{ card.description }}</p>
           </article>
@@ -85,7 +86,7 @@ function goBack() {
       </section>
 
       <section class="notice-card">
-        <div class="notice-icon">i</div>
+        <div class="notice-icon"><AdminIcon name="info" /></div>
         <div>
           <h4 class="notice-title">发布说明</h4>
           <p class="notice-text">
@@ -177,7 +178,11 @@ function goBack() {
   background: var(--color-admin-primary);
   color: #fff;
   box-shadow: 0 14px 24px rgba(18, 104, 246, 0.24);
-  font-size: 38px;
+}
+
+.hero-icon :deep(svg) {
+  width: 38px;
+  height: 38px;
 }
 
 .hero-title-row {
@@ -303,28 +308,32 @@ function goBack() {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 30px;
-  font-weight: 900;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.impact-icon :deep(svg) {
+  width: 29px;
+  height: 29px;
 }
 
 .impact-icon.blue {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .impact-icon.purple {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .impact-icon.green {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .impact-icon.orange {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .impact-title {
@@ -360,10 +369,14 @@ function goBack() {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
   color: var(--color-admin-primary);
-  font-size: 24px;
-  font-weight: 900;
+  box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.68);
+}
+
+.notice-icon :deep(svg) {
+  width: 22px;
+  height: 22px;
 }
 
 .notice-title {

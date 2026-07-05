@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminUpload } from '@/components/admin-ui'
+import { AdminIcon, AdminUpload } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import iconFileExcel from '@/assets/admin/archive-processing-assets/icons/icon-file-excel.svg'
@@ -135,10 +135,12 @@ function fileTypeLabel(type: ArchiveUploadedFile['type']) {
             </div>
             <div class="upload-actions">
               <Button class="upload-action-button" type="button" variant="outline" size="lg">
-                ▣ 选择文件
+                <AdminIcon name="files" />
+                选择文件
               </Button>
               <Button class="upload-action-button" type="button" variant="outline" size="lg">
-                ▣ 从本地文件夹导入
+                <AdminIcon name="folder" />
+                从本地文件夹导入
               </Button>
             </div>
           </AdminUpload>

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { AdminIcon } from '@/components/admin-ui'
+import type { AdminIconName } from '@/components/admin-ui'
 
 interface AdminNavItem {
   key: string
   label: string
   to?: string
-  icon?: string
+  icon?: AdminIconName
   children?: AdminNavItem[]
 }
 
@@ -57,7 +59,7 @@ const navItems: AdminNavItem[] = [
       { key: 'ability-profile-teacher', label: '教师画像', to: '/admin/ability-profile/teacher' },
     ],
   },
-  { key: 'reflection', label: '教学反思', to: '/admin/reflection', icon: 'reflection' },
+  { key: 'reflection', label: '教学反思', to: '/admin/reflection', icon: 'memo' },
   {
     key: 'training',
     label: '培训管理',
@@ -155,10 +157,7 @@ function handleParentAction(item: AdminNavItem) {
     <div class="sidebar-brand">
       <div class="brand-main">
         <div class="brand-mark">
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M16 3 27 7.5v8.2c0 6.6-4.3 10.8-11 13.3C9.3 26.5 5 22.3 5 15.7V7.5L16 3Z" />
-            <path d="M11 11.5h10M11 16h10M13 20.5h6" />
-          </svg>
+          <AdminIcon name="medal" />
         </div>
         <h1 v-if="!props.collapsed">教师综合发展</h1>
       </div>
@@ -171,10 +170,7 @@ function handleParentAction(item: AdminNavItem) {
         title="收起边栏"
         @click="emit('toggle')"
       >
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <rect x="3" y="3" width="14" height="14" rx="4" />
-          <path d="M9 4.5v11" />
-        </svg>
+        <AdminIcon name="fold" />
       </button>
     </div>
 
@@ -186,10 +182,7 @@ function handleParentAction(item: AdminNavItem) {
       data-tooltip="打开边栏"
       @click="emit('toggle')"
     >
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <rect x="3" y="3" width="14" height="14" rx="4" />
-        <path d="M9 4.5v11" />
-      </svg>
+      <AdminIcon name="fold" />
     </button>
 
     <nav class="sidebar-nav">
@@ -202,19 +195,7 @@ function handleParentAction(item: AdminNavItem) {
           <button type="button" class="nav-parent-link" @click="handleParentAction(item)">
             <span class="nav-leading">
               <span class="nav-icon" :class="`icon-${item.icon}`">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
-                  <path v-else-if="item.icon === 'training'" d="M12 3 6 7v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7l-6-4Zm0 2.5 4.5 3H7.5L12 5.5ZM11 9h2v7h-2V9Z" />
-                  <path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
-                  <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
-                  <path v-else-if="item.icon === 'reflection'" d="M9 5h6v3H9zM7 9h10v2H7zM5 13h14v2H5zM6 17h12v2H6z" />
-                  <path v-else-if="item.icon === 'practice'" d="M5 5h14v14H5zM7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM13 13h4v4h-4z" />
-                  <path v-else-if="item.icon === 'lab'" d="M12 3 8 7l3 3-5 7h12l-5-7 3-3-4-4z" />
-                  <path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
-                  <path v-else-if="item.icon === 'report'" d="M6 19V5h12v14H6Zm3-3V9m3 7v-5m3 5v-8" />
-                  <path v-else-if="item.icon === 'system'" d="M5 5h14v14H5zM8 9h8M8 13h5" />
-                  <path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
-                </svg>
+                <AdminIcon :name="item.icon" />
               </span>
               <span class="nav-label">{{ item.label }}</span>
             </span>
@@ -227,9 +208,7 @@ function handleParentAction(item: AdminNavItem) {
             :aria-expanded="isExpanded(item)"
             @click.stop="toggleGroup(item.key)"
           >
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M4 10 8 6l4 4" />
-            </svg>
+            <AdminIcon name="arrow-up" />
           </button>
         </div>
 
@@ -243,14 +222,7 @@ function handleParentAction(item: AdminNavItem) {
         >
           <span class="nav-leading">
             <span class="nav-icon" :class="`icon-${item.icon}`">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path v-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
-                <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
-                <path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
-                <path v-else-if="item.icon === 'training'" d="M12 3 6 7v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7l-6-4Zm0 2.5 4.5 3H7.5L12 5.5ZM11 9h2v7h-2V9Z" />
-                <path v-else-if="item.icon === 'practice'" d="M5 5h14v14H5zM7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM13 13h4v4h-4z" />
-                <path v-else d="M5 7h14v12H5zM8 11h8M8 15h5" />
-              </svg>
+              <AdminIcon :name="item.icon" />
             </span>
           </span>
         </button>
@@ -265,19 +237,7 @@ function handleParentAction(item: AdminNavItem) {
         >
           <span class="nav-leading">
             <span class="nav-icon" :class="`icon-${item.icon}`">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path v-if="item.icon === 'home'" d="M4 11.5 12 5l8 6.5V20H6v-8" />
-                <path v-else-if="item.icon === 'training'" d="M12 3 6 7v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7l-6-4Zm0 2.5 4.5 3H7.5L12 5.5ZM11 9h2v7h-2V9Z" />
-                <path v-else-if="item.icon === 'list'" d="M6 5h12v14H6zM9 9h6M9 13h6" />
-                <path v-else-if="item.icon === 'archive'" d="M5 6h14v4H5zM7 10h10v9H7zM10 14h4" />
-                <path v-else-if="item.icon === 'reflection'" d="M9 5h6v3H9zM7 9h10v2H7zM5 13h14v2H5zM6 17h12v2H6z" />
-                <path v-else-if="item.icon === 'practice'" d="M5 5h14v14H5zM7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM13 13h4v4h-4z" />
-                <path v-else-if="item.icon === 'lab'" d="M12 3 8 7l3 3-5 7h12l-5-7 3-3-4-4z" />
-                <path v-else-if="item.icon === 'profile'" d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4v4l3 2" />
-                <path v-else-if="item.icon === 'report'" d="M6 19V5h12v14H6Zm3-3V9m3 7v-5m3 5v-8" />
-                <path v-else-if="item.icon === 'system'" d="M5 5h14v14H5zM8 9h8M8 13h5" />
-                <path v-else d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6" />
-              </svg>
+              <AdminIcon :name="item.icon" />
             </span>
             <span v-if="!props.collapsed" class="nav-label">{{ item.label }}</span>
           </span>
@@ -353,14 +313,9 @@ function handleParentAction(item: AdminNavItem) {
   color: var(--color-primary);
 }
 
-.brand-mark svg {
+.brand-mark :deep(svg) {
   width: 27px;
   height: 27px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.15;
 }
 
 .brand-main h1 {
@@ -406,15 +361,10 @@ function handleParentAction(item: AdminNavItem) {
   color: var(--color-primary);
 }
 
-.sidebar-toggle svg,
-.rail-toggle svg {
+.sidebar-toggle :deep(svg),
+.rail-toggle :deep(svg) {
   width: 18px;
   height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
 }
 
 .sidebar-nav {
@@ -499,14 +449,9 @@ function handleParentAction(item: AdminNavItem) {
   height: 22px;
 }
 
-.nav-icon svg {
+.nav-icon :deep(svg) {
   width: 100%;
   height: 100%;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
 }
 
 .nav-label {
@@ -555,18 +500,13 @@ function handleParentAction(item: AdminNavItem) {
   color: var(--color-primary);
 }
 
-.nav-arrow-button svg {
+.nav-arrow-button :deep(svg) {
   width: 14px;
   height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.2;
   transition: transform 0.16s ease;
 }
 
-.nav-parent:not(.expanded) .nav-arrow-button svg {
+.nav-parent:not(.expanded) .nav-arrow-button :deep(svg) {
   transform: rotate(180deg);
 }
 

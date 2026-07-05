@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminCheckboxGroup, AdminDatePicker, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminCheckboxGroup, AdminDatePicker, AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, DetailSheet, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -191,7 +191,10 @@ function createPlanFromForm(mode: 'draft' | 'published') {
               <!-- 筛选和操作区 -->
               <div class="card-header">
                 <h2 class="card-title">培训计划</h2>
-                <Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>
+                <Button class="create-plan-action" @click="openDrawer">
+                  新建培训计划
+                  <AdminIcon name="plus" />
+                </Button>
               </div>
               <CompactFilterBar>
                 <template #fields>

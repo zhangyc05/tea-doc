@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
+import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import abilityListBasePage from '@/pages/admin/ability-list/AbilityListBasePage.vue?raw'
 import abilityListExecutionPage from '@/pages/admin/ability-list/AbilityListExecutionPage.vue?raw'
@@ -38,14 +38,21 @@ import pageHeader from '@/components/common/PageHeader.vue?raw'
 import adminSidebar from '@/components/layout/AdminSidebar.vue?raw'
 import adminTopbar from '@/components/layout/AdminTopbar.vue?raw'
 
-const adminDesignGuide = readFileSync(
+const adminDesignGuide = fs.readFileSync(
   fileURLToPath(new URL('../../../docs/admin-design-system-guide.md', import.meta.url)),
   'utf8',
 )
-const groupPortraitHeroArt = readFileSync(
+const groupPortraitHeroArt = fs.readFileSync(
   fileURLToPath(new URL('../../assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-art.png', import.meta.url)),
   'binary',
 )
+const adminIconPath = fileURLToPath(new URL('../../components/admin-ui/AdminIcon.vue', import.meta.url))
+let adminIcon = ''
+try {
+  adminIcon = fs.readFileSync(adminIconPath, 'utf8')
+} catch {
+  adminIcon = ''
+}
 
 const adminVisualSources = [
   ['AbilityListBasePage.vue', abilityListBasePage],
@@ -138,6 +145,63 @@ describe('admin visual action guardrails', () => {
   it('keeps button design guidance aligned with the completed btn-class migration', () => {
     expect(adminDesignGuide).not.toContain('管理端业务页面仍以局部 `.btn-*` 为主')
     expect(adminDesignGuide).not.toContain('或现有 `.btn-view/.btn-link` 逐步迁移')
+  })
+
+  it('uses Element Plus icons for generic admin chrome and text-symbol icons', () => {
+    expect(adminIcon).toContain('@element-plus/icons-vue')
+    expect(adminIcon).toContain('type AdminIconName')
+    expect(adminSidebar).toContain('import { AdminIcon } from \'@/components/admin-ui\'')
+    expect(adminSidebar).toContain('<AdminIcon name="medal" />')
+    expect(adminSidebar).toContain('<AdminIcon :name="item.icon" />')
+    expect(adminSidebar).not.toContain('<svg viewBox="0 0')
+    expect(adminSidebar).not.toContain('<path v-if="item.icon')
+
+    const genericIconSources = [
+      ['PracticeApplicationPage.vue', practiceApplicationPage],
+      ['TrainingApplicationPage.vue', trainingApplicationPage],
+      ['TrainingDemandPage.vue', trainingDemandPage],
+    ] as const
+
+    for (const [filename, source] of genericIconSources) {
+      expect(source, filename).toContain('AdminIcon')
+      expect(source, filename).toContain('from \'@/components/admin-ui\'')
+      expect(source, filename).not.toMatch(/[▤▥▦▣▰▱●◷＋×↻]/)
+    }
+
+    for (const [filename, source] of adminVisualSources) {
+      expect(source, filename).not.toMatch(/[▤▥▦▣▰▱●◷＋×↻👥◔↗◎▲⇩⇧]/)
+    }
+
+    expect(trainingDemandPage).toContain('box-shadow: inset 0 0 0 10px')
+    expect(trainingDemandPage).toContain('.stat-icon :deep(svg)')
+    expect(trainingDemandPage).toContain('.suggestion-icon :deep(svg)')
+
+    const adminIconBadgeSources = [
+      ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage, '.hero-icon :deep(svg)'],
+      ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage, '.impact-icon :deep(svg)'],
+      ['AbilityListPublishConfirmPage.vue', abilityListPublishConfirmPage, '.notice-icon :deep(svg)'],
+      ['PracticeApplicationPage.vue', practiceApplicationPage, '.stat-icon :deep(svg)'],
+      ['PracticeRecordPage.vue', practiceRecordPage, '.stat-icon :deep(svg)'],
+      ['PracticeTrackingPage.vue', practiceTrackingPage, '.stat-icon :deep(svg)'],
+      ['TrainingApplicationPage.vue', trainingApplicationPage, '.stat-icon :deep(svg)'],
+      ['TrainingApplicationPage.vue', trainingApplicationPage, '.reminder-icon :deep(svg)'],
+      ['TrainingResourcePage.vue', trainingResourcePage, '.stat-icon :deep(svg)'],
+      ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.status-icon :deep(svg)'],
+      ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.file-icon :deep(svg)'],
+      ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.record-icon :deep(svg)'],
+      ['VirtualLabRecordDetailPage.vue', virtualLabRecordDetailPage, '.file-icon :deep(svg)'],
+      ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage, '.room-avatar :deep(svg)'],
+      ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage, '.stat-icon :deep(svg)'],
+      ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage, '.record-icon :deep(svg)'],
+      ['VirtualLabRoomPage.vue', virtualLabRoomPage, '.stat-icon :deep(svg)'],
+    ] as const
+
+    for (const [filename, source, selector] of adminIconBadgeSources) {
+      expect(source, filename).toContain(selector)
+    }
+
+    expect(adminDesignGuide).toContain('@element-plus/icons-vue')
+    expect(adminDesignGuide).toContain('能用图标库表达的通用图标，优先使用 `AdminIcon`')
   })
 
   it('keeps native admin buttons bound to actions or explicit disabled/form semantics', () => {
@@ -237,7 +301,8 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for archive import upload actions', () => {
     expect(archiveImportUploadPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(archiveImportUploadPage).toContain('import { AdminUpload } from \'@/components/admin-ui\'')
+    expect(archiveImportUploadPage).toContain('AdminUpload')
+    expect(archiveImportUploadPage).toContain('from \'@/components/admin-ui\'')
     expect(archiveImportUploadPage).toContain('<Button class="upload-action-button" type="button" variant="outline" size="lg">')
     expect(archiveImportUploadPage).toContain('<Button class="file-remove-action" type="button" variant="ghost" size="sm" @click="removeFile(file.id)">删除</Button>')
     expect(archiveImportUploadPage).toContain('<Button class="bottom-cancel-action" type="button" variant="outline" size="lg" @click="cancelUpload">取消</Button>')
@@ -255,6 +320,12 @@ describe('admin visual action guardrails', () => {
     expect(abilityListBasePage).toContain('import { Button } from \'@/components/ui\'')
     expect(abilityListBasePage).toContain('<Button variant="outline" @click="closeEditDrawer">取消</Button>')
     expect(abilityListBasePage).toContain('<Button @click="saveIndicatorEdit">保存调整</Button>')
+    expect(abilityListBasePage).toContain('indicatorStatusOptions')
+    expect(abilityListBasePage).toContain('v-model="editingIndicator.status"')
+    expect(abilityListBasePage).toContain('status: editingIndicator.value.status')
+    expect(abilityListBasePage).toContain('.form-input :deep(.el-input__wrapper)')
+    expect(abilityListBasePage).not.toContain('description="保存后会形成待确认调整，后续可派生到执行版。"')
+    expect(abilityListBasePage).not.toContain('.form-input {\n  min-height: 38px;')
     expect(abilityListBasePage).not.toContain('<button class="btn-secondary" @click="closeEditDrawer">取消</button>')
     expect(abilityListBasePage).not.toContain('<button class="btn-primary" @click="saveIndicatorEdit">保存调整</button>')
 
@@ -274,12 +345,14 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for ability list base hero actions', () => {
-    expect(abilityListBasePage).toContain('<Button class="primary-action" @click="goToOptimization">')
+    expect(abilityListBasePage).toContain('<Button class="primary-action" @click="scrollToOptimization">')
+    expect(abilityListBasePage).toContain('优化建议（{{ optimizationPendingCount }}）')
     expect(abilityListBasePage).toContain('<button class="title-link" type="button" @click="goToVersionHistory">')
     expect(abilityListBasePage).toContain('查看版本记录')
     expect(abilityListBasePage).not.toContain('deriveExecutionVersion')
     expect(abilityListBasePage).not.toContain('派生执行版')
     expect(abilityListBasePage).not.toContain('<button class="primary-action btn-primary" @click="goToOptimization">')
+    expect(abilityListBasePage).not.toContain('@click="goToOptimization"')
     expect(abilityListBasePage).not.toContain('<Button class="secondary-action" variant="outline" @click="goToVersionHistory">')
     expect(abilityListBasePage).not.toContain('<button class="secondary-action btn-secondary" @click="goToVersionHistory">')
   })
@@ -350,19 +423,19 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for ability list base optimization actions', () => {
     expect(abilityListBaseOptimizationPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(abilityListBaseOptimizationPage).toContain('<Button @click="uploadPolicy">⇧ 上传制度文件</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button variant="secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button')
-    expect(abilityListBaseOptimizationPage).toContain(':disabled="pendingApplicationCount === 0"')
-    expect(abilityListBaseOptimizationPage).toContain('@click="applyToBaseTemplate"')
-    expect(abilityListBaseOptimizationPage).toContain('<Button variant="ghost" @click="viewVersionHistory">查看版本记录 ›</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button variant="ghost" size="sm" @click.stop="handleAction(\'view\', row)">查看详情</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="row.status === \'pending\'" size="sm" @click.stop="handleAction(\'adopt\', row)">采纳</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="row.status === \'pending\'" variant="secondary" size="sm" @click.stop="handleAction(\'defer\', row)">暂缓</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="row.status === \'pending\'" variant="danger" size="sm" @click.stop="handleAction(\'reject\', row)">弃用</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('<Button v-if="row.status === \'adopted\'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>')
-    expect(abilityListBaseOptimizationPage).toContain('@click="handleAction(\'adopt\', selectedSuggestion)"')
-    expect(abilityListBaseOptimizationPage).toContain('@click="handleAction(\'defer\', selectedSuggestion)"')
+    expect(abilityListBaseOptimizationPage).toContain("query: { optimization: '1' }")
+    expect(abilityListBaseOptimizationPage).toContain('优化建议已合并到基准模板页')
+    expect(abilityListBasePage).toContain('<Button @click="uploadPolicy">上传制度文件</Button>')
+    expect(abilityListBasePage).toContain('<Button variant="secondary" @click="rerunAnalysis">重新分析运行反馈</Button>')
+    expect(abilityListBasePage).toContain(':disabled="pendingApplicationCount === 0"')
+    expect(abilityListBasePage).toContain('@click="applyToBaseTemplate"')
+    expect(abilityListBasePage).toContain('<Button variant="ghost" size="sm" @click.stop="handleSuggestionAction(\'view\', row)">查看详情</Button>')
+    expect(abilityListBasePage).toContain('<Button v-if="row.status === \'pending\'" size="sm" @click.stop="handleSuggestionAction(\'adopt\', row)">采纳</Button>')
+    expect(abilityListBasePage).toContain('<Button v-if="row.status === \'pending\'" variant="secondary" size="sm" @click.stop="handleSuggestionAction(\'defer\', row)">暂缓</Button>')
+    expect(abilityListBasePage).toContain('<Button v-if="row.status === \'pending\'" variant="danger" size="sm" @click.stop="handleSuggestionAction(\'reject\', row)">弃用</Button>')
+    expect(abilityListBasePage).toContain('<Button v-if="row.status === \'adopted\'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>')
+    expect(abilityListBasePage).toContain('@click="handleSuggestionAction(\'adopt\', selectedSuggestion)"')
+    expect(abilityListBasePage).toContain('@click="handleSuggestionAction(\'defer\', selectedSuggestion)"')
     expect(abilityListBaseOptimizationPage).not.toContain('<button class="btn-primary" @click="uploadPolicy">⇧ 上传制度文件</button>')
     expect(abilityListBaseOptimizationPage).not.toContain('<button class="btn-secondary" @click="rerunAnalysis">⟳ 重新分析运行反馈</button>')
     expect(abilityListBaseOptimizationPage).not.toContain('class="btn-link-large"')
@@ -372,12 +445,38 @@ describe('admin visual action guardrails', () => {
   })
 
   it('keeps the ability list base optimization page aligned to the target admin shell', () => {
-    expect(abilityListBaseOptimizationPage).toContain('ability-list-base-assets/ability-list-base-hero-art.png')
-    expect(abilityListBaseOptimizationPage).toContain('ability-list-base-assets/ability-list-base-hero-emblem.svg')
-    expect(abilityListBaseOptimizationPage).toContain(':style="{ backgroundImage: `url(${baseHeroArt})` }"')
+    expect(abilityListBasePage).toContain('optimization-workspace')
+    expect(abilityListBasePage).toContain('优化建议')
+    expect(abilityListBasePage).toContain('建议来源')
+    expect(abilityListBasePage).toContain('建议详情')
+    expect(abilityListBasePage).toContain('scrollToOptimization')
     expect(abilityListBaseOptimizationPage).not.toContain('class="page-breadcrumb"')
     expect(abilityListBaseOptimizationPage).not.toContain('class="page-description"')
     expect(abilityListBaseOptimizationPage).not.toMatch(/<div class="hero-art" aria-hidden="true">\s*<span><\/span>/)
+  })
+
+  it('keeps admin topbar breadcrumbs navigable except for the current page', () => {
+    expect(adminTopbar).toContain('import { RouterLink, useRoute } from \'vue-router\'')
+    expect(adminTopbar).toContain('breadcrumbLinkMap')
+    expect(adminTopbar).toContain('<RouterLink')
+    expect(adminTopbar).toContain(':to="item.to"')
+    expect(adminTopbar).toContain('class="breadcrumb-link"')
+    expect(adminTopbar).toContain('class="current"')
+  })
+
+  it('keeps ability list base hero actions as a guided optimization entry', () => {
+    expect(abilityListBasePage).toContain('optimizationPendingCount')
+    expect(abilityListBasePage).toContain('scrollToOptimization')
+    expect(abilityListBasePage).toContain('优化建议（{{ optimizationPendingCount }}）')
+    expect(abilityListBasePage).not.toContain('>\\n                优化基准板\\n              </Button>')
+  })
+
+  it('clips the ability list base hero art edge outside the card', () => {
+    expect(abilityListBasePage).toContain('<img :src="baseHeroArt" alt="" />')
+    expect(abilityListBasePage).toContain('width: min(46%, 680px)')
+    expect(abilityListBasePage).toContain('right: -72px')
+    expect(abilityListBasePage).toContain('object-fit: contain')
+    expect(abilityListBasePage).toContain('opacity: 0.82')
   })
 
   it('uses the shared Button component for ability profile group actions', () => {
@@ -553,7 +652,9 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for training filter and create actions', () => {
     expect(trainingPlanPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>')
+    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">')
+    expect(trainingPlanPage).toContain('<AdminIcon name="plus" />')
+    expect(trainingPlanPage).toContain('新建培训计划')
     expect(trainingPlanPage).toContain('<Button variant="outline" @click="resetFilters">重置</Button>')
     expect(trainingPlanPage).not.toContain('<button class="btn-reset" @click="resetFilters">重置</button>')
     expect(trainingPlanPage).not.toContain('<button class="btn-primary btn-create" @click="openDrawer">新建培训计划 ＋</button>')
@@ -565,13 +666,17 @@ describe('admin visual action guardrails', () => {
     expect(trainingResourcePage).toContain('import { Button } from \'@/components/ui\'')
     expect(trainingResourcePage).toContain('<Button variant="outline" @click="resetFilters">重置</Button>')
     expect(trainingResourcePage).toContain('<Button variant="secondary" @click="applyFilters">查询</Button>')
-    expect(trainingResourcePage).toContain('<Button class="resource-create-action" @click="addResource">＋ 新增资源</Button>')
+    expect(trainingResourcePage).toContain('<Button class="resource-create-action" @click="addResource">')
+    expect(trainingResourcePage).toContain('<AdminIcon name="plus" />')
+    expect(trainingResourcePage).toContain('新增资源')
     expect(trainingResourcePage).not.toContain('<button class="btn-reset" @click="resetFilters">重置</button>')
     expect(trainingResourcePage).not.toContain('<button class="btn-secondary" @click="applyFilters">查询</button>')
     expect(trainingResourcePage).not.toContain('<button class="btn-primary" @click="addResource">＋ 新增资源</button>')
 
     expect(trainingDemandPage).toContain('import { Button } from \'@/components/ui\'')
-    expect(trainingDemandPage).toContain('<Button type="button" @click="addDemand">＋ 新增需求</Button>')
+    expect(trainingDemandPage).toContain('<Button type="button" @click="addDemand">')
+    expect(trainingDemandPage).toContain('<AdminIcon name="plus" />')
+    expect(trainingDemandPage).toContain('新增需求')
     expect(trainingDemandPage).toContain('<Button variant="outline" @click="resetFilters">重置</Button>')
     expect(trainingDemandPage).toContain('<Button variant="secondary" @click="applyFilters">查询</Button>')
     expect(trainingDemandPage).not.toContain('<button class="btn-reset" @click="resetFilters">重置</button>')
@@ -630,10 +735,14 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for practice export actions', () => {
-    expect(practiceRecordPage).toContain('<Button @click="exportRecords">⇩ 导出记录</Button>')
+    expect(practiceRecordPage).toContain('<Button @click="exportRecords">')
+    expect(practiceRecordPage).toContain('<AdminIcon name="upload" />')
+    expect(practiceRecordPage).toContain('导出记录')
     expect(practiceRecordPage).not.toContain('<button class="btn-primary" @click="exportRecords">⇩ 导出记录</button>')
 
-    expect(practiceTrackingPage).toContain('<Button @click="exportList">⇧ 导出名单</Button>')
+    expect(practiceTrackingPage).toContain('<Button @click="exportList">')
+    expect(practiceTrackingPage).toContain('<AdminIcon name="upload" />')
+    expect(practiceTrackingPage).toContain('导出名单')
     expect(practiceTrackingPage).not.toContain('<button class="btn-primary" @click="exportList">⇧ 导出名单</button>')
   })
 
@@ -796,7 +905,8 @@ describe('admin visual action guardrails', () => {
     expect(reportCenterPage).not.toContain('class="btn-action"')
     expect(reportCenterPage).not.toContain('.btn-action')
 
-    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">新建培训计划 ＋</Button>')
+    expect(trainingPlanPage).toContain('<Button class="create-plan-action" @click="openDrawer">')
+    expect(trainingPlanPage).toContain('<AdminIcon name="plus" />')
     expect(trainingPlanPage).not.toContain('class="btn-create"')
     expect(trainingPlanPage).not.toContain('.btn-create')
   })

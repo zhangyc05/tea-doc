@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
-import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { calculateTeacherAbilityProfile, getAbilityProfileTeacherDetailMock } from '@/services/mock/ability-profile'
@@ -84,14 +84,17 @@ function switchTeacher() {
           </div>
         </div>
 
-        <button type="button" class="switch-button" @click="switchTeacher">↔ 切换教师</button>
+        <button type="button" class="switch-button" @click="switchTeacher">
+          <AdminIcon name="switch" />
+          切换教师
+        </button>
       </section>
 
       <section class="summary-grid">
         <article class="panel index-panel">
           <h2>综合发展指数</h2>
           <div class="index-content">
-            <div class="trend-icon">↗</div>
+            <div class="trend-icon"><AdminIcon name="trend" /></div>
             <div class="index-copy">
               <div class="score-line">
                 <strong>{{ developmentIndex.score }}</strong>

@@ -12,6 +12,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@vitejs/plugin-vue": "^5.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

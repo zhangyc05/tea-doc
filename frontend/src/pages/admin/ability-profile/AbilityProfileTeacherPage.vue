@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminPagination, AdminSelect } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminPagination, AdminSelect } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getAbilityProfileTeacherListMock } from '@/services/mock/ability-profile'
 
@@ -119,7 +119,9 @@ function getAvatarTone(index: number): string {
           <AdminSelect v-model="selectedFocus" :options="focusTypeOptions" @change="applySearch" />
         </div>
 
-        <button type="button" class="reset-button" aria-label="重置筛选" @click="resetFilters">↻</button>
+        <button type="button" class="reset-button" aria-label="重置筛选" @click="resetFilters">
+          <AdminIcon name="refresh-right" />
+        </button>
       </section>
 
       <section class="list-shell">

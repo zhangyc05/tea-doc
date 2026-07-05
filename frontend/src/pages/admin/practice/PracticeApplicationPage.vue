@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -113,7 +113,7 @@ function applyFilters() {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-pending">▤</div>
+            <div class="stat-icon icon-pending"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">待审核申请</div>
               <div class="stat-value blue">{{ stats.pending }} <span>条</span></div>
@@ -121,7 +121,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-approved">✓</div>
+            <div class="stat-icon icon-approved"><AdminIcon name="check" /></div>
             <div>
               <div class="stat-label">已同意申请</div>
               <div class="stat-value green">{{ stats.approved }} <span>条</span></div>
@@ -129,7 +129,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-return">↻</div>
+            <div class="stat-icon icon-return"><AdminIcon name="refresh-right" /></div>
             <div>
               <div class="stat-label">退回修改</div>
               <div class="stat-value orange">{{ stats.returned }} <span>条</span></div>
@@ -137,7 +137,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-progress">●</div>
+            <div class="stat-icon icon-progress"><AdminIcon name="clock" /></div>
             <div>
               <div class="stat-label">实践已开始</div>
               <div class="stat-value purple">{{ stats.inProgress }} <span>人</span></div>
@@ -344,7 +344,7 @@ function applyFilters() {
 .stat-card {
   min-height: 132px;
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-card-gap);
   padding: 22px 30px;
@@ -355,34 +355,38 @@ function applyFilters() {
 }
 
 .stat-icon {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.66);
+}
+
+.stat-icon :deep(svg) {
+  width: 34px;
+  height: 34px;
 }
 
 .icon-pending {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-approved {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-return {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-progress {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .stat-value {

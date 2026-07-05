@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -135,7 +135,7 @@ function showIncompleteResources() {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-file">▤</div>
+            <div class="stat-icon icon-file"><AdminIcon name="files" /></div>
             <div>
               <div class="stat-label">资源总数</div>
               <div class="stat-value">{{ stats.total }} <span>个</span></div>
@@ -143,7 +143,7 @@ function showIncompleteResources() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-check">✓</div>
+            <div class="stat-icon icon-check"><AdminIcon name="check" /></div>
             <div>
               <div class="stat-label">可用资源</div>
               <div class="stat-value">{{ stats.available }} <span>个</span></div>
@@ -151,7 +151,7 @@ function showIncompleteResources() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-edit">▰</div>
+            <div class="stat-icon icon-edit"><AdminIcon name="edit" /></div>
             <div>
               <div class="stat-label">信息待完善</div>
               <div class="stat-value">{{ stats.incomplete }} <span>个</span></div>
@@ -159,7 +159,7 @@ function showIncompleteResources() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-book">▣</div>
+            <div class="stat-icon icon-book"><AdminIcon name="notebook" /></div>
             <div>
               <div class="stat-label">资源来源</div>
               <div class="stat-value">{{ stats.sourceTypes }} <span>类</span></div>
@@ -206,7 +206,10 @@ function showIncompleteResources() {
                 <template #actions>
                   <Button variant="outline" @click="resetFilters">重置</Button>
                   <Button variant="secondary" @click="applyFilters">查询</Button>
-                  <Button class="resource-create-action" @click="addResource">＋ 新增资源</Button>
+                  <Button class="resource-create-action" @click="addResource">
+                    <AdminIcon name="plus" />
+                    新增资源
+                  </Button>
                 </template>
                 <template #message>
                   <div v-if="trainingState.operationMessage" class="operation-message">{{ trainingState.operationMessage }}</div>
@@ -387,7 +390,7 @@ function showIncompleteResources() {
 
 .stat-card {
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-card-gap);
   min-height: 132px;
@@ -399,34 +402,38 @@ function showIncompleteResources() {
 }
 
 .stat-icon {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.66);
+}
+
+.stat-icon :deep(svg) {
+  width: 34px;
+  height: 34px;
 }
 
 .icon-file {
   color: #18b675;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-check {
   color: #1fbd75;
-  background: #dcf7e9;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-edit {
   color: #ff8a1f;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-book {
   color: #7347e9;
-  background: #eee7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .stat-value {

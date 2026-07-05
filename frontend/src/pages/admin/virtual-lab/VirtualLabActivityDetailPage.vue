@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -150,7 +150,7 @@ function goBack() {
 
         <div class="status-card">
           <div class="status-item">
-            <div class="status-icon icon-attendance">👥</div>
+            <div class="status-icon icon-attendance"><AdminIcon name="user" /></div>
             <div>
               <span>参会记录</span>
               <strong class="green">{{ statusCard.attendanceRecord }}</strong>
@@ -158,7 +158,7 @@ function goBack() {
           </div>
           <div class="status-divider"></div>
           <div class="status-item">
-            <div class="status-icon icon-minutes">▤</div>
+            <div class="status-icon icon-minutes"><AdminIcon name="document" /></div>
             <div>
               <span>会议纪要</span>
               <strong class="blue">{{ statusCard.meetingMinutes }}</strong>
@@ -166,7 +166,7 @@ function goBack() {
           </div>
           <div class="status-divider"></div>
           <div class="status-item">
-            <div class="status-icon icon-task">✓</div>
+            <div class="status-icon icon-task"><AdminIcon name="check" /></div>
             <div>
               <span>任务分工</span>
               <strong class="purple">{{ statusCard.taskAssignment }}</strong>
@@ -174,7 +174,7 @@ function goBack() {
           </div>
           <div class="status-divider"></div>
           <div class="status-item">
-            <div class="status-icon icon-record">▤</div>
+            <div class="status-icon icon-record"><AdminIcon name="document" /></div>
             <div>
               <span>教研记录</span>
               <strong class="green">{{ statusCard.researchRecord }}</strong>
@@ -199,7 +199,7 @@ function goBack() {
                 <div><span>会议号：</span><strong>{{ activityInfo.meetingNo }}</strong><button class="copy-button" @click="copyMeetingNo">⧉</button></div>
                 <div><span>会议时间：</span><strong>{{ activityInfo.time }}</strong></div>
                 <div><span>会议主题：</span><strong>{{ activityInfo.name }}</strong></div>
-                <div><span>同步状态：</span><strong class="green">● 已同步</strong></div>
+                <div><span>同步状态：</span><strong class="green"><AdminIcon name="check" /> 已同步</strong></div>
               </div>
               <div class="table-container">
                 <AdminTable :data="displayedParticipants" row-key="id" empty-text="暂无参与教师">
@@ -239,7 +239,7 @@ function goBack() {
               >
                 <AdminTableColumn label="资料名称" min-width="180">
                   <template #default="{ row }">
-                    <span class="file-icon" :class="row.tone">▤</span>
+                    <span class="file-icon" :class="row.tone"><AdminIcon name="document" /></span>
                     {{ row.name }}
                   </template>
                 </AdminTableColumn>
@@ -272,7 +272,7 @@ function goBack() {
               <h2>已形成记录</h2>
             </div>
             <div v-if="formedRecord" class="record-detail">
-              <div class="record-icon">▤</div>
+              <div class="record-icon"><AdminIcon name="document" /></div>
               <div>
                 <div class="record-title-line">
                   <h3>{{ formedRecord.title }}</h3>
@@ -288,7 +288,7 @@ function goBack() {
               <Button @click="viewRecord">查看记录 →</Button>
             </div>
             <div v-else class="record-detail">
-              <div class="record-icon">▤</div>
+              <div class="record-icon"><AdminIcon name="document" /></div>
               <div>
                 <div class="record-title-line">
                   <h3>当前活动尚未形成教研记录</h3>
@@ -493,24 +493,28 @@ function goBack() {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-admin-panel);
-  font-size: 25px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.68);
+}
+
+.status-icon :deep(svg) {
+  width: 26px;
+  height: 26px;
 }
 
 .icon-attendance {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-minutes,
 .icon-record {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-task {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .status-item span,
@@ -732,7 +736,11 @@ function goBack() {
   justify-content: center;
   border-radius: 4px;
   color: #fff;
-  font-size: 13px;
+}
+
+.file-icon :deep(svg) {
+  width: 14px;
+  height: 14px;
 }
 
 .file-icon.blue {
@@ -773,7 +781,12 @@ function goBack() {
   border-radius: var(--radius-admin-panel);
   background: linear-gradient(135deg, #6da2ff, var(--color-admin-primary));
   color: #fff;
-  font-size: 34px;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.18);
+}
+
+.record-icon :deep(svg) {
+  width: 34px;
+  height: 34px;
 }
 
 .record-title-line {

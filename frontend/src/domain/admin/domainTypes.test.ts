@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import abilityBasePageSource from '../../pages/admin/ability-list/AbilityListBasePage.vue?raw'
-import abilityBaseOptimizationPageSource from '../../pages/admin/ability-list/AbilityListBaseOptimizationPage.vue?raw'
 import abilityExecutionPageSource from '../../pages/admin/ability-list/AbilityListExecutionPage.vue?raw'
 import abilityPublishConfirmPageSource from '../../pages/admin/ability-list/AbilityListPublishConfirmPage.vue?raw'
 import abilityRequirementMappingPageSource from '../../pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
@@ -74,14 +73,14 @@ describe('admin domain types', () => {
   })
 
   it('keeps ability optimization suggestion status class mapping outside page templates', () => {
-    expect(abilityBaseOptimizationPageSource).not.toContain(':class="`status-${suggestion.status}`"')
+    expect(abilityBasePageSource).not.toContain(':class="`status-${suggestion.status}`"')
   })
 
   it('renders ability optimization suggestion statuses through the shared status badge', () => {
-    expect(abilityBaseOptimizationPageSource).toContain('StatusBadge')
-    expect(abilityBaseOptimizationPageSource).toContain('<StatusBadge')
-    expect(abilityBaseOptimizationPageSource).not.toContain('class="badge-status"')
-    expect(abilityBaseOptimizationPageSource).not.toContain('.badge-status.status-pending')
+    expect(abilityBasePageSource).toContain('StatusBadge')
+    expect(abilityBasePageSource).toContain('<StatusBadge')
+    expect(abilityBasePageSource).not.toContain('class="badge-status"')
+    expect(abilityBasePageSource).not.toContain('.badge-status.status-pending')
   })
 
   it('renders ability execution version statuses through the shared status badge', () => {

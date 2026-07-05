@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 withDefaults(
   defineProps<{
@@ -13,9 +13,26 @@ withDefaults(
 
 const route = useRoute()
 
+const breadcrumbLinkMap: Record<string, string> = {
+  首页: '/admin/training/resources',
+  能力清单: '/admin/ability-list/base',
+  成长档案: '/admin/archive/processing',
+  能力画像: '/admin/ability-profile/group',
+  教学反思: '/admin/reflection',
+  培训管理: '/admin/training/resources',
+  企业实践: '/admin/practice/tracking',
+  虚拟教研室: '/admin/virtual-lab',
+  分析报告: '/admin/reports',
+}
+
 const breadcrumbItems = computed(() => {
   const items = Array.isArray(route.meta.breadcrumb) ? (route.meta.breadcrumb as string[]) : ['管理端']
-  return items[0] === '管理端' ? items.slice(1) : items
+  const visibleItems = items[0] === '管理端' ? items.slice(1) : items
+  return visibleItems.map((label, index) => ({
+    label,
+    to: index === visibleItems.length - 1 ? undefined : breadcrumbLinkMap[label],
+    current: index === visibleItems.length - 1,
+  }))
 })
 </script>
 
@@ -23,7 +40,14 @@ const breadcrumbItems = computed(() => {
   <header class="admin-topbar">
     <div class="topbar-breadcrumb">
       <template v-for="(item, index) in breadcrumbItems" :key="`${item}-${index}`">
-        <span :class="index === breadcrumbItems.length - 1 ? 'current' : ''">{{ item }}</span>
+        <RouterLink
+          v-if="item.to"
+          :to="item.to"
+          class="breadcrumb-link"
+        >
+          {{ item.label }}
+        </RouterLink>
+        <span v-else class="current">{{ item.label }}</span>
         <i v-if="index < breadcrumbItems.length - 1" />
       </template>
     </div>
@@ -81,8 +105,19 @@ const breadcrumbItems = computed(() => {
   font-weight: 700;
 }
 
-.topbar-breadcrumb span {
+.topbar-breadcrumb span,
+.topbar-breadcrumb a {
   white-space: nowrap;
+}
+
+.breadcrumb-link {
+  color: #34435f;
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--color-primary);
 }
 
 .topbar-breadcrumb .current {

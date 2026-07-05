@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -118,7 +118,7 @@ function matchDemand(id: string) {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-demand">▤</div>
+            <div class="stat-icon icon-demand"><AdminIcon name="memo" /></div>
             <div>
               <div class="stat-label">需求总数</div>
               <div class="stat-value">{{ stats.total }} <span>条</span></div>
@@ -126,7 +126,7 @@ function matchDemand(id: string) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-eye">●</div>
+            <div class="stat-icon icon-eye"><AdminIcon name="view" /></div>
             <div>
               <div class="stat-label">画像观察</div>
               <div class="stat-value blue">{{ stats.fromProfile }} <span>条</span></div>
@@ -134,7 +134,7 @@ function matchDemand(id: string) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-user">●</div>
+            <div class="stat-icon icon-user"><AdminIcon name="user" /></div>
             <div>
               <div class="stat-label">教师提出</div>
               <div class="stat-value purple">{{ stats.fromTeacher }} <span>条</span></div>
@@ -142,7 +142,7 @@ function matchDemand(id: string) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-plus">＋</div>
+            <div class="stat-icon icon-plus"><AdminIcon name="plus" /></div>
             <div>
               <div class="stat-label">管理添加</div>
               <div class="stat-value orange">{{ stats.fromManagement }} <span>条</span></div>
@@ -159,7 +159,10 @@ function matchDemand(id: string) {
             <div class="content-card">
               <div class="card-header">
                 <h2>需求管理</h2>
-                <Button type="button" @click="addDemand">＋ 新增需求</Button>
+                <Button type="button" @click="addDemand">
+                  <AdminIcon name="plus" />
+                  新增需求
+                </Button>
               </div>
               <CompactFilterBar>
                 <template #fields>
@@ -246,21 +249,21 @@ function matchDemand(id: string) {
             <template #items>
               <div class="suggestions-list">
                 <div class="suggestion-item">
-                  <div class="suggestion-icon green">◔</div>
+                  <div class="suggestion-icon green"><AdminIcon name="data-analysis" /></div>
                   <div>
                     <div class="suggestion-title">画像观察需求集中</div>
                     <div class="suggestion-desc">当前 52 条需求来源于能力画像观察，主要集中在数字化教学和实训课程组织。</div>
                   </div>
                 </div>
                 <div class="suggestion-item">
-                  <div class="suggestion-icon blue">↗</div>
+                  <div class="suggestion-icon blue"><AdminIcon name="trend" /></div>
                   <div>
                     <div class="suggestion-title">教师主动需求上升</div>
                     <div class="suggestion-desc">本月教师主动提出 28 条培训需求，AI 赋能课程建设方向增长明显。</div>
                   </div>
                 </div>
                 <div class="suggestion-item">
-                  <div class="suggestion-icon orange">!</div>
+                  <div class="suggestion-icon orange"><AdminIcon name="warning" /></div>
                   <div>
                     <div class="suggestion-title">待匹配资源</div>
                     <div class="suggestion-desc">30 条需求暂无合适资源承接，建议优先补充资源库。</div>
@@ -341,7 +344,7 @@ function matchDemand(id: string) {
 .stat-card {
   min-height: 132px;
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-card-gap);
   padding: 22px 30px;
@@ -352,34 +355,38 @@ function matchDemand(id: string) {
 }
 
 .stat-icon {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.66);
+}
+
+.stat-icon :deep(svg) {
+  width: 34px;
+  height: 34px;
 }
 
 .icon-demand {
   color: #18b675;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-eye {
   color: #357cf5;
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-user {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .icon-plus {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .stat-value {
@@ -590,7 +597,7 @@ function matchDemand(id: string) {
 
 .suggestion-item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 66px minmax(0, 1fr);
   gap: var(--space-admin-lg);
   align-items: center;
   min-height: 124px;
@@ -601,29 +608,33 @@ function matchDemand(id: string) {
 }
 
 .suggestion-icon {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.suggestion-icon :deep(svg) {
+  width: 28px;
+  height: 28px;
 }
 
 .suggestion-icon.green {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .suggestion-icon.blue {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .suggestion-icon.orange {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .suggestion-title {

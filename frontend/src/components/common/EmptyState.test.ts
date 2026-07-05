@@ -2,7 +2,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import abilityListBaseOptimizationPageSource from '../../pages/admin/ability-list/AbilityListBaseOptimizationPage.vue?raw'
+import abilityListBasePageSource from '../../pages/admin/ability-list/AbilityListBasePage.vue?raw'
 import abilityListRequirementMappingPageSource from '../../pages/admin/ability-list/AbilityListRequirementMappingPage.vue?raw'
 import practiceRecordPageSource from '../../pages/admin/practice/PracticeRecordPage.vue?raw'
 import practiceTrackingPageSource from '../../pages/admin/practice/PracticeTrackingPage.vue?raw'
@@ -74,7 +74,7 @@ describe('EmptyState', () => {
 
   it('is used by the remaining admin empty-state batch', () => {
     const emptyTextPageSources = [
-      abilityListBaseOptimizationPageSource,
+      abilityListBasePageSource,
       abilityListRequirementMappingPageSource,
     ]
     const emptyStatePageSources = [

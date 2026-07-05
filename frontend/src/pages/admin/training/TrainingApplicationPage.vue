@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, InsightSidebar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -109,7 +109,7 @@ function rejectCurrentApplication() {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-pending">▤</div>
+            <div class="stat-icon icon-pending"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">待处理申请</div>
               <div class="stat-value blue">{{ stats.pending }}</div>
@@ -117,7 +117,7 @@ function rejectCurrentApplication() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-approved">✓</div>
+            <div class="stat-icon icon-approved"><AdminIcon name="check" /></div>
             <div>
               <div class="stat-label">已同意</div>
               <div class="stat-value green">{{ stats.approved }}</div>
@@ -125,7 +125,7 @@ function rejectCurrentApplication() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-rejected">×</div>
+            <div class="stat-icon icon-rejected"><AdminIcon name="circle-close" /></div>
             <div>
               <div class="stat-label">未同意</div>
               <div class="stat-value red">{{ stats.rejected }}</div>
@@ -133,7 +133,7 @@ function rejectCurrentApplication() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-closing">◷</div>
+            <div class="stat-icon icon-closing"><AdminIcon name="alarm-clock" /></div>
             <div>
               <div class="stat-label">即将截止</div>
               <div class="stat-value purple">{{ stats.closing }}</div>
@@ -246,21 +246,21 @@ function rejectCurrentApplication() {
               <template #items>
               <div class="reminders-list">
                 <div class="reminder-item">
-                  <span class="reminder-icon blue">▤</span>
+                  <span class="reminder-icon blue"><AdminIcon name="document" /></span>
                   <div class="reminder-content">
                     <div class="reminder-title">待处理申请</div>
                     <div class="reminder-desc">18 条申请待处理，主要集中在数字化教学能力提升培训。</div>
                   </div>
                 </div>
                 <div class="reminder-item">
-                  <span class="reminder-icon orange">●</span>
+                  <span class="reminder-icon orange"><AdminIcon name="warning" /></span>
                   <div class="reminder-content">
                     <div class="reminder-title">名额接近上限</div>
                     <div class="reminder-desc">2 个培训报名人数接近计划名额，建议优先处理待处理申请。</div>
                   </div>
                 </div>
                 <div class="reminder-item">
-                  <span class="reminder-icon purple">◷</span>
+                  <span class="reminder-icon purple"><AdminIcon name="alarm-clock" /></span>
                   <div class="reminder-content">
                     <div class="reminder-title">申请即将截止</div>
                     <div class="reminder-desc">3 个培训将在 3 天内结束申请，建议及时确认名单。</div>
@@ -348,7 +348,7 @@ function rejectCurrentApplication() {
 .stat-card {
   min-height: 142px;
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-card-gap);
   padding: 22px 30px;
@@ -359,34 +359,38 @@ function rejectCurrentApplication() {
 }
 
 .stat-icon {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.66);
+}
+
+.stat-icon :deep(svg) {
+  width: 34px;
+  height: 34px;
 }
 
 .icon-pending {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-approved {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-rejected {
   color: #ff613f;
-  background: #fff0e8;
+  background: linear-gradient(145deg, #fff5f1 0%, #ffe2d6 100%);
 }
 
 .icon-closing {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .stat-value {
@@ -628,7 +632,7 @@ function rejectCurrentApplication() {
 
 .reminder-item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 66px minmax(0, 1fr);
   gap: var(--space-admin-lg);
   align-items: center;
   min-height: 118px;
@@ -639,29 +643,33 @@ function rejectCurrentApplication() {
 }
 
 .reminder-icon {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.reminder-icon :deep(svg) {
+  width: 29px;
+  height: 29px;
 }
 
 .reminder-icon.blue {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .reminder-icon.orange {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .reminder-icon.purple {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .reminder-content {

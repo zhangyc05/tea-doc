@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -134,21 +134,21 @@ function applyFilters() {
             <h3 class="stats-group-title">年度完成情况</h3>
             <div class="stats-cards">
               <div class="stat-card">
-                <div class="stat-icon icon-people">●</div>
+                <div class="stat-icon icon-people"><AdminIcon name="user" /></div>
                 <div>
                   <div class="stat-label">应完成教师</div>
                   <div class="stat-value blue">{{ annualStats.required }} <span>人</span></div>
                 </div>
               </div>
               <div class="stat-card">
-                <div class="stat-icon icon-done">✓</div>
+                <div class="stat-icon icon-done"><AdminIcon name="check" /></div>
                 <div>
                   <div class="stat-label">已完成 30 天</div>
                   <div class="stat-value green">{{ annualStats.completed }} <span>人</span></div>
                 </div>
               </div>
               <div class="stat-card">
-                <div class="stat-icon icon-clock">◷</div>
+                <div class="stat-icon icon-clock"><AdminIcon name="clock" /></div>
                 <div>
                   <div class="stat-label">未完成 30 天</div>
                   <div class="stat-value orange">{{ annualStats.incomplete }} <span>人</span></div>
@@ -162,21 +162,21 @@ function applyFilters() {
             <h3 class="stats-group-title">当前办理情况</h3>
             <div class="stats-cards">
               <div class="stat-card">
-                <div class="stat-icon icon-review">▤</div>
+                <div class="stat-icon icon-review"><AdminIcon name="document" /></div>
                 <div>
                   <div class="stat-label">待审核申请</div>
                   <div class="stat-value purple">{{ currentStats.pendingReview }} <span>条</span></div>
                 </div>
               </div>
               <div class="stat-card">
-                <div class="stat-icon icon-briefcase">▣</div>
+                <div class="stat-icon icon-briefcase"><AdminIcon name="briefcase" /></div>
                 <div>
                   <div class="stat-label">实践中</div>
                   <div class="stat-value blue">{{ currentStats.inProgress }} <span>人</span></div>
                 </div>
               </div>
               <div class="stat-card">
-                <div class="stat-icon icon-folder">▰</div>
+                <div class="stat-icon icon-folder"><AdminIcon name="folder-add" /></div>
                 <div>
                   <div class="stat-label">待补材料</div>
                   <div class="stat-value amber">{{ currentStats.materialPending }} <span>条</span></div>
@@ -192,7 +192,10 @@ function applyFilters() {
         <div class="content-card">
           <div class="card-header">
             <h2 class="table-title">教师实践跟踪</h2>
-            <Button @click="exportList">⇧ 导出名单</Button>
+            <Button @click="exportList">
+              <AdminIcon name="upload" />
+              导出名单
+            </Button>
           </div>
           <!-- 筛选区 -->
           <CompactFilterBar>
@@ -415,34 +418,38 @@ function applyFilters() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.68);
+}
+
+.stat-icon :deep(svg) {
+  width: 24px;
+  height: 24px;
 }
 
 .icon-people,
 .icon-briefcase {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-done {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-clock {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-review {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .icon-folder {
   color: #f2a400;
-  background: #fff3d6;
+  background: linear-gradient(145deg, #fff9e7 0%, #ffefbc 100%);
 }
 
 .stat-value {

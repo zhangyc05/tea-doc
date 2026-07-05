@@ -1,17 +1,24 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { AdminInput } from '@/components/admin-ui'
-import { DetailSheet } from '@/components/common'
+import { ref, computed, nextTick, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
 import type { AbilityIndicator } from '@/components/admin/ability-list/types'
-import { getAbilityListBaseMock } from '@/services/mock/ability-list'
+import { useOperationMessage } from '@/lib/operationMessage'
+import { getAbilityListBaseMock, getAbilityListOptimizationMock } from '@/services/mock/ability-list'
 import {
+  adoptOptimizationSuggestion,
+  applyAdoptedSuggestionsToBaseTemplate,
   confirmBaseTemplateChanges,
   getAbilityListState,
+  importPolicySuggestion,
+  rerunFeedbackAnalysis,
   updateBaseTemplateIndicator,
+  updateOptimizationSuggestionStatus,
+  type OptimizationSuggestion,
 } from '@/stores/admin/abilityListStore'
 import baseHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 import baseHeroEmblem from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-emblem.svg'
@@ -22,9 +29,9 @@ import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/i
 import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
 import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
-const router = useRouter()
 const route = useRoute()
 const abilityListState = getAbilityListState()
+const operationMessage = useOperationMessage()
 
 const { abilityTree } = getAbilityListBaseMock({
   basic: iconAbilityBasic,
@@ -33,6 +40,7 @@ const { abilityTree } = getAbilityListBaseMock({
   practice: iconAbilityPractice,
   service: iconAbilityService,
 })
+const { suggestionSources, filterTags } = getAbilityListOptimizationMock()
 
 const defaultAbilityGroupKey = abilityTree[0]?.key ?? ''
 const defaultAbilityKey = abilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey
@@ -41,6 +49,15 @@ const selectedIndicator = ref<AbilityIndicator | null>(null)
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
+const optimizationSectionRef = ref<HTMLElement | null>(null)
+const selectedSource = ref('all')
+const selectedSuggestionId = ref('suggestion-enterprise-practice')
+const selectedTag = ref('all')
+const indicatorStatusOptions = [
+  { label: '已启用', value: 'enabled' },
+  { label: '已禁用', value: 'disabled' },
+  { label: '草稿', value: 'draft' },
+]
 
 // 数据映射：将旧的 Indicator 类型映射为新的 AbilityIndicator 类型
 const normalizedIndicators = computed<AbilityIndicator[]>(() => abilityListState.baseTemplateIndicators)
@@ -52,12 +69,50 @@ const versionRows = computed(() => [
   ...abilityListState.baseTemplateVersionHistory,
 ])
 const pendingChangeRows = computed(() => abilityListState.pendingBaseTemplateChanges)
+const optimizationPendingCount = computed(() => (
+  abilityListState.optimizationSuggestions.filter(suggestion => suggestion.status === 'pending' || suggestion.status === 'adopted').length
+))
+const suggestions = computed(() => abilityListState.optimizationSuggestions)
+const pendingApplicationCount = computed(() => abilityListState.pendingTemplateApplications.length)
+const selectedSuggestion = computed(() => {
+  return suggestions.value.find((item) => item.id === selectedSuggestionId.value) ?? suggestions.value[0]
+})
+const filteredSuggestions = computed(() => {
+  let result = suggestions.value
+
+  if (selectedSource.value !== 'all') {
+    result = result.filter((suggestion) => suggestion.source === selectedSource.value)
+  }
+
+  if (selectedTag.value !== 'all') {
+    const tagMap: Record<string, string> = {
+      missing: '标准缺失',
+      unclear: '标准不清',
+      duplicate: '标准重复',
+      wide: '标准过宽',
+      mapping: '要求映射问题',
+    }
+    result = result.filter((suggestion) => suggestion.issueType === tagMap[selectedTag.value])
+  }
+
+  return result
+})
 
 watch(
   () => route.query.versionHistory,
   (value) => {
     if (value === '1') {
       showVersionDrawer.value = true
+    }
+  },
+  { immediate: true },
+)
+
+watch(
+  () => route.query.optimization,
+  (value) => {
+    if (value === '1') {
+      nextTick(scrollToOptimization)
     }
   },
   { immediate: true },
@@ -116,6 +171,7 @@ function saveIndicatorEdit() {
     backbone: editingIndicator.value.backbone,
     expert: editingIndicator.value.expert,
     basisLabel: editingIndicator.value.basisLabel,
+    status: editingIndicator.value.status,
   })
   closeEditDrawer()
 }
@@ -145,8 +201,8 @@ function getSelectedAbilityIcon() {
 
 
 
-function goToOptimization() {
-  router.push('/admin/ability-list/base/optimization')
+function scrollToOptimization() {
+  optimizationSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 function goToVersionHistory() {
@@ -161,6 +217,70 @@ function publishNewBaseTemplateVersion() {
   confirmBaseTemplateChanges()
 }
 
+function selectSource(key: string) {
+  selectedSource.value = key
+  operationMessage.set(`已按建议来源筛选出 ${filteredSuggestions.value.length} 条。`)
+}
+
+function selectSuggestion(suggestion: OptimizationSuggestion) {
+  selectedSuggestionId.value = suggestion.id
+  operationMessage.set(`已选中建议：${suggestion.issueType}。`)
+}
+
+function selectTag(key: string) {
+  selectedTag.value = key
+  operationMessage.set(`已按问题类型筛选出 ${filteredSuggestions.value.length} 条。`)
+}
+
+function handleSuggestionAction(action: string, suggestion: OptimizationSuggestion) {
+  if (action === 'view') {
+    selectSuggestion(suggestion)
+    operationMessage.set('已在右侧展示建议详情。')
+    return
+  }
+
+  if (action === 'adopt') {
+    adoptOptimizationSuggestion(suggestion.id)
+    selectedSuggestionId.value = suggestion.id
+    operationMessage.fromStore(abilityListState)
+    return
+  }
+
+  if (action === 'defer') {
+    updateOptimizationSuggestionStatus(suggestion.id, 'deferred')
+    operationMessage.set('该建议已暂缓处理。')
+    return
+  }
+
+  if (action === 'reject') {
+    updateOptimizationSuggestionStatus(suggestion.id, 'rejected')
+    operationMessage.set('该建议已弃用。')
+  }
+}
+
+function applyToBaseTemplate() {
+  applyAdoptedSuggestionsToBaseTemplate()
+  operationMessage.fromStore(abilityListState)
+}
+
+function uploadPolicy() {
+  importPolicySuggestion()
+  selectedSource.value = 'policy'
+  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  operationMessage.fromStore(abilityListState)
+}
+
+function rerunAnalysis() {
+  rerunFeedbackAnalysis()
+  selectedSource.value = 'feedback'
+  selectedSuggestionId.value = abilityListState.optimizationSuggestions[0]?.id ?? selectedSuggestionId.value
+  operationMessage.fromStore(abilityListState)
+}
+
+function suggestionRowClassName({ row }: { row: OptimizationSuggestion }) {
+  return selectedSuggestion.value?.id === row.id ? 'admin-table-row active' : 'admin-table-row'
+}
+
 </script>
 
 <template>
@@ -169,9 +289,10 @@ function publishNewBaseTemplateVersion() {
       <section class="base-hero admin-hero">
         <div
           class="hero-art"
-          :style="{ backgroundImage: `url(${baseHeroArt})` }"
           aria-hidden="true"
-        />
+        >
+          <img :src="baseHeroArt" alt="" />
+        </div>
 
         <div class="hero-content">
           <div class="hero-emblem">
@@ -199,8 +320,8 @@ function publishNewBaseTemplateVersion() {
             </div>
 
             <div class="hero-actions">
-              <Button class="primary-action" @click="goToOptimization">
-                优化基准板
+              <Button class="primary-action" @click="scrollToOptimization">
+                优化建议（{{ optimizationPendingCount }}）
               </Button>
               <Button
                 v-if="pendingChangeRows.length > 0"
@@ -246,10 +367,147 @@ function publishNewBaseTemplateVersion() {
         @edit-indicator="editIndicator"
       />
 
+      <section ref="optimizationSectionRef" class="optimization-workspace admin-card">
+        <div class="optimization-header">
+          <div>
+            <h2>优化建议</h2>
+            <p>制度文件、运行反馈和人工建议在本页处理；采纳后形成基准模板修订草稿，发布新版本后生效。</p>
+          </div>
+          <div class="optimization-toolbar">
+            <Button @click="uploadPolicy">上传制度文件</Button>
+            <Button variant="secondary" @click="rerunAnalysis">重新分析运行反馈</Button>
+            <Button
+              variant="secondary"
+              :disabled="pendingApplicationCount === 0"
+              @click="applyToBaseTemplate"
+            >
+              形成修订草稿（{{ pendingApplicationCount }}）
+            </Button>
+          </div>
+        </div>
+        <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
+
+        <div class="optimization-grid">
+          <aside class="source-panel">
+            <h3>建议来源</h3>
+            <div class="source-list">
+              <button
+                v-for="source in suggestionSources"
+                :key="source.key"
+                class="source-item"
+                :class="{ active: selectedSource === source.key }"
+                @click="selectSource(source.key)"
+              >
+                <span><AdminIcon :name="source.icon" /></span>
+                {{ source.label }}
+              </button>
+            </div>
+          </aside>
+
+          <section class="suggestions-panel">
+            <div class="filter-tags">
+              <button
+                v-for="tag in filterTags"
+                :key="tag.key"
+                class="filter-tag"
+                :class="{ active: selectedTag === tag.key }"
+                @click="selectTag(tag.key)"
+              >
+                {{ tag.label }}
+              </button>
+            </div>
+
+            <AdminTable
+              :data="filteredSuggestions"
+              row-key="id"
+              :row-class-name="suggestionRowClassName"
+              empty-text="暂无符合条件的优化建议"
+              @row-click="selectSuggestion"
+            >
+              <AdminTableColumn label="来源" min-width="96">
+                <template #default="{ row }">
+                  <span class="source-badge" :class="row.source">{{ row.sourceLabel }}</span>
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn label="问题类型" min-width="112">
+                <template #default="{ row }">
+                  <span class="issue-badge">{{ row.issueType }}</span>
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn prop="keyLocation" label="关键位置" min-width="150" />
+              <AdminTableColumn prop="content" label="建议内容" min-width="220" />
+              <AdminTableColumn label="处理状态" min-width="108">
+                <template #default="{ row }">
+                  <StatusBadge :status="row.status" />
+                </template>
+              </AdminTableColumn>
+              <AdminTableColumn label="操作" min-width="236" fixed="right">
+                <template #default="{ row }">
+                  <div class="action-buttons">
+                    <Button variant="ghost" size="sm" @click.stop="handleSuggestionAction('view', row)">查看详情</Button>
+                    <Button v-if="row.status === 'pending'" size="sm" @click.stop="handleSuggestionAction('adopt', row)">采纳</Button>
+                    <Button v-if="row.status === 'pending'" variant="secondary" size="sm" @click.stop="handleSuggestionAction('defer', row)">暂缓</Button>
+                    <Button v-if="row.status === 'pending'" variant="danger" size="sm" @click.stop="handleSuggestionAction('reject', row)">弃用</Button>
+                    <Button v-if="row.status === 'adopted'" size="sm" @click.stop="applyToBaseTemplate">应用</Button>
+                  </div>
+                </template>
+              </AdminTableColumn>
+            </AdminTable>
+          </section>
+
+          <aside class="suggestion-detail-panel">
+            <h3>建议详情</h3>
+            <div v-if="selectedSuggestion" class="suggestion-detail">
+              <div class="detail-item">
+                <span>建议来源</span>
+                <strong>{{ selectedSuggestion.sourceLabel }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>问题类型</span>
+                <strong>{{ selectedSuggestion.issueType }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>关键位置</span>
+                <strong>{{ selectedSuggestion.keyLocation }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>建议内容</span>
+                <strong>{{ selectedSuggestion.content }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>来源依据</span>
+                <strong>{{ selectedSuggestion.basis }}</strong>
+              </div>
+            </div>
+
+            <div v-if="selectedSuggestion" class="detail-actions">
+              <Button
+                v-if="selectedSuggestion.status === 'pending'"
+                @click="handleSuggestionAction('adopt', selectedSuggestion)"
+              >
+                采纳建议
+              </Button>
+              <Button
+                v-if="selectedSuggestion.status === 'adopted'"
+                @click="applyToBaseTemplate"
+              >
+                形成修订草稿
+              </Button>
+              <Button
+                v-if="selectedSuggestion.status === 'pending'"
+                variant="secondary"
+                @click="handleSuggestionAction('defer', selectedSuggestion)"
+              >
+                暂缓处理
+              </Button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
       <DetailSheet
         :open="Boolean(editingIndicator)"
         title="编辑基准模板指标"
-        description="保存后会形成待确认调整，后续可派生到执行版。"
         width="form"
         mode="edit"
         @update:open="value => { if (!value) closeEditDrawer() }"
@@ -257,6 +515,7 @@ function publishNewBaseTemplateVersion() {
         @confirm="saveIndicatorEdit"
       >
         <div v-if="editingIndicator" class="drawer-form drawer-form-in-sheet">
+          <p class="form-tip">保存后会形成待确认调整，后续可派生到执行版。</p>
           <div class="form-group">
             <label class="form-label">指标名称 <span class="required-mark">*</span></label>
             <AdminInput v-model="editingIndicator.name" class="form-input" :aria-invalid="Boolean(editErrors.name)" />
@@ -290,6 +549,15 @@ function publishNewBaseTemplateVersion() {
             <label class="form-label">建议依据 <span class="required-mark">*</span></label>
             <AdminInput v-model="editingIndicator.basisLabel" class="form-input" :aria-invalid="Boolean(editErrors.basisLabel)" />
             <p v-if="editErrors.basisLabel" class="form-error">{{ editErrors.basisLabel }}</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">状态</label>
+            <AdminSelect
+              v-model="editingIndicator.status"
+              class="form-select"
+              :options="indicatorStatusOptions"
+              :clearable="false"
+            />
           </div>
         </div>
 
@@ -391,11 +659,21 @@ function publishNewBaseTemplateVersion() {
   right: clamp(18px, 1.5vw, 30px);
   bottom: 0;
   z-index: 0;
-  width: min(48%, 720px);
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: contain;
-  opacity: 0.88;
+  width: min(46%, 680px);
+  overflow: hidden;
+  opacity: 0.82;
+}
+
+.hero-art img {
+  position: absolute;
+  top: 50%;
+  right: -72px;
+  display: block;
+  width: calc(100% + 72px);
+  height: 100%;
+  object-fit: contain;
+  object-position: right center;
+  transform: translateY(-50%);
 }
 
 .hero-content {
@@ -585,9 +863,205 @@ function publishNewBaseTemplateVersion() {
 
 .operation-message {
   display: inline-flex;
-  margin-left: var(--space-admin-sm);
+  margin: 0 0 var(--space-admin-md);
   color: #18845a;
   font-weight: 850;
+}
+
+.optimization-workspace {
+  scroll-margin-top: calc(var(--admin-topbar-height) + 16px);
+  overflow: hidden;
+}
+
+.optimization-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-admin-xl);
+  border-bottom: 1px solid #e4ebf5;
+  padding: var(--space-admin-lg) var(--space-admin-xl);
+}
+
+.optimization-header h2,
+.optimization-header p {
+  margin: 0;
+}
+
+.optimization-header h2 {
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.optimization-header p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.optimization-toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-admin-sm);
+}
+
+.optimization-grid {
+  display: grid;
+  grid-template-columns: 176px minmax(520px, 1fr) 320px;
+  gap: var(--space-admin-lg);
+  padding: var(--space-admin-lg);
+}
+
+.source-panel,
+.suggestions-panel,
+.suggestion-detail-panel {
+  min-width: 0;
+}
+
+.source-panel,
+.suggestion-detail-panel {
+  border: 1px solid #e4ebf5;
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
+}
+
+.source-panel h3,
+.suggestion-detail-panel h3 {
+  margin: 0;
+  border-bottom: 1px solid #e4ebf5;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.source-list {
+  display: grid;
+  gap: var(--space-admin-sm);
+  padding: var(--space-admin-md);
+}
+
+.source-item,
+.filter-tag {
+  border: 0;
+  cursor: pointer;
+}
+
+.source-item {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: var(--space-admin-sm);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #263b63;
+  font-size: 13px;
+  font-weight: 850;
+  padding: 0 12px;
+  text-align: left;
+}
+
+.source-item span {
+  color: var(--color-primary);
+}
+
+.source-item.active {
+  background: #eaf2ff;
+  color: var(--color-primary);
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-admin-sm);
+  padding: 0 0 var(--space-admin-md);
+}
+
+.filter-tag {
+  min-height: 32px;
+  border: 1px solid #d7e2f2;
+  border-radius: var(--radius-sm);
+  background: #f7faff;
+  color: #4d5d75;
+  font-size: 12px;
+  font-weight: 850;
+  padding: 0 14px;
+}
+
+.filter-tag.active {
+  border-color: var(--color-primary);
+  background: #e8f0ff;
+  color: var(--color-primary);
+}
+
+.source-badge,
+.issue-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 850;
+  padding: 3px 8px;
+}
+
+.source-badge.feedback {
+  background: #e8f0ff;
+  color: var(--color-primary);
+}
+
+.source-badge.policy {
+  background: #dff8ec;
+  color: #18a663;
+}
+
+.source-badge.manual {
+  background: #fff0df;
+  color: #f26a16;
+}
+
+.issue-badge {
+  background: #fff0df;
+  color: #f26a16;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.suggestion-detail {
+  display: grid;
+  gap: var(--space-admin-md);
+  padding: var(--space-admin-lg);
+}
+
+.detail-item {
+  display: grid;
+  gap: 4px;
+}
+
+.detail-item span {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.detail-item strong {
+  color: #263b63;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.detail-actions {
+  display: grid;
+  gap: var(--space-admin-sm);
+  padding: 0 var(--space-admin-lg) var(--space-admin-lg);
 }
 
 .drawer-form {
@@ -601,6 +1075,18 @@ function publishNewBaseTemplateVersion() {
 
 .drawer-form-in-sheet {
   padding: 0;
+}
+
+.form-tip {
+  margin: 0;
+  border: 1px solid rgba(18, 104, 246, 0.14);
+  border-radius: var(--radius-admin-panel);
+  background: rgba(239, 246, 255, 0.7);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.55;
+  padding: 10px 12px;
 }
 
 .form-row {
@@ -625,26 +1111,29 @@ function publishNewBaseTemplateVersion() {
   color: #ef4444;
 }
 
-.form-input {
-  min-height: 38px;
-  border: 1px solid var(--color-admin-border);
+.form-input,
+.form-select {
+  width: 100%;
+}
+
+.form-input :deep(.el-input__wrapper),
+.form-select :deep(.el-select__wrapper) {
+  min-height: 40px;
   border-radius: var(--radius-admin-panel);
+  box-shadow: 0 0 0 1px var(--color-admin-border) inset;
   padding: 0 12px;
-  background: #fff;
+}
+
+.form-input :deep(.el-input__inner),
+.form-select :deep(.el-select__placeholder),
+.form-select :deep(.el-select__selected-item) {
   color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 750;
-  outline: none;
 }
 
-.form-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.12);
-}
-
-.form-input[aria-invalid='true'] {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+.form-input[aria-invalid='true'] :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 1px #ef4444 inset, 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
 .form-error {
@@ -738,6 +1227,19 @@ function publishNewBaseTemplateVersion() {
   .hero-art {
     width: min(42%, 560px);
     opacity: 0.78;
+  }
+
+  .optimization-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .optimization-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .optimization-grid {
+    grid-template-columns: 1fr;
   }
 
   .hero-metrics {

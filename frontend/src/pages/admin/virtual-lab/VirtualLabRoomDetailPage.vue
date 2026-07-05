@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminPagination, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminPagination, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -78,7 +78,7 @@ function viewRecord(id: string) {
     <div class="virtual-lab-room-detail-page">
       <section class="main-section">
         <div class="room-profile-card">
-          <div class="room-avatar">👥</div>
+          <div class="room-avatar"><AdminIcon name="user" /></div>
           <div class="room-profile-main">
             <div class="room-title-row">
               <h1>{{ roomInfo.name }}</h1>
@@ -103,28 +103,28 @@ function viewRecord(id: string) {
 
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-members">👥</div>
+            <div class="stat-icon icon-members"><AdminIcon name="user" /></div>
             <div>
               <div class="stat-label">成员数</div>
               <div class="stat-value blue">{{ stats.members }} <span>人</span></div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-activity">▣</div>
+            <div class="stat-icon icon-activity"><AdminIcon name="clock" /></div>
             <div>
               <div class="stat-label">进行中活动</div>
               <div class="stat-value green">{{ stats.inProgressActivities }} <span>个</span></div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-record">▤</div>
+            <div class="stat-icon icon-record"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">已形成记录</div>
               <div class="stat-value orange">{{ stats.recordsCount }} <span>条</span></div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-time">◷</div>
+            <div class="stat-icon icon-time"><AdminIcon name="alarm-clock" /></div>
             <div>
               <div class="stat-label">最近活动时间</div>
               <div class="stat-value purple">{{ stats.recentActivityTime }}</div>
@@ -217,7 +217,7 @@ function viewRecord(id: string) {
               :key="record.id"
               class="record-item"
             >
-              <div class="record-icon">▤</div>
+              <div class="record-icon"><AdminIcon name="document" /></div>
               <div class="record-grid">
                 <div>
                   <span class="sub-text">记录名称：</span>
@@ -324,9 +324,14 @@ function viewRecord(id: string) {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
   color: var(--color-admin-primary);
-  font-size: 28px;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.room-avatar :deep(svg) {
+  width: 31px;
+  height: 31px;
 }
 
 .room-title-row {
@@ -397,28 +402,32 @@ function viewRecord(id: string) {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 24px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.68);
+}
+
+.stat-icon :deep(svg) {
+  width: 25px;
+  height: 25px;
 }
 
 .icon-members {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-activity {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-record {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-time {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .stat-label {
@@ -575,7 +584,11 @@ function viewRecord(id: string) {
   border-radius: var(--radius-sm);
   background: var(--color-admin-primary);
   color: #fff;
-  font-size: 20px;
+}
+
+.record-icon :deep(svg) {
+  width: 20px;
+  height: 20px;
 }
 
 .record-grid {

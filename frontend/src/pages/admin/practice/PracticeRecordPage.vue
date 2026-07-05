@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -122,7 +122,7 @@ function applyFilters() {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-progress">▣</div>
+            <div class="stat-icon icon-progress"><AdminIcon name="briefcase" /></div>
             <div>
               <div class="stat-label">实践中</div>
               <div class="stat-value blue">{{ stats.inProgress }} <span>人</span></div>
@@ -130,7 +130,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-summary">▤</div>
+            <div class="stat-icon icon-summary"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">待提交总结</div>
               <div class="stat-value orange">{{ stats.summaryPending }} <span>条</span></div>
@@ -138,7 +138,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-evaluation">▥</div>
+            <div class="stat-icon icon-evaluation"><AdminIcon name="edit" /></div>
             <div>
               <div class="stat-label">待补企业评价</div>
               <div class="stat-value purple">{{ stats.evaluationPending }} <span>条</span></div>
@@ -146,7 +146,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-archive-pending">▰</div>
+            <div class="stat-icon icon-archive-pending"><AdminIcon name="folder-add" /></div>
             <div>
               <div class="stat-label">待归档确认</div>
               <div class="stat-value amber">{{ stats.archivePending }} <span>条</span></div>
@@ -154,7 +154,7 @@ function applyFilters() {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-archived">▱</div>
+            <div class="stat-icon icon-archived"><AdminIcon name="folder" /></div>
             <div>
               <div class="stat-label">已归档</div>
               <div class="stat-value green">{{ stats.archived }} <span>条</span></div>
@@ -169,7 +169,10 @@ function applyFilters() {
         <div class="content-card">
           <div class="card-header">
             <h2 class="table-title">记录列表</h2>
-            <Button @click="exportRecords">⇩ 导出记录</Button>
+            <Button @click="exportRecords">
+              <AdminIcon name="upload" />
+              导出记录
+            </Button>
           </div>
           <!-- 筛选区 -->
           <CompactFilterBar>
@@ -353,39 +356,43 @@ function applyFilters() {
 }
 
 .stat-icon {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.stat-icon :deep(svg) {
+  width: 29px;
+  height: 29px;
 }
 
 .icon-progress {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-summary {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-evaluation {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .icon-archive-pending {
   color: #f2a400;
-  background: #fff3d6;
+  background: linear-gradient(145deg, #fff9e7 0%, #ffefbc 100%);
 }
 
 .icon-archived {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .stat-value {

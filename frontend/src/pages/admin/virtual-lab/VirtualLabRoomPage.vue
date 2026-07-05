@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, EmptyState } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -86,7 +86,7 @@ function roomRowKey(row: VirtualLabRoom) {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card">
-            <div class="stat-icon icon-room">▦</div>
+            <div class="stat-icon icon-room"><AdminIcon name="management" /></div>
             <div>
               <div class="stat-label">教研室总数</div>
               <div class="stat-value blue">{{ stats.totalRooms }} <span>个</span></div>
@@ -94,7 +94,7 @@ function roomRowKey(row: VirtualLabRoom) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-school">▥</div>
+            <div class="stat-icon icon-school"><AdminIcon name="school" /></div>
             <div>
               <div class="stat-label">覆盖院系</div>
               <div class="stat-value green">{{ stats.departments }} <span>个</span></div>
@@ -102,7 +102,7 @@ function roomRowKey(row: VirtualLabRoom) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-active">▣</div>
+            <div class="stat-icon icon-active"><AdminIcon name="clock" /></div>
             <div>
               <div class="stat-label">进行中活动</div>
               <div class="stat-value orange">{{ stats.inProgressActivities }} <span>个</span></div>
@@ -110,7 +110,7 @@ function roomRowKey(row: VirtualLabRoom) {
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon icon-record">▤</div>
+            <div class="stat-icon icon-record"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">已形成记录</div>
               <div class="stat-value purple">{{ stats.recordsCount }} <span>条</span></div>
@@ -368,28 +368,32 @@ function roomRowKey(row: VirtualLabRoom) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  font-weight: 800;
+  box-shadow: inset 0 0 0 9px rgba(255, 255, 255, 0.68);
+}
+
+.stat-icon :deep(svg) {
+  width: 29px;
+  height: 29px;
 }
 
 .icon-room {
   color: var(--color-admin-primary);
-  background: #e8f0ff;
+  background: linear-gradient(145deg, #f1f6ff 0%, #dce9ff 100%);
 }
 
 .icon-school {
   color: #18a663;
-  background: #dff8ec;
+  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
 }
 
 .icon-active {
   color: #f26a16;
-  background: #fff0df;
+  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
 }
 
 .icon-record {
   color: #8848e8;
-  background: #efe7ff;
+  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
 }
 
 .stat-label {
