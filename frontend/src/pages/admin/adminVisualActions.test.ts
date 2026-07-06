@@ -269,6 +269,7 @@ describe('admin visual action guardrails', () => {
       ['TrainingApplicationPage.vue', trainingApplicationPage],
       ['TrainingDemandPage.vue', trainingDemandPage],
       ['TrainingPlanPage.vue', trainingPlanPage],
+      ['TrainingRecordPage.vue', trainingRecordPage],
     ] as const
 
     for (const [filename, source] of genericIconSources) {
@@ -296,6 +297,8 @@ describe('admin visual action guardrails', () => {
       ['TrainingApplicationPage.vue', trainingApplicationPage, '.reminder-icon :deep(svg)'],
       ['TrainingPlanPage.vue', trainingPlanPage, '.stat-icon :deep(svg)'],
       ['TrainingPlanPage.vue', trainingPlanPage, '.reminder-icon :deep(svg)'],
+      ['TrainingRecordPage.vue', trainingRecordPage, '.stat-icon :deep(svg)'],
+      ['TrainingRecordPage.vue', trainingRecordPage, '.reminder-icon :deep(svg)'],
       ['TrainingResourcePage.vue', trainingResourcePage, '.stat-icon :deep(svg)'],
       ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.status-icon :deep(svg)'],
       ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.file-icon :deep(svg)'],
@@ -313,6 +316,8 @@ describe('admin visual action guardrails', () => {
 
     expect(trainingPlanPage).not.toContain('.stat-icon::after')
     expect(trainingPlanPage).not.toContain('.reminder-icon::after')
+    expect(trainingRecordPage).not.toContain('.stat-icon::after')
+    expect(trainingRecordPage).not.toContain('.reminder-icon::after')
 
     expect(adminDesignGuide).toContain('@element-plus/icons-vue')
     expect(adminDesignGuide).toContain('能用图标库表达的通用图标，优先使用 `AdminIcon`')
@@ -771,8 +776,10 @@ describe('admin visual action guardrails', () => {
     expect(abilityListRequirementMappingPage).toContain('level-standard-card')
     expect(abilityListRequirementMappingPage).toContain('class="mapping-table"')
     expect(abilityListRequirementMappingPage).toContain('border')
-    expect(abilityListRequirementMappingPage).toContain('class="pager-button active"')
-    expect(abilityListRequirementMappingPage).toContain('class="page-size-select"')
+    expect(abilityListRequirementMappingPage).toContain('<AdminPagination')
+    expect(abilityListRequirementMappingPage).toContain(':total="filteredMappings.length"')
+    expect(abilityListRequirementMappingPage).not.toContain('class="pager-button active"')
+    expect(abilityListRequirementMappingPage).not.toContain('class="page-size-select"')
     expect(abilityListRequirementMappingPage).toContain('mapping-table :deep(.el-table__cell)')
     expect(abilityListRequirementMappingPage).not.toContain('<AdminTableColumn label="操作"')
     expect(abilityListRequirementMappingPage).not.toContain('max-height: 500px')

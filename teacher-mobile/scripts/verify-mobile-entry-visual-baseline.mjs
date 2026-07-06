@@ -39,7 +39,7 @@ function collectVueFiles(dir) {
 const checks = [
   {
     file: 'src/pages/activity/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png',
+    target: '效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页.png',
     assertions: [
       {
         name: 'activity entry keeps unified shell and visual rhythm',
@@ -61,7 +61,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜待办首页.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜待办首页.png',
     assertions: [
       {
         name: 'todo entry keeps unified shell and safe area',
@@ -87,7 +87,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/教师端手机｜档案｜档案首页.png',
+    target: '效果图/教师手机端/1档案/教师端手机｜档案｜档案首页.png',
     assertions: [
       {
         name: 'archive entry keeps unified shell and target search rhythm',
@@ -113,7 +113,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜我的主页.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜我的主页.png',
     assertions: [
       {
         name: 'profile entry keeps unified shell and primary profile card',
@@ -139,7 +139,7 @@ const checks = [
   },
   {
     file: 'src/pages/assistant/index.vue',
-    target: '效果图/已实现/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png',
+    target: '效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png',
     assertions: [
       {
         name: 'assistant entry keeps unified shell and assistant scene hierarchy',
@@ -161,7 +161,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修首页.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修首页.png',
     assertions: [
       {
         name: 'training secondary entry keeps activity tab shell and target modules',
@@ -189,7 +189,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-room/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜我的教研室.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜我的教研室.png',
     assertions: [
       {
         name: 'virtual research room keeps activity tab shell and target modules',
@@ -203,7 +203,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-start/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜开始方式.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜开始方式.png',
     assertions: [
       {
         name: 'reflection start keeps activity tab shell and target modules',
@@ -217,7 +217,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-demand/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜提交培训需求.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜提交培训需求.png',
     assertions: [
       {
         name: 'training demand keeps activity tab shell and target modules',
@@ -231,7 +231,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-found/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜我已找到想参加的培训.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜我已找到想参加的培训.png',
     assertions: [
       {
         name: 'training found keeps activity tab shell and target modules',
@@ -245,7 +245,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-demand-result/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求已提交.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求已提交.png',
     assertions: [
       {
         name: 'training demand result keeps activity tab shell and target modules',
@@ -259,7 +259,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-summary/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训总结.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训总结.png',
     assertions: [
       {
         name: 'training summary keeps summary modules and fixed submit actions',
@@ -273,7 +273,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-list/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训进修.png',
     assertions: [
       {
         name: 'training list keeps activity tab shell and target modules',
@@ -287,7 +287,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-application/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训申请.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训申请.png',
     assertions: [
       {
         name: 'training application keeps activity tab shell and target modules',
@@ -301,7 +301,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-archive-result/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训材料归档提交结果.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训材料归档提交结果.png',
     assertions: [
       {
         name: 'training archive result keeps archive result modules and actions',
@@ -315,7 +315,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/training-need-result/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求提交.png',
+    target: '效果图/教师手机端/2活动/2培训进修/教师端手机｜活动｜培训进修｜培训需求提交.png',
     assertions: [
       {
         name: 'training need result keeps activity tab shell and target modules',
@@ -329,7 +329,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-course/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择学期课程.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择学期课程.png',
     assertions: [
       {
         name: 'reflection course keeps activity tab shell and target modules',
@@ -343,7 +343,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-evidence/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择反思依据.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜选择反思依据.png',
     assertions: [
       {
         name: 'reflection evidence keeps activity tab shell and target modules',
@@ -357,7 +357,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-scope/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜反思范围.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜反思范围.png',
     assertions: [
       {
         name: 'reflection scope keeps activity tab shell and target modules',
@@ -371,7 +371,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-self/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜自主反思.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜自主反思.png',
     assertions: [
       {
         name: 'reflection self keeps activity tab shell and target modules',
@@ -385,7 +385,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-guide-chat/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜AI引导对话.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜AI引导对话.png',
     assertions: [
       {
         name: 'reflection guide chat keeps activity tab shell and chat modules',
@@ -399,7 +399,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-ai-chat/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教学反思-AI对话.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教学反思-AI对话.png',
     assertions: [
       {
         name: 'reflection ai chat keeps activity tab shell and autonomous modules',
@@ -413,7 +413,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-draft/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜报告草稿编辑.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜报告草稿编辑.png',
     assertions: [
       {
         name: 'reflection draft keeps activity tab shell and report modules',
@@ -427,7 +427,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/reflection-success/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜确认成功.png',
+    target: '效果图/教师手机端/2活动/1教学反思/教师端手机｜活动｜教学反思｜确认成功.png',
     assertions: [
       {
         name: 'reflection success keeps activity tab shell and result modules',
@@ -455,7 +455,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-plan-submit/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜提交实践计划.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜提交实践计划.png',
     assertions: [
       {
         name: 'enterprise plan submit keeps activity tab shell and form modules',
@@ -469,7 +469,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-plan-confirm/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划确认提交.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划确认提交.png',
     assertions: [
       {
         name: 'enterprise plan confirm keeps activity tab shell and confirmation modules',
@@ -483,7 +483,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-plan-approved/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划已通过.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划已通过.png',
     assertions: [
       {
         name: 'enterprise plan approved keeps activity tab shell and result modules',
@@ -497,7 +497,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-proof-upload/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜上传实践证明.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜上传实践证明.png',
     assertions: [
       {
         name: 'enterprise proof upload keeps upload modules and fixed actions',
@@ -511,7 +511,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-proof-supplement/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充实践证明.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充实践证明.png',
     assertions: [
       {
         name: 'enterprise proof supplement keeps supplement modules and actions',
@@ -525,7 +525,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-progress-detail/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜进行中详情.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜进行中详情.png',
     assertions: [
       {
         name: 'enterprise progress detail keeps ongoing modules and actions',
@@ -539,7 +539,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-log-record/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录实践日志.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录实践日志.png',
     assertions: [
       {
         name: 'enterprise log record keeps log form modules and actions',
@@ -553,7 +553,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-plan-rejected/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png',
     assertions: [
       {
         name: 'enterprise plan rejected keeps returned plan modules and fixed actions',
@@ -567,7 +567,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-supplement-needed/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜需要补充材料.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜需要补充材料.png',
     assertions: [
       {
         name: 'enterprise supplement needed keeps supplement modules and bottom actions',
@@ -581,7 +581,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-resupplement/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜重新补充材料.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜重新补充材料.png',
     assertions: [
       {
         name: 'enterprise resupplement keeps reupload modules and fixed actions',
@@ -595,7 +595,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-archive-result/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜归档提交结果.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜归档提交结果.png',
     assertions: [
       {
         name: 'enterprise archive result keeps archive result modules and actions',
@@ -609,7 +609,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-history-supplement/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充历史实践.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充历史实践.png',
     assertions: [
       {
         name: 'enterprise history supplement keeps history form modules and fixed actions',
@@ -623,7 +623,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-supplement-submitted/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充材料已提交.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜补充材料已提交.png',
     assertions: [
       {
         name: 'enterprise supplement submitted keeps submitted modules and archive actions',
@@ -637,7 +637,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-history-confirmed/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践已确认.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践已确认.png',
     assertions: [
       {
         name: 'enterprise history confirmed keeps confirmed modules and follow actions',
@@ -651,7 +651,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-archive-success/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录已入档.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜记录已入档.png',
     assertions: [
       {
         name: 'enterprise archive success keeps archive waiting modules and actions',
@@ -665,7 +665,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-history-supplement-needed/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践需补充材料.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜历史实践需补充材料.png',
     assertions: [
       {
         name: 'enterprise history supplement needed keeps returned history modules and actions',
@@ -679,7 +679,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-archive-edit/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/企业实践-修改档案信息.png',
+    target: '效果图/教师手机端/2活动/3企业实践/企业实践-修改档案信息.png',
     assertions: [
       {
         name: 'enterprise archive edit keeps draft edit modules and fixed actions',
@@ -693,7 +693,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-import-export/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/导入导出页面.png',
+    target: '效果图/教师手机端/2活动/3企业实践/导入导出页面.png',
     assertions: [
       {
         name: 'enterprise import export keeps submitted plan waiting modules and actions',
@@ -707,7 +707,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-log-list/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/企业实践-实践日志.png',
+    target: '效果图/教师手机端/2活动/3企业实践/企业实践-实践日志.png',
     assertions: [
       {
         name: 'enterprise log list keeps practice log modules and actions',
@@ -721,7 +721,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-workflow-config/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/工作流配置.png',
+    target: '效果图/教师手机端/2活动/3企业实践/工作流配置.png',
     assertions: [
       {
         name: 'enterprise workflow config keeps log detail modules and actions',
@@ -735,7 +735,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-login-history/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/登录历史页面.png',
+    target: '效果图/教师手机端/2活动/3企业实践/登录历史页面.png',
     assertions: [
       {
         name: 'enterprise login history keeps archive summary modules and fixed actions',
@@ -749,7 +749,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-advanced-search/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/高级搜索页面.png',
+    target: '效果图/教师手机端/2活动/3企业实践/高级搜索页面.png',
     assertions: [
       {
         name: 'enterprise advanced search keeps supplement material modules and fixed actions',
@@ -763,7 +763,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-invitation/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研室邀请.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研室邀请.png',
     assertions: [
       {
         name: 'virtual research invitation keeps invitation modules and fixed actions',
@@ -777,7 +777,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-activity-list/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动列表.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动列表.png',
     assertions: [
       {
         name: 'virtual research activity list keeps list modules and actions',
@@ -791,7 +791,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-activity-detail-ongoing/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜进行中.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜进行中.png',
     assertions: [
       {
         name: 'virtual research ongoing detail keeps activity detail modules and actions',
@@ -805,7 +805,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-activity-detail-confirm/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜待确认贡献.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜待确认贡献.png',
     assertions: [
       {
         name: 'virtual research confirm detail keeps contribution confirm modules and actions',
@@ -819,7 +819,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-confirm-contribution/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献确认.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献确认.png',
     assertions: [
       {
         name: 'virtual research contribution confirmation keeps contribution evidence modules and actions',
@@ -833,7 +833,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-contribution-detail/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献详情.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研贡献详情.png',
     assertions: [
       {
         name: 'virtual research contribution detail keeps confirmed evidence modules and return action',
@@ -847,7 +847,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-contribution-confirm/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜确认教研贡献.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜确认教研贡献.png',
     assertions: [
       {
         name: 'virtual research contribution confirm keeps activity info contribution and fixed actions',
@@ -861,7 +861,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-contribution-submitted/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜贡献确认已提交.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜贡献确认已提交.png',
     assertions: [
       {
         name: 'virtual research contribution submitted keeps submitted summary modules and actions',
@@ -875,7 +875,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-activity-detail-supplement-submitted/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜补充已提交.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动详情｜补充已提交.png',
     assertions: [
       {
         name: 'virtual research supplement submitted keeps activity contribution and confirmation modules',
@@ -889,7 +889,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-supplement-material/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充教研活动材料.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充教研活动材料.png',
     assertions: [
       {
         name: 'virtual research supplement material keeps return reason material and fixed actions',
@@ -903,7 +903,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-stage-submitted/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜阶段材料已提交.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜阶段材料已提交.png',
     assertions: [
       {
         name: 'virtual research stage submitted keeps submitted material status and actions',
@@ -917,7 +917,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-archive-result/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动归档结果.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动归档结果.png',
     assertions: [
       {
         name: 'virtual research archive result keeps archive materials destinations and actions',
@@ -931,7 +931,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-resubmitted/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充材料已重新提交.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜补充材料已重新提交.png',
     assertions: [
       {
         name: 'virtual research resubmitted keeps supplement result status and actions',
@@ -945,7 +945,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-archive-result-v1/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教研活动归档结果-版本一.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教研活动归档结果-版本一.png',
     assertions: [
       {
         name: 'virtual research archive result v1 keeps archived contributions materials and actions',
@@ -959,7 +959,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-archived-confirmed/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动已归档｜贡献已确认.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/教师端手机｜活动｜虚拟教研｜教研活动已归档｜贡献已确认.png',
     assertions: [
       {
         name: 'virtual research archived confirmed keeps contribution confirmed materials and actions',
@@ -973,7 +973,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-profile-complete/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/个人资料完善.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/个人资料完善.png',
     assertions: [
       {
         name: 'virtual research profile complete keeps room detail tasks materials and tab shell',
@@ -987,7 +987,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-basic-info-edit/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/基本信息编辑.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/基本信息编辑.png',
     assertions: [
       {
         name: 'virtual research basic info edit keeps submitted contribution modules and activity tab',
@@ -1001,7 +1001,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-profile-intro-edit/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/个人简介编辑.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/个人简介编辑.png',
     assertions: [
       {
         name: 'virtual research profile intro edit keeps contribution profile modules and fixed actions',
@@ -1029,7 +1029,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-position-management/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/岗位管理页面.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/岗位管理页面.png',
     assertions: [
       {
         name: 'virtual research position management keeps joined room modules and activity tab',
@@ -1043,7 +1043,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-work-experience-management/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/工作经历管理.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/工作经历管理.png',
     assertions: [
       {
         name: 'virtual research work experience management keeps contribution detail modules and activity tab',
@@ -1057,7 +1057,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-skill-management/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/技能特长管理.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/技能特长管理.png',
     assertions: [
       {
         name: 'virtual research skill management keeps supplement contribution modules and fixed action',
@@ -1071,7 +1071,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-award-management/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/获奖情况管理.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/获奖情况管理.png',
     assertions: [
       {
         name: 'virtual research award management keeps stage material modules and fixed action',
@@ -1085,7 +1085,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-role-assignment/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/角色分配页面.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/角色分配页面.png',
     assertions: [
       {
         name: 'virtual research role assignment keeps room dashboard modules and activity tab',
@@ -1099,7 +1099,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/virtual-research-advanced-settings/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/4虚拟教研/高级设置页面.png',
+    target: '效果图/教师手机端/2活动/4虚拟教研/高级设置页面.png',
     assertions: [
       {
         name: 'virtual research advanced settings keeps development report modules and fixed actions',
@@ -1131,7 +1131,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/dynamics/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜全部动态.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜全部动态.png',
     assertions: [
       {
         name: 'todo dynamics keeps todo tab filter entry and grouped dynamics',
@@ -1149,7 +1149,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/dynamics-filter/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜全部动态筛选.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜全部动态筛选.png',
     assertions: [
       {
         name: 'todo dynamics filter keeps drawer options and result action',
@@ -1167,7 +1167,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/certificate-detail/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜待确认记录详情｜培训证书.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜待确认记录详情｜培训证书.png',
     assertions: [
       {
         name: 'todo certificate detail keeps confirm edit remove and material preview flow',
@@ -1181,7 +1181,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/certificate-edit/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜编辑待确认记录.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜编辑待确认记录.png',
     assertions: [
       {
         name: 'todo certificate edit keeps editable info materials note and submit actions',
@@ -1195,7 +1195,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/certificate-submit/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜修改已提交｜培训证书.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜修改已提交｜培训证书.png',
     assertions: [
       {
         name: 'todo certificate submit keeps submitted verification modules and todo actions',
@@ -1209,7 +1209,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/certificate-archive-success/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜入档成功｜培训证书.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜入档成功｜培训证书.png',
     assertions: [
       {
         name: 'todo certificate archive success keeps confirmation record and next actions',
@@ -1223,7 +1223,7 @@ const checks = [
   },
   {
     file: 'src/pages/todo/certificate-removed/index.vue',
-    target: '效果图/已实现/教师手机端/0待办/教师端手机｜待办｜已移出待确认页.png',
+    target: '效果图/教师手机端/0待办/教师端手机｜待办｜已移出待确认页.png',
     assertions: [
       {
         name: 'todo certificate removed keeps removed record explanation and todo actions',
@@ -1255,7 +1255,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/category/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/分类管理页面.png',
+    target: '效果图/教师手机端/1档案/分类管理页面.png',
     assertions: [
       {
         name: 'archive category keeps summary metrics focus records and footer action',
@@ -1273,7 +1273,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/basic-info-detail/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/基本信息/基本信息档案详情.png',
+    target: '效果图/教师手机端/1档案/基本信息/基本信息档案详情.png',
     assertions: [
       {
         name: 'archive basic info detail keeps profile source materials and correction actions',
@@ -1305,7 +1305,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/draft-list/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/成长档案-档案草稿.png',
+    target: '效果图/教师手机端/1档案/成长档案-档案草稿.png',
     assertions: [
       {
         name: 'archive draft list keeps draft pending records and archive search fallback',
@@ -1333,7 +1333,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/correction/submitted/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正申请已提交.png',
     assertions: [
       {
         name: 'archive correction submitted keeps submitted result record progress and actions',
@@ -1347,7 +1347,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/correction/progress/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜更正进度｜待核验.png',
     assertions: [
       {
         name: 'archive correction progress keeps summary info timeline and result action',
@@ -1361,7 +1361,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/correction/result/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜职称聘用更正结果.png',
     assertions: [
       {
         name: 'archive correction result keeps result status archive info notice and actions',
@@ -1375,7 +1375,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/correction/supplement/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png',
+    target: '效果图/教师手机端/1档案/职称聘用/教师端手机｜档案｜补充材料填写.png',
     assertions: [
       {
         name: 'archive correction supplement keeps summary explanation materials and submit actions',
@@ -1389,7 +1389,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/record-detail/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/个人成长记录.png',
+    target: '效果图/教师手机端/1档案/个人成长记录.png',
     assertions: [
       {
         name: 'archive record detail keeps summary info source materials and correction actions',
@@ -1403,7 +1403,7 @@ const checks = [
   },
   {
     file: 'src/pages/archive/development-plan-edit/index.vue',
-    target: '效果图/已实现/教师手机端/1档案/发展计划编辑.png',
+    target: '效果图/教师手机端/1档案/发展计划编辑.png',
     assertions: [
       {
         name: 'archive development plan edit keeps goal action evidence and submit actions',
@@ -1417,7 +1417,7 @@ const checks = [
   },
   {
     file: 'src/pages/assistant/archive-supplement/index.vue',
-    target: '效果图/已实现/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png',
+    target: '效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案.png',
     assertions: [
       {
         name: 'assistant archive supplement keeps assistant shell guidance fields and submit action',
@@ -1431,7 +1431,7 @@ const checks = [
   },
   {
     file: 'src/pages/assistant/archive-supplement-submitted/index.vue',
-    target: '效果图/已实现/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png',
+    target: '效果图/教师手机端/4AI助手/教师端手机｜AI助手｜补充档案已提交.png',
     assertions: [
       {
         name: 'assistant archive supplement submitted keeps result status and next actions',
@@ -1445,7 +1445,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/ability-profile/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜我的能力画像.png',
     assertions: [
       {
         name: 'profile ability profile keeps score dimensions recommendations and comparison links',
@@ -1459,7 +1459,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/room-entry-state/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png',
+    target: '效果图/教师手机端/2活动/活动首页/教师端手机｜活动｜活动首页｜教研室入口状态.png',
     assertions: [
       {
         name: 'activity room entry state keeps activity shell teacher card growth and recent modules',
@@ -1473,7 +1473,7 @@ const checks = [
   },
   {
     file: 'src/pages/activity/enterprise-plan-edit/index.vue',
-    target: '效果图/已实现/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png',
+    target: '效果图/教师手机端/2活动/3企业实践/教师端手机｜活动｜企业实践｜实践计划退回修改.png',
     assertions: [
       {
         name: 'enterprise plan edit keeps returned plan reason form ai result and resubmit actions',
@@ -1487,7 +1487,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/ability-profile/records/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜画像用到的记录.png',
     assertions: [
       {
         name: 'profile ability records keeps referenced records and archive detail links',
@@ -1501,7 +1501,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/development-report/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜个人发展报告.png',
     assertions: [
       {
         name: 'profile development report keeps report summary evidence actions and comparison links',
@@ -1515,7 +1515,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/target-position/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜目标岗位对照.png',
     assertions: [
       {
         name: 'profile target position keeps target match satisfied gaps and evidence actions',
@@ -1529,7 +1529,7 @@ const checks = [
   },
   {
     file: 'src/pages/profile/tenure-requirement/index.vue',
-    target: '效果图/已实现/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png',
+    target: '效果图/教师手机端/3我的/教师端手机｜我的｜聘期要求对照.png',
     assertions: [
       {
         name: 'profile tenure requirement keeps tenure progress evidence missing and action rows',

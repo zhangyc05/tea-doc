@@ -290,11 +290,13 @@ const checks = [
     assertions: [
       {
         name: 'todo all filters update local active filter',
-        test: source => source.includes('const activeFilterIndex = ref(0)') && /@tap="selectFilter\(index\)"/.test(source),
+        test: source => source.includes('const activeFilterIndex = ref(0)')
+          && /<wd-tabs v-model="activeFilterIndex"/.test(source),
       },
       {
         name: 'todo all filter active class follows local state',
-        test: source => /:class="\{ 'filter-pill--active': index === activeFilterIndex \}"/.test(source),
+        test: source => /<wd-tab\s+[\s\S]*v-for="\(\s*filter,\s*index\s*\) in filters"[\s\S]*:name="index"/.test(source)
+          && source.includes('.filter-row :deep(.wd-tabs__nav-item.is-active)'),
       },
     ],
   },
@@ -325,7 +327,8 @@ const checks = [
     assertions: [
       {
         name: 'virtual-research teacher archive filters use local active state',
-        test: source => source.includes('const activeFilterIndex = ref(0)') && /@tap="selectFilter\(index\)"/.test(source),
+        test: source => source.includes('const activeFilterIndex = ref(0)')
+          && /<wd-tabs v-model="activeFilterIndex"/.test(source),
       },
       {
         name: 'virtual-research teacher archive filter button gives feedback',
@@ -746,11 +749,15 @@ const checks = [
     assertions: [
       {
         name: 'archive record query filters are local state controls',
-        test: source => /const selectedFilter = ref/.test(source) && /@tap="selectFilter\(filter\)"/.test(source),
+        test: source => /const selectedFilterIndex = ref\(0\)/.test(source)
+          && /const selectedFilter = computed/.test(source)
+          && /<wd-tabs v-model="selectedFilterIndex"/.test(source),
       },
       {
         name: 'archive record query clear resets keyword and filter',
-        test: source => /@tap="clearQuery"/.test(source) && source.includes("queryText.value = ''") && source.includes('selectedFilter.value = filters[0]'),
+        test: source => /@tap="clearQuery"/.test(source)
+          && source.includes("queryText.value = ''")
+          && source.includes('selectedFilterIndex.value = 0'),
       },
       {
         name: 'archive record query records navigate to detail',
@@ -767,7 +774,8 @@ const checks = [
       },
       {
         name: 'archive record list status chips update local filter state',
-        test: source => /const selectedStatus = ref/.test(source) && /@tap="selectStatus\(status.key\)"/.test(source),
+        test: source => /const selectedStatus = ref/.test(source)
+          && /<wd-tabs v-model="selectedStatus"/.test(source),
       },
       {
         name: 'archive record list records navigate to detail',
@@ -852,7 +860,8 @@ const checks = [
     assertions: [
       {
         name: 'archive correction apply reason chips update local state',
-        test: source => /const selectedReason = ref/.test(source) && /@tap="selectReason\(reason\)"/.test(source),
+        test: source => /const selectedReason = ref/.test(source)
+          && /<wd-radio-group v-model="selectedReason"/.test(source),
       },
       {
         name: 'archive correction apply submit creates local correction and opens submitted page',
@@ -1299,7 +1308,9 @@ const checks = [
     assertions: [
       {
         name: 'enterprise list filters update local enterprise state',
-        test: source => /@tap="selectFilter\(item\)"/.test(source) && source.includes('setEnterpriseFilter(filter)'),
+        test: source => /<wd-tabs v-model="selectedFilter"/.test(source)
+          && /set:\s*\(value: EnterpriseFilter\) => selectFilter\(value\)/.test(source)
+          && source.includes('setEnterpriseFilter(filter)'),
       },
       {
         name: 'enterprise list record actions enter log supplement or archive detail',
@@ -1341,7 +1352,9 @@ const checks = [
     assertions: [
       {
         name: 'enterprise overview filters update local enterprise state',
-        test: source => /@tap="selectFilter\(item\)"/.test(source) && source.includes('setEnterpriseFilter(filter)'),
+        test: source => /<wd-tabs v-model="selectedFilter"/.test(source)
+          && /set:\s*\(value: EnterpriseFilter\) => selectFilter\(value\)/.test(source)
+          && source.includes('setEnterpriseFilter(filter)'),
       },
       {
         name: 'enterprise overview record actions enter log supplement or archive detail',

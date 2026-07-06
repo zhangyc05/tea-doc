@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
-	import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+	import { AdminIcon, AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 	import { DetailSheet, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -78,12 +78,9 @@
 		{ label: '已确认', value: 'confirmed' },
 		{ label: '待确认', value: 'pending' },
 	]
-	const pageSizeOptions = [
-		{ label: '10 条/页', value: '10' },
-	]
-
 	// 当前选中的要求对象
 	const selectedGroup = ref('associate-professor')
+	const currentPage = ref(1)
 
 	const filteredMappings = computed(() => getRequirementMappingsForGroup(selectedGroup.value))
 	const selectedMappingId = ref(filteredMappings.value[0]?.id ?? '')
@@ -334,22 +331,10 @@
 					</div>
 
 					<div class="table-footer">
-						<span>共 {{ filteredMappings.length }} 条</span>
-						<div class="pager-actions" aria-label="分页">
-							<button class="pager-button" type="button" disabled aria-label="上一页">
-								<AdminIcon name="arrow-left" />
-							</button>
-							<span class="pager-button active" aria-current="page">1</span>
-							<button class="pager-button" type="button" disabled aria-label="下一页">
-								<AdminIcon name="arrow-right" />
-							</button>
-						</div>
-						<AdminSelect
-							class="page-size-select"
-							model-value="10"
-							:options="pageSizeOptions"
-							:clearable="false"
-							disabled
+						<AdminPagination
+							v-model:current-page="currentPage"
+							:page-size="10"
+							:total="filteredMappings.length"
 						/>
 					</div>
 				</div>
@@ -913,48 +898,6 @@
 		color: #7d899b;
 		font-size: 13px;
 		font-weight: 700;
-	}
-
-	.pager-actions {
-		display: flex;
-		align-items: center;
-		gap: var(--space-admin-sm);
-	}
-
-	.pager-button {
-		display: inline-flex;
-		width: 36px;
-		height: 36px;
-		align-items: center;
-		justify-content: center;
-		border: 1px solid var(--color-admin-border);
-		border-radius: var(--radius-sm);
-		background: #fff;
-		color: var(--color-admin-text-subtle);
-		font-family: inherit;
-		font-size: 14px;
-		font-weight: 900;
-	}
-
-	.pager-button.active {
-		border-color: var(--color-admin-primary);
-		background: var(--color-admin-primary);
-		color: #fff;
-		box-shadow: var(--shadow-admin-primary-action);
-	}
-
-	.pager-button:disabled {
-		cursor: not-allowed;
-		opacity: 0.58;
-	}
-
-	.pager-button :deep(svg) {
-		width: 16px;
-		height: 16px;
-	}
-
-	.page-size-select {
-		width: 110px;
 	}
 
 	/* 右侧：要求项详情 */

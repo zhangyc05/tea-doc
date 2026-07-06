@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+import { AdminIcon, AdminInput, AdminPagination, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import { CompactFilterBar, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -83,7 +83,7 @@ const filteredRecords = computed(() => {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card stat-record">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="document" /></div>
             <div>
               <div class="stat-label">培训记录数</div>
               <div class="stat-value">{{ stats.totalRecords }} <span>条</span></div>
@@ -91,7 +91,7 @@ const filteredRecords = computed(() => {
             </div>
           </div>
           <div class="stat-card stat-teacher">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="user" /></div>
             <div>
               <div class="stat-label">覆盖教师</div>
               <div class="stat-value">{{ stats.totalTeachers }} <span>人</span></div>
@@ -99,7 +99,7 @@ const filteredRecords = computed(() => {
             </div>
           </div>
           <div class="stat-card stat-hours">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="clock" /></div>
             <div>
               <div class="stat-label">累计学时</div>
               <div class="stat-value">{{ stats.totalHours.toLocaleString() }} <span>学时</span></div>
@@ -107,7 +107,7 @@ const filteredRecords = computed(() => {
             </div>
           </div>
           <div class="stat-card stat-material">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="files" /></div>
             <div>
               <div class="stat-label">材料待完善</div>
               <div class="stat-value">{{ stats.materialIncomplete }} <span>条</span></div>
@@ -205,14 +205,14 @@ const filteredRecords = computed(() => {
               <h3 class="sidebar-title">材料完善提醒</h3>
               <div class="reminders-list">
 	                <div class="reminder-item">
-	                  <span class="reminder-icon"></span>
+	                  <span class="reminder-icon"><AdminIcon name="memo" /></span>
                   <div class="reminder-content">
                     <div class="reminder-title">待总结</div>
                     <div class="reminder-desc">12 位教师需要提交培训总结</div>
                   </div>
                 </div>
 	                <div class="reminder-item">
-	                  <span class="reminder-icon warning"></span>
+	                  <span class="reminder-icon warning"><AdminIcon name="warning" /></span>
                   <div class="reminder-content">
                     <div class="reminder-title">证书待补</div>
                     <div class="reminder-desc">18 位教师需要补充培训证书</div>
@@ -309,41 +309,30 @@ const filteredRecords = computed(() => {
   height: 62px;
   border-radius: 50%;
   background: #eaf2ff;
-  position: relative;
-}
-
-.stat-icon::after {
-  content: '';
-  position: absolute;
-  inset: 18px 21px;
-  border-radius: 4px;
-  background: var(--color-admin-primary-hover);
+  color: var(--color-admin-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-teacher .stat-icon {
   background: #e6f8ef;
-}
-
-.stat-teacher .stat-icon::after {
-  background: #13b86a;
-  border-radius: 50%;
+  color: #13b86a;
 }
 
 .stat-hours .stat-icon {
   background: #f0e9ff;
-}
-
-.stat-hours .stat-icon::after {
-  background: #7b4cf4;
-  border-radius: 50%;
+  color: #7b4cf4;
 }
 
 .stat-material .stat-icon {
   background: #fff0e3;
+  color: #f97316;
 }
 
-.stat-material .stat-icon::after {
-  background: #f97316;
+.stat-icon :deep(svg) {
+  width: 28px;
+  height: 28px;
 }
 
 .stat-value {
@@ -579,19 +568,15 @@ const filteredRecords = computed(() => {
   background: #fff0e3;
   border-radius: 50%;
   flex-shrink: 0;
-  position: relative;
+  color: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.reminder-icon::after {
-  content: '';
-  position: absolute;
-  inset: 18px 21px;
-  border-radius: 4px;
-  background: #f97316;
-}
-
-.reminder-icon.warning::after {
-  border-radius: var(--radius-sm);
+.reminder-icon :deep(svg) {
+  width: 28px;
+  height: 28px;
 }
 
 .reminder-content {
