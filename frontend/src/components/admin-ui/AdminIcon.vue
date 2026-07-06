@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import type { Component } from 'vue'
 import {
   AlarmClock,
+  ArrowLeft,
+  ArrowRight,
   ArrowDown,
   ArrowUp,
   Avatar,
@@ -14,6 +16,7 @@ import {
   Collection,
   CopyDocument,
   DataAnalysis,
+  Delete,
   Document,
   EditPen,
   Files,
@@ -34,6 +37,7 @@ import {
   Plus,
   RefreshRight,
   School,
+  Search,
   Switch,
   Top,
   TrendCharts,
@@ -46,6 +50,8 @@ import {
 export type AdminIconName =
   | 'alarm-clock'
   | 'archive'
+  | 'arrow-left'
+  | 'arrow-right'
   | 'arrow-down'
   | 'arrow-up'
   | 'avatar'
@@ -57,6 +63,7 @@ export type AdminIconName =
   | 'collection'
   | 'copy-document'
   | 'data-analysis'
+  | 'delete'
   | 'document'
   | 'edit'
   | 'files'
@@ -81,6 +88,7 @@ export type AdminIconName =
   | 'refresh-right'
   | 'report'
   | 'school'
+  | 'search'
   | 'switch'
   | 'top'
   | 'training'
@@ -102,6 +110,8 @@ const props = withDefaults(
 const iconMap: Record<AdminIconName, Component> = {
   'alarm-clock': AlarmClock,
   archive: Folder,
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
   'arrow-down': ArrowDown,
   'arrow-up': ArrowUp,
   avatar: Avatar,
@@ -113,6 +123,7 @@ const iconMap: Record<AdminIconName, Component> = {
   collection: Collection,
   'copy-document': CopyDocument,
   'data-analysis': DataAnalysis,
+  delete: Delete,
   document: Document,
   edit: EditPen,
   files: Files,
@@ -137,6 +148,7 @@ const iconMap: Record<AdminIconName, Component> = {
   'refresh-right': RefreshRight,
   report: DataAnalysis,
   school: School,
+  search: Search,
   switch: Switch,
   top: Top,
   training: Notebook,

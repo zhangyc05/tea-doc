@@ -6,7 +6,12 @@ import {
   confirmExecutionIndicatorChanges,
   confirmBaseTemplateChanges,
   confirmRequirementMapping,
+  cancelPendingExecutionVersion,
   deleteRequirementMapping,
+  addPendingExecutionDimension,
+  deletePendingExecutionAbilityNode,
+  deletePendingExecutionDimension,
+  deletePendingExecutionIndicator,
   deriveNextExecutionVersion,
   discardExecutionIndicatorChanges,
   importPolicySuggestion,
@@ -17,6 +22,7 @@ import {
   rerunFeedbackAnalysis,
   resetAbilityListState,
   saveRequirementMapping,
+  updatePendingExecutionAbilityNode,
   updateBaseTemplateIndicator,
   updateExecutionIndicator,
 } from './abilityListStore'
@@ -144,14 +150,20 @@ describe('ability list business state', () => {
 
     expect(nextVersion.title).toBe('2027 年度教师能力清单执行版')
     expect(nextVersion.status).toBe('pending')
-    expect(getAbilityListState().executionVersion.title).toBe(nextVersion.title)
+    expect(getAbilityListState().pendingExecutionVersion?.title).toBe(nextVersion.title)
+    expect(getAbilityListState().executionVersion.title).toBe('2026 年度教师能力清单执行版')
+    expect(getAbilityListState().pendingExecutionIndicators).toHaveLength(71)
+    expect(getAbilityListState().pendingExecutionAbilityTree).not.toBeNull()
   })
 
-  it('publishes the derived execution version for other pages to read', () => {
+  it('publishes the pending execution version for other pages to read', () => {
     deriveNextExecutionVersion()
     publishExecutionVersion()
 
+    expect(getAbilityListState().pendingExecutionVersion).toBeNull()
+    expect(getAbilityListState().pendingExecutionIndicators).toHaveLength(0)
     expect(getAbilityListState().executionVersion.status).toBe('published')
+    expect(getAbilityListState().executionVersion.title).toBe('2027 年度教师能力清单执行版')
     expect(getAbilityListState().executionVersion.publishedAt).toBe('2026-07-05 19:10')
     expect(getAbilityListState().operationMessage).toBe('2027 年度教师能力清单执行版已确认发布。')
   })
@@ -169,6 +181,59 @@ describe('ability list business state', () => {
     expect(historicalVersion?.publishedAt).toBe('2026-06-08 20:30')
     expect(historicalVersion?.source).toBe('教师能力清单基准模板 V1.0')
     expect(historicalVersion?.operator).toBe('教务处管理员')
+  })
+
+  it('cancels a pending execution version without changing the published version', () => {
+    deriveNextExecutionVersion()
+    deletePendingExecutionIndicator('ability-standard-11')
+    cancelPendingExecutionVersion()
+
+    const state = getAbilityListState()
+    expect(state.pendingExecutionVersion).toBeNull()
+    expect(state.pendingExecutionIndicators).toHaveLength(0)
+    expect(state.pendingExecutionAbilityTree).toBeNull()
+    expect(state.executionVersion.title).toBe('2026 年度教师能力清单执行版')
+    expect(state.executionIndicators.some(indicator => indicator.key === 'ability-standard-11')).toBe(true)
+    expect(state.operationMessage).toBe('已取消待发布执行版，当前执行版保持不变。')
+  })
+
+  it('allows pending execution versions to delete indicators and manage dimensions', () => {
+    deriveNextExecutionVersion()
+
+    const deleted = deletePendingExecutionIndicator('ability-standard-11')
+    const addedDimension = addPendingExecutionDimension({
+      key: 'innovation',
+      label: '创新能力',
+      icon: '',
+      children: [{ key: 'innovation-ai', label: '智能应用' }],
+    })
+    const removedDimension = deletePendingExecutionDimension('innovation')
+    const state = getAbilityListState()
+
+    expect(deleted).toBe(true)
+    expect(addedDimension?.label).toBe('创新能力')
+    expect(removedDimension).toBe(true)
+    expect(state.pendingExecutionIndicators.some(indicator => indicator.key === 'ability-standard-11')).toBe(false)
+    expect(state.pendingExecutionVersion?.indicatorCount).toBe(70)
+    expect(state.executionIndicators).toHaveLength(71)
+    expect(state.pendingExecutionAbilityTree?.some(node => node.key === 'innovation')).toBe(false)
+  })
+
+  it('allows pending execution versions to edit and delete primary or secondary ability nodes', () => {
+    deriveNextExecutionVersion()
+
+    const updatedPrimary = updatePendingExecutionAbilityNode('basic', '基础能力')
+    const updatedSecondary = updatePendingExecutionAbilityNode('basic-duty', '履职表现')
+    const deletedSecondary = deletePendingExecutionAbilityNode('basic-duty')
+    const state = getAbilityListState()
+    const basic = state.pendingExecutionAbilityTree?.find(node => node.key === 'basic')
+
+    expect(updatedPrimary).toBe(true)
+    expect(updatedSecondary).toBe(true)
+    expect(deletedSecondary).toBe(true)
+    expect(basic?.label).toBe('基础能力')
+    expect(basic?.children?.some(child => child.key === 'basic-duty')).toBe(false)
+    expect(state.pendingExecutionIndicators.some(indicator => indicator.abilityKey === 'basic-duty')).toBe(false)
   })
 
   it('moves adopted optimization suggestions into the pending application list', () => {

@@ -503,29 +503,27 @@ function showIncompleteResources() {
 .filter-select {
   width: 100%;
   height: 38px;
-  padding: 0 36px 0 14px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: #1a2944;
-  background: #fff;
-  cursor: pointer;
-  outline: none;
 }
 
 .search-input {
   width: 100%;
-  height: 40px;
-  padding: 0 16px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus {
-  border-color: #1d6df2;
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px #1d6df2 inset;
 }
 
 .resource-create-action {
@@ -551,7 +549,7 @@ function showIncompleteResources() {
   border: 1px solid var(--color-admin-border);
 }
 
-.resource-table th {
+.resource-table :deep(.el-table__header .el-table__cell) {
   padding: 12px 10px;
   text-align: left;
   font-size: 13px;
@@ -563,7 +561,7 @@ function showIncompleteResources() {
   background: var(--color-admin-bg-soft);
 }
 
-.resource-table td {
+.resource-table :deep(.el-table__body .el-table__cell) {
   padding: 12px 10px;
   font-size: 13px;
   line-height: 1.55;
@@ -573,8 +571,7 @@ function showIncompleteResources() {
   vertical-align: middle;
 }
 
-.resource-table th:last-child,
-.resource-table td:last-child {
+.resource-table :deep(.el-table__cell:last-child) {
   border-right: none;
 }
 
@@ -587,47 +584,39 @@ function showIncompleteResources() {
   color: #14213d;
 }
 
-.resource-table th:nth-child(1),
-.resource-table td:nth-child(1) {
+.resource-table :deep(.el-table__cell:nth-child(1)) {
   width: 22%;
 }
 
-.resource-table th:nth-child(2),
-.resource-table td:nth-child(2) {
+.resource-table :deep(.el-table__cell:nth-child(2)) {
   width: 10%;
 }
 
-.resource-table th:nth-child(3),
-.resource-table td:nth-child(3) {
+.resource-table :deep(.el-table__cell:nth-child(3)) {
   width: 12%;
 }
 
-.resource-table th:nth-child(4),
-.resource-table td:nth-child(4) {
+.resource-table :deep(.el-table__cell:nth-child(4)) {
   width: 17%;
 }
 
-.resource-table th:nth-child(5),
-.resource-table td:nth-child(5) {
+.resource-table :deep(.el-table__cell:nth-child(5)) {
   width: 12%;
 }
 
-.resource-table th:nth-child(6),
-.resource-table td:nth-child(6) {
+.resource-table :deep(.el-table__cell:nth-child(6)) {
   width: 9%;
 }
 
-.resource-table th:nth-child(7),
-.resource-table td:nth-child(7) {
+.resource-table :deep(.el-table__cell:nth-child(7)) {
   width: 12%;
 }
 
-.resource-table th:nth-child(8),
-.resource-table td:nth-child(8) {
+.resource-table :deep(.el-table__cell:nth-child(8)) {
   width: 6%;
 }
 
-.resource-table tr:last-child td {
+.resource-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

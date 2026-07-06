@@ -15,12 +15,16 @@ const props = withDefaults(
     defaultExpandedKeys?: string[]
     actionText?: string
     showAction?: boolean
+    showDeleteAction?: boolean
+    showStructureActions?: boolean
   }>(),
   {
     basisColumnTitle: '建议依据',
     defaultExpandedKeys: () => [],
     actionText: '编辑',
     showAction: true,
+    showDeleteAction: false,
+    showStructureActions: false,
   },
 )
 
@@ -28,6 +32,10 @@ const emit = defineEmits<{
   (event: 'select-ability', key: string): void
   (event: 'row-click', row: AbilityIndicator): void
   (event: 'edit-indicator', row: AbilityIndicator): void
+  (event: 'delete-indicator', row: AbilityIndicator): void
+  (event: 'add-dimension'): void
+  (event: 'edit-node', node: AbilityTreeNode): void
+  (event: 'delete-node', node: AbilityTreeNode): void
 }>()
 
 function handleSelectAbility(key: string) {
@@ -41,6 +49,10 @@ function handleRowClick(row: AbilityIndicator) {
 function handleEditIndicator(row: AbilityIndicator) {
   emit('edit-indicator', row)
 }
+
+function handleDeleteIndicator(row: AbilityIndicator) {
+  emit('delete-indicator', row)
+}
 </script>
 
 <template>
@@ -49,7 +61,11 @@ function handleEditIndicator(row: AbilityIndicator) {
       :nodes="nodes"
       :selected-key="selectedKey"
       :default-expanded-keys="defaultExpandedKeys"
+      :show-actions="showStructureActions"
       @select="handleSelectAbility"
+      @add-dimension="emit('add-dimension')"
+      @edit-node="node => emit('edit-node', node)"
+      @delete-node="node => emit('delete-node', node)"
     />
 
     <AbilityIndicatorTable
@@ -60,8 +76,10 @@ function handleEditIndicator(row: AbilityIndicator) {
       :basis-column-title="basisColumnTitle"
       :action-text="actionText"
       :show-action="showAction"
+      :show-delete-action="showDeleteAction"
       @row-click="handleRowClick"
       @edit="handleEditIndicator"
+      @delete="handleDeleteIndicator"
     />
   </div>
 </template>

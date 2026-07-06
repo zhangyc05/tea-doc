@@ -4,24 +4,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { AdminInput, AdminSelect } from '@/components/admin-ui'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import queryHeroArt from '@/assets/admin/archive-query-assets/archive-query-hero-art.png'
-import queryHeroEmblem from '@/assets/admin/archive-query-assets/archive-query-hero-emblem.svg'
 import archiveQueryEmpty from '@/assets/admin/archive-query-assets/archive-query-empty.svg'
-import avatarFemale01 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-01.svg'
-import avatarFemale02 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-02.svg'
-import avatarFemale03 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-female-03.svg'
-import avatarMale01 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-01.svg'
-import avatarMale02 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-02.svg'
-import avatarMale03 from '@/assets/admin/archive-query-assets/avatars/avatar-teacher-male-03.svg'
 import iconActionReset from '@/assets/admin/archive-query-assets/icons/icon-action-reset.svg'
 import iconActionSearch from '@/assets/admin/archive-query-assets/icons/icon-action-search.svg'
 import iconFilterCollege from '@/assets/admin/archive-query-assets/icons/icon-filter-college.svg'
 import iconFilterTitle from '@/assets/admin/archive-query-assets/icons/icon-filter-title.svg'
-import iconFilterUpdate from '@/assets/admin/archive-query-assets/icons/icon-filter-update.svg'
-import iconStatContentComplete from '@/assets/admin/archive-query-assets/icons/icon-stat-content-complete.svg'
-import iconStatCorrection from '@/assets/admin/archive-query-assets/icons/icon-stat-correction.svg'
-import iconStatQueryableTeacher from '@/assets/admin/archive-query-assets/icons/icon-stat-queryable-teacher.svg'
-import iconStatRecentUpdate from '@/assets/admin/archive-query-assets/icons/icon-stat-recent-update.svg'
 import iconViewGrid from '@/assets/admin/archive-query-assets/icons/icon-view-grid.svg'
 import iconViewList from '@/assets/admin/archive-query-assets/icons/icon-view-list.svg'
 import { getArchiveQueryMock } from '@/services/mock/archive'
@@ -29,68 +16,49 @@ import { getArchiveQueryMock } from '@/services/mock/archive'
 const router = useRouter()
 const route = useRoute()
 
-const { stats, collegeOptions, titleOptions, updateOptions, teacherCards } = getArchiveQueryMock()
+const { stats, collegeOptions, titleOptions, teacherCards } = getArchiveQueryMock()
 
 // 筛选条件
 const searchKeyword = ref('')
 const submittedSearchKeyword = ref('')
 const collegeFilter = ref('全部学院')
 const titleFilter = ref('全部职称')
-const updateFilter = ref('全部')
 
 // 视图切换
-const viewMode = ref('card')
+const viewMode = ref<'card' | 'list'>('card')
 
-const heroStatCards = computed(() => [
+const archiveSummaryStats = computed(() => [
   {
     key: 'total',
-    tone: 'primary',
-    iconSrc: iconStatQueryableTeacher,
     value: stats.totalTeachers,
     label: '可查询教师',
     desc: '已建立成长档案',
   },
   {
     key: 'recent',
-    tone: 'success',
-    iconSrc: iconStatRecentUpdate,
     value: stats.recentUpdate,
     label: '近期有更新',
     desc: '近30日档案有新增',
   },
   {
     key: 'complete',
-    tone: 'warning',
-    iconSrc: iconStatContentComplete,
     value: stats.needsImprovement,
     label: '内容待完善',
     desc: '存在待补充内容',
   },
   {
     key: 'correction',
-    tone: 'info',
-    iconSrc: iconStatCorrection,
     value: stats.hasCorrection,
     label: '有更正记录',
     desc: '可查看更正前后',
   },
 ])
 
-const teacherAvatarMap: Record<string, string> = {
-  lin: avatarFemale01,
-  chen: avatarMale01,
-  wang: avatarMale02,
-  liu: avatarFemale02,
-  zhao: avatarFemale03,
-  zhou: avatarMale03,
-}
-
 function resetFilters() {
   searchKeyword.value = ''
   submittedSearchKeyword.value = ''
   collegeFilter.value = '全部学院'
   titleFilter.value = '全部职称'
-  updateFilter.value = '全部'
 }
 
 const filteredTeacherCards = computed(() => {
@@ -103,10 +71,7 @@ const filteredTeacherCards = computed(() => {
         .includes(keyword)
     const matchesCollege = collegeFilter.value === '全部学院' || teacher.college === collegeFilter.value
     const matchesTitle = titleFilter.value === '全部职称' || teacher.title === titleFilter.value
-    const matchesUpdate = updateFilter.value === '全部'
-      || teacher.tags.includes(updateFilter.value)
-      || teacher.description.includes(updateFilter.value)
-    return matchesKeyword && matchesCollege && matchesTitle && matchesUpdate
+    return matchesKeyword && matchesCollege && matchesTitle
   })
 })
 
@@ -118,67 +83,20 @@ function viewTeacherDetail(teacherId: string) {
   router.push(`/admin/archive/teacher/${teacherId}`)
 }
 
-function switchViewMode(mode: string) {
+function switchViewMode(mode: 'card' | 'list') {
   viewMode.value = mode
 }
 
-function getTeacherAvatar(teacherId: string) {
-  return teacherAvatarMap[teacherId] ?? avatarMale02
+function getTeacherInitial(name: string) {
+  return name.trim().charAt(0) || '教'
 }
 </script>
 
 <template>
   <AdminLayout active-key="archive-query">
     <div class="archive-query-page">
-      <!-- Hero 区域 -->
-      <section class="query-hero admin-hero">
-        <div
-          class="hero-art"
-          :style="{ backgroundImage: `url(${queryHeroArt})` }"
-          aria-hidden="true"
-        />
-
-        <div class="hero-content">
-          <div class="hero-emblem" aria-hidden="true">
-            <div class="hero-icon">
-              <img class="hero-emblem-img" :src="queryHeroEmblem" alt="" />
-            </div>
-          </div>
-
-          <div class="hero-main">
-            <div class="hero-title-group">
-              <div class="hero-title-row">
-                <h1>档案查阅</h1>
-              </div>
-              <p class="hero-subtitle">
-                查找教师并查看其成长档案摘要，点击卡片可进入完整档案内容。
-              </p>
-            </div>
-
-            <!-- Hero 统计卡区域 -->
-            <div class="hero-stats-cards">
-              <div
-                v-for="card in heroStatCards"
-                :key="card.key"
-                class="hero-stat-card"
-                :class="card.tone"
-              >
-                <div class="hero-stat-icon">
-                  <img class="hero-stat-img" :src="card.iconSrc" alt="" />
-                </div>
-                <div>
-                  <div class="hero-stat-number">{{ card.value }}</div>
-                  <div class="hero-stat-label">{{ card.label }}</div>
-                  <div class="hero-stat-desc">{{ card.desc }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 筛选搜索区 -->
-      <section class="filter-section">
+      <!-- 查询优先区 -->
+      <section class="query-search-panel">
         <div class="filter-content">
           <div class="filter-row">
             <div class="search-area">
@@ -218,23 +136,23 @@ function getTeacherAvatar(teacherId: string) {
                 />
               </div>
 
-              <div class="filter-group">
-                <label class="filter-label">
-                  <img class="filter-icon" :src="iconFilterUpdate" alt="" />
-                  更新情况
-                </label>
-                <AdminSelect
-                  v-model="updateFilter"
-                  class="filter-select"
-                  :options="updateOptions.map((value) => ({ label: value, value }))"
-                />
-              </div>
-
               <Button variant="outline" @click="resetFilters">
                 <img class="action-icon" :src="iconActionReset" alt="" />
                 重置
               </Button>
             </div>
+          </div>
+
+          <div class="archive-summary-strip">
+            <span
+              v-for="item in archiveSummaryStats"
+              :key="item.key"
+              class="summary-strip-item"
+            >
+              <strong>{{ item.value }}</strong>
+              <span>{{ item.label }}</span>
+              <em>{{ item.desc }}</em>
+            </span>
           </div>
         </div>
       </section>
@@ -266,13 +184,12 @@ function getTeacherAvatar(teacherId: string) {
           </div>
         </div>
 
-        <!-- 教师卡片网格 -->
         <div v-if="filteredTeacherCards.length === 0" class="archive-query-empty">
           <img :src="archiveQueryEmpty" alt="" />
           <h3>暂无匹配教师档案</h3>
           <p>请调整搜索关键词、学院、职称或更新条件后重试。</p>
         </div>
-        <div v-else class="teachers-grid">
+        <div v-else-if="viewMode === 'card'" class="teachers-grid">
           <div
             v-for="teacher in filteredTeacherCards"
             :key="teacher.id"
@@ -280,7 +197,7 @@ function getTeacherAvatar(teacherId: string) {
           >
             <div class="card-header">
               <div class="teacher-avatar">
-                <img class="avatar-img" :src="getTeacherAvatar(teacher.id)" alt="" />
+                <span class="avatar-initial">{{ getTeacherInitial(teacher.name) }}</span>
               </div>
               <div class="teacher-info">
                 <h3 class="teacher-name">{{ teacher.name }}</h3>
@@ -310,6 +227,41 @@ function getTeacherAvatar(teacherId: string) {
             </div>
           </div>
         </div>
+        <div v-else class="teachers-list">
+          <div
+            v-for="teacher in filteredTeacherCards"
+            :key="teacher.id"
+            class="teacher-row"
+          >
+            <div class="card-header row-header">
+              <div class="teacher-avatar">
+                <span class="avatar-initial">{{ getTeacherInitial(teacher.name) }}</span>
+              </div>
+              <div class="teacher-info">
+                <h3 class="teacher-name">{{ teacher.name }}</h3>
+                <p class="teacher-meta">{{ teacher.college }} | {{ teacher.title }}</p>
+                <p class="teacher-cycle">{{ teacher.cycle }} | {{ teacher.year }}</p>
+              </div>
+            </div>
+
+            <p class="teacher-description row-description">{{ teacher.description }}</p>
+
+            <div class="teacher-tags row-tags">
+              <span
+                v-for="tag in teacher.tags"
+                :key="tag"
+                class="tag"
+              >
+                {{ tag }}
+              </span>
+            </div>
+
+            <span class="update-time row-update">最近更新：{{ teacher.lastUpdate }}</span>
+            <Button class="archive-detail-action" size="sm" @click="viewTeacherDetail(teacher.id)">
+              查看成长档案
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   </AdminLayout>
@@ -321,236 +273,12 @@ function getTeacherAvatar(teacherId: string) {
   width: 100%;
   min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
   flex-direction: column;
-  gap: clamp(14px, 1vw, 18px);
+  gap: var(--space-admin-md);
   background: var(--color-page-bg);
 }
 
-/* Hero 区域样式 */
-.query-hero {
-  position: relative;
-  overflow: hidden;
-  min-height: clamp(220px, 14.5vw, 260px);
-}
-
-.query-hero::before {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.99) 34%,
-    rgba(255, 255, 255, 0.94) 48%,
-    rgba(255, 255, 255, 0.72) 62%,
-    rgba(255, 255, 255, 0.28) 82%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  content: '';
-}
-
-.query-hero::after {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: 1;
-  width: min(260px, 22%);
-  height: 78px;
-  pointer-events: none;
-  background-image: radial-gradient(#b7d4ff 1px, transparent 1px);
-  background-size: 12px 12px;
-  opacity: 0.08;
-  content: '';
-}
-
-.hero-art {
-  position: absolute;
-  top: clamp(10px, 0.8vw, 16px);
-  right: clamp(18px, 1.5vw, 30px);
-  bottom: clamp(10px, 0.8vw, 16px);
-  z-index: 0;
-  width: min(48%, 720px);
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: contain;
-  opacity: 0.88;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  min-height: clamp(220px, 14.5vw, 260px);
-  max-width: min(1100px, 75%);
-  align-items: center;
-  gap: clamp(18px, 1.2vw, 26px);
-  padding: 0 0 0 clamp(24px, 1.75vw, 34px);
-}
-
-.hero-emblem {
-  flex: none;
-  transform: translateY(-34px);
-}
-
-.hero-icon {
-  display: flex;
-  width: clamp(60px, 3.8vw, 68px);
-  height: clamp(60px, 3.8vw, 68px);
-  align-items: center;
-  justify-content: center;
-  border: clamp(7px, 0.5vw, 9px) solid rgba(255, 255, 255, 0.92);
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-  box-shadow: 0 14px 28px rgba(11, 99, 246, 0.24);
-}
-
-.hero-emblem-img {
-  width: clamp(28px, 1.8vw, 34px);
-  height: clamp(28px, 1.8vw, 34px);
-  object-fit: contain;
-}
-
-.hero-main {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-title-group {
-  min-width: 0;
-}
-
-.hero-title-row {
-  display: flex;
-  align-items: center;
-  gap: clamp(10px, 0.72vw, 14px);
-  margin-bottom: 6px;
-}
-
-.hero-title-row h1 {
-  margin: 0;
-  color: var(--color-text-primary);
-  font-size: clamp(22px, 1.45vw, 28px);
-  font-weight: 950;
-  letter-spacing: -0.55px;
-  line-height: 1.16;
-}
-
-.hero-subtitle {
-  max-width: 560px;
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: clamp(12px, 0.75vw, 14px);
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-/* Hero 统计卡区域 */
-.hero-stats-cards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(10px, 0.7vw, 12px);
-  margin-top: clamp(14px, 0.95vw, 18px);
-  width: 100%;
-}
-
-.hero-stat-card {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(10px, 0.7vw, 12px);
-  padding: clamp(14px, 0.9vw, 18px);
-  background: white;
-  border-radius: clamp(8px, 0.55vw, 10px);
-  border: 1px solid var(--color-card-border);
-  min-width: 0;
-  min-height: clamp(90px, 5.8vw, 110px);
-  transition: all 0.16s ease;
-}
-
-.hero-stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-}
-
-.hero-stat-card.primary {
-  border-top: 3px solid var(--color-primary);
-}
-
-.hero-stat-card.success {
-  border-top: 3px solid #22c55e;
-}
-
-.hero-stat-card.warning {
-  border-top: 3px solid #f59e0b;
-}
-
-.hero-stat-card.info {
-  border-top: 3px solid #3b82f6;
-}
-
-.hero-stat-icon {
-  flex-shrink: 0;
-  display: flex;
-  width: clamp(36px, 2.3vw, 48px);
-  height: clamp(36px, 2.3vw, 48px);
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-.hero-stat-card.primary .hero-stat-icon {
-  background: rgba(47, 191, 155, 0.1);
-  color: var(--color-primary);
-}
-
-.hero-stat-card.success .hero-stat-icon {
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
-}
-
-.hero-stat-card.warning .hero-stat-icon {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-}
-
-.hero-stat-card.info .hero-stat-icon {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-}
-
-.hero-stat-img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
-}
-
-.hero-stat-number {
-  font-size: clamp(20px, 1.3vw, 28px);
-  font-weight: 700;
-  color: var(--color-text-primary);
-  line-height: 1;
-}
-
-.hero-stat-label {
-  font-size: clamp(10px, 0.65vw, 12px);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-.hero-stat-desc {
-  font-size: clamp(10px, 0.65vw, 11px);
-  color: var(--color-text-hint);
-  line-height: 1.3;
-  display: none;
-}
-
-/* 筛选搜索区 */
-.filter-section {
+/* 查询搜索区 */
+.query-search-panel {
   width: 100%;
   max-width: var(--admin-content-max-width);
   margin: 0 auto;
@@ -560,42 +288,37 @@ function getTeacherAvatar(teacherId: string) {
 .filter-content {
   width: 100%;
   background: white;
-  border-radius: clamp(10px, 0.7vw, 12px);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
-  padding: clamp(16px, 1.1vw, 20px);
+  padding: var(--space-admin-lg);
 }
 
 .filter-row {
-  display: flex;
-  gap: var(--space-admin-lg);
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.35fr) repeat(2, minmax(140px, 0.55fr)) auto;
+  gap: var(--space-admin-md);
+  align-items: center;
 }
 
 .search-area {
   display: flex;
   gap: var(--space-admin-xs);
-  flex-shrink: 0;
-  width: clamp(360px, 28vw, 480px);
+  min-width: 0;
 }
 
 .search-input {
   flex: 1;
-  padding: 10px 16px;
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-admin-panel);
-  font-size: 14px;
-  outline: none;
-  transition: border 0.16s ease;
-}
-
-.search-input:focus {
-  border-color: var(--color-primary);
+  min-width: 0;
 }
 
 .search-action {
-  height: auto;
+  height: 40px;
   padding: 10px 20px;
   white-space: nowrap;
+}
+
+.search-action .action-icon {
+  filter: brightness(0) invert(1);
 }
 
 .action-icon,
@@ -608,11 +331,7 @@ function getTeacherAvatar(teacherId: string) {
 }
 
 .filter-controls {
-  display: flex;
-  gap: var(--space-admin-lg);
-  align-items: center;
-  flex: 1;
-  margin-left: auto;
+  display: contents;
 }
 
 .filter-group {
@@ -631,15 +350,45 @@ function getTeacherAvatar(teacherId: string) {
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  background: white;
-  color: var(--color-text-primary);
-  outline: none;
-  cursor: pointer;
   min-width: 140px;
+}
+
+.archive-summary-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-admin-sm);
+  margin-top: var(--space-admin-md);
+  padding-top: var(--space-admin-md);
+  border-top: 1px solid var(--color-card-border);
+}
+
+.summary-strip-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.summary-strip-item + .summary-strip-item::before {
+  width: 1px;
+  height: 12px;
+  margin-right: var(--space-admin-sm);
+  background: var(--color-card-border);
+  content: '';
+}
+
+.summary-strip-item strong {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.summary-strip-item em {
+  color: var(--color-text-hint);
+  font-style: normal;
 }
 
 /* 教师档案摘要区域 */
@@ -703,11 +452,21 @@ function getTeacherAvatar(teacherId: string) {
   border-color: var(--color-primary);
 }
 
+.view-btn.active .view-icon {
+  filter: brightness(0) invert(1);
+}
+
 /* 教师卡片网格 */
 .teachers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-admin-xl);
+}
+
+.teachers-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-admin-md);
 }
 
 .archive-query-empty {
@@ -754,22 +513,51 @@ function getTeacherAvatar(teacherId: string) {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.teacher-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.95fr) minmax(280px, 1.4fr) minmax(220px, 0.9fr) auto auto;
+  gap: var(--space-admin-lg);
+  align-items: center;
+  padding: var(--space-admin-lg) var(--space-admin-xl);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  transition: all 0.16s ease;
+}
+
+.teacher-row:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 .card-header {
   display: flex;
   gap: var(--space-admin-md);
   align-items: center;
 }
 
-.teacher-avatar {
-  flex-shrink: 0;
+.row-header {
+  min-width: 0;
 }
 
-.avatar-img {
-  width: 56px;
-  height: 56px;
+.teacher-avatar {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #cfe1ff;
   border-radius: 50%;
-  object-fit: contain;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.16);
+  background: linear-gradient(180deg, #f7fbff 0%, #eaf3ff 100%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.avatar-initial {
+  color: #1d4ed8;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .teacher-info {
@@ -812,10 +600,19 @@ function getTeacherAvatar(teacherId: string) {
   overflow: hidden;
 }
 
+.row-description {
+  margin: 0;
+  -webkit-line-clamp: 2;
+}
+
 .teacher-tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-admin-xs);
+}
+
+.row-tags {
+  min-width: 0;
 }
 
 .tag {
@@ -840,128 +637,78 @@ function getTeacherAvatar(teacherId: string) {
   color: var(--color-text-hint);
 }
 
+.row-update {
+  white-space: nowrap;
+}
+
 .archive-detail-action {
   flex: none;
 }
 
-/* 响应式 */
-@media (min-width: 1680px) {
-  .hero-stat-desc {
-    display: block;
-  }
-}
-
 @media (max-width: 1440px) {
-  .query-hero {
-    min-height: var(--admin-hero-height-compact);
-  }
-
-  .hero-art {
-    width: min(42%, 560px);
-    opacity: 0.78;
-  }
-
-  .hero-content {
-    min-height: var(--admin-hero-height-compact);
-    max-width: 68%;
-  }
-
-  .query-hero::before {
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.99) 38%,
-      rgba(255, 255, 255, 0.92) 52%,
-      rgba(255, 255, 255, 0.68) 68%,
-      rgba(255, 255, 255, 0.24) 84%,
-      rgba(255, 255, 255, 0) 100%
-    );
-  }
-
-  .hero-title-row h1 {
-    font-size: clamp(21px, 1.35vw, 25px);
-  }
-
-  .hero-stats-cards {
-    gap: var(--space-admin-sm);
-  }
-
-  .hero-stat-card {
-    gap: var(--space-admin-sm);
-    padding: clamp(12px, 0.85vw, 16px);
-    min-height: 90px;
-  }
-
-  .hero-stat-icon {
-    width: clamp(34px, 2.2vw, 40px);
-    height: clamp(34px, 2.2vw, 40px);
-  }
-
-  .hero-stat-number {
-    font-size: clamp(18px, 1.25vw, 22px);
-  }
-
-  .hero-stat-label {
-    font-size: clamp(9px, 0.6vw, 11px);
+  .filter-row {
+    grid-template-columns: minmax(320px, 1fr) repeat(2, minmax(140px, 0.5fr));
   }
 }
 
 @media (max-width: 1280px) {
-  .hero-art {
-    opacity: 0.34;
-  }
-
-  .hero-content {
-    max-width: 100%;
-  }
-
-  .hero-stats-cards {
-    grid-template-columns: repeat(2, 1fr);
+  .filter-row {
+    grid-template-columns: minmax(320px, 1fr) repeat(2, minmax(140px, 0.5fr));
     gap: var(--space-admin-md);
   }
 
-  .hero-stat-card {
-    padding: clamp(14px, 0.9vw, 18px);
-    min-height: clamp(100px, 6.2vw, 110px);
-  }
-
-  .hero-stat-icon {
-    width: clamp(40px, 2.5vw, 48px);
-    height: clamp(40px, 2.5vw, 48px);
-  }
-
-  .hero-stat-number {
-    font-size: clamp(20px, 1.3vw, 24px);
-  }
-
-  .hero-stat-label {
-    font-size: clamp(10px, 0.65vw, 12px);
+  .filter-row > button {
+    justify-self: flex-start;
   }
 
   .teachers-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .teacher-row {
+    grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.2fr) auto;
+  }
+
+  .row-tags,
+  .row-update {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .hero-stats-cards {
-    grid-template-columns: repeat(2, 1fr);
+  .query-search-panel,
+  .teachers-section {
+    padding-right: var(--space-admin-lg);
+    padding-left: var(--space-admin-lg);
   }
 
   .teachers-grid {
     grid-template-columns: 1fr;
   }
 
+  .teacher-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .row-tags,
+  .row-update {
+    display: flex;
+  }
+
   .filter-row {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
   .search-area {
+    width: 100%;
     max-width: 100%;
   }
 
   .filter-controls {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
   }
@@ -973,6 +720,19 @@ function getTeacherAvatar(teacherId: string) {
 
   .filter-select {
     width: 100%;
+  }
+
+  .archive-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-strip-item {
+    white-space: normal;
+  }
+
+  .summary-strip-item + .summary-strip-item::before {
+    display: none;
   }
 }
 </style>

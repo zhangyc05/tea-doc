@@ -38,7 +38,7 @@ const navItems: AdminNavItem[] = [
     icon: 'list',
     children: [
       { key: 'ability-list-base', label: '基准板', to: '/admin/ability-list/base' },
-      { key: 'ability-list-execution', label: '执行版', to: '/admin/ability-list/execution' },
+      { key: 'ability-list-execution', label: '执行清单', to: '/admin/ability-list/execution' },
     ],
   },
   {

@@ -353,11 +353,11 @@ export const adminRoutes: RouteRecordRaw[] = [
     name: 'AdminAbilityListExecution',
     component: AbilityListExecutionPage,
     meta: {
-      title: '执行版',
+      title: '执行清单',
       module: '能力清单',
       layout: 'admin',
       menuKey: 'ability-list-execution',
-      breadcrumb: ['管理端', '能力清单', '执行版'],
+      breadcrumb: ['管理端', '能力清单', '执行清单'],
     },
   },
   {
@@ -381,7 +381,7 @@ export const adminRoutes: RouteRecordRaw[] = [
       module: '能力清单',
       layout: 'admin',
       menuKey: 'ability-list-execution',
-      breadcrumb: ['管理端', '能力清单', '执行版', '发布确认'],
+      breadcrumb: ['管理端', '能力清单', '执行清单', '发布确认'],
     },
   },
   {
@@ -393,7 +393,7 @@ export const adminRoutes: RouteRecordRaw[] = [
       module: '能力清单',
       layout: 'admin',
       menuKey: 'ability-list-execution',
-      breadcrumb: ['管理端', '能力清单', '执行版', '岗位/聘期要求映射'],
+      breadcrumb: ['管理端', '能力清单', '执行清单', '岗位/聘期要求映射'],
     },
   },
 ]

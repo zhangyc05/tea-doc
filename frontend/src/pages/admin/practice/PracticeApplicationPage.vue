@@ -463,29 +463,27 @@ function applyFilters() {
 .filter-select {
   width: 100%;
   height: 40px;
-  padding: 0 32px 0 12px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: #1a2944;
-  background: #fff;
-  cursor: pointer;
-  outline: none;
 }
 
 .search-input {
   flex: 1;
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus {
-  border-color: var(--color-admin-primary);
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset;
 }
 
 .operation-message {
@@ -510,7 +508,7 @@ function applyFilters() {
   border: 1px solid var(--color-admin-border);
 }
 
-.application-table th {
+.application-table :deep(.el-table__header .el-table__cell) {
   padding: 13px 12px;
   text-align: left;
   font-size: 13px;
@@ -521,7 +519,7 @@ function applyFilters() {
   background: var(--color-admin-bg-soft);
 }
 
-.application-table td {
+.application-table :deep(.el-table__body .el-table__cell) {
   padding: 13px 12px;
   font-size: 13px;
   line-height: 1.6;
@@ -531,8 +529,7 @@ function applyFilters() {
   vertical-align: middle;
 }
 
-.application-table th:last-child,
-.application-table td:last-child {
+.application-table :deep(.el-table__cell:last-child) {
   border-right: none;
 }
 
@@ -540,45 +537,38 @@ function applyFilters() {
   background: #f4f8ff;
 }
 
-.application-table th:nth-child(1),
-.application-table td:nth-child(1) {
+.application-table :deep(.el-table__cell:nth-child(1)) {
   width: 13%;
 }
 
-.application-table th:nth-child(2),
-.application-table td:nth-child(2) {
+.application-table :deep(.el-table__cell:nth-child(2)) {
   width: 12%;
 }
 
-.application-table th:nth-child(3),
-.application-table td:nth-child(3) {
+.application-table :deep(.el-table__cell:nth-child(3)) {
   width: 19%;
 }
 
-.application-table th:nth-child(4),
-.application-table td:nth-child(4) {
+.application-table :deep(.el-table__cell:nth-child(4)) {
   width: 21%;
 }
 
-.application-table th:nth-child(5),
-.application-table td:nth-child(5) {
+.application-table :deep(.el-table__cell:nth-child(5)) {
   width: 10%;
   text-align: center;
 }
 
-.application-table th:nth-child(6),
-.application-table td:nth-child(6) {
+.application-table :deep(.el-table__cell:nth-child(6)) {
   width: 13%;
   text-align: center;
 }
 
-.application-table th:nth-child(7),
-.application-table td:nth-child(7) {
+.application-table :deep(.el-table__cell:nth-child(7)) {
   width: 12%;
   text-align: center;
 }
 
-.application-table tr:last-child td {
+.application-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

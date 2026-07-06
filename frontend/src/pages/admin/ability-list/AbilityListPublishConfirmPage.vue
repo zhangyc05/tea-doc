@@ -14,13 +14,16 @@ import {
 
 const router = useRouter()
 const abilityListState = getAbilityListState()
-const publishStatus = computed(() => abilityListState.executionVersion.status)
-const publishStatusLabel = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
+const pendingExecutionVersion = computed(() => abilityListState.pendingExecutionVersion)
+const publishTarget = computed(() => pendingExecutionVersion.value ?? abilityListState.executionVersion)
+const publishStatus = computed(() => publishTarget.value.status)
+const publishStatusLabel = computed(() => getExecutionVersionStatusLabel(publishTarget.value.status))
 const operationMessage = computed(() => abilityListState.operationMessage)
 
 const { impactCards } = getAbilityListPublishConfirmMock()
 
 function handlePublish() {
+  if (!pendingExecutionVersion.value) return
   publishExecutionVersion()
 }
 
@@ -36,26 +39,26 @@ function goBack() {
         <div class="hero-icon"><AdminIcon name="document" /></div>
         <div class="hero-content">
           <div class="hero-title-row">
-            <h1 class="hero-title">{{ abilityListState.executionVersion.title }}</h1>
+            <h1 class="hero-title">{{ publishTarget.title }}</h1>
             <StatusBadge :status="publishStatus" :label="publishStatusLabel" />
           </div>
 
           <div class="hero-summary">
             <div class="summary-item">
               <span class="summary-label">来源执行版：</span>
-              <span class="summary-value">{{ abilityListState.executionVersion.sourceTitle }}</span>
+              <span class="summary-value">{{ publishTarget.sourceTitle }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">来源基准模板：</span>
-              <span class="summary-value">{{ abilityListState.executionVersion.templateTitle }}</span>
+              <span class="summary-value">{{ publishTarget.templateTitle }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">适用范围：</span>
-              <span class="summary-value">{{ abilityListState.executionVersion.scope }}</span>
+              <span class="summary-value">{{ publishTarget.scope }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">指标数量：</span>
-              <span class="summary-value">{{ abilityListState.executionVersion.indicatorCount }} 项</span>
+              <span class="summary-value">{{ publishTarget.indicatorCount }} 项</span>
             </div>
             <div class="summary-item wide">
               <span class="summary-label">最近调整：</span>
@@ -72,6 +75,9 @@ function goBack() {
 
       <section class="impact-section">
         <h2 class="section-title">发布影响确认</h2>
+        <div v-if="!pendingExecutionVersion" class="empty-publish-state">
+          暂无待发布执行清单，请返回执行清单页面先完成“派生下一周期”。
+        </div>
         <div class="impact-cards">
           <article
             v-for="card in impactCards"
@@ -90,7 +96,7 @@ function goBack() {
         <div>
           <h4 class="notice-title">发布说明</h4>
           <p class="notice-text">
-            发布准备来自执行版页面的“派生下一周期执行版”操作。
+            发布准备来自执行清单页面的“派生下一周期”操作。
             发布后，2027 年度执行版将成为当前周期默认运行口径。2026 年度执行版将保留历史引用记录，不会被覆盖。
           </p>
         </div>
@@ -99,7 +105,7 @@ function goBack() {
       <section class="action-section">
         <Button variant="outline" @click="goBack">返回修改</Button>
         <Button
-          :disabled="publishStatus === 'published'"
+          :disabled="!pendingExecutionVersion || publishStatus === 'published'"
           @click="handlePublish"
         >
           {{ publishStatus === 'published' ? '已确认发布' : '确认发布' }}
@@ -290,6 +296,18 @@ function goBack() {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-admin-2xl);
+}
+
+.empty-publish-state {
+  margin-bottom: var(--space-admin-lg);
+  border: 1px solid rgba(242, 106, 22, 0.18);
+  border-radius: var(--radius-admin-panel);
+  background: #fff7ec;
+  color: #9a4b10;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1.6;
+  padding: var(--space-admin-md-lg) var(--space-admin-lg);
 }
 
 .impact-card {

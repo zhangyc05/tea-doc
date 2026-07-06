@@ -479,26 +479,24 @@ function rejectCurrentApplication() {
 .filter-select,
 .search-input {
   width: 100%;
-  height: 40px;
-  border: 1px solid #d7e2f1;
+  min-width: 0;
+}
+
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 14px;
   border-radius: var(--radius-sm);
-  background: #fff;
+  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
   color: #1a2944;
   font-size: 13px;
-  outline: none;
 }
 
-.filter-select {
-  padding: 0 32px 0 12px;
-}
-
-.search-input {
-  padding: 0 14px;
-}
-
-.search-input:focus,
-.filter-select:focus {
-  border-color: var(--color-admin-primary);
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset;
 }
 
 .operation-message {
@@ -519,7 +517,7 @@ function rejectCurrentApplication() {
   border: 1px solid var(--color-admin-border);
 }
 
-.application-table th {
+.application-table :deep(.el-table__header .el-table__cell) {
   padding: 13px 10px;
   text-align: left;
   font-size: 13px;
@@ -530,7 +528,7 @@ function rejectCurrentApplication() {
   background: var(--color-admin-bg-soft);
 }
 
-.application-table td {
+.application-table :deep(.el-table__body .el-table__cell) {
   padding: 15px 10px;
   font-size: 13px;
   line-height: 1.55;
@@ -540,8 +538,7 @@ function rejectCurrentApplication() {
   vertical-align: middle;
 }
 
-.application-table th:last-child,
-.application-table td:last-child {
+.application-table :deep(.el-table__cell:last-child) {
   border-right: none;
 }
 
@@ -549,49 +546,41 @@ function rejectCurrentApplication() {
   background: #f4f8ff;
 }
 
-.application-table th:nth-child(1),
-.application-table td:nth-child(1) {
+.application-table :deep(.el-table__cell:nth-child(1)) {
   width: 8%;
   font-weight: 700;
 }
 
-.application-table th:nth-child(2),
-.application-table td:nth-child(2) {
+.application-table :deep(.el-table__cell:nth-child(2)) {
   width: 18%;
 }
 
-.application-table th:nth-child(3),
-.application-table td:nth-child(3) {
+.application-table :deep(.el-table__cell:nth-child(3)) {
   width: 17%;
 }
 
-.application-table th:nth-child(4),
-.application-table td:nth-child(4) {
+.application-table :deep(.el-table__cell:nth-child(4)) {
   width: 16%;
 }
 
-.application-table th:nth-child(5),
-.application-table td:nth-child(5) {
+.application-table :deep(.el-table__cell:nth-child(5)) {
   width: 13%;
 }
 
-.application-table th:nth-child(6),
-.application-table td:nth-child(6) {
+.application-table :deep(.el-table__cell:nth-child(6)) {
   width: 10%;
   text-align: center;
 }
 
-.application-table th:nth-child(7),
-.application-table td:nth-child(7) {
+.application-table :deep(.el-table__cell:nth-child(7)) {
   width: 11%;
 }
 
-.application-table th:nth-child(8),
-.application-table td:nth-child(8) {
+.application-table :deep(.el-table__cell:nth-child(8)) {
   width: 7%;
 }
 
-.application-table tr:last-child td {
+.application-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

@@ -505,26 +505,30 @@ function roomRowKey(row: VirtualLabRoom) {
 .filter-select {
   min-width: 0;
   flex: 1;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--color-admin-text-strong);
-  font-size: 13px;
 }
 
 .search-input {
   width: 100%;
-  height: 36px;
-  padding: 0 12px;
-  border: 1px solid #d7e2f2;
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-admin-text-strong);
-  font-size: 13px;
-  outline: none;
+  min-width: 0;
 }
 
-.search-input:focus,
+.search-input :deep(.el-input__wrapper) {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d7e2f2 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  color: var(--color-admin-text-strong);
+  font-size: 13px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset, 0 0 0 3px rgba(18, 104, 246, 0.1);
+}
+
 .filter-item:focus-within {
   border-color: var(--color-admin-primary);
   box-shadow: 0 0 0 3px rgba(18, 104, 246, 0.1);
@@ -680,8 +684,8 @@ function roomRowKey(row: VirtualLabRoom) {
   table-layout: fixed;
 }
 
-.room-table th,
-.room-table td {
+.room-table :deep(.el-table__header .el-table__cell),
+.room-table :deep(.el-table__body .el-table__cell) {
   padding: var(--space-admin-md-lg) var(--space-admin-md);
   border-bottom: 1px solid #e8eef7;
   text-align: left;
@@ -690,24 +694,21 @@ function roomRowKey(row: VirtualLabRoom) {
   line-height: 1.5;
 }
 
-.room-table th {
+.room-table :deep(.el-table__header .el-table__cell) {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
-.room-table th:nth-child(1),
-.room-table td:nth-child(1) {
+.room-table :deep(.el-table__cell:nth-child(1)) {
   width: 22%;
 }
 
-.room-table th:nth-child(2),
-.room-table td:nth-child(2) {
+.room-table :deep(.el-table__cell:nth-child(2)) {
   width: 25%;
 }
 
-.room-table th:nth-child(6),
-.room-table td:nth-child(6) {
+.room-table :deep(.el-table__cell:nth-child(6)) {
   width: 92px;
   text-align: right;
 }

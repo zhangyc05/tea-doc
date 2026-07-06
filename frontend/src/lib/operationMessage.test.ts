@@ -54,10 +54,11 @@ describe('useOperationMessage', () => {
     expect(virtualLabRoomDetailPage).not.toContain("const operationMessage = ref('')")
   })
 
-  it('is used by ability list action pages instead of local message refs', () => {
+  it('keeps ability list action message handling centralized or intentionally absent', () => {
     expect(abilityListBasePage).toContain("import { useOperationMessage } from '@/lib/operationMessage'")
     expect(abilityListBasePage).not.toContain("const operationMessage = ref('')")
-    expect(abilityListRequirementMappingPage).toContain("import { useOperationMessage } from '@/lib/operationMessage'")
+    expect(abilityListRequirementMappingPage).not.toContain("import { useOperationMessage } from '@/lib/operationMessage'")
+    expect(abilityListRequirementMappingPage).not.toContain('operationMessage')
     expect(abilityListRequirementMappingPage).not.toContain("const operationMessage = ref('')")
   })
 

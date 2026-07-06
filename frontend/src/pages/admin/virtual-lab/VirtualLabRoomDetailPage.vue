@@ -511,8 +511,8 @@ function viewRecord(id: string) {
   min-width: 790px;
 }
 
-.data-table th,
-.data-table td {
+.data-table :deep(.el-table__header .el-table__cell),
+.data-table :deep(.el-table__body .el-table__cell) {
   padding: 13px 12px;
   border-bottom: 1px solid #e8eef7;
   text-align: left;
@@ -521,13 +521,13 @@ function viewRecord(id: string) {
   line-height: 1.45;
 }
 
-.data-table th {
+.data-table :deep(.el-table__header .el-table__cell) {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
-.data-table td {
+.data-table :deep(.el-table__body .el-table__cell) {
   color: var(--color-admin-text-strong);
 }
 

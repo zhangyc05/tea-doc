@@ -441,14 +441,6 @@ function viewRelatedRecords() {
 
 .filter-select {
   height: 38px;
-  padding: 0 36px 0 14px;
-  border: 1px solid #d2def0;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--color-admin-text-title);
-  background: white;
-  cursor: pointer;
-  outline: none;
   min-width: 0;
 }
 
@@ -463,17 +455,23 @@ function viewRelatedRecords() {
 
 .search-input {
   flex: 1;
-  height: 38px;
-  padding: 0 16px;
-  border: 1px solid #d2def0;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus {
-  border-color: var(--color-primary);
+.search-input :deep(.el-input__wrapper) {
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-admin-panel);
+  box-shadow: 0 0 0 1px #d2def0 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-primary) inset;
 }
 
 /* 表格 */
@@ -486,11 +484,13 @@ function viewRelatedRecords() {
 
 .reflection-table {
   width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
 }
 
-.reflection-table th {
+.reflection-table :deep(.el-table__inner-wrapper::before) {
+  display: none;
+}
+
+.reflection-table :deep(.el-table__header th) {
   height: 42px;
   padding: 0 12px;
   text-align: left;
@@ -503,20 +503,12 @@ function viewRelatedRecords() {
   white-space: nowrap;
 }
 
-.reflection-table th:nth-child(1) { width: 7%; }
-.reflection-table th:nth-child(2) { width: 20%; }
-.reflection-table th:nth-child(3) { width: 18%; }
-.reflection-table th:nth-child(4) { width: 20%; }
-.reflection-table th:nth-child(5) { width: 10%; }
-.reflection-table th:nth-child(6) { width: 17%; }
-.reflection-table th:nth-child(7) { width: 8%; }
-
-.reflection-table th:last-child,
-.reflection-table td:last-child {
+.reflection-table :deep(.el-table__header th:last-child),
+.reflection-table :deep(.el-table__body td:last-child) {
   border-right: 0;
 }
 
-.reflection-table td {
+.reflection-table :deep(.el-table__cell) {
   height: 50px;
   padding: 0 12px;
   font-size: 13px;
@@ -528,7 +520,7 @@ function viewRelatedRecords() {
   white-space: nowrap;
 }
 
-.reflection-table tr:last-child td {
+.reflection-table :deep(.el-table__body tr:last-child td) {
   border-bottom: none;
 }
 

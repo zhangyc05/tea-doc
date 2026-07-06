@@ -7,23 +7,31 @@ import type {
   RequirementMapping,
 } from '@/domain/admin/ability-list'
 import {
+  addPendingExecutionDimensionInState,
   addManualOptimizationSuggestionInState,
   applyAdoptedSuggestionsToBaseTemplateInState,
+  cancelPendingExecutionVersionInState,
   confirmExecutionIndicatorChangesInState,
   confirmBaseTemplateChangesInState,
   confirmRequirementMappingInState,
+  deletePendingExecutionAbilityNodeInState,
+  deletePendingExecutionDimensionInState,
+  deletePendingExecutionIndicatorInState,
   deleteRequirementMappingInState,
   deriveNextExecutionVersionInState,
   discardExecutionIndicatorChangesInState,
+  getExecutionDraftIndicators,
   importPolicySuggestionInState,
   publishExecutionVersionInState,
   rerunFeedbackAnalysisInState,
   saveBaseTemplateChangeInState,
   saveExecutionIndicatorChangeInState,
   saveRequirementMappingInState,
+  updatePendingExecutionAbilityNodeInState,
   updateOptimizationSuggestionStatusInState,
 } from './ability-list/actions'
 import { createInitialAbilityListState } from './ability-list/initialData'
+import type { AbilityListTreeNode } from '@/domain/admin/ability-list'
 
 export type {
   AbilityListState,
@@ -31,6 +39,7 @@ export type {
   BaseTemplateVersionStatus,
   ExecutionVersion,
   ExecutionVersionStatus,
+  AbilityListTreeNode,
   OptimizationSuggestionDraft,
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
@@ -61,12 +70,9 @@ export function updateExecutionIndicator(
 }
 
 export function getDisplayedExecutionIndicators() {
-  return state.executionIndicators.map((indicator) => {
-    const pendingChange = state.pendingExecutionIndicatorChanges.find(
-      change => change.indicatorKey === indicator.key,
-    )
-    return pendingChange ? { ...pendingChange.after } : { ...indicator }
-  })
+  return state.pendingExecutionVersion
+    ? state.pendingExecutionIndicators.map(indicator => ({ ...indicator }))
+    : getExecutionDraftIndicators(state)
 }
 
 export function confirmExecutionIndicatorChanges() {
@@ -90,12 +96,36 @@ export function confirmBaseTemplateChanges() {
   return confirmBaseTemplateChangesInState(state)
 }
 
-export function deriveNextExecutionVersion() {
-  return deriveNextExecutionVersionInState(state)
+export function deriveNextExecutionVersion(abilityTree?: AbilityListTreeNode[]) {
+  return deriveNextExecutionVersionInState(state, abilityTree)
 }
 
 export function publishExecutionVersion() {
-  publishExecutionVersionInState(state)
+  return publishExecutionVersionInState(state)
+}
+
+export function cancelPendingExecutionVersion() {
+  return cancelPendingExecutionVersionInState(state)
+}
+
+export function deletePendingExecutionIndicator(indicatorKey: string) {
+  return deletePendingExecutionIndicatorInState(state, indicatorKey)
+}
+
+export function addPendingExecutionDimension(dimension: AbilityListTreeNode) {
+  return addPendingExecutionDimensionInState(state, dimension)
+}
+
+export function deletePendingExecutionDimension(dimensionKey: string) {
+  return deletePendingExecutionDimensionInState(state, dimensionKey)
+}
+
+export function updatePendingExecutionAbilityNode(nodeKey: string, label: string) {
+  return updatePendingExecutionAbilityNodeInState(state, nodeKey, label)
+}
+
+export function deletePendingExecutionAbilityNode(nodeKey: string) {
+  return deletePendingExecutionAbilityNodeInState(state, nodeKey)
 }
 
 export function updateOptimizationSuggestionStatus(

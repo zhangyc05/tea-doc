@@ -240,9 +240,13 @@ export type AbilityListState = {
   baseTemplateVersionHistory: BaseTemplateVersion[]
   pendingBaseTemplateChanges: PendingBaseTemplateChange[]
   executionVersion: ExecutionVersion
+  executionAbilityTree: AbilityListTreeNode[]
   versionHistory: ExecutionVersion[]
   executionIndicators: AbilityIndicator[]
   pendingExecutionIndicatorChanges: PendingExecutionIndicatorChange[]
+  pendingExecutionVersion: ExecutionVersion | null
+  pendingExecutionIndicators: AbilityIndicator[]
+  pendingExecutionAbilityTree: AbilityListTreeNode[] | null
   optimizationSuggestions: OptimizationSuggestion[]
   pendingTemplateApplications: TemplateApplication[]
   requirementMappings: RequirementMapping[]

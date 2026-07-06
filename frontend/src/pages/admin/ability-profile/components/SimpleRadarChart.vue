@@ -6,128 +6,255 @@ interface ScoreData {
   value: number
 }
 
+interface StageRing {
+  label: string
+  max: number
+  color: string
+}
+
 interface RadarChartProps {
   scores: ScoreData[]
   centerText?: string
+  centerLabel?: string
+  centerStatus?: string
+  dimensionColors?: Record<string, string>
+  stageRings?: StageRing[]
   size?: number
 }
 
 const props = withDefaults(defineProps<RadarChartProps>(), {
   centerText: '',
+  centerLabel: '',
+  centerStatus: '',
+  dimensionColors: () => ({}),
+  stageRings: () => [
+    { label: '新手', max: 25, color: '#94a3b8' },
+    { label: '胜任', max: 50, color: '#3b82f6' },
+    { label: '骨干', max: 75, color: '#18b76b' },
+    { label: '名师', max: 100, color: '#ff7a00' },
+  ],
   size: 280,
 })
 
-// 计算雷达图的多边形点
+const chartRadius = 78
+const axisLabelRadius = 104
+const stageFillOpacity = 0.18
+
 const radarPoints = computed(() => {
   const scores = props.scores
   const count = scores.length
   const angleStep = (2 * Math.PI) / count
 
-  // 假设最大值为100
-  const maxValue = 100
-  const radius = 80 // 雷达图半径
-
   return scores.map((score, index) => {
     const angle = angleStep * index - Math.PI / 2
-    const normalizedValue = score.value / maxValue
-    const x = Math.cos(angle) * normalizedValue * radius
-    const y = Math.sin(angle) * normalizedValue * radius
-    return { x, y }
+    const normalizedValue = Math.max(0, Math.min(score.value, 100)) / 100
+    const x = Math.cos(angle) * normalizedValue * chartRadius
+    const y = Math.sin(angle) * normalizedValue * chartRadius
+    return {
+      x,
+      y,
+      label: score.label,
+      value: score.value,
+      color: getDimensionColor(score.label),
+      stage: getStageLabel(score.value),
+    }
   })
 })
 
-// 背景多边形点
 const backgroundPoints = computed(() => {
   const count = props.scores.length
   const angleStep = (2 * Math.PI) / count
-  const radius = 80
 
   return Array.from({ length: count }, (_, index) => {
     const angle = angleStep * index - Math.PI / 2
-    const x = Math.cos(angle) * radius
-    const y = Math.sin(angle) * radius
+    const x = Math.cos(angle) * chartRadius
+    const y = Math.sin(angle) * chartRadius
     return { x, y }
   })
 })
 
-// 生成多边形路径字符串
-const generatePolygonPath = (points: { x: number; y: number }[]) => {
-  if (points.length === 0) return ''
+const axisLines = computed(() => {
+  return backgroundPoints.value.map((point, index) => {
+    const score = props.scores[index]
+    return {
+      ...point,
+      label: score?.label ?? '',
+      color: getDimensionColor(score?.label ?? ''),
+    }
+  })
+})
 
-  const path = points.map((point, index) => {
-    const command = index === 0 ? 'M' : 'L'
-    return `${command} ${point.x} ${point.y}`
-  }).join(' ')
-
-  return path + ' Z'
-}
-
-// 轴标签位置
 const axisLabels = computed(() => {
   const scores = props.scores
   const count = scores.length
   const angleStep = (2 * Math.PI) / count
-  const radius = 95
 
   return scores.map((score, index) => {
     const angle = angleStep * index - Math.PI / 2
-    const x = Math.cos(angle) * radius
-    const y = Math.sin(angle) * radius
-    return { x, y, label: score.label }
+    const x = Math.cos(angle) * axisLabelRadius
+    const y = Math.sin(angle) * axisLabelRadius
+    return {
+      x,
+      y,
+      label: score.label,
+      value: score.value,
+      color: getDimensionColor(score.label),
+    }
   })
 })
 
-// 计算背景多边形点字符串
+const scoreLabels = computed(() => {
+  return radarPoints.value.map(point => {
+    const distance = Math.sqrt(point.x * point.x + point.y * point.y) || 1
+    const offset = 13
+    return {
+      ...point,
+      scoreX: point.x + (point.x / distance) * offset,
+      scoreY: point.y + (point.y / distance) * offset,
+    }
+  })
+})
+
 const backgroundPolygonPoints = computed(() => {
   return backgroundPoints.value.map(point => {
     return `${point.x} ${point.y}`
   }).join(' ')
 })
 
-// 计算数据多边形点字符串
 const radarPolygonPoints = computed(() => {
   return radarPoints.value.map(point => {
     return `${point.x} ${point.y}`
   }).join(' ')
 })
+
+const ringPolygons = computed(() => {
+  return props.stageRings.map((ring, index) => {
+    const maxScale = Math.max(0, Math.min(ring.max, 100)) / 100
+    const previousMax = index === 0 ? 0 : props.stageRings[index - 1].max
+    const minScale = Math.max(0, Math.min(previousMax, 100)) / 100
+    return {
+      ...ring,
+      points: scalePolygonPoints(maxScale),
+      innerPoints: scalePolygonPoints(minScale),
+      bandPath: createBandPath(minScale, maxScale),
+    }
+  })
+})
+
+const stageLabels = computed(() => {
+  return props.stageRings.map((ring, index) => ({
+    ...ring,
+    y: -chartRadius + (index + 0.72) * ((chartRadius * 2) / props.stageRings.length),
+  }))
+})
+
+const centerPrimaryText = computed(() => props.centerLabel || props.centerText)
+const centerSecondaryText = computed(() => props.centerStatus || '')
+
+function scalePolygonPoints(scale: number) {
+  return backgroundPoints.value.map(point => `${point.x * scale} ${point.y * scale}`).join(' ')
+}
+
+function polygonPath(scale: number, reverse = false) {
+  const points = backgroundPoints.value.map(point => ({
+    x: point.x * scale,
+    y: point.y * scale,
+  }))
+  const orderedPoints = reverse ? points.reverse() : points
+  return orderedPoints.map((point, index) => {
+    return `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+  }).join(' ') + ' Z'
+}
+
+function createBandPath(minScale: number, maxScale: number) {
+  if (minScale <= 0) return polygonPath(maxScale)
+  return `${polygonPath(maxScale)} ${polygonPath(minScale, true)}`
+}
+
+function getDimensionColor(label: string) {
+  return props.dimensionColors[label] || '#0b63f6'
+}
+
+function getStageLabel(value: number) {
+  return props.stageRings.find(ring => value <= ring.max)?.label || props.stageRings[props.stageRings.length - 1]?.label || ''
+}
 </script>
 
 <template>
   <div class="radar-chart-container">
-    <svg :width="size" :height="size" viewBox="0 0 200 200">
-      <g transform="translate(100, 100)">
-        <!-- 背景多边形（五层同心多边形） -->
-        <polygon
-          v-for="i in 5"
-          :key="`bg-${i}`"
-          :points="backgroundPolygonPoints"
-          :transform="`scale(${i / 5})`"
-          fill="none"
-          stroke="#e2e8f0"
-          stroke-width="1"
+    <svg :width="size" :height="size" viewBox="0 0 240 240" role="img" aria-label="学校教师队伍能力结构雷达图">
+      <g transform="translate(120, 120)">
+        <path
+          v-for="ring in ringPolygons"
+          :key="`band-${ring.label}`"
+          class="radar-stage-band"
+          :d="ring.bandPath"
+          :fill="ring.color"
+          :fill-opacity="stageFillOpacity"
+          fill-rule="evenodd"
         />
 
-        <!-- 数据多边形 -->
         <polygon
-          :points="radarPolygonPoints"
-          fill="rgba(47, 191, 155, 0.2)"
-          stroke="var(--color-primary)"
+          v-for="ring in ringPolygons"
+          :key="ring.label"
+          class="radar-stage-ring"
+          :points="ring.points"
+          fill="none"
+          :stroke="ring.color"
+          stroke-width="1.4"
+        />
+
+        <line
+          v-for="line in axisLines"
+          :key="`axis-${line.label}`"
+          class="radar-axis-line"
+          x1="0"
+          y1="0"
+          :x2="line.x"
+          :y2="line.y"
+          :stroke="line.color"
           stroke-width="2"
         />
 
-        <!-- 轴线 -->
-        <line
-          v-for="(point, index) in backgroundPoints"
-          :key="`axis-${index}`"
-          x1="0"
-          y1="0"
-          :x2="point.x"
-          :y2="point.y"
-          stroke="#e2e8f0"
-          stroke-width="1"
+        <polygon
+          :points="backgroundPolygonPoints"
+          fill="rgba(255, 255, 255, 0.44)"
+          stroke="none"
         />
 
-        <!-- 轴标签 -->
+        <polygon
+          :points="radarPolygonPoints"
+          fill="rgba(11, 99, 246, 0.24)"
+          stroke="#0b63f6"
+          stroke-width="3.8"
+          stroke-linejoin="round"
+        />
+
+        <circle
+          v-for="point in radarPoints"
+          :key="`point-${point.label}`"
+          class="radar-axis-dot"
+          :cx="point.x"
+          :cy="point.y"
+          r="4.8"
+          :fill="point.color"
+        >
+          <title>{{ point.label }} {{ point.value }} 分，{{ point.stage }}阶段</title>
+        </circle>
+
+        <text
+          v-for="point in scoreLabels"
+          :key="`score-${point.label}`"
+          class="radar-score-label"
+          :x="point.scoreX"
+          :y="point.scoreY"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          :fill="point.color"
+        >
+          {{ point.value }}
+        </text>
+
         <text
           v-for="(label, index) in axisLabels"
           :key="`label-${index}`"
@@ -136,14 +263,55 @@ const radarPolygonPoints = computed(() => {
           text-anchor="middle"
           dominant-baseline="middle"
           :font-size="11"
-          fill="#64748b"
+          :fill="label.color"
+          font-weight="800"
         >
           {{ label.label }}
         </text>
 
-        <!-- 中心文字 -->
         <text
-          v-if="centerText"
+          v-for="ring in stageLabels"
+          :key="`stage-label-${ring.label}`"
+          class="radar-stage-label"
+          x="88"
+          :y="ring.y"
+          text-anchor="start"
+          dominant-baseline="middle"
+          :fill="ring.color"
+        >
+          {{ ring.label }}
+        </text>
+
+        <g v-if="centerPrimaryText" class="radar-center-core">
+          <circle r="24" fill="#ffffff" stroke="#bfe7d2" stroke-width="2" />
+          <circle r="18" fill="#eafff2" />
+          <text
+            x="0"
+            y="-5"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            :font-size="8"
+            fill="#49617f"
+            font-weight="800"
+          >
+            {{ centerPrimaryText }}
+          </text>
+          <text
+            v-if="centerSecondaryText"
+            x="0"
+            y="9"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            :font-size="9"
+            fill="#13a854"
+            font-weight="950"
+          >
+            {{ centerSecondaryText }}
+          </text>
+        </g>
+
+        <text
+          v-else-if="centerText"
           x="0"
           y="0"
           text-anchor="middle"
@@ -157,23 +325,16 @@ const radarPolygonPoints = computed(() => {
       </g>
     </svg>
 
-    <!-- 图例 -->
     <div class="radar-legend">
-      <div class="legend-item">
-        <span class="legend-dot"></span>
-        <span class="legend-text">0-25 新手教师</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-dot"></span>
-        <span class="legend-text">25-50 胜任教师</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-dot"></span>
-        <span class="legend-text">50-75 骨干教师</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-dot"></span>
-        <span class="legend-text">75-100 名师教师</span>
+      <div
+        v-for="(ring, index) in stageRings"
+        :key="ring.label"
+        class="legend-item"
+      >
+        <span class="legend-dot" :style="{ background: ring.color }"></span>
+        <span class="legend-text">
+          {{ index === 0 ? 0 : stageRings[index - 1].max }}-{{ ring.max }} {{ ring.label }}
+        </span>
       </div>
     </div>
   </div>
@@ -189,6 +350,42 @@ const radarPolygonPoints = computed(() => {
 
 .radar-chart-container svg {
   overflow: visible;
+}
+
+.radar-stage-ring {
+  opacity: 0.68;
+}
+
+.radar-stage-band {
+  pointer-events: none;
+}
+
+.radar-axis-line {
+  opacity: 0.58;
+}
+
+.radar-axis-dot {
+  stroke: #fff;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 4px 8px rgba(11, 99, 246, 0.18));
+}
+
+.radar-score-label {
+  font-size: 8px;
+  font-weight: 950;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+}
+
+.radar-stage-label {
+  font-size: 9px;
+  font-weight: 900;
+  opacity: 0.72;
+}
+
+.radar-center-core {
+  filter: drop-shadow(0 8px 14px rgba(20, 101, 70, 0.14));
 }
 
 .radar-legend {
@@ -208,19 +405,6 @@ const radarPolygonPoints = computed(() => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #94a3b8;
-}
-
-.legend-item:nth-child(2) .legend-dot {
-  background: #3b82f6;
-}
-
-.legend-item:nth-child(3) .legend-dot {
-  background: #18b76b;
-}
-
-.legend-item:nth-child(4) .legend-dot {
-  background: #ff7a00;
 }
 
 .legend-text {

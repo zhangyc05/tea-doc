@@ -104,7 +104,100 @@ function findUnboundNativeButtons(source: string) {
     .map(button => button.replace(/\s+/g, ' ').trim())
 }
 
+function findSelectRootShellStyles(source: string) {
+  return [...source.matchAll(/\.(filter-select|form-select|page-size-select)\s*\{(?<body>[\s\S]*?)\}/g)]
+    .map(match => ({
+      className: match[1],
+      body: match.groups?.body ?? '',
+    }))
+    .filter(block => /(?:padding|border|border-radius|background|outline|cursor|color|font-size)\s*:/.test(block.body))
+}
+
+function findInputRootShellStyles(source: string) {
+  return [...source.matchAll(/(?:\.[\w-]+,\s*)*\.search-input\s*\{(?<body>[\s\S]*?)\}/g)]
+    .map(match => match.groups?.body ?? '')
+    .filter(body => /(?:height|padding|border|border-radius|background|outline|color|font-size|transition)\s*:/.test(body))
+}
+
+const trainingPracticeLabSources = [
+  ['TrainingApplicationPage.vue', trainingApplicationPage],
+  ['TrainingDemandPage.vue', trainingDemandPage],
+  ['TrainingPlanDetailPage.vue', trainingPlanDetailPage],
+  ['TrainingPlanPage.vue', trainingPlanPage],
+  ['TrainingRecordDetailPage.vue', trainingRecordDetailPage],
+  ['TrainingRecordPage.vue', trainingRecordPage],
+  ['TrainingResourcePage.vue', trainingResourcePage],
+  ['PracticeApplicationPage.vue', practiceApplicationPage],
+  ['PracticeRecordPage.vue', practiceRecordPage],
+  ['PracticeTrackingPage.vue', practiceTrackingPage],
+  ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage],
+  ['VirtualLabRecordDetailPage.vue', virtualLabRecordDetailPage],
+  ['VirtualLabRoomDetailPage.vue', virtualLabRoomDetailPage],
+  ['VirtualLabRoomPage.vue', virtualLabRoomPage],
+] as const
+
 describe('admin visual action guardrails', () => {
+  it('keeps AdminSelect root classes layout-only instead of drawing a second select shell', () => {
+    const offenders = adminVisualSources.flatMap(([name, source]) =>
+      findSelectRootShellStyles(source).map(block => `${name} .${block.className}: ${block.body.replace(/\s+/g, ' ').trim()}`),
+    )
+
+    expect(offenders).toEqual([])
+  })
+
+  it('keeps ability profile teacher filter fields from drawing a second select shell', () => {
+    const filterFieldBlock = abilityProfileTeacherPage.match(/\.filter-field\s*\{(?<body>[\s\S]*?)\}/)?.groups?.body ?? ''
+
+    expect(filterFieldBlock).not.toMatch(/border\s*:/)
+    expect(filterFieldBlock).not.toMatch(/background\s*:/)
+    expect(filterFieldBlock).not.toMatch(/padding\s*:/)
+  })
+
+  it('keeps training, practice, and virtual lab AdminInput styles on Element Plus internals', () => {
+    const offenders = trainingPracticeLabSources.flatMap(([name, source]) =>
+      findInputRootShellStyles(source).map(body => `${name} .search-input: ${body.replace(/\s+/g, ' ').trim()}`),
+    )
+
+    expect(offenders).toEqual([])
+
+    for (const [filename, source] of trainingPracticeLabSources) {
+      if (!source.includes('AdminInput') || !source.includes('class="search-input"')) {
+        continue
+      }
+
+      expect(source, filename).toContain('.search-input :deep(.el-input__wrapper)')
+      expect(source, filename).toContain('.search-input :deep(.el-input__inner)')
+    }
+  })
+
+  it('keeps training, practice, and virtual lab AdminTable styles on Element Plus table internals', () => {
+    const nativeTableSelectorPattern = /\.[\w-]+-table\s+(?:tr:[\w-]+\s+)?(?:th|td)\b/
+    const offenders = trainingPracticeLabSources
+      .filter(([, source]) => source.includes('AdminTable'))
+      .filter(([, source]) => nativeTableSelectorPattern.test(source))
+      .map(([filename]) => filename)
+
+    expect(offenders).toEqual([])
+
+    for (const [filename, source] of trainingPracticeLabSources) {
+      if (!source.includes('AdminTable')) {
+        continue
+      }
+
+      expect(source, filename).toMatch(/:deep\(\.el-table__(?:header|body)[^)]*\.el-table__cell\)|:deep\(\.el-table__cell/)
+    }
+  })
+
+  it('keeps ability profile teacher reset icon sized like a compact icon button', () => {
+    const resetButtonBlock = abilityProfileTeacherPage.match(/\.reset-button\s*\{(?<body>[\s\S]*?)\}/)?.groups?.body ?? ''
+
+    expect(resetButtonBlock).toContain('display: inline-flex;')
+    expect(resetButtonBlock).toContain('width: 40px;')
+    expect(abilityProfileTeacherPage).toContain('.reset-button svg')
+    expect(abilityProfileTeacherPage).toContain('width: 20px;')
+    expect(abilityProfileTeacherPage).toContain('height: 20px;')
+  })
+
   it('wires archive and group portrait pages to their dedicated asset packs', () => {
     expect(archiveProcessingPage).toContain('archive-processing-assets/archive-processing-hero-art.png')
     expect(archiveProcessingPage).toContain('archive-processing-assets/archive-processing-hero-emblem.svg')
@@ -120,20 +213,35 @@ describe('admin visual action guardrails', () => {
     expect(archiveImportBatchPage).toContain('fileTypeIconMap')
     expect(archiveImportBatchPage).toContain('<img class="file-type-icon" :src="fileTypeIconMap[file.type]" alt="" />')
 
-    expect(archiveQueryPage).toContain('archive-query-assets/archive-query-hero-art.png')
-    expect(archiveQueryPage).toContain('archive-query-assets/archive-query-hero-emblem.svg')
     expect(archiveQueryPage).toContain('archive-query-assets/archive-query-empty.svg')
-    expect(archiveQueryPage).toContain('heroStatCards')
-    expect(archiveQueryPage).toContain('teacherAvatarMap')
+    expect(archiveQueryPage).toContain('archiveSummaryStats')
+    expect(archiveQueryPage).toContain('query-search-panel')
+    expect(archiveQueryPage).toContain('archive-summary-strip')
+    expect(archiveQueryPage).toContain('getTeacherInitial')
+    expect(archiveQueryPage).toContain('avatar-initial')
+    expect(archiveQueryPage).not.toContain('avatar-teacher-')
+    expect(archiveQueryPage).not.toContain('archive-query-assets/archive-query-hero-art.png')
+    expect(archiveQueryPage).not.toContain('archive-query-assets/archive-query-hero-emblem.svg')
     expect(archiveQueryPage).not.toContain('@/images/hero-art.png')
     expect(archiveQueryPage).not.toContain('avatar-circle')
 
-    expect(abilityProfileGroupPage).toContain('ability-group-portrait-assets/ability-group-portrait-hero-art.png')
+    expect(abilityProfileGroupPage).toContain('radar-structure-panel')
+    expect(abilityProfileGroupPage).toContain(':dimension-colors="dimensionColors"')
+    expect(abilityProfileGroupPage).toContain(':stage-rings="radarStageRings"')
     expect(abilityProfileGroupPage).toContain('ability-group-portrait-assets/ability-group-portrait-empty.svg')
     expect(abilityProfileGroupPage).toContain('iconSrc')
     expect(abilityProfileGroupPage).toContain('supportDirectionIcons')
     expect(abilityProfileGroupPage).toContain('focusTabIconMap')
     expect(abilityProfileGroupPage).not.toMatch(/▤|♙|▣|▰|▥/)
+
+    expect(abilityProfileTeacherPage).toContain('getTeacherInitial')
+    expect(abilityProfileTeacherPage).toContain('class="teacher-avatar"')
+    expect(abilityProfileTeacherPage).toContain('class="avatar-initial"')
+    expect(abilityProfileTeacherPage).toContain('class="profile-search-input"')
+    expect(abilityProfileTeacherPage).not.toContain('avatar-hair')
+    expect(abilityProfileTeacherPage).not.toContain('avatar-teacher-female')
+    expect(adminIcon).toContain('Search')
+    expect(adminIcon).toContain("| 'search'")
   })
 
   it('keeps the group portrait hero artwork transparent', () => {
@@ -160,6 +268,7 @@ describe('admin visual action guardrails', () => {
       ['PracticeApplicationPage.vue', practiceApplicationPage],
       ['TrainingApplicationPage.vue', trainingApplicationPage],
       ['TrainingDemandPage.vue', trainingDemandPage],
+      ['TrainingPlanPage.vue', trainingPlanPage],
     ] as const
 
     for (const [filename, source] of genericIconSources) {
@@ -185,6 +294,8 @@ describe('admin visual action guardrails', () => {
       ['PracticeTrackingPage.vue', practiceTrackingPage, '.stat-icon :deep(svg)'],
       ['TrainingApplicationPage.vue', trainingApplicationPage, '.stat-icon :deep(svg)'],
       ['TrainingApplicationPage.vue', trainingApplicationPage, '.reminder-icon :deep(svg)'],
+      ['TrainingPlanPage.vue', trainingPlanPage, '.stat-icon :deep(svg)'],
+      ['TrainingPlanPage.vue', trainingPlanPage, '.reminder-icon :deep(svg)'],
       ['TrainingResourcePage.vue', trainingResourcePage, '.stat-icon :deep(svg)'],
       ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.status-icon :deep(svg)'],
       ['VirtualLabActivityDetailPage.vue', virtualLabActivityDetailPage, '.file-icon :deep(svg)'],
@@ -199,6 +310,9 @@ describe('admin visual action guardrails', () => {
     for (const [filename, source, selector] of adminIconBadgeSources) {
       expect(source, filename).toContain(selector)
     }
+
+    expect(trainingPlanPage).not.toContain('.stat-icon::after')
+    expect(trainingPlanPage).not.toContain('.reminder-icon::after')
 
     expect(adminDesignGuide).toContain('@element-plus/icons-vue')
     expect(adminDesignGuide).toContain('能用图标库表达的通用图标，优先使用 `AdminIcon`')
@@ -369,10 +483,23 @@ describe('admin visual action guardrails', () => {
   })
 
   it('uses the shared Button component for ability list execution hero actions', () => {
-    expect(abilityListExecutionPage).toContain('<Button class="primary-action" @click="deriveNextVersion">')
+    expect(abilityListExecutionPage).toContain('class="primary-action"')
+    expect(abilityListExecutionPage).toContain('@click="openDeriveDrawer"')
+    expect(abilityListExecutionPage).toContain('title="派生执行清单"')
+    expect(abilityListExecutionPage).toContain('<Button @click="generatePendingExecutionVersion">生成待发布版本</Button>')
+    expect(abilityListExecutionPage).toContain('v-if="pendingExecutionVersion"')
+    expect(abilityListExecutionPage).toContain('@click="confirmPublish"')
+    expect(abilityListExecutionPage).toContain('确认发布')
+    expect(abilityListExecutionPage).toContain('publishExecutionVersion')
+    expect(abilityListExecutionPage).toContain('@click="openCancelPublishDrawer"')
     expect(abilityListExecutionPage).toContain('<Button class="secondary-action" variant="outline" @click="openVersionDrawer">历史版本</Button>')
+    expect(abilityListExecutionPage).not.toContain('goToPublishConfirm')
+    expect(abilityListExecutionPage).not.toContain("router.push('/admin/ability-list/execution/publish-confirm')")
+    expect(abilityListExecutionPage).not.toContain('发布确认')
+    expect(abilityListExecutionPage).not.toContain('<Button v-if="pendingExecutionVersion" variant="secondary" @click="openDimensionDrawer">')
+    expect(abilityListExecutionPage).not.toContain('<Button v-if="pendingExecutionVersion" variant="outline" @click="removeSelectedDimension">')
     expect(abilityListExecutionPage).not.toContain('<button class="primary-action btn-primary" @click="deriveNextVersion">')
-    expect(abilityListExecutionPage).not.toContain('<button class="secondary-action btn-secondary" @click="openVersionDrawer">历史版本</button>')
+  expect(abilityListExecutionPage).not.toContain('<button class="secondary-action btn-secondary" @click="openVersionDrawer">历史版本</button>')
   })
 
   it('uses DetailSheet for the ability list execution edit and history drawer shells', () => {
@@ -397,7 +524,7 @@ describe('admin visual action guardrails', () => {
     expect(abilityListPublishConfirmPage).toContain('import { Button } from \'@/components/ui\'')
     expect(abilityListPublishConfirmPage).toContain('<Button variant="outline" @click="goBack">返回修改</Button>')
     expect(abilityListPublishConfirmPage).toContain('<Button')
-    expect(abilityListPublishConfirmPage).toContain(':disabled="publishStatus === \'published\'"')
+    expect(abilityListPublishConfirmPage).toContain(':disabled="!pendingExecutionVersion || publishStatus === \'published\'"')
     expect(abilityListPublishConfirmPage).toContain('@click="handlePublish"')
     expect(abilityListPublishConfirmPage).not.toContain('<button class="btn-secondary" @click="goBack">返回修改</button>')
     expect(abilityListPublishConfirmPage).not.toContain('class="btn-primary"')
@@ -405,11 +532,12 @@ describe('admin visual action guardrails', () => {
 
   it('uses the shared Button component for ability list requirement mapping actions', () => {
     expect(abilityListRequirementMappingPage).toContain('<Button @click="addNewMapping">新增要求项</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="ghost" size="sm" @click.stop="openEditDrawer(row)">编辑</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" size="sm" @click.stop="selectMapping(row); deleteMapping()">删除</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button @click="openEditDrawer(selectedMapping)">编辑映射</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" @click="deleteMapping">删除</Button>')
-    expect(abilityListRequirementMappingPage).toContain('<Button variant="secondary" @click="confirmMapping">确认配置</Button>')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="outline" @click="openEditDrawer(selectedMapping)">')
+    expect(abilityListRequirementMappingPage).toContain('<Button variant="danger" @click="deleteMapping">')
+    expect(abilityListRequirementMappingPage).toContain('<Button @click="confirmMapping">')
+    expect(abilityListRequirementMappingPage).not.toContain('<AdminTableColumn label="操作"')
+    expect(abilityListRequirementMappingPage).not.toContain('@click.stop="openEditDrawer(row)"')
+    expect(abilityListRequirementMappingPage).not.toContain('@click.stop="selectMapping(row); deleteMapping()"')
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-primary" @click="addNewMapping">新增要求项</button>')
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-link" @click.stop="openEditDrawer(mapping)">编辑</button>')
     expect(abilityListRequirementMappingPage).not.toContain('<button class="btn-link danger" @click.stop="selectMapping(mapping); deleteMapping()">删除</button>')
@@ -570,6 +698,16 @@ describe('admin visual action guardrails', () => {
     expect(abilityListExecutionPage).toContain('discardExecutionAdjustments')
     expect(abilityListExecutionPage).toContain('确认调整（{{ pendingExecutionChangeRows.length }}）')
     expect(abilityListExecutionPage).toContain('撤回调整')
+    expect(abilityListExecutionPage).toContain('deletePendingExecutionIndicator')
+    expect(abilityListExecutionPage).toContain('isPendingMode')
+    expect(abilityListExecutionPage).toContain(':show-structure-actions="isPendingMode"')
+    expect(abilityListExecutionPage).toContain('@add-dimension="openDimensionDrawer"')
+    expect(abilityListExecutionPage).toContain('@edit-node="openDimensionEditDrawer"')
+    expect(abilityListExecutionPage).toContain('@delete-node="deleteAbilityNode"')
+    expect(abilityListExecutionPage).toContain('updatePendingExecutionAbilityNode')
+    expect(abilityListExecutionPage).toContain('deletePendingExecutionAbilityNode')
+    expect(abilityListExecutionPage).toContain('删除')
+    expect(abilityListExecutionPage).toContain('pendingExecutionAbilityTree')
     expect(abilityListExecutionPage).toContain('@select-ability="selectAbility"')
     expect(abilityListExecutionPage).toContain(':indicators="filteredIndicators"')
     expect(abilityListExecutionPage).toContain('const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey')
@@ -579,9 +717,33 @@ describe('admin visual action guardrails', () => {
     expect(abilityListExecutionPage).not.toContain(':default-expanded-keys="[\'teaching\']"')
   })
 
+  it('exposes the requirement mapping entry from the execution page workspace', () => {
+    expect(abilityListExecutionPage).toContain('RouterLink')
+    expect(abilityListExecutionPage).toContain('to="/admin/ability-list/execution/requirement-mapping"')
+    expect(abilityListExecutionPage).toContain('class="workspace-entry-link"')
+    expect(abilityListExecutionPage).toContain('岗位/聘期要求映射')
+    expect(abilityListExecutionPage).toContain('进入映射配置')
+  })
+
+  it('keeps pending execution structure actions attached to the structure tree nodes', () => {
+    expect(abilityStructureTree).toContain('AdminIcon')
+    expect(abilityStructureTree).toContain('aria-label="新增维度"')
+    expect(abilityStructureTree).toContain('class="structure-add-action"')
+    expect(abilityStructureTree).toContain('class="node-actions"')
+    expect(abilityStructureTree).toContain('aria-label="编辑维度"')
+    expect(abilityStructureTree).toContain('aria-label="删除维度"')
+    expect(abilityStructureTree).toContain('emit(\'edit-node\', data)')
+    expect(abilityStructureTree).toContain('emit(\'delete-node\', data)')
+    expect(abilityStructureTree).not.toContain('>新增维度</Button>')
+    expect(abilityStructureTree).not.toContain('>删除当前维度</Button>')
+  })
+
   it('keeps ability list publish confirmation free of automatic version derivation', () => {
     expect(abilityListPublishConfirmPage).not.toContain('deriveNextExecutionVersion')
-    expect(abilityListPublishConfirmPage).toContain('发布准备来自执行版页面的“派生下一周期执行版”操作')
+    expect(abilityListPublishConfirmPage).toContain('pendingExecutionVersion')
+    expect(abilityListPublishConfirmPage).toContain('暂无待发布执行清单')
+    expect(abilityListPublishConfirmPage).toContain('发布准备来自执行清单页面的“派生下一周期”操作')
+    expect(abilityListPublishConfirmPage).toContain(':disabled="!pendingExecutionVersion || publishStatus === \'published\'"')
   })
 
   it('keeps requirement mapping data scoped to the selected requirement object', () => {
@@ -591,6 +753,34 @@ describe('admin visual action guardrails', () => {
     expect(abilityListRequirementMappingPage).toContain('requirementGroupKey: selectedGroup.value')
     expect(abilityListRequirementMappingPage).not.toContain('+ 17')
     expect(abilityListRequirementMappingPage).not.toContain('+ 3')
+  })
+
+  it('aligns requirement mapping page with the target three-column management layout', () => {
+    expect(abilityListRequirementMappingPage).toContain('requirementMappingHeroArt')
+    expect(abilityListRequirementMappingPage).toContain('hero-art')
+    expect(abilityListRequirementMappingPage).toContain('hero-emblem')
+    expect(abilityListRequirementMappingPage).toContain('overviewStats')
+    expect(abilityListRequirementMappingPage).toContain("value: '12'")
+    expect(abilityListRequirementMappingPage).toContain("value: '19'")
+    expect(abilityListRequirementMappingPage).toContain("value: '5'")
+    expect(abilityListRequirementMappingPage).toContain('制度补充条件')
+    expect(abilityListRequirementMappingPage).toContain('确认状态')
+    expect(abilityListRequirementMappingPage).toContain('detail-actions')
+    expect(abilityListRequirementMappingPage).toContain('确认配置')
+    expect(abilityListRequirementMappingPage).toContain('detail-delete-action')
+    expect(abilityListRequirementMappingPage).toContain('level-standard-card')
+    expect(abilityListRequirementMappingPage).toContain('class="mapping-table"')
+    expect(abilityListRequirementMappingPage).toContain('border')
+    expect(abilityListRequirementMappingPage).toContain('class="pager-button active"')
+    expect(abilityListRequirementMappingPage).toContain('class="page-size-select"')
+    expect(abilityListRequirementMappingPage).toContain('mapping-table :deep(.el-table__cell)')
+    expect(abilityListRequirementMappingPage).not.toContain('<AdminTableColumn label="操作"')
+    expect(abilityListRequirementMappingPage).not.toContain('max-height: 500px')
+    expect(abilityListRequirementMappingPage).not.toContain('class="page-breadcrumb"')
+    expect(abilityListRequirementMappingPage).not.toContain('operationMessage')
+    expect(abilityListRequirementMappingPage).not.toContain('useOperationMessage')
+    expect(abilityListRequirementMappingPage).toContain('padding: var(--space-admin-xs) var(--space-admin-2xl) var(--space-admin-2xl);')
+    expect(abilityListRequirementMappingPage).not.toContain('padding: var(--space-admin-2xl);')
   })
 
   it('shows current execution version evidence on ability profile pages', () => {
@@ -1152,6 +1342,19 @@ describe('admin visual action guardrails', () => {
     expect(reflectionOverviewPage).toContain('activeIssueKeyword')
     expect(reflectionOverviewPage).toContain('resetFilters')
     expect(reflectionOverviewPage).not.toContain('<div class="filter-section">')
+  })
+
+  it('keeps reflection overview input and table styles bound to admin-ui internals', () => {
+    const searchInputBlock = reflectionOverviewPage.match(/\.search-input\s*\{(?<body>[\s\S]*?)\}/)?.groups?.body ?? ''
+
+    expect(searchInputBlock).not.toMatch(/padding\s*:/)
+    expect(searchInputBlock).not.toMatch(/border\s*:/)
+    expect(searchInputBlock).not.toMatch(/border-radius\s*:/)
+    expect(reflectionOverviewPage).toContain('.search-input :deep(.el-input__wrapper)')
+    expect(reflectionOverviewPage).toContain('.reflection-table :deep(.el-table__header th)')
+    expect(reflectionOverviewPage).toContain('.reflection-table :deep(.el-table__cell)')
+    expect(reflectionOverviewPage).not.toContain('.reflection-table th {')
+    expect(reflectionOverviewPage).not.toContain('.reflection-table td {')
   })
 
   it('uses CompactFilterBar for the training record filter area', () => {

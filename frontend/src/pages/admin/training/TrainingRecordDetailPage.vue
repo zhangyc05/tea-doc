@@ -540,8 +540,8 @@ function viewRelatedRecord(recordId: string) {
   table-layout: fixed;
 }
 
-.material-table th,
-.related-table th {
+.material-table :deep(.el-table__header .el-table__cell),
+.related-table :deep(.el-table__header .el-table__cell) {
   height: 36px;
   padding: 0 12px;
   text-align: center;
@@ -553,8 +553,8 @@ function viewRelatedRecord(recordId: string) {
   background: #f4f7fc;
 }
 
-.material-table td,
-.related-table td {
+.material-table :deep(.el-table__body .el-table__cell),
+.related-table :deep(.el-table__body .el-table__cell) {
   height: 38px;
   padding: 0 12px;
   font-size: 13px;
@@ -564,15 +564,13 @@ function viewRelatedRecord(recordId: string) {
   border-right: 1px solid var(--color-admin-divider);
 }
 
-.material-table th:last-child,
-.material-table td:last-child,
-.related-table th:last-child,
-.related-table td:last-child {
+.material-table :deep(.el-table__cell:last-child),
+.related-table :deep(.el-table__cell:last-child) {
   border-right: 0;
 }
 
-.material-table tr:last-child td,
-.related-table tr:last-child td {
+.material-table :deep(.el-table__body tr:last-child .el-table__cell),
+.related-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

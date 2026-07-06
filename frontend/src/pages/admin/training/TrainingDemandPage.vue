@@ -476,29 +476,27 @@ function matchDemand(id: string) {
 .filter-select {
   width: 100%;
   height: 40px;
-  padding: 0 36px 0 14px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: #1a2944;
-  background: #fff;
-  cursor: pointer;
-  outline: none;
 }
 
 .search-input {
   width: 100%;
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus {
-  border-color: var(--color-admin-primary);
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset;
 }
 
 .operation-message {
@@ -519,7 +517,7 @@ function matchDemand(id: string) {
   border: 1px solid var(--color-admin-border);
 }
 
-.demand-table th {
+.demand-table :deep(.el-table__header .el-table__cell) {
   padding: var(--space-admin-md-lg) var(--space-admin-md);
   text-align: left;
   font-size: 13px;
@@ -530,7 +528,7 @@ function matchDemand(id: string) {
   background: var(--color-admin-bg-soft);
 }
 
-.demand-table td {
+.demand-table :deep(.el-table__body .el-table__cell) {
   padding: 18px 12px;
   font-size: 13px;
   line-height: 1.55;
@@ -540,8 +538,7 @@ function matchDemand(id: string) {
   vertical-align: middle;
 }
 
-.demand-table th:last-child,
-.demand-table td:last-child {
+.demand-table :deep(.el-table__cell:last-child) {
   border-right: none;
 }
 
@@ -549,43 +546,36 @@ function matchDemand(id: string) {
   background: #f4f8ff;
 }
 
-.demand-table th:nth-child(1),
-.demand-table td:nth-child(1) {
+.demand-table :deep(.el-table__cell:nth-child(1)) {
   width: 9%;
   font-weight: 700;
 }
 
-.demand-table th:nth-child(2),
-.demand-table td:nth-child(2) {
+.demand-table :deep(.el-table__cell:nth-child(2)) {
   width: 24%;
 }
 
-.demand-table th:nth-child(3),
-.demand-table td:nth-child(3) {
+.demand-table :deep(.el-table__cell:nth-child(3)) {
   width: 15%;
 }
 
-.demand-table th:nth-child(4),
-.demand-table td:nth-child(4) {
+.demand-table :deep(.el-table__cell:nth-child(4)) {
   width: 13%;
 }
 
-.demand-table th:nth-child(5),
-.demand-table td:nth-child(5) {
+.demand-table :deep(.el-table__cell:nth-child(5)) {
   width: 12%;
 }
 
-.demand-table th:nth-child(6),
-.demand-table td:nth-child(6) {
+.demand-table :deep(.el-table__cell:nth-child(6)) {
   width: 21%;
 }
 
-.demand-table th:nth-child(7),
-.demand-table td:nth-child(7) {
+.demand-table :deep(.el-table__cell:nth-child(7)) {
   width: 6%;
 }
 
-.demand-table tr:last-child td {
+.demand-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { AdminInput, AdminSelect } from '@/components/admin-ui'
+import { RouterLink } from 'vue-router'
+import { AdminIcon, AdminInput, AdminSelect } from '@/components/admin-ui'
 import { DetailSheet, StatusBadge } from '@/components/common'
 import { Button } from '@/components/ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import AbilityListWorkspace from '@/components/admin/ability-list/AbilityListWorkspace.vue'
-import type { AbilityIndicator } from '@/components/admin/ability-list/types'
+import type { AbilityIndicator, AbilityTreeNode } from '@/components/admin/ability-list/types'
 import { getExecutionVersionStatusLabel } from '@/domain/admin/ability-list'
 import { getAbilityListExecutionMock } from '@/services/mock/ability-list'
 import {
+  addPendingExecutionDimension,
+  cancelPendingExecutionVersion,
   confirmExecutionIndicatorChanges,
+  deletePendingExecutionAbilityNode,
+  deletePendingExecutionIndicator,
   deriveNextExecutionVersion,
   discardExecutionIndicatorChanges,
   getDisplayedExecutionIndicators,
   getAbilityListState,
+  publishExecutionVersion,
   updateExecutionIndicator,
+  updatePendingExecutionAbilityNode,
 } from '@/stores/admin/abilityListStore'
 import iconAbilityBasic from '@/assets/admin/ability-list-base-assets/icons/icon-ability-basic.svg'
 import iconAbilityTeaching from '@/assets/admin/ability-list-base-assets/icons/icon-ability-teaching.svg'
@@ -23,8 +29,6 @@ import iconAbilityResearch from '@/assets/admin/ability-list-base-assets/icons/i
 import iconAbilityPractice from '@/assets/admin/ability-list-base-assets/icons/icon-ability-practice.svg'
 import iconAbilityService from '@/assets/admin/ability-list-base-assets/icons/icon-ability-service.svg'
 
-const router = useRouter()
-const route = useRoute()
 const abilityListState = getAbilityListState()
 const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
   basic: iconAbilityBasic,
@@ -38,9 +42,20 @@ const { abilityTree: normalizedAbilityTree } = getAbilityListExecutionMock({
 const editingIndicator = ref<AbilityIndicator | null>(null)
 const editErrors = ref<Record<string, string>>({})
 const showVersionDrawer = ref(false)
+const deriveDrawerOpen = ref(false)
+const cancelPublishDrawerOpen = ref(false)
+const dimensionDrawerOpen = ref(false)
+const editingAbilityNode = ref<AbilityTreeNode | null>(null)
 const defaultAbilityGroupKey = normalizedAbilityTree[0]?.key ?? ''
 const defaultAbilityKey = normalizedAbilityTree[0]?.children?.[0]?.key ?? defaultAbilityGroupKey
 const selectedAbility = ref(defaultAbilityKey)
+const dimensionForm = ref({
+  key: 'innovation',
+  label: '创新能力',
+  childKey: 'innovation-ai',
+  childLabel: '智能应用',
+})
+const isEditingAbilityNode = computed(() => Boolean(editingAbilityNode.value))
 const indicatorStatusOptions = [
   { label: '已启用', value: 'enabled' },
   { label: '已禁用', value: 'disabled' },
@@ -100,6 +115,12 @@ function saveEdit() {
   closeEditDrawer()
 }
 
+const pendingExecutionVersion = computed(() => abilityListState.pendingExecutionVersion)
+const currentExecutionVersion = computed(() => pendingExecutionVersion.value ?? abilityListState.executionVersion)
+const isPendingMode = computed(() => Boolean(pendingExecutionVersion.value))
+const activeAbilityTree = computed(() => hydrateAbilityTreeIcons(
+  abilityListState.pendingExecutionAbilityTree ?? abilityListState.executionAbilityTree,
+))
 const normalizedIndicators = computed<AbilityIndicator[]>(() => getDisplayedExecutionIndicators())
 const filteredIndicators = computed<AbilityIndicator[]>(() => (
   normalizedIndicators.value.filter(indicator => indicator.abilityKey === selectedAbility.value)
@@ -107,19 +128,31 @@ const filteredIndicators = computed<AbilityIndicator[]>(() => (
 const pendingExecutionChangeRows = computed(() => abilityListState.pendingExecutionIndicatorChanges)
 const versionRows = computed(() => [
   abilityListState.executionVersion,
+  ...(pendingExecutionVersion.value ? [pendingExecutionVersion.value] : []),
   ...abilityListState.versionHistory,
 ])
-const statusText = computed(() => getExecutionVersionStatusLabel(abilityListState.executionVersion.status))
-const subtitle = computed(() => abilityListState.executionVersion.status === 'published'
+const statusText = computed(() => getExecutionVersionStatusLabel(currentExecutionVersion.value.status))
+const subtitle = computed(() => currentExecutionVersion.value.status === 'published'
   ? '当前周期正在使用的教师能力清单'
-  : '下一周期执行版待确认发布')
+  : '下一周期执行清单待确认发布，可调整结构后再发布')
+
+function hydrateAbilityTreeIcons(nodes: typeof normalizedAbilityTree) {
+  return nodes.map((node) => {
+    const fallback = normalizedAbilityTree.find(item => item.key === node.key)
+    return {
+      ...node,
+      icon: node.icon || fallback?.icon || '',
+      children: node.children?.map(child => ({ ...child })),
+    }
+  })
+}
 
 function selectAbility(key: string) {
   selectedAbility.value = key
 }
 
 function findSelectedAbility() {
-  for (const item of normalizedAbilityTree) {
+  for (const item of activeAbilityTree.value) {
     const child = item.children?.find(childItem => childItem.key === selectedAbility.value)
     if (child) {
       return { dimension: item.label, element: child.label, icon: item.icon }
@@ -140,9 +173,94 @@ function getSelectedAbilityIcon() {
   return findSelectedAbility().icon
 }
 
-function deriveNextVersion() {
-  deriveNextExecutionVersion()
-  router.push('/admin/ability-list/execution/publish-confirm')
+function openDeriveDrawer() {
+  deriveDrawerOpen.value = true
+}
+
+function closeDeriveDrawer() {
+  deriveDrawerOpen.value = false
+}
+
+function generatePendingExecutionVersion() {
+  deriveNextExecutionVersion(activeAbilityTree.value)
+  deriveDrawerOpen.value = false
+}
+
+function confirmPublish() {
+  publishExecutionVersion()
+  selectedAbility.value = activeAbilityTree.value[0]?.children?.[0]?.key ?? defaultAbilityKey
+}
+
+function openCancelPublishDrawer() {
+  cancelPublishDrawerOpen.value = true
+}
+
+function closeCancelPublishDrawer() {
+  cancelPublishDrawerOpen.value = false
+}
+
+function confirmCancelPublish() {
+  cancelPendingExecutionVersion()
+  cancelPublishDrawerOpen.value = false
+  selectedAbility.value = defaultAbilityKey
+}
+
+function openDimensionDrawer() {
+  editingAbilityNode.value = null
+  dimensionForm.value = {
+    key: 'innovation',
+    label: '创新能力',
+    childKey: 'innovation-ai',
+    childLabel: '智能应用',
+  }
+  dimensionDrawerOpen.value = true
+}
+
+function closeDimensionDrawer() {
+  dimensionDrawerOpen.value = false
+  editingAbilityNode.value = null
+}
+
+function openDimensionEditDrawer(node: AbilityTreeNode) {
+  editingAbilityNode.value = { ...node, children: node.children?.map(child => ({ ...child })) }
+  dimensionForm.value = {
+    key: node.key,
+    label: node.label,
+    childKey: node.children?.[0]?.key ?? node.key,
+    childLabel: node.children?.[0]?.label ?? node.label,
+  }
+  dimensionDrawerOpen.value = true
+}
+
+function submitDimension() {
+  if (editingAbilityNode.value) {
+    updatePendingExecutionAbilityNode(editingAbilityNode.value.key, dimensionForm.value.label)
+    dimensionDrawerOpen.value = false
+    editingAbilityNode.value = null
+    return
+  }
+
+  addPendingExecutionDimension({
+    key: dimensionForm.value.key,
+    label: dimensionForm.value.label,
+    icon: '',
+    color: 'gray',
+    children: [{
+      key: dimensionForm.value.childKey,
+      label: dimensionForm.value.childLabel,
+    }],
+  })
+  selectedAbility.value = dimensionForm.value.childKey
+  dimensionDrawerOpen.value = false
+}
+
+function deleteAbilityNode(node: AbilityTreeNode) {
+  deletePendingExecutionAbilityNode(node.key)
+  selectedAbility.value = activeAbilityTree.value[0]?.children?.[0]?.key ?? defaultAbilityKey
+}
+
+function deleteIndicator(indicator: AbilityIndicator) {
+  deletePendingExecutionIndicator(indicator.key)
 }
 
 function confirmExecutionAdjustments() {
@@ -183,8 +301,8 @@ function closeVersionDrawer() {
             <div class="hero-heading-row">
               <div class="hero-title-group">
                 <div class="hero-title-row">
-                  <h1>{{ abilityListState.executionVersion.title }}</h1>
-                  <StatusBadge :status="abilityListState.executionVersion.status" :label="statusText" />
+                  <h1>{{ currentExecutionVersion.title }}</h1>
+                  <StatusBadge :status="currentExecutionVersion.status" :label="statusText" />
                 </div>
                 <p class="hero-subtitle">{{ subtitle }}</p>
                 <p v-if="abilityListState.operationMessage" class="operation-message">
@@ -193,19 +311,25 @@ function closeVersionDrawer() {
               </div>
 
               <div class="hero-actions">
-                <Button class="primary-action" @click="deriveNextVersion">
+                <Button class="primary-action" v-if="!pendingExecutionVersion" @click="openDeriveDrawer">
                   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5h10v10H5zM8 9h4M8 12h3" /></svg>
-                  派生下一周期执行版
+                  派生下一周期
+                </Button>
+                <Button v-if="pendingExecutionVersion" class="primary-action" @click="confirmPublish">
+                  确认发布
+                </Button>
+                <Button v-if="pendingExecutionVersion" variant="outline" @click="openCancelPublishDrawer">
+                  取消发布
                 </Button>
                 <Button
-                  v-if="pendingExecutionChangeRows.length > 0"
+                  v-if="!pendingExecutionVersion && pendingExecutionChangeRows.length > 0"
                   variant="secondary"
                   @click="confirmExecutionAdjustments"
                 >
                   确认调整（{{ pendingExecutionChangeRows.length }}）
                 </Button>
                 <Button
-                  v-if="pendingExecutionChangeRows.length > 0"
+                  v-if="!pendingExecutionVersion && pendingExecutionChangeRows.length > 0"
                   variant="outline"
                   @click="discardExecutionAdjustments"
                 >
@@ -224,27 +348,51 @@ function closeVersionDrawer() {
               </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">适用范围</span>
-                <strong class="admin-summary-value">{{ abilityListState.executionVersion.scope }}</strong>
+                <strong class="admin-summary-value">{{ currentExecutionVersion.scope }}</strong>
               </div>
               <div class="summary-item admin-summary-item">
                 <span class="admin-summary-label">最近更新</span>
-                <strong class="admin-summary-value">{{ abilityListState.executionVersion.lastUpdated }}</strong>
+                <strong class="admin-summary-value">{{ currentExecutionVersion.lastUpdated }}</strong>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      <section class="workspace-entry admin-card">
+        <div class="workspace-entry-main">
+          <span class="workspace-entry-icon">
+            <AdminIcon name="switch" />
+          </span>
+          <div>
+            <h2>岗位/聘期要求映射</h2>
+            <p>维护执行清单指标与岗位、聘期要求的映射关系，发布后用于教师对照和能力画像引用。</p>
+          </div>
+        </div>
+        <RouterLink
+          class="workspace-entry-link"
+          to="/admin/ability-list/execution/requirement-mapping"
+        >
+          进入映射配置
+        </RouterLink>
+      </section>
+
       <AbilityListWorkspace
-        :nodes="normalizedAbilityTree"
+        :nodes="activeAbilityTree"
         :selected-key="selectedAbility"
         :selected-title="getSelectedAbilityLabel()"
         :selected-icon="getSelectedAbilityIcon()"
         :indicators="filteredIndicators"
         basis-column-title="计算规则"
         :default-expanded-keys="[defaultAbilityGroupKey]"
+        :show-delete-action="isPendingMode"
+        :show-structure-actions="isPendingMode"
         @select-ability="selectAbility"
         @edit-indicator="openEditDrawer"
+        @delete-indicator="deleteIndicator"
+        @add-dimension="openDimensionDrawer"
+        @edit-node="openDimensionEditDrawer"
+        @delete-node="deleteAbilityNode"
       />
 
       <DetailSheet
@@ -306,6 +454,103 @@ function closeVersionDrawer() {
         <template #footer>
           <Button variant="outline" @click="closeEditDrawer">取消</Button>
           <Button @click="saveEdit">保存调整</Button>
+        </template>
+      </DetailSheet>
+
+      <DetailSheet
+        :open="deriveDrawerOpen"
+        title="派生执行清单"
+        width="form"
+        mode="edit"
+        @update:open="value => { deriveDrawerOpen = value }"
+        @cancel="closeDeriveDrawer"
+        @confirm="generatePendingExecutionVersion"
+      >
+        <div class="drawer-form drawer-form-in-sheet">
+          <p class="form-tip">基于当前已发布执行清单生成下一周期待发布版本，生成后可调整指标和维度，确认无误后再发布。</p>
+          <div class="derive-summary">
+            <div>
+              <span>目标版本</span>
+              <strong>2027 年度教师能力清单执行版</strong>
+            </div>
+            <div>
+              <span>来源执行版</span>
+              <strong>{{ abilityListState.executionVersion.title }}</strong>
+            </div>
+            <div>
+              <span>来源基准清单</span>
+              <strong>{{ abilityListState.baseTemplateVersion.title }}</strong>
+            </div>
+            <div>
+              <span>指标数量</span>
+              <strong>{{ normalizedIndicators.length }} 项</strong>
+            </div>
+          </div>
+        </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeDeriveDrawer">取消</Button>
+          <Button @click="generatePendingExecutionVersion">生成待发布版本</Button>
+        </template>
+      </DetailSheet>
+
+      <DetailSheet
+        :open="cancelPublishDrawerOpen"
+        title="取消发布"
+        width="sm"
+        mode="edit"
+        @update:open="value => { cancelPublishDrawerOpen = value }"
+        @cancel="closeCancelPublishDrawer"
+        @confirm="confirmCancelPublish"
+      >
+        <div class="drawer-form drawer-form-in-sheet">
+          <p class="form-tip">取消后将删除当前待发布执行清单草稿，已发布执行清单和历史版本不会受到影响。</p>
+        </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeCancelPublishDrawer">继续编辑</Button>
+          <Button @click="confirmCancelPublish">确认取消发布</Button>
+        </template>
+      </DetailSheet>
+
+      <DetailSheet
+        :open="dimensionDrawerOpen"
+        :title="isEditingAbilityNode ? '编辑维度' : '新增维度'"
+        width="form"
+        mode="edit"
+        @update:open="value => { dimensionDrawerOpen = value }"
+        @cancel="closeDimensionDrawer"
+        @confirm="submitDimension"
+      >
+        <div class="drawer-form drawer-form-in-sheet">
+          <p class="form-tip">
+            {{ isEditingAbilityNode ? '编辑维度仅作用于待发布执行清单，发布后才成为新的正式执行清单结构。' : '新增维度仅作用于待发布执行清单，发布后才成为新的正式执行清单结构。' }}
+          </p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">维度编码</label>
+              <AdminInput v-model="dimensionForm.key" class="form-input" :disabled="isEditingAbilityNode" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">维度名称</label>
+              <AdminInput v-model="dimensionForm.label" class="form-input" />
+            </div>
+          </div>
+          <div v-if="!isEditingAbilityNode" class="form-row">
+            <div class="form-group">
+              <label class="form-label">默认要素编码</label>
+              <AdminInput v-model="dimensionForm.childKey" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">默认要素名称</label>
+              <AdminInput v-model="dimensionForm.childLabel" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <template #footer>
+          <Button variant="outline" @click="closeDimensionDrawer">取消</Button>
+          <Button @click="submitDimension">保存维度</Button>
         </template>
       </DetailSheet>
 
@@ -506,6 +751,77 @@ function closeVersionDrawer() {
   padding-top: 0;
 }
 
+.workspace-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-admin-lg);
+  padding: 14px 18px;
+}
+
+.workspace-entry-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-admin-md);
+}
+
+.workspace-entry-icon {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-admin-panel);
+  background: #eef5ff;
+  color: var(--color-primary);
+}
+
+.workspace-entry-icon :deep(svg) {
+  width: 18px;
+  height: 18px;
+}
+
+.workspace-entry h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.workspace-entry p {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.workspace-entry-link {
+  display: inline-flex;
+  height: 36px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 850;
+  padding: 0 14px;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.workspace-entry-link:hover {
+  border-color: rgba(18, 104, 246, 0.32);
+  background: #f4f8ff;
+  box-shadow: 0 8px 18px rgba(18, 104, 246, 0.08);
+}
+
 /* 按钮图标特殊样式 */
 .primary-action svg,
 .secondary-action svg {
@@ -606,6 +922,34 @@ function closeVersionDrawer() {
   font-size: 12px;
   font-weight: 800;
   line-height: 1.4;
+}
+
+.derive-summary {
+  display: grid;
+  gap: var(--space-admin-md);
+}
+
+.derive-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-admin-lg);
+  border: 1px solid var(--color-admin-border);
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
+  padding: 12px 14px;
+}
+
+.derive-summary span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.derive-summary strong {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+  text-align: right;
 }
 
 .version-list {

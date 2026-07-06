@@ -537,29 +537,27 @@ function applyFilters() {
 .filter-select {
   width: 100%;
   height: 40px;
-  padding: 0 32px 0 12px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: #1a2944;
-  background: #fff;
-  cursor: pointer;
-  outline: none;
 }
 
 .search-input {
   flex: 1;
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #d7e2f1;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus {
-  border-color: var(--color-admin-primary);
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset;
 }
 
 .operation-message,
@@ -584,7 +582,7 @@ function applyFilters() {
   border: 1px solid var(--color-admin-border);
 }
 
-.tracking-table th {
+.tracking-table :deep(.el-table__header .el-table__cell) {
   padding: var(--space-admin-md-lg) var(--space-admin-lg);
   text-align: left;
   font-size: 13px;
@@ -595,7 +593,7 @@ function applyFilters() {
   background: var(--color-admin-bg-soft);
 }
 
-.tracking-table td {
+.tracking-table :deep(.el-table__body .el-table__cell) {
   padding: 18px 16px;
   font-size: 13px;
   line-height: 1.6;
@@ -605,8 +603,7 @@ function applyFilters() {
   vertical-align: middle;
 }
 
-.tracking-table th:last-child,
-.tracking-table td:last-child {
+.tracking-table :deep(.el-table__cell:last-child) {
   border-right: none;
 }
 
@@ -614,42 +611,36 @@ function applyFilters() {
   background: #f4f8ff;
 }
 
-.tracking-table th:nth-child(1),
-.tracking-table td:nth-child(1) {
+.tracking-table :deep(.el-table__cell:nth-child(1)) {
   width: 9%;
   font-weight: 700;
 }
 
-.tracking-table th:nth-child(2),
-.tracking-table td:nth-child(2) {
+.tracking-table :deep(.el-table__cell:nth-child(2)) {
   width: 28%;
 }
 
-.tracking-table th:nth-child(3),
-.tracking-table td:nth-child(3) {
+.tracking-table :deep(.el-table__cell:nth-child(3)) {
   width: 16%;
   text-align: center;
 }
 
-.tracking-table th:nth-child(4),
-.tracking-table td:nth-child(4) {
+.tracking-table :deep(.el-table__cell:nth-child(4)) {
   width: 15%;
   text-align: center;
 }
 
-.tracking-table th:nth-child(5),
-.tracking-table td:nth-child(5) {
+.tracking-table :deep(.el-table__cell:nth-child(5)) {
   width: 18%;
   text-align: center;
 }
 
-.tracking-table th:nth-child(6),
-.tracking-table td:nth-child(6) {
+.tracking-table :deep(.el-table__cell:nth-child(6)) {
   width: 14%;
   text-align: center;
 }
 
-.tracking-table tr:last-child td {
+.tracking-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 

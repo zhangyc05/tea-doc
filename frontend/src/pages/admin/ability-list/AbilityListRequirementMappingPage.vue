@@ -1,25 +1,28 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue'
-	import { useRoute } from 'vue-router'
-	import { AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
+	import { AdminIcon, AdminInput, AdminSelect, AdminTable, AdminTableColumn } from '@/components/admin-ui'
 	import { DetailSheet, StatusBadge } from '@/components/common'
 	import { Button } from '@/components/ui'
 	import AdminLayout from '@/layouts/AdminLayout.vue'
 	import { getRequirementMappingStatusLabel, type RequirementMappingStatus } from '@/domain/admin/ability-list'
-	import { useOperationMessage } from '@/lib/operationMessage'
 	import { getAbilityListRequirementMappingMock } from '@/services/mock/ability-list'
 	import {
 		confirmRequirementMapping,
 		deleteRequirementMapping,
 		getRequirementMappingsForGroup,
-		getAbilityListState,
 		saveRequirementMapping,
 		type RequirementMapping,
 	} from '@/stores/admin/abilityListStore'
+	import requirementMappingHeroArt from '@/assets/admin/ability-list-base-assets/ability-list-base-hero-art.png'
 
-	const route = useRoute()
-	const abilityListState = getAbilityListState()
 	const { requirementGroups } = getAbilityListRequirementMappingMock()
+
+	const overviewStats = [
+		{ key: 'position', value: '12', unit: '项', label: '岗位竞聘要求', icon: 'user', tone: 'blue' },
+		{ key: 'tenure', value: '12', unit: '项', label: '聘期履职要求', icon: 'document', tone: 'cyan' },
+		{ key: 'confirmed', value: '19', unit: '项', label: '已确认映射', icon: 'check', tone: 'green' },
+		{ key: 'pending', value: '5', unit: '项', label: '待确认映射', icon: 'clock', tone: 'orange' },
+	]
 
 	const emptyMapping: RequirementMapping = {
 		id: '',
@@ -75,8 +78,9 @@
 		{ label: '已确认', value: 'confirmed' },
 		{ label: '待确认', value: 'pending' },
 	]
-
-	const mappings = computed(() => abilityListState.requirementMappings)
+	const pageSizeOptions = [
+		{ label: '10 条/页', value: '10' },
+	]
 
 	// 当前选中的要求对象
 	const selectedGroup = ref('associate-professor')
@@ -91,27 +95,16 @@
 
 	// 编辑抽屉状态
 	const editingMapping = ref<RequirementMapping | null>(null)
-	const operationMessage = useOperationMessage()
-
-	// 统计数据
-	const stats = computed(() => ({
-		positionRequirements: mappings.value.filter((item) => !item.requirementGroupKey.includes('tenure')).length,
-		tenureRequirements: mappings.value.filter((item) => item.requirementGroupKey.includes('tenure')).length,
-		confirmed: mappings.value.filter((item) => item.confirmStatus === 'confirmed').length,
-		pending: mappings.value.filter((item) => item.confirmStatus !== 'confirmed').length,
-	}))
 
 	// 选择要求对象
 	function selectGroup(key: string) {
 		selectedGroup.value = key
 		selectedMappingId.value = getRequirementMappingsForGroup(key)[0]?.id ?? ''
-		operationMessage.set(`已切换要求对象：${getSelectedGroupLabel()}。`)
 	}
 
 	// 选择映射项
 	function selectMapping(mapping: RequirementMapping) {
 		selectedMappingId.value = mapping.id
-		operationMessage.set('已在右侧展示要求项详情。')
 	}
 
 	// 打开编辑抽屉
@@ -137,7 +130,6 @@
 			documentCondition: '待补充制度条件',
 			confirmStatus: 'pending',
 		}
-		operationMessage.set('已创建待完善要求项。')
 	}
 
 	// 删除映射
@@ -146,7 +138,6 @@
 		if (!target.id) return
 		deleteRequirementMapping(target.id)
 		selectedMappingId.value = filteredMappings.value[0]?.id ?? ''
-		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
 	}
 
@@ -158,7 +149,6 @@
 			requirementGroupKey: editingMapping.value.requirementGroupKey || selectedGroup.value,
 		})
 		selectedMappingId.value = editingMapping.value.id
-		operationMessage.fromStore(abilityListState)
 		closeEditDrawer()
 	}
 
@@ -166,7 +156,6 @@
 	function confirmMapping() {
 		if (!selectedMapping.value.id) return
 		confirmRequirementMapping(selectedMapping.value.id)
-		operationMessage.fromStore(abilityListState)
 	}
 
 	// 获取选中要求对象的标签
@@ -213,53 +202,54 @@
 <template>
 	<AdminLayout active-key="ability-list-execution">
 		<div class="page-root">
-		<!-- 页面顶部 -->
-		<div class="page-breadcrumb">
-			能力清单 / 执行版 / 岗位/聘期要求映射
-		</div>
-		<div v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</div>
-
 		<!-- Hero 区 -->
-		<div class="admin-hero">
+		<section class="mapping-hero">
+			<div class="hero-art" aria-hidden="true">
+				<img :src="requirementMappingHeroArt" alt="" />
+			</div>
+			<div class="hero-emblem" aria-hidden="true">
+				<AdminIcon name="switch" />
+			</div>
 			<div class="hero-content">
-				<h1 class="hero-title">岗位/聘期要求映射</h1>
-				<StatusBadge status="pending" label="映射配置中" />
-
-				<div class="hero-description">
-					将岗位竞聘和聘期履职要求对应到当前执行版能力指标，用于后续教师目标对照、差距分析和正式档案事实引用。
+				<div class="hero-title-row">
+					<h1 class="hero-title">岗位/聘期要求映射</h1>
+					<StatusBadge status="pending" label="映射配置中" />
 				</div>
+
+				<p class="hero-description">
+					将岗位竞聘和聘期履职要求对应到当前执行版能力指标，用于后续教师目标对照、差距分析和正式档案事实引用。
+				</p>
 
 				<div class="hero-summary">
 					<div class="summary-item">
+						<AdminIcon name="document" />
 						<span class="summary-label">当前执行版：</span>
 						<span class="summary-value">2027 年度教师能力清单执行版</span>
 					</div>
 					<div class="summary-item">
+						<AdminIcon name="user" />
 						<span class="summary-label">适用范围：</span>
 						<span class="summary-value">全校教师</span>
 					</div>
 				</div>
 
 				<div class="hero-stats">
-					<div class="stat-card">
-						<div class="stat-value">{{ stats.positionRequirements }}</div>
-						<div class="stat-label">岗位竞聘要求</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-value">{{ stats.tenureRequirements }}</div>
-						<div class="stat-label">聘期履职要求</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-value">{{ stats.confirmed }}</div>
-						<div class="stat-label">已确认映射</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-value">{{ stats.pending }}</div>
-						<div class="stat-label">待确认映射</div>
+					<div
+						v-for="item in overviewStats"
+						:key="item.key"
+						class="stat-card"
+						:class="`stat-${item.tone}`"
+					>
+						<span class="stat-icon"><AdminIcon :name="item.icon" /></span>
+						<span class="stat-copy">
+							<strong>{{ item.value }}</strong>
+							<em>{{ item.unit }}</em>
+							<span>{{ item.label }}</span>
+						</span>
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 		<!-- 主体工作区：三栏布局 -->
 		<div class="main-workspace">
@@ -275,23 +265,17 @@
 							:key="group.key"
 							class="group-item"
 						>
-							<!-- 无子项的分组 -->
-							<div
-								v-if="!group.children"
-								class="group-node"
-								:class="{ active: selectedGroup === group.key }"
-								@click="selectGroup(group.key)"
-							>
-								{{ group.label }}
-							</div>
-
 							<!-- 有子项的分组 -->
-							<div v-else class="group-expanded">
+							<div class="group-expanded">
 								<div
 									class="group-parent"
 									:class="{ active: group.children.some(child => child.key === selectedGroup) }"
 								>
-									{{ group.label }}
+									<span class="group-parent-icon">
+										<AdminIcon :name="group.key.includes('tenure') ? 'finished' : 'briefcase'" />
+									</span>
+									<span>{{ group.label }}</span>
+									<AdminIcon name="arrow-up" />
 								</div>
 								<div class="group-children">
 									<div
@@ -301,7 +285,8 @@
 										:class="{ active: selectedGroup === child.key }"
 										@click="selectGroup(child.key)"
 									>
-										{{ child.label }}
+										<span class="group-radio" aria-hidden="true"></span>
+										<span>{{ child.label }}</span>
 									</div>
 								</div>
 							</div>
@@ -320,35 +305,29 @@
 
 					<div class="admin-table-container">
 						<AdminTable
+							class="mapping-table"
 							:data="filteredMappings"
 							row-key="id"
+							border
 							:row-class-name="mappingRowClassName"
 							empty-text="暂无要求项映射"
 							@row-click="selectMapping"
 						>
-							<AdminTableColumn prop="requirementText" label="要求项" min-width="190" />
-							<AdminTableColumn label="对应能力指标" min-width="220">
+							<AdminTableColumn prop="requirementText" label="要求项" min-width="130" />
+							<AdminTableColumn label="对应能力指标" min-width="120">
 								<template #default="{ row }">
 									{{ row.indicatorDimension }} / {{ row.indicatorName }}
 								</template>
 							</AdminTableColumn>
-							<AdminTableColumn label="要求等级" min-width="100">
+							<AdminTableColumn label="要求等级" min-width="72" align="center">
 								<template #default="{ row }">
 									<span class="level-badge" :class="getLevelBadgeClass(row.level)">{{ row.level }}</span>
 								</template>
 							</AdminTableColumn>
-							<AdminTableColumn prop="documentCondition" label="制度补充条件" min-width="180" />
-							<AdminTableColumn label="确认状态" min-width="120">
+							<AdminTableColumn prop="documentCondition" label="制度补充条件" min-width="108" />
+							<AdminTableColumn label="确认状态" min-width="88" align="center">
 								<template #default="{ row }">
 									<StatusBadge :status="row.confirmStatus" :label="getStatusLabel(row.confirmStatus)" />
-								</template>
-							</AdminTableColumn>
-							<AdminTableColumn label="操作" min-width="150" fixed="right">
-								<template #default="{ row }">
-									<div class="row-actions">
-										<Button variant="ghost" size="sm" @click.stop="openEditDrawer(row)">编辑</Button>
-										<Button variant="danger" size="sm" @click.stop="selectMapping(row); deleteMapping()">删除</Button>
-									</div>
 								</template>
 							</AdminTableColumn>
 						</AdminTable>
@@ -356,8 +335,22 @@
 
 					<div class="table-footer">
 						<span>共 {{ filteredMappings.length }} 条</span>
-						<span>第 1 页</span>
-						<span>每页 10 条/页</span>
+						<div class="pager-actions" aria-label="分页">
+							<button class="pager-button" type="button" disabled aria-label="上一页">
+								<AdminIcon name="arrow-left" />
+							</button>
+							<span class="pager-button active" aria-current="page">1</span>
+							<button class="pager-button" type="button" disabled aria-label="下一页">
+								<AdminIcon name="arrow-right" />
+							</button>
+						</div>
+						<AdminSelect
+							class="page-size-select"
+							model-value="10"
+							:options="pageSizeOptions"
+							:clearable="false"
+							disabled
+						/>
 					</div>
 				</div>
 			</div>
@@ -366,7 +359,14 @@
 			<div class="detail-panel">
 				<div class="admin-card">
 					<div class="admin-card-header">
-						<h3 class="admin-card-title">要求项详情</h3>
+						<h3 class="admin-card-title">
+							<AdminIcon name="document" />
+							要求项详情
+						</h3>
+						<Button class="detail-delete-action" variant="danger" size="sm" @click="deleteMapping">
+							<AdminIcon name="delete" />
+							删除
+						</Button>
 					</div>
 					<div class="mapping-detail">
 						<div class="detail-item">
@@ -387,11 +387,12 @@
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">要求等级：</span>
-							<span class="detail-value">{{ selectedMapping.level }}</span>
+							<span class="level-badge" :class="getLevelBadgeClass(selectedMapping.level)">{{ selectedMapping.level }}</span>
 						</div>
-						<div class="detail-item">
+						<div class="detail-item level-standard-card">
 							<span class="detail-label">等级标准：</span>
-							<span class="detail-value">承担核心课程教学并保持较稳定教学质量</span>
+							<span class="detail-value">{{ selectedMapping.levelCriteria }}</span>
+							<AdminIcon name="info" />
 						</div>
 						<div class="detail-item">
 							<span class="detail-label">制度补充条件：</span>
@@ -412,9 +413,18 @@
 					</div>
 
 					<div class="detail-actions">
-						<Button @click="openEditDrawer(selectedMapping)">编辑映射</Button>
-						<Button variant="danger" @click="deleteMapping">删除</Button>
-						<Button variant="secondary" @click="confirmMapping">确认配置</Button>
+						<Button variant="outline" @click="openEditDrawer(selectedMapping)">
+							<AdminIcon name="edit" />
+							编辑映射
+						</Button>
+						<Button variant="danger" @click="deleteMapping">
+							<AdminIcon name="delete" />
+							删除
+						</Button>
+						<Button @click="confirmMapping">
+							<AdminIcon name="check" />
+							确认配置
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -533,7 +543,7 @@
 		flex-direction: column;
 		min-height: 100vh;
 		gap: var(--space-admin-card-gap);
-		padding: var(--space-admin-2xl);
+		padding: var(--space-admin-xs) var(--space-admin-2xl) var(--space-admin-2xl);
 		background: var(--color-admin-bg);
 		color: var(--color-admin-text-strong);
 	}
@@ -544,34 +554,79 @@
 		box-sizing: border-box;
 	}
 
-	/* 页面顶部 */
-	.page-breadcrumb {
-		color: #7d899b;
-		font-size: 13px;
-		font-weight: 700;
-	}
-
-	.operation-message {
-		color: var(--color-admin-primary);
-		font-size: 13px;
-		font-weight: 800;
-	}
-
 	/* Hero 区 */
-	.admin-hero {
+	.mapping-hero {
 		position: relative;
-		min-height: 250px;
-		padding: 30px 38px;
+		min-height: 238px;
+		overflow: hidden;
+		padding: 24px 36px 18px 104px;
 		background: linear-gradient(135deg, var(--color-admin-bg-soft) 0%, #f0f7ff 100%);
-		border-radius: 14px;
+		border-radius: var(--radius-admin-panel);
 		border: 1px solid var(--color-admin-border);
 		box-shadow: var(--shadow-admin-card-faint);
 	}
 
+	.mapping-hero::before {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		background: linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.86) 55%, rgba(255, 255, 255, 0.08) 100%);
+		content: '';
+	}
+
+	.hero-art {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 0;
+		width: min(42%, 560px);
+		opacity: 0.86;
+	}
+
+	.hero-art img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: right center;
+	}
+
+	.hero-emblem {
+		position: absolute;
+		top: 36px;
+		left: 34px;
+		z-index: 2;
+		display: flex;
+		width: 72px;
+		height: 72px;
+		align-items: center;
+		justify-content: center;
+		border: 10px solid rgba(255, 255, 255, 0.9);
+		border-radius: 50%;
+		background: linear-gradient(145deg, var(--color-primary), var(--color-primary-hover));
+		color: #fff;
+		box-shadow: 0 14px 28px rgba(11, 99, 246, 0.18);
+	}
+
+	.hero-emblem :deep(svg) {
+		width: 30px;
+		height: 30px;
+	}
+
 	.hero-content {
+		position: relative;
+		z-index: 2;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-admin-xl);
+		gap: var(--space-admin-md);
+		max-width: min(1010px, 76%);
+	}
+
+	.hero-title-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-admin-md);
 	}
 
 	.hero-title {
@@ -580,12 +635,10 @@
 		font-weight: 900;
 		color: var(--color-admin-text-strong);
 		line-height: 1.3;
-		display: flex;
-		align-items: center;
-		gap: var(--space-admin-md);
 	}
 
 	.hero-description {
+		margin: 0;
 		color: #263b63;
 		font-size: 15px;
 		line-height: 1.6;
@@ -593,13 +646,20 @@
 
 	.hero-summary {
 		display: flex;
-		gap: 34px;
+		gap: var(--space-admin-2xl);
 	}
 
 	.summary-item {
 		display: flex;
+		align-items: center;
 		gap: var(--space-admin-xs);
 		font-size: 14px;
+	}
+
+	.summary-item :deep(svg) {
+		width: 18px;
+		height: 18px;
+		color: #6d7b92;
 	}
 
 	.summary-label {
@@ -613,22 +673,21 @@
 	}
 
 	.hero-stats {
-		max-width: 1120px;
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0;
-		padding: 16px 22px;
+		margin-top: var(--space-admin-sm);
+		padding: 9px 18px;
 		background: #fff;
 		border: 1px solid var(--color-admin-border);
 		border-radius: var(--radius-admin-panel);
 	}
 
 	.stat-card {
-		display: grid;
-		grid-template-columns: 46px minmax(0, 1fr);
+		display: flex;
 		align-items: center;
 		gap: var(--space-admin-md);
-		padding: 0 24px;
+		padding: 0 22px;
 		border-left: 1px solid #d7e2f2;
 	}
 
@@ -636,13 +695,51 @@
 		border-left: 0;
 	}
 
-	.stat-value {
-		font-size: 28px;
-		font-weight: 900;
+	.stat-icon {
+		display: flex;
+		width: 46px;
+		height: 46px;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: #ecf4ff;
 		color: var(--color-primary);
 	}
 
-	.stat-label {
+	.stat-icon :deep(svg) {
+		width: 24px;
+		height: 24px;
+	}
+
+	.stat-green .stat-icon { background: #e7f7e4; color: #3daf4a; }
+	.stat-orange .stat-icon { background: #fff0dc; color: #f07a22; }
+	.stat-cyan .stat-icon { background: #e4fbf7; color: #25a99a; }
+
+	.stat-copy {
+		display: grid;
+		grid-template-columns: auto auto;
+		align-items: baseline;
+		column-gap: var(--space-admin-xs);
+		row-gap: 2px;
+	}
+
+	.stat-copy strong {
+		color: #020b25;
+		font-size: 26px;
+		font-weight: 950;
+		line-height: 1;
+	}
+
+	.stat-copy em {
+		color: #263856;
+		font-size: 13px;
+		font-style: normal;
+		font-weight: 800;
+	}
+
+	.stat-copy span {
+		grid-column: 1 / -1;
 		font-size: 13px;
 		color: #7d899b;
 		font-weight: 700;
@@ -651,7 +748,7 @@
 	/* 主体工作区：三栏布局 */
 	.main-workspace {
 		display: grid;
-		grid-template-columns: 300px minmax(0, 1fr) 560px;
+		grid-template-columns: 255px minmax(0, 1fr) 470px;
 		gap: var(--space-admin-lg);
 		flex: 1;
 		min-height: 0;
@@ -670,7 +767,6 @@
 		flex-direction: column;
 	}
 
-	.group-node,
 	.group-parent,
 	.group-child {
 		display: flex;
@@ -684,13 +780,11 @@
 		color: #263856;
 	}
 
-	.group-node:hover,
 	.group-child:hover {
 		background: #f5f8ff;
 		color: var(--color-primary);
 	}
 
-	.group-node.active,
 	.group-child.active {
 		background: #f2f7ff;
 		color: var(--color-primary);
@@ -701,18 +795,53 @@
 		font-weight: 800;
 		color: #263856;
 		cursor: default;
+		justify-content: space-between;
+		gap: var(--space-admin-sm);
 	}
 
 	.group-parent.active {
 		color: var(--color-primary);
 	}
 
+	.group-parent-icon {
+		display: flex;
+		width: 22px;
+		height: 22px;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-primary);
+	}
+
+	.group-parent > span:nth-child(2) {
+		margin-right: auto;
+	}
+
+	.group-parent :deep(svg) {
+		width: 16px;
+		height: 16px;
+	}
+
 	.group-children {
 		display: flex;
 		flex-direction: column;
-		gap: 2px;
+		gap: var(--space-admin-xs);
 		margin-top: 4px;
-		margin-left: var(--space-admin-lg);
+		margin-left: var(--space-admin-sm);
+	}
+
+	.group-radio {
+		width: 14px;
+		height: 14px;
+		flex: none;
+		border: 2px solid #b8c7df;
+		border-radius: 50%;
+		background: #fff;
+	}
+
+	.group-child.active .group-radio {
+		border-color: var(--color-primary);
+		box-shadow: inset 0 0 0 3px #fff;
+		background: var(--color-primary);
 	}
 
 	/* 中间：要求项映射表 */
@@ -730,52 +859,182 @@
 		background: #f5f8ff;
 	}
 
+	.admin-table-container {
+		overflow: hidden;
+		padding: 0 var(--space-admin-sm);
+		border: 0;
+		background: transparent;
+	}
+
+	.mapping-table {
+		width: 100%;
+	}
+
+	.mapping-table :deep(.el-table__inner-wrapper::before) {
+		background: transparent;
+	}
+
+	.mapping-table :deep(.el-table__header th) {
+		height: 44px;
+		background: #f7faff;
+		color: var(--color-admin-text-strong);
+		font-size: 13px;
+		font-weight: 900;
+	}
+
+	.mapping-table :deep(.el-table__cell) {
+		padding: 12px 10px;
+		color: var(--color-admin-text-title);
+		font-size: 13px;
+		font-weight: 750;
+		line-height: 1.55;
+	}
+
+	.mapping-table :deep(.el-table__row) {
+		height: 66px;
+	}
+
+	.mapping-table :deep(.inline-flex) {
+		white-space: nowrap;
+	}
+
+	.mapping-table :deep(.el-table__body td:last-child .cell) {
+		display: flex;
+		justify-content: center;
+		overflow: visible;
+	}
+
 	.table-footer {
 		display: flex;
+		min-height: 58px;
+		align-items: center;
 		justify-content: space-between;
-		padding: var(--space-admin-lg);
+		padding: 0 var(--space-admin-sm) 0 var(--space-admin-lg);
 		color: #7d899b;
 		font-size: 13px;
 		font-weight: 700;
 	}
 
+	.pager-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-admin-sm);
+	}
+
+	.pager-button {
+		display: inline-flex;
+		width: 36px;
+		height: 36px;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--color-admin-border);
+		border-radius: var(--radius-sm);
+		background: #fff;
+		color: var(--color-admin-text-subtle);
+		font-family: inherit;
+		font-size: 14px;
+		font-weight: 900;
+	}
+
+	.pager-button.active {
+		border-color: var(--color-admin-primary);
+		background: var(--color-admin-primary);
+		color: #fff;
+		box-shadow: var(--shadow-admin-primary-action);
+	}
+
+	.pager-button:disabled {
+		cursor: not-allowed;
+		opacity: 0.58;
+	}
+
+	.pager-button :deep(svg) {
+		width: 16px;
+		height: 16px;
+	}
+
+	.page-size-select {
+		width: 110px;
+	}
+
 	/* 右侧：要求项详情 */
 	.detail-panel { min-width: 0; }
 
+	.detail-panel .admin-card {
+		display: flex;
+		min-height: 470px;
+		flex-direction: column;
+	}
+
 	.mapping-detail {
 		display: flex;
+		flex: 1;
 		flex-direction: column;
-		gap: var(--space-admin-md);
-		padding: var(--space-admin-lg);
-		max-height: 500px;
-		overflow-y: auto;
+		gap: var(--space-admin-sm);
+		padding: 14px 18px;
+		overflow: hidden;
 	}
 
 	.detail-item {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
+		display: grid;
+		grid-template-columns: 116px minmax(0, 1fr);
+		align-items: start;
+		gap: var(--space-admin-sm);
 	}
 
 	.detail-label {
 		color: #7d899b;
 		font-size: 13px;
 		font-weight: 700;
+		line-height: 1.45;
 	}
 
 	.detail-value {
 		color: #263856;
 		font-size: 14px;
-		line-height: 1.5;
+		line-height: 1.45;
 		font-weight: 600;
 	}
 
 	.detail-actions {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1.2fr;
+		grid-template-columns: 1fr 1fr 1.25fr;
 		gap: var(--space-admin-md);
-		padding: var(--space-admin-lg);
-		padding-top: 0;
+		padding: 8px 18px;
+		border-top: 1px solid #e4ebf5;
+		background: #fff;
+	}
+
+	.detail-delete-action {
+		border-color: rgba(239, 68, 68, 0.18);
+		background: #fff7f7;
+		color: #ef4444;
+	}
+
+	.detail-delete-action :deep(svg),
+	.detail-actions :deep(svg) {
+		width: 16px;
+		height: 16px;
+	}
+
+	.level-standard-card {
+		position: relative;
+		display: grid;
+		grid-template-columns: 92px minmax(0, 1fr) 18px;
+		align-items: start;
+		gap: var(--space-admin-md);
+		padding: 10px 12px;
+		border-radius: var(--radius-admin-panel);
+		background: #f5f8ff;
+	}
+
+	.level-standard-card .detail-label,
+	.level-standard-card .detail-value {
+		margin: 0;
+	}
+
+	.level-standard-card :deep(svg) {
+		color: var(--color-primary);
 	}
 
 	.admin-card {
@@ -797,35 +1056,18 @@
 
 	.admin-card-title {
 		margin: 0;
+		display: flex;
+		align-items: center;
+		gap: var(--space-admin-sm);
 		color: var(--color-admin-text-strong);
 		font-size: 18px;
 		font-weight: 900;
 	}
 
-	.admin-table-container { overflow-x: auto; }
-
-	.admin-table {
-		width: 100%;
-		min-width: 760px;
-		border-collapse: collapse;
-		table-layout: fixed;
-	}
-
-	.admin-table th,
-	.admin-table td {
-		padding: 15px 14px;
-		border-bottom: 1px solid #e8eef7;
-		text-align: left;
-		vertical-align: middle;
-		color: var(--color-admin-text-strong);
-		font-size: 13px;
-		line-height: 1.55;
-	}
-
-	.admin-table th {
-		background: #f7faff;
-		color: var(--color-admin-text-muted);
-		font-weight: 900;
+	.admin-card-title :deep(svg) {
+		width: 20px;
+		height: 20px;
+		color: var(--color-primary);
 	}
 
 	.level-badge {

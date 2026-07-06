@@ -43,6 +43,7 @@ const statusOptions = statuses.map((value) => ({ label: value, value }))
 const yearOptions = years.map((value) => ({ label: value, value }))
 const participationOptions = participationModes.map((value) => ({ label: value, value }))
 const applicationSelectOptions = applicationOptions.map((value) => ({ label: value, value }))
+const reminderIconNames = ['document', 'alarm-clock', 'finished'] as const
 
 // 统计数据
 const stats = computed(() => ({
@@ -148,7 +149,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
       <section class="stats-section">
         <div class="stats-container">
           <div class="stat-card stat-total">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="notebook" /></div>
             <div>
               <div class="stat-label">计划总数</div>
               <div class="stat-value">{{ stats.total }}</div>
@@ -156,7 +157,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
             </div>
           </div>
           <div class="stat-card stat-registering">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="circle-plus" /></div>
             <div>
               <div class="stat-label">报名中</div>
               <div class="stat-value">{{ stats.registering }}</div>
@@ -164,7 +165,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
             </div>
           </div>
           <div class="stat-card stat-progress">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="top" /></div>
             <div>
               <div class="stat-label">进行中</div>
               <div class="stat-value">{{ stats.inProgress }}</div>
@@ -172,7 +173,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
             </div>
           </div>
           <div class="stat-card stat-material">
-            <div class="stat-icon"></div>
+            <div class="stat-icon"><AdminIcon name="files" /></div>
             <div>
               <div class="stat-label">材料待完善</div>
               <div class="stat-value">{{ stats.materialIncomplete }}</div>
@@ -285,7 +286,9 @@ function createPlanFromForm(mode: 'draft' | 'published') {
                     :key="index"
                     class="reminder-item"
                   >
-                    <span class="reminder-icon"></span>
+                    <span class="reminder-icon">
+                      <AdminIcon :name="reminderIconNames[index] ?? 'document'" />
+                    </span>
                     <span class="reminder-text">{{ reminder }}</span>
                   </div>
                 </div>
@@ -474,41 +477,30 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   height: 62px;
   border-radius: 50%;
   background: #eaf2ff;
-  position: relative;
-}
-
-.stat-icon::after {
-  content: '';
-  position: absolute;
-  inset: 19px 21px;
-  border-radius: 4px;
-  background: var(--color-admin-primary-hover);
+  color: var(--color-admin-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-registering .stat-icon {
   background: #e6f8ef;
-}
-
-.stat-registering .stat-icon::after {
-  background: #13b86a;
-  border-radius: 50%;
+  color: #13b86a;
 }
 
 .stat-progress .stat-icon {
   background: #f0e9ff;
-}
-
-.stat-progress .stat-icon::after {
-  background: #7b4cf4;
-  clip-path: polygon(25% 16%, 82% 50%, 25% 84%);
+  color: #7b4cf4;
 }
 
 .stat-material .stat-icon {
   background: #fff0e3;
+  color: #f97316;
 }
 
-.stat-material .stat-icon::after {
-  background: #f97316;
+.stat-icon :deep(svg) {
+  width: 28px;
+  height: 28px;
 }
 
 .stat-card > div:last-child {
@@ -604,31 +596,28 @@ function createPlanFromForm(mode: 'draft' | 'published') {
 
 .filter-select {
   height: 38px;
-  padding: 0 34px 0 12px;
-  border: 1px solid #d6e2f3;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--color-admin-text-title);
-  background: #fff;
-  cursor: pointer;
-  outline: none;
 }
 
 .search-input {
   width: 100%;
-  height: 40px;
-  padding: 0 16px;
-  border: 1px solid #d6e2f3;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--color-admin-text-title);
-  outline: none;
-  transition: border-color 0.16s ease;
+  min-width: 0;
 }
 
-.search-input:focus,
-.filter-select:focus {
-  border-color: var(--color-admin-primary-hover);
+.search-input :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px #d6e2f3 inset;
+  transition: box-shadow 0.16s ease;
+}
+
+.search-input :deep(.el-input__inner) {
+  color: var(--color-admin-text-title);
+  font-size: 14px;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--color-admin-primary-hover) inset;
 }
 
 .plan-notice {
@@ -654,7 +643,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   table-layout: fixed;
 }
 
-.plan-table th {
+.plan-table :deep(.el-table__header .el-table__cell) {
   height: 48px;
   padding: 0 14px;
   text-align: left;
@@ -666,7 +655,7 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   background: #f4f7fc;
 }
 
-.plan-table td {
+.plan-table :deep(.el-table__body .el-table__cell) {
   height: 70px;
   padding: 0 14px;
   font-size: 13px;
@@ -677,25 +666,24 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   vertical-align: middle;
 }
 
-.plan-table th:last-child,
-.plan-table td:last-child {
+.plan-table :deep(.el-table__cell:last-child) {
   border-right: 0;
 }
 
-.plan-table tr:last-child td {
+.plan-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: none;
 }
 
-.plan-table th:nth-child(1) { width: 18%; }
-.plan-table th:nth-child(2) { width: 10%; }
-.plan-table th:nth-child(3) { width: 18%; }
-.plan-table th:nth-child(4) { width: 16%; }
-.plan-table th:nth-child(5) { width: 10%; }
-.plan-table th:nth-child(6) { width: 10%; }
-.plan-table th:nth-child(7) { width: 10%; }
-.plan-table th:nth-child(8) { width: 8%; }
+.plan-table :deep(.el-table__cell:nth-child(1)) { width: 18%; }
+.plan-table :deep(.el-table__cell:nth-child(2)) { width: 10%; }
+.plan-table :deep(.el-table__cell:nth-child(3)) { width: 18%; }
+.plan-table :deep(.el-table__cell:nth-child(4)) { width: 16%; }
+.plan-table :deep(.el-table__cell:nth-child(5)) { width: 10%; }
+.plan-table :deep(.el-table__cell:nth-child(6)) { width: 10%; }
+.plan-table :deep(.el-table__cell:nth-child(7)) { width: 10%; }
+.plan-table :deep(.el-table__cell:nth-child(8)) { width: 8%; }
 
-.plan-table td:first-child {
+.plan-table :deep(.el-table__body .el-table__cell:first-child) {
   color: var(--color-admin-primary-hover);
   font-weight: 800;
 }
@@ -761,32 +749,25 @@ function createPlanFromForm(mode: 'draft' | 'published') {
   height: 54px;
   background: #eaf2ff;
   border-radius: 50%;
-  position: relative;
-}
-
-.reminder-icon::after {
-  content: '';
-  position: absolute;
-  inset: 18px 19px;
-  background: var(--color-admin-primary-hover);
-  border-radius: 4px;
+  color: var(--color-admin-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reminder-item:nth-child(2) .reminder-icon {
   background: #fff0e3;
-}
-
-.reminder-item:nth-child(2) .reminder-icon::after {
-  background: #f97316;
-  border-radius: 50%;
+  color: #f97316;
 }
 
 .reminder-item:nth-child(3) .reminder-icon {
   background: #e8f8ef;
+  color: #0ca65f;
 }
 
-.reminder-item:nth-child(3) .reminder-icon::after {
-  background: #0ca65f;
+.reminder-icon :deep(svg) {
+  width: 24px;
+  height: 24px;
 }
 
 .reminder-text {

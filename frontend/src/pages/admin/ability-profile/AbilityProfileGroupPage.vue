@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { AdminTable, AdminTableColumn } from '@/components/admin-ui'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import SimpleRadarChart from './components/SimpleRadarChart.vue'
 import { Button } from '@/components/ui'
-import groupHeroArt from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-art.png'
-import groupHeroEmblem from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-hero-emblem.svg'
 import groupEmpty from '@/assets/admin/ability-group-portrait-assets/ability-group-portrait-empty.svg'
 import iconAbilityPractice from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-practice.svg'
 import iconAbilityResearch from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-research.svg'
 import iconAbilityService from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-service.svg'
 import iconAbilityTeaching from '@/assets/admin/ability-group-portrait-assets/icons/icon-ability-teaching.svg'
-import iconBaselineYear from '@/assets/admin/ability-group-portrait-assets/icons/icon-baseline-year.svg'
 import iconBasicQualified from '@/assets/admin/ability-group-portrait-assets/icons/icon-basic-qualified.svg'
 import iconIndexDevelopment from '@/assets/admin/ability-group-portrait-assets/icons/icon-index-development.svg'
 import iconRadarAnalysis from '@/assets/admin/ability-group-portrait-assets/icons/icon-radar-analysis.svg'
@@ -29,7 +26,6 @@ import { getAbilityListState } from '@/stores/admin/abilityListStore'
 import { getArchiveState } from '@/stores/admin/archiveStore'
 
 const router = useRouter()
-const route = useRoute()
 const operationMessage = useOperationMessage()
 const abilityListState = getAbilityListState()
 const currentExecutionVersionTitle = abilityListState.executionVersion.title
@@ -49,6 +45,18 @@ const dimensionMeta: Record<string, { iconSrc: string; tone: string }> = {
   实践能力: { iconSrc: iconAbilityPractice, tone: 'orange' },
   服务能力: { iconSrc: iconAbilityService, tone: 'purple' },
 }
+const dimensionColors: Record<string, string> = {
+  教学能力: '#0b63f6',
+  教研能力: '#16b569',
+  实践能力: '#ff7a00',
+  服务能力: '#7657ff',
+}
+const radarStageRings = [
+  { label: '新手', max: 25, color: '#94a3b8' },
+  { label: '胜任', max: 50, color: '#3b82f6' },
+  { label: '骨干', max: 75, color: '#18b76b' },
+  { label: '名师', max: 100, color: '#ff7a00' },
+]
 
 const developmentDirections = groupProfile.developmentDirections
 const directionTones = ['blue', 'green', 'orange', 'purple']
@@ -59,7 +67,7 @@ const supportDirectionIcons = [
   iconSupportServiceUnified,
 ]
 
-// 重点关注对象数据
+// 建议关注对象数据
 const focusObjects = ref('院系')
 
 const focusTabs = groupProfile.focusTabs
@@ -70,6 +78,59 @@ const focusTabIconMap: Record<string, string> = {
   教师: iconTabTeacher,
 }
 const focusedGroupObject = ref(focusData[focusObjects.value][0]?.name ?? '')
+
+const sortedDimensions = computed(() => [...abilityDimensions].sort((a, b) => b.index - a.index))
+const strongestDimension = computed(() => sortedDimensions.value[0] ?? abilityDimensions[0])
+const weakestDimension = computed(() => sortedDimensions.value[sortedDimensions.value.length - 1] ?? abilityDimensions[0])
+const competentOrAboveRate = computed(() => {
+  const distributions = abilityDimensions
+    .flatMap(item => item.distribution)
+    .filter((item): item is { label: string; percentage: number } => Boolean(item))
+  const competentOrAbove = distributions
+    .filter(item => item.label !== '新手')
+    .reduce((sum, item) => sum + item.percentage, 0)
+  return Math.round(competentOrAbove / Math.max(abilityDimensions.length, 1))
+})
+const basicAbilityStatus = computed(() => competentOrAboveRate.value >= 80 ? '达标' : '待核验')
+const groupObservation = computed(() => ({
+  title: `当前数据下，${weakestDimension.value.dimension}相对偏低`,
+  summary: `综合发展指数 ${developmentIndex}/100，${strongestDimension.value.dimension}相对较高，${weakestDimension.value.dimension}相对偏低。该结果基于当前已归档数据形成，仅作为群体观察参考，建议结合档案完整度和学院实际进一步核验。`,
+  basis: `依据：${dataBasis}；当前执行版：${currentExecutionVersionTitle}`,
+}))
+const structureObservation = computed(() =>
+  `相对较高：${strongestDimension.value.dimension}（${strongestDimension.value.index} 分）；相对较低：${weakestDimension.value.dimension}（${weakestDimension.value.index} 分）。建议结合教师档案完整度继续核验。`,
+)
+const radarReadingItems = computed(() => [
+  {
+    key: 'index',
+    label: '综合发展指数',
+    value: developmentIndex,
+    suffix: '/100',
+    desc: '全校教师画像汇总',
+  },
+  {
+    key: 'basic',
+    label: '基本能力',
+    value: basicAbilityStatus.value,
+    suffix: '',
+    desc: '按当前能力清单执行版判断',
+  },
+  {
+    key: 'strongest',
+    label: '相对较高维度',
+    value: strongestDimension.value.dimension,
+    suffix: '',
+    desc: `${strongestDimension.value.index} 分`,
+  },
+  {
+    key: 'weakest',
+    label: '相对较低维度',
+    value: weakestDimension.value.dimension,
+    suffix: '',
+    desc: `${weakestDimension.value.index} 分`,
+  },
+])
+const visibleRadarReadingItems = computed(() => radarReadingItems.value.filter(item => item.key !== 'strongest'))
 
 function switchTab(tabValue: string) {
   focusObjects.value = tabValue
@@ -114,6 +175,19 @@ function getDistributionTone(index: number) {
   return ['novice', 'competent', 'backbone', 'expert'][index] || 'novice'
 }
 
+function getDimensionObservation(row: { dimension: string; index: number }) {
+  if (row.dimension === weakestDimension.value.dimension) {
+    return `当前相对偏低，建议结合${row.dimension}档案材料完整度进一步核验。`
+  }
+  if (row.dimension === strongestDimension.value.dimension) {
+    return '当前相对较高，可作为后续经验提炼参考。'
+  }
+  if (row.index >= developmentIndex) {
+    return '略高于整体指数，建议持续观察分布变化。'
+  }
+  return '略低于整体指数，建议纳入下一轮观察。'
+}
+
 function focusRowClassName({ row }: { row: { name: string } }) {
   return focusedGroupObject.value === row.name ? 'focused-row' : ''
 }
@@ -122,79 +196,86 @@ function focusRowClassName({ row }: { row: { name: string } }) {
 <template>
   <AdminLayout active-key="ability-profile-group">
     <div class="ability-profile-group-page">
-      <section class="top-grid">
-        <article class="overview-card score-card">
-          <div class="card-copy">
+      <section class="overview-hero">
+        <article class="overview-card">
+          <div class="overview-copy">
             <div class="section-heading">
               <img class="section-icon" :src="iconIndexDevelopment" alt="" />
-              <h2>综合发展指数</h2>
-              <span class="info-dot">i</span>
+              <h2>画像概览</h2>
             </div>
-            <div class="score-display">
-              <strong>{{ developmentIndex }}</strong>
-              <span>/ 100</span>
-            </div>
-            <p>
-              由教学、教研、实践、服务四个维度的发展指数按权重汇总形成；依据：{{ dataBasis }}。当前执行版：{{ currentExecutionVersionTitle }}
-            </p>
-            <div class="status-line">
-              <img class="status-icon" :src="iconBasicQualified" alt="" />
-              <span>基本能力：</span>
-              <strong>达标</strong>
-            </div>
+            <h1>{{ groupObservation.title }}</h1>
+            <p>{{ groupObservation.summary }}</p>
+            <span class="overview-basis">
+              依据：{{ dataBasis }}；当前执行版：{{ currentExecutionVersionTitle }}
+            </span>
           </div>
-          <div class="score-illustration" aria-hidden="true">
-            <img class="score-hero-art" :src="groupHeroArt" alt="" />
-          </div>
-        </article>
-
-        <article class="overview-card baseline-card">
-          <div>
-            <div class="section-heading">
-              <img class="section-icon" :src="iconBaselineYear" alt="" />
-              <h2>首年基线</h2>
-              <span class="info-dot">i</span>
-            </div>
-            <p>当前为首个画像周期，暂无历史趋势对比。</p>
-            <p>本周期结果将作为后续年度趋势分析的基线。</p>
-          </div>
-          <ol class="baseline-list">
-            <li class="active">
-              <strong>2026</strong>
-              <span>基线已形成</span>
-            </li>
-            <li>
-              <strong>2027</strong>
-              <span>待形成</span>
-            </li>
-            <li>
-              <strong>2028</strong>
-              <span>待形成</span>
-            </li>
-          </ol>
         </article>
       </section>
 
-      <section class="analysis-card">
-        <div class="radar-panel">
+      <section class="radar-showcase">
+        <article class="radar-structure-panel evidence-card">
           <div class="section-heading">
             <img class="section-icon" :src="iconRadarAnalysis" alt="" />
-            <h2>能力结构分析</h2>
-            <span class="info-dot">i</span>
+            <h2>雷达结构</h2>
+            <span class="section-note">中心看基本能力，四轴看发展方向，环层看发展阶段</span>
           </div>
-          <div class="radar-wrap">
-            <SimpleRadarChart
-              :scores="schoolRadarData"
-              center-text="基本能力 达标"
-              :size="270"
-            />
+          <div class="radar-map-frame">
+            <div class="radar-wrap">
+              <SimpleRadarChart
+                :scores="schoolRadarData"
+                :dimension-colors="dimensionColors"
+                :stage-rings="radarStageRings"
+                center-label="基本能力"
+                center-status="达标"
+                :size="460"
+              />
+            </div>
+            <div class="radar-stage-guide" aria-label="雷达阶段说明">
+              <span
+                v-for="(stage, index) in radarStageRings"
+                :key="stage.label"
+                class="stage-pill"
+              >
+                <i :style="{ background: stage.color }"></i>
+                <strong class="stage-name">{{ stage.label }}</strong>
+                <em>{{ index === 0 ? 0 : radarStageRings[index - 1].max }}-{{ stage.max }}</em>
+              </span>
+            </div>
           </div>
-        </div>
+        </article>
 
-        <div class="dimension-panel">
+        <aside class="radar-reading-panel evidence-card">
+          <div class="section-heading">
+            <img class="section-icon" :src="iconBasicQualified" alt="" />
+            <h2>读图摘要</h2>
+          </div>
+          <div class="radar-reading-list">
+            <article
+              v-for="item in visibleRadarReadingItems"
+              :key="item.label"
+              class="reading-item"
+              :class="{ 'basic-ability-status': item.label === '基本能力' }"
+            >
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}<em>{{ item.suffix }}</em></strong>
+              <p>{{ item.desc }}</p>
+            </article>
+          </div>
+          <div class="structure-feature">
+            <span>结构特征</span>
+            <p>{{ structureObservation }}</p>
+          </div>
+          <Button variant="outline" @click="viewFullAdvice">
+            建议查看{{ weakestDimension.dimension }}关联教师 <span>→</span>
+          </Button>
+        </aside>
+      </section>
+
+      <section class="evidence-grid">
+        <div class="dimension-panel evidence-card">
           <div class="section-heading table-title">
-            <h2>能力维度说明</h2>
-            <span>（点击维度名称可查看下钻）</span>
+            <h2>维度观察</h2>
+            <span>看相对高低、教师分布和下一步核验点</span>
           </div>
           <AdminTable
             class="dimension-table"
@@ -216,7 +297,11 @@ function focusRowClassName({ row }: { row: { name: string } }) {
                 <span class="index-cell">{{ row.index }}</span>
               </template>
             </AdminTableColumn>
-            <AdminTableColumn prop="composition" label="指数构成（能力要素）" min-width="260" />
+            <AdminTableColumn label="观察说明" min-width="260">
+              <template #default="{ row }">
+                <p class="dimension-observation">{{ getDimensionObservation(row) }}</p>
+              </template>
+            </AdminTableColumn>
             <AdminTableColumn label="全校教师分布" min-width="320">
               <template #default="{ row }">
                 <div class="distribution-labels">
@@ -241,11 +326,11 @@ function focusRowClassName({ row }: { row: { name: string } }) {
       <section class="bottom-grid">
         <article class="support-card">
           <div class="section-heading">
-            <h2>发展支持方向</h2>
+            <h2>可参考方向</h2>
             <span class="info-dot">i</span>
           </div>
           <p class="support-desc">
-            基于能力结构与正式档案数据观察，识别当前阶段的重点发展方向。
+            基于能力结构与正式档案数据观察，列出后续可进一步核验的参考方向。
           </p>
           <div class="directions-grid">
             <div
@@ -267,7 +352,7 @@ function focusRowClassName({ row }: { row: { name: string } }) {
           </div>
           <div class="direction-actions">
             <Button variant="outline" @click="viewFullAdvice">
-              查看完整建议 <span>→</span>
+              查看关联教师 <span>→</span>
             </Button>
           </div>
           <p v-if="operationMessage.text.value" class="operation-message">{{ operationMessage.text.value }}</p>
@@ -275,7 +360,7 @@ function focusRowClassName({ row }: { row: { name: string } }) {
 
         <article class="focus-card">
           <div class="focus-head">
-            <h2>重点关注对象</h2>
+            <h2>建议关注对象</h2>
             <div class="focus-tabs">
               <button
                 v-for="tab in focusTabs"
@@ -291,15 +376,15 @@ function focusRowClassName({ row }: { row: { name: string } }) {
           </div>
           <div v-if="focusData[focusObjects].length === 0" class="group-empty">
             <img :src="groupEmpty" alt="" />
-            <h3>暂无重点关注对象</h3>
-            <p>当前筛选口径下未识别到需要重点展示的对象。</p>
+            <h3>暂无建议关注对象</h3>
+            <p>当前筛选口径下未识别到需要进一步查看的对象。</p>
           </div>
           <AdminTable
             v-else
             class="focus-table"
             :data="focusData[focusObjects]"
             :row-class-name="focusRowClassName"
-            empty-text="暂无重点关注对象"
+            empty-text="暂无建议关注对象"
           >
             <AdminTableColumn prop="name" label="对象" min-width="120" />
             <AdminTableColumn label="关注类型" min-width="110">
@@ -317,7 +402,7 @@ function focusRowClassName({ row }: { row: { name: string } }) {
               </template>
             </AdminTableColumn>
             <AdminTableColumn prop="dimension" label="关联维度 / 要素" min-width="170" />
-            <AdminTableColumn prop="reason" label="为什么关注" min-width="250" />
+            <AdminTableColumn prop="reason" label="观察原因" min-width="250" />
             <AdminTableColumn label="下一步" min-width="110" fixed="right">
               <template #default="{ row }">
                 <Button variant="ghost" size="sm" @click="viewProfile(row.name)">查看画像</Button>
@@ -370,17 +455,23 @@ function focusRowClassName({ row }: { row: { name: string } }) {
   line-height: 1.55;
 }
 
-.top-grid,
+.overview-hero,
 .bottom-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
   gap: clamp(14px, 1vw, 18px);
 }
 
+.overview-hero {
+  grid-template-columns: 1fr;
+}
+
 .overview-card,
 .analysis-card,
 .support-card,
-.focus-card {
+.focus-card,
+.overview-card,
+.evidence-card {
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-lg);
   background: #fff;
@@ -388,7 +479,45 @@ function focusRowClassName({ row }: { row: { name: string } }) {
 }
 
 .overview-card {
-  min-height: clamp(178px, 12vw, 210px);
+  display: grid;
+  min-height: auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-admin-2xl);
+  overflow: hidden;
+  padding: clamp(24px, 1.6vw, 32px);
+}
+
+.overview-copy {
+  min-width: 0;
+}
+
+.overview-copy h1 {
+  max-width: 680px;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(26px, 1.7vw, 34px);
+  font-weight: 950;
+  line-height: 1.24;
+}
+
+.overview-copy p {
+  max-width: 760px;
+  margin: var(--space-admin-md) 0 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.72;
+}
+
+.overview-basis {
+  display: inline-flex;
+  margin-top: var(--space-admin-lg);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.overview-card {
   padding: clamp(20px, 1.35vw, 26px);
 }
 
@@ -404,6 +533,12 @@ function focusRowClassName({ row }: { row: { name: string } }) {
   height: 20px;
   flex: none;
   object-fit: contain;
+}
+
+.section-note {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .section-heading h2,
@@ -585,22 +720,153 @@ function focusRowClassName({ row }: { row: { name: string } }) {
   font-weight: 800;
 }
 
-.analysis-card {
+.radar-showcase {
   display: grid;
-  grid-template-columns: minmax(330px, 31%) minmax(0, 1fr);
+  grid-template-columns: minmax(420px, 1fr) minmax(320px, 0.42fr);
   gap: clamp(16px, 1.1vw, 22px);
+}
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 1.1vw, 22px);
+}
+
+.evidence-card {
+  min-width: 0;
   padding: clamp(16px, 1vw, 20px);
 }
 
-.radar-panel,
 .dimension-panel {
   min-width: 0;
+}
+
+.radar-structure-panel {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: clamp(20px, 1.35vw, 26px);
+}
+
+.radar-map-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  min-height: 520px;
+  align-items: center;
+  gap: var(--space-admin-lg);
+  border: 1px solid var(--color-admin-divider);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 50% 46%, rgba(11, 99, 246, 0.16), rgba(11, 99, 246, 0) 42%),
+    linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
+  padding: clamp(14px, 1vw, 20px);
 }
 
 .radar-wrap {
   display: flex;
   justify-content: center;
-  transform: translateY(-2px);
+  min-width: 0;
+  overflow: visible;
+}
+
+.radar-stage-guide {
+  display: grid;
+  gap: var(--space-admin-sm);
+}
+
+.stage-pill {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 7px;
+  row-gap: 2px;
+  border: 1px solid var(--color-admin-divider);
+  border-radius: var(--radius-admin-panel);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 8px 10px;
+}
+
+.stage-pill i {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  grid-row: 1 / span 2;
+}
+
+.stage-pill strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.stage-pill em {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.radar-reading-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-admin-lg);
+  padding: clamp(20px, 1.35vw, 26px);
+}
+
+.radar-reading-list {
+  display: grid;
+  gap: var(--space-admin-sm);
+}
+
+.reading-item {
+  border: 1px solid var(--color-admin-divider);
+  border-radius: var(--radius-admin-panel);
+  background: var(--color-admin-bg-soft);
+  padding: 12px 14px;
+}
+
+.reading-item span,
+.structure-feature span {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.reading-item strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.reading-item em {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-style: normal;
+}
+
+.reading-item p,
+.structure-feature p {
+  margin: 7px 0 0;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.basic-ability-status strong {
+  color: #13a854;
+}
+
+.structure-feature {
+  border-left: 3px solid var(--color-primary);
+  background: #f5f9ff;
+  padding: 12px 14px;
 }
 
 .table-title span {
@@ -643,6 +909,15 @@ function focusRowClassName({ row }: { row: { name: string } }) {
   font-size: 16px;
   font-weight: 950;
   text-align: center;
+}
+
+.dimension-observation {
+  max-width: 320px;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.55;
 }
 
 .distribution-labels {
@@ -878,8 +1153,8 @@ function focusRowClassName({ row }: { row: { name: string } }) {
     transform: scale(0.82);
   }
 
-  .analysis-card {
-    grid-template-columns: minmax(280px, 31%) minmax(0, 1fr);
+  .radar-showcase {
+    grid-template-columns: minmax(360px, 1fr) minmax(300px, 0.48fr);
   }
 
   .directions-grid {
@@ -892,18 +1167,28 @@ function focusRowClassName({ row }: { row: { name: string } }) {
 }
 
 @media (max-width: 1280px) {
-  .top-grid,
-  .bottom-grid {
+  .overview-hero,
+  .bottom-grid,
+  .radar-showcase {
     grid-template-columns: 1fr;
   }
 
-  .analysis-card {
+  .analysis-card,
+  .evidence-grid {
     grid-template-columns: 1fr;
   }
 
-  .radar-wrap {
-    max-height: 250px;
-    overflow: hidden;
+  .overview-card {
+    grid-template-columns: minmax(0, 1fr) 180px;
+  }
+
+  .radar-map-frame {
+    grid-template-columns: 1fr;
+    min-height: 500px;
+  }
+
+  .radar-stage-guide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>

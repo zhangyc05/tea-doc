@@ -430,10 +430,10 @@ function sendToArchive() {
   min-width: 980px;
 }
 
-.participation-table th,
-.participation-table td,
-.data-table th,
-.data-table td {
+.participation-table :deep(.el-table__header .el-table__cell),
+.participation-table :deep(.el-table__body .el-table__cell),
+.data-table :deep(.el-table__header .el-table__cell),
+.data-table :deep(.el-table__body .el-table__cell) {
   padding: 15px 14px;
   border-bottom: 1px solid #e8eef7;
   text-align: left;
@@ -443,14 +443,14 @@ function sendToArchive() {
   line-height: 1.55;
 }
 
-.participation-table th,
-.data-table th {
+.participation-table :deep(.el-table__header .el-table__cell),
+.data-table :deep(.el-table__header .el-table__cell) {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 800;
 }
 
-.data-table tr.active td {
+.data-table :deep(.el-table__body tr.active .el-table__cell) {
   background: #f3f7ff;
 }
 

@@ -16,17 +16,20 @@ const props = withDefaults(
     basisColumnTitle?: string
     actionText?: string
     showAction?: boolean
+    showDeleteAction?: boolean
   }>(),
   {
     basisColumnTitle: '建议依据',
     actionText: '编辑',
     showAction: true,
+    showDeleteAction: false,
   },
 )
 
 const emit = defineEmits<{
   (event: 'row-click', row: AbilityIndicator): void
   (event: 'edit', row: AbilityIndicator): void
+  (event: 'delete', row: AbilityIndicator): void
 }>()
 
 function handleRowClick(row: AbilityIndicator) {
@@ -35,6 +38,10 @@ function handleRowClick(row: AbilityIndicator) {
 
 function handleEdit(row: AbilityIndicator) {
   emit('edit', row)
+}
+
+function handleDelete(row: AbilityIndicator) {
+  emit('delete', row)
 }
 
 function getStatusBadgeClass(status: AbilityIndicator['status']) {
@@ -91,6 +98,14 @@ function indicatorRowClassName() {
           <template #default="{ row }">
             <Button variant="ghost" size="sm" @click.stop="handleEdit(row)">
               {{ actionText }}
+            </Button>
+            <Button
+              v-if="showDeleteAction"
+              variant="ghost"
+              size="sm"
+              @click.stop="handleDelete(row)"
+            >
+              删除
             </Button>
           </template>
         </AdminTableColumn>

@@ -1,6 +1,7 @@
 import type {
   AbilityIndicator,
   AbilityListState,
+  AbilityListTreeNode,
   BaseTemplateVersion,
   ExecutionVersion,
   OptimizationSuggestion,
@@ -109,6 +110,68 @@ export const initialExecutionIndicators: AbilityIndicator[] = excelAbilityStanda
 
 export const initialBaseTemplateIndicators: AbilityIndicator[] = excelAbilityStandardIndicators
 
+export const initialExecutionAbilityTree: AbilityListTreeNode[] = [
+  {
+    key: 'basic',
+    label: '基本能力',
+    icon: '',
+    color: 'blue',
+    children: [
+      { key: 'basic-ethics', label: '师德师风' },
+      { key: 'basic-qualification', label: '从业资格' },
+      { key: 'basic-duty', label: '岗位履职' },
+    ],
+  },
+  {
+    key: 'teaching',
+    label: '教学能力',
+    icon: '',
+    color: 'blue',
+    children: [
+      { key: 'teaching-implementation', label: '教学实施' },
+      { key: 'teaching-curriculum-ideology', label: '课程思政' },
+      { key: 'teaching-digital-literacy', label: '数字素养' },
+      { key: 'teaching-guidance', label: '教学指导' },
+      { key: 'teaching-skills-competition', label: '技能竞赛' },
+      { key: 'teaching-team-building', label: '团队建设' },
+    ],
+  },
+  {
+    key: 'research',
+    label: '教研能力',
+    icon: '',
+    color: 'orange',
+    children: [
+      { key: 'research-teaching-research', label: '教学研究' },
+      { key: 'research-scientific-research', label: '科学研究' },
+      { key: 'research-standards', label: '标准制定' },
+      { key: 'research-platform', label: '平台建设' },
+    ],
+  },
+  {
+    key: 'practice',
+    label: '实践能力',
+    icon: '',
+    color: 'green',
+    children: [
+      { key: 'practice-skills-improvement', label: '技能提升' },
+      { key: 'practice-project-practice', label: '项目实践' },
+      { key: 'practice-skills-honor', label: '技能荣誉' },
+      { key: 'practice-base-building', label: '基地建设' },
+    ],
+  },
+  {
+    key: 'service',
+    label: '服务能力',
+    icon: '',
+    color: 'purple',
+    children: [
+      { key: 'service-external-service', label: '对外服务' },
+      { key: 'service-international-service', label: '国际服务' },
+    ],
+  },
+]
+
 export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
   {
     id: 'suggestion-enterprise-practice',
@@ -161,8 +224,10 @@ export const initialOptimizationSuggestions: OptimizationSuggestion[] = [
 ]
 
 export const initialRequirementMappings: RequirementMapping[] = [
-  { id: '1', requirementGroupKey: 'associate-professor', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '岗位基本教学工作量（课时/学年）', level: '骨干', levelCriteria: '岗位基本教学工作量达到骨干标准', documentCondition: '岗位基本教学工作量达到骨干标准', confirmStatus: 'confirmed' },
-  { id: '2', requirementGroupKey: 'associate-professor', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教学改革研究项目立项', level: '胜任', levelCriteria: '主持厅局级或以上教学改革研究项目', documentCondition: '主持厅局级或以上教学改革研究项目', confirmStatus: 'pending' },
+  { id: '1', requirementGroupKey: 'associate-professor', requirementText: '近三年承担不少于 2 门专业课程教学', indicatorDimension: '教学能力', indicatorName: '教学工作量', level: '骨干', levelCriteria: '稳定承担核心专业课程教学，并形成较好教学质量与课程建设成果。', documentCondition: '近三年专业课程授课门数 ≥ 2', confirmStatus: 'confirmed' },
+  { id: '2', requirementGroupKey: 'associate-professor', requirementText: '主持或参与校级以上教改项目', indicatorDimension: '教研能力', indicatorName: '教改项目', level: '胜任', levelCriteria: '主持或作为主要成员参与校级及以上教学改革项目。', documentCondition: '校级及以上教改项目 ≥ 1', confirmStatus: 'pending' },
+  { id: '5', requirementGroupKey: 'associate-professor', requirementText: '近三年教学质量评价达到良好及以上', indicatorDimension: '教学能力', indicatorName: '课堂教学评价', level: '胜任', levelCriteria: '近三年综合评价等级达到良好及以上。', documentCondition: '近三年综合评价等级 ≥ 良好', confirmStatus: 'confirmed' },
+  { id: '6', requirementGroupKey: 'associate-professor', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业实践经历', level: '胜任', levelCriteria: '具备企业实践、社会服务或相关项目经历。', documentCondition: '累计企业实践天数 ≥ 30', confirmStatus: 'unconfigured' },
   { id: '3', requirementGroupKey: 'professor', requirementText: '近三年教学指导或技能竞赛达到岗位要求', indicatorDimension: '教学能力', indicatorName: '指导学生参加省级及以上一类/二类技能竞赛获奖', level: '胜任', levelCriteria: '第一位指导二类竞赛获奖', documentCondition: '第一位指导二类竞赛获奖', confirmStatus: 'confirmed' },
   { id: '4', requirementGroupKey: 'associate-professor-tenure', requirementText: '具有企事业实践或社会服务经历', indicatorDimension: '实践能力', indicatorName: '企业锻炼时长（天/年）', level: '胜任', levelCriteria: '企业锻炼时长 30 天/年', documentCondition: '企业锻炼时长 30 天/年', confirmStatus: 'unconfigured' },
 ]
@@ -174,9 +239,13 @@ export function createInitialAbilityListState(): AbilityListState {
     baseTemplateVersionHistory: [],
     pendingBaseTemplateChanges: [],
     executionVersion: { ...initialExecutionVersion },
+    executionAbilityTree: cloneAbilityTree(initialExecutionAbilityTree),
     versionHistory: [],
     executionIndicators: cloneIndicators(initialExecutionIndicators),
     pendingExecutionIndicatorChanges: [],
+    pendingExecutionVersion: null,
+    pendingExecutionIndicators: [],
+    pendingExecutionAbilityTree: null,
     optimizationSuggestions: cloneOptimizationSuggestions(initialOptimizationSuggestions),
     pendingTemplateApplications: initialOptimizationSuggestions
       .filter(suggestion => suggestion.status === 'adopted')
@@ -191,6 +260,13 @@ export function createInitialAbilityListState(): AbilityListState {
 
 export function cloneIndicators(indicators: AbilityIndicator[]) {
   return indicators.map(indicator => ({ ...indicator }))
+}
+
+export function cloneAbilityTree(nodes: AbilityListTreeNode[]) {
+  return nodes.map(node => ({
+    ...node,
+    children: node.children?.map(child => ({ ...child })),
+  }))
 }
 
 export function cloneOptimizationSuggestions(suggestions: OptimizationSuggestion[]) {

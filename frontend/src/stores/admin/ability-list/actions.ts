@@ -1,13 +1,14 @@
 import type {
   AbilityIndicator,
   AbilityListState,
+  AbilityListTreeNode,
   OptimizationSuggestionDraft,
   OptimizationSuggestion,
   OptimizationSuggestionStatus,
   RequirementMapping,
 } from '@/domain/admin/ability-list'
 import { getOptimizationSuggestionStatusLabel } from '@/domain/admin/ability-list'
-import { initialExecutionVersion } from './initialData'
+import { cloneAbilityTree, cloneIndicators } from './initialData'
 
 const systemOperator = '教务处管理员'
 const baseTemplateChangeTime = '2026-07-03 23:20'
@@ -68,6 +69,10 @@ export function saveExecutionIndicatorChangeInState(
   key: string,
   patch: Partial<Omit<AbilityIndicator, 'key'>>,
 ) {
+  if (state.pendingExecutionVersion) {
+    return updatePendingExecutionIndicatorInState(state, key, patch)
+  }
+
   const source = state.executionIndicators.find(indicator => indicator.key === key)
   if (!source) return null
 
@@ -97,6 +102,30 @@ export function saveExecutionIndicatorChangeInState(
 
   state.operationMessage = `已保存执行版调整草稿：${after.name}。`
   return change
+}
+
+export function updatePendingExecutionIndicatorInState(
+  state: AbilityListState,
+  key: string,
+  patch: Partial<Omit<AbilityIndicator, 'key'>>,
+) {
+  const target = state.pendingExecutionIndicators.find(indicator => indicator.key === key)
+  if (!target) return null
+
+  Object.assign(target, patch, { status: patch.status ?? 'draft' })
+  if (state.pendingExecutionVersion) {
+    state.pendingExecutionVersion.indicatorCount = state.pendingExecutionIndicators.length
+    state.pendingExecutionVersion.lastUpdated = executionChangeTime
+  }
+  state.operationMessage = `已更新待发布执行版指标：${target.name}。`
+  return {
+    id: `pending-execution-indicator-${key}`,
+    indicatorKey: key,
+    indicatorName: target.name,
+    after: { ...target },
+    changedAt: executionChangeTime,
+    operator: systemOperator,
+  }
 }
 
 export function confirmExecutionIndicatorChangesInState(state: AbilityListState) {
@@ -176,37 +205,216 @@ export function confirmBaseTemplateChangesInState(state: AbilityListState) {
   return state.baseTemplateVersion
 }
 
-export function deriveNextExecutionVersionInState(state: AbilityListState) {
-  state.executionVersion = {
+export function deriveNextExecutionVersionInState(
+  state: AbilityListState,
+  abilityTree?: AbilityListTreeNode[],
+) {
+  const sourceIndicators = getExecutionDraftIndicators(state)
+  state.pendingExecutionVersion = {
     versionNo: 'V2027',
     title: '2027 年度教师能力清单执行版',
-    sourceTitle: '2026 年度教师能力清单执行版',
+    sourceTitle: state.executionVersion.title,
     templateTitle: state.baseTemplateVersion.title,
     scope: '全校教师',
-    indicatorCount: state.executionIndicators.length,
+    indicatorCount: sourceIndicators.length,
     lastUpdated: '待发布',
     status: 'pending',
     publishedAt: '待发布',
-    source: '2026 年度教师能力清单执行版',
-    operator: '教务处管理员',
+    source: state.executionVersion.title,
+    operator: systemOperator,
   }
+  state.pendingExecutionIndicators = cloneIndicators(sourceIndicators)
+  state.pendingExecutionAbilityTree = cloneAbilityTree(abilityTree ?? state.executionAbilityTree)
+  state.pendingExecutionIndicatorChanges = []
   state.operationMessage = '已派生 2027 年度执行版，请确认后发布。'
-  return state.executionVersion
+  return state.pendingExecutionVersion
 }
 
 export function publishExecutionVersionInState(state: AbilityListState) {
-  if (!state.versionHistory.some(version => version.versionNo === 'V2026')) {
+  const pendingVersion = state.pendingExecutionVersion
+  if (!pendingVersion) {
+    state.operationMessage = '暂无待发布执行版。'
+    return null
+  }
+
+  if (!state.versionHistory.some(version => version.versionNo === state.executionVersion.versionNo)) {
     state.versionHistory.unshift({
-      ...initialExecutionVersion,
+      ...state.executionVersion,
       status: 'historical',
     })
   }
 
-  state.executionVersion.status = 'published'
+  state.executionVersion = {
+    ...pendingVersion,
+    status: 'published',
+  }
   state.executionVersion.lastUpdated = executionChangeTime
   state.executionVersion.publishedAt = executionChangeTime
-  state.executionVersion.operator = '教务处管理员'
+  state.executionVersion.operator = systemOperator
+  state.executionIndicators = cloneIndicators(state.pendingExecutionIndicators).map(indicator => ({
+    ...indicator,
+    status: indicator.status === 'disabled' ? 'disabled' : 'enabled',
+  }))
+  state.executionAbilityTree = cloneAbilityTree(state.pendingExecutionAbilityTree ?? state.executionAbilityTree)
+  state.pendingExecutionVersion = null
+  state.pendingExecutionIndicators = []
+  state.pendingExecutionAbilityTree = null
   state.operationMessage = `${state.executionVersion.title}已确认发布。`
+  return state.executionVersion
+}
+
+export function cancelPendingExecutionVersionInState(state: AbilityListState) {
+  if (!state.pendingExecutionVersion) {
+    state.operationMessage = '暂无待发布执行版。'
+    return false
+  }
+
+  state.pendingExecutionVersion = null
+  state.pendingExecutionIndicators = []
+  state.pendingExecutionAbilityTree = null
+  state.operationMessage = '已取消待发布执行版，当前执行版保持不变。'
+  return true
+}
+
+export function deletePendingExecutionIndicatorInState(state: AbilityListState, indicatorKey: string) {
+  if (!state.pendingExecutionVersion) {
+    state.operationMessage = '请先派生待发布执行版后再删除指标。'
+    return false
+  }
+
+  const beforeCount = state.pendingExecutionIndicators.length
+  state.pendingExecutionIndicators = state.pendingExecutionIndicators.filter(indicator => indicator.key !== indicatorKey)
+  const deleted = state.pendingExecutionIndicators.length < beforeCount
+  if (deleted && state.pendingExecutionVersion) {
+    state.pendingExecutionVersion.indicatorCount = state.pendingExecutionIndicators.length
+    state.pendingExecutionVersion.lastUpdated = executionChangeTime
+    state.operationMessage = '已从待发布执行版删除指标。'
+  }
+  return deleted
+}
+
+export function addPendingExecutionDimensionInState(
+  state: AbilityListState,
+  dimension: AbilityListTreeNode,
+) {
+  if (!state.pendingExecutionVersion) {
+    state.operationMessage = '请先派生待发布执行版后再新增维度。'
+    return null
+  }
+
+  const tree = [...(state.pendingExecutionAbilityTree ?? [])]
+  const nextDimension = {
+    ...dimension,
+    children: dimension.children?.map(child => ({ ...child })) ?? [],
+  }
+  const index = tree.findIndex(node => node.key === nextDimension.key)
+  if (index >= 0) {
+    tree[index] = nextDimension
+  } else {
+    tree.push(nextDimension)
+  }
+  state.pendingExecutionAbilityTree = [...tree]
+  state.operationMessage = `已新增待发布执行版维度：${nextDimension.label}。`
+  return nextDimension
+}
+
+export function deletePendingExecutionDimensionInState(state: AbilityListState, dimensionKey: string) {
+  return deletePendingExecutionAbilityNodeInState(state, dimensionKey)
+}
+
+export function updatePendingExecutionAbilityNodeInState(
+  state: AbilityListState,
+  nodeKey: string,
+  label: string,
+) {
+  if (!state.pendingExecutionVersion || !state.pendingExecutionAbilityTree) {
+    state.operationMessage = '请先派生待发布执行版后再编辑维度。'
+    return false
+  }
+
+  const nextLabel = label.trim()
+  if (!nextLabel) {
+    state.operationMessage = '维度名称不能为空。'
+    return false
+  }
+
+  let updated = false
+  const tree = cloneAbilityTree(state.pendingExecutionAbilityTree).map((node) => {
+    if (node.key === nodeKey) {
+      updated = true
+      return { ...node, label: nextLabel }
+    }
+
+    return {
+      ...node,
+      children: node.children?.map((child) => {
+        if (child.key !== nodeKey) return child
+        updated = true
+        return { ...child, label: nextLabel }
+      }),
+    }
+  })
+
+  if (!updated) {
+    state.operationMessage = '未找到待编辑维度。'
+    return false
+  }
+
+  state.pendingExecutionAbilityTree = tree
+  state.pendingExecutionVersion.lastUpdated = executionChangeTime
+  state.operationMessage = `已更新待发布执行版结构：${nextLabel}。`
+  return true
+}
+
+export function deletePendingExecutionAbilityNodeInState(state: AbilityListState, nodeKey: string) {
+  if (!state.pendingExecutionVersion || !state.pendingExecutionAbilityTree) {
+    state.operationMessage = '请先派生待发布执行版后再删除维度。'
+    return false
+  }
+
+  let deletedLabel = ''
+  const deletedAbilityKeys = new Set<string>()
+  const nextTree: AbilityListTreeNode[] = []
+
+  state.pendingExecutionAbilityTree.forEach((node) => {
+    if (node.key === nodeKey) {
+      deletedLabel = node.label
+      node.children?.forEach(child => deletedAbilityKeys.add(child.key))
+      return
+    }
+
+    const children = node.children?.filter((child) => {
+      if (child.key !== nodeKey) return true
+      deletedLabel = child.label
+      deletedAbilityKeys.add(child.key)
+      return false
+    })
+
+    nextTree.push({ ...node, children })
+  })
+
+  if (!deletedLabel) {
+    state.operationMessage = '未找到待删除维度。'
+    return false
+  }
+
+  state.pendingExecutionAbilityTree = cloneAbilityTree(nextTree)
+  state.pendingExecutionIndicators = state.pendingExecutionIndicators.filter(
+    indicator => !deletedAbilityKeys.has(indicator.abilityKey ?? ''),
+  )
+  state.pendingExecutionVersion.indicatorCount = state.pendingExecutionIndicators.length
+  state.pendingExecutionVersion.lastUpdated = executionChangeTime
+  state.operationMessage = `已删除待发布执行版维度：${deletedLabel}。`
+  return true
+}
+
+export function getExecutionDraftIndicators(state: AbilityListState) {
+  return state.executionIndicators.map((indicator) => {
+    const pendingChange = state.pendingExecutionIndicatorChanges.find(
+      change => change.indicatorKey === indicator.key,
+    )
+    return pendingChange ? { ...pendingChange.after } : { ...indicator }
+  })
 }
 
 export function syncPendingTemplateApplications(state: AbilityListState) {

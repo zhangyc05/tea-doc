@@ -591,8 +591,8 @@ function handleApplication(teacherId: string) {
   table-layout: fixed;
 }
 
-.demand-table th,
-.participants-table th {
+.demand-table :deep(.el-table__header .el-table__cell),
+.participants-table :deep(.el-table__header .el-table__cell) {
   height: 34px;
   padding: 0 12px;
   text-align: center;
@@ -604,8 +604,8 @@ function handleApplication(teacherId: string) {
   background: #f4f7fc;
 }
 
-.demand-table td,
-.participants-table td {
+.demand-table :deep(.el-table__body .el-table__cell),
+.participants-table :deep(.el-table__body .el-table__cell) {
   height: 36px;
   padding: 0 12px;
   font-size: 13px;
@@ -616,15 +616,13 @@ function handleApplication(teacherId: string) {
   text-align: center;
 }
 
-.demand-table th:last-child,
-.demand-table td:last-child,
-.participants-table th:last-child,
-.participants-table td:last-child {
+.demand-table :deep(.el-table__cell:last-child),
+.participants-table :deep(.el-table__cell:last-child) {
   border-right: 0;
 }
 
-.demand-table tr:last-child td,
-.participants-table tr:last-child td {
+.demand-table :deep(.el-table__body tr:last-child .el-table__cell),
+.participants-table :deep(.el-table__body tr:last-child .el-table__cell) {
   border-bottom: 0;
 }
 

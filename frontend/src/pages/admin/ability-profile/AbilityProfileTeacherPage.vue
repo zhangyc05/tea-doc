@@ -29,7 +29,6 @@ const focusTypeOptions = focusTypes.map((value) => ({ label: value, value }))
 
 const currentPage = ref(1)
 const pageSize = 12
-const avatarTones = ['tone-blue', 'tone-cyan', 'tone-green', 'tone-indigo', 'tone-orange', 'tone-purple']
 const filteredTeachers = computed(() => {
   const keyword = searchQuery.value.trim()
   return teachers.filter((teacher) => {
@@ -87,8 +86,8 @@ function getFocusTypeClass(focusType: string): string {
   }
 }
 
-function getAvatarTone(index: number): string {
-  return avatarTones[index % avatarTones.length]
+function getTeacherInitial(name: string) {
+  return name.trim().charAt(0) || '教'
 }
 </script>
 
@@ -97,9 +96,15 @@ function getAvatarTone(index: number): string {
     <div class="teacher-profile-page">
       <section class="filter-card">
         <div class="search-control">
-          <span class="search-icon">⌕</span>
-          <AdminInput v-model="searchQuery" placeholder="搜索教师姓名 / 工号" @keyup.enter="applySearch" />
-          <button type="button" class="search-button" aria-label="搜索" @click="applySearch">⌕</button>
+          <AdminInput
+            v-model="searchQuery"
+            class="profile-search-input"
+            placeholder="搜索教师姓名 / 工号"
+            @keyup.enter="applySearch"
+          />
+          <button type="button" class="search-button" aria-label="搜索" @click="applySearch">
+            <AdminIcon name="search" />
+          </button>
         </div>
 
         <div class="filter-field">
@@ -142,10 +147,8 @@ function getAvatarTone(index: number): string {
               {{ teacher.focusType }}
             </span>
             <div class="teacher-card-main">
-              <div class="avatar-figure avatar-large" :class="getAvatarTone(index)">
-                <span class="avatar-hair"></span>
-                <span class="avatar-face"></span>
-                <span class="avatar-body"></span>
+              <div class="teacher-avatar avatar-large">
+                <span class="avatar-initial">{{ getTeacherInitial(teacher.name) }}</span>
               </div>
               <div class="card-copy">
                 <h2>{{ teacher.name }}</h2>
@@ -179,10 +182,8 @@ function getAvatarTone(index: number): string {
         <div v-else class="teacher-table">
           <article v-for="(teacher, index) in paginatedTeachers" :key="teacher.id" class="teacher-row">
             <div class="teacher-identity">
-              <div class="avatar-figure" :class="getAvatarTone(index)">
-                <span class="avatar-hair"></span>
-                <span class="avatar-face"></span>
-                <span class="avatar-body"></span>
+              <div class="teacher-avatar">
+                <span class="avatar-initial">{{ getTeacherInitial(teacher.name) }}</span>
               </div>
               <div>
                 <h2>{{ teacher.name }}</h2>
@@ -266,33 +267,43 @@ function getAvatarTone(index: number): string {
 
 .search-control {
   display: grid;
-  grid-template-columns: 24px 1fr 36px;
+  grid-template-columns: minmax(0, 1fr) 44px;
   align-items: center;
   height: 40px;
-  padding-left: 10px;
+  overflow: hidden;
   border: 1px solid #dfe6ef;
   border-radius: var(--radius-admin-panel);
-  background: #f9fbfe;
+  background: #ffffff;
 }
 
-.search-icon {
-  color: #9aa7b8;
-  font-size: 18px;
+.profile-search-input {
+  min-width: 0;
+  height: 100%;
 }
 
-.search-control input,
+.profile-search-input :deep(.el-input__wrapper) {
+  height: 100%;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.profile-search-input :deep(.el-input__inner),
 .filter-field select {
   min-width: 0;
   border: 0;
   outline: none;
-  background: transparent;
   color: #1f2a3d;
   font-size: 14px;
 }
 
 .search-button,
 .reset-button {
-  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
   height: 36px;
   border: 0;
   border-radius: 7px;
@@ -300,10 +311,16 @@ function getAvatarTone(index: number): string {
 }
 
 .search-button {
-  margin-right: 2px;
+  height: 100%;
+  border-radius: 0;
   background: #1677ff;
   color: #ffffff;
   font-size: 18px;
+}
+
+.search-button svg {
+  width: 18px;
+  height: 18px;
 }
 
 .filter-field {
@@ -311,11 +328,16 @@ function getAvatarTone(index: number): string {
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: var(--space-admin-sm);
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #dfe6ef;
-  border-radius: var(--radius-admin-panel);
-  background: #ffffff;
+  min-width: 0;
+}
+
+.filter-field :deep(.el-select) {
+  min-width: 0;
+  width: 100%;
+}
+
+.filter-field :deep(.el-select__wrapper) {
+  min-height: 40px;
 }
 
 .filter-field span {
@@ -329,6 +351,11 @@ function getAvatarTone(index: number): string {
   background: #ffffff;
   color: #65748a;
   font-size: 18px;
+}
+
+.reset-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 .list-shell {
@@ -417,14 +444,17 @@ function getAvatarTone(index: number): string {
   font-size: 13px;
 }
 
-.avatar-figure {
-  position: relative;
-  width: 54px;
-  height: 54px;
+.teacher-avatar {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  overflow: hidden;
+  border: 1px solid #cfe1ff;
   border-radius: 50%;
-  background: #eaf3ff;
+  background: linear-gradient(180deg, #f7fbff 0%, #eaf3ff 100%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
 .avatar-large {
@@ -432,48 +462,16 @@ function getAvatarTone(index: number): string {
   height: 62px;
 }
 
-.avatar-hair,
-.avatar-face,
-.avatar-body {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+.avatar-initial {
+  color: #1d4ed8;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.avatar-hair {
-  top: 10px;
-  width: 30px;
-  height: 22px;
-  border-radius: 18px 18px var(--radius-md) var(--radius-md);
-  background: #334155;
+.avatar-large .avatar-initial {
+  font-size: 24px;
 }
-
-.avatar-face {
-  top: 18px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #ffd7b1;
-}
-
-.avatar-body {
-  bottom: -4px;
-  width: 42px;
-  height: 24px;
-  border-radius: 16px 16px 0 0;
-  background: #2f80ed;
-}
-
-.tone-cyan { background: #e8fbff; }
-.tone-cyan .avatar-body { background: #06a6c8; }
-.tone-green { background: #ecfdf3; }
-.tone-green .avatar-body { background: #22a06b; }
-.tone-indigo { background: #eef2ff; }
-.tone-indigo .avatar-body { background: #536dfe; }
-.tone-orange { background: #fff5e9; }
-.tone-orange .avatar-body { background: #f59e0b; }
-.tone-purple { background: #f5efff; }
-.tone-purple .avatar-body { background: #8b5cf6; }
 
 .focus-badge {
   display: inline-flex;

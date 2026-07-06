@@ -650,8 +650,8 @@ function goBack() {
   min-width: 640px;
 }
 
-.data-table th,
-.data-table td {
+.data-table :deep(.el-table__header .el-table__cell),
+.data-table :deep(.el-table__body .el-table__cell) {
   padding: var(--space-admin-md-lg) var(--space-admin-md);
   border-bottom: 1px solid #e8eef7;
   text-align: left;
@@ -661,13 +661,13 @@ function goBack() {
   line-height: 1.45;
 }
 
-.data-table th {
+.data-table :deep(.el-table__header .el-table__cell) {
   background: #f7faff;
   color: var(--color-admin-text-muted);
   font-weight: 700;
 }
 
-.data-table tr.active td {
+.data-table :deep(.el-table__body tr.active .el-table__cell) {
   background: #f3f7ff;
 }
 
