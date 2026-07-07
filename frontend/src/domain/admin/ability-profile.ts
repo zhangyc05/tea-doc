@@ -35,7 +35,7 @@ export type AbilityProfileTeacher = {
   title: string
   developmentIndex: number
   teacherType: string
-  basicAbilityStatus: string
+  basicAbilityStatus: BasicAbilityStatus
   tags: string[]
   focusType: string
 }
@@ -71,6 +71,77 @@ export type AbilityProfileSupportDirection = {
   focus: string
 }
 
+export type BasicAbilityStatus = '达标' | '未达标'
+export type AbilityStage = '新手' | '胜任' | '骨干' | '名师'
+export type AbilityDimensionName = '教学能力' | '教研能力' | '实践能力' | '服务能力'
+
+export type AbilityProfileCurrentSummary = {
+  statement: string
+  note: string
+  status: string
+  statusDetail: string
+  developmentIndex: number
+  updatedAt: string
+  tags: string[]
+}
+
+export type AbilityStageRange = {
+  stage: AbilityStage
+  min: number
+  max: number
+  color: string
+}
+
+export type AbilityRadarDimension = {
+  dimension: AbilityDimensionName
+  score: number
+  stage: AbilityStage
+  label: string
+}
+
+export type AbilityReferenceLine = {
+  label: string
+  values: Record<AbilityDimensionName, number>
+}
+
+export type AbilityStageRadar = {
+  basicAbilityStatus: BasicAbilityStatus
+  stages: AbilityStageRange[]
+  dimensions: AbilityRadarDimension[]
+  referenceLine?: AbilityReferenceLine
+  structureSummary: string
+  focusItems: string[]
+}
+
+export type AbilityStructureItem = {
+  dimension: AbilityDimensionName
+  score: number
+  stage: AbilityStage
+  statusText: string
+  description: string
+}
+
+export type TargetComparisonGroup = {
+  title: string
+  formedSupports: string[]
+  continuingDirections: string[]
+}
+
+export type DevelopmentDirection = {
+  title: string
+  description: string
+}
+
+export type ProfileBasisLink = {
+  label: string
+  route: string
+}
+
+export type ProfileBasis = {
+  summary: string
+  links: ProfileBasisLink[]
+}
+
 export type AbilityProfileGroupMock = {
   developmentIndex: number
   dataBasis: string
@@ -96,4 +167,10 @@ export type AbilityProfileTeacherDetailMock = {
   radarData: AbilityProfileScore[]
   abilityDimensions: AbilityProfileDimension[]
   supportDirections: AbilityProfileSupportDirection[]
+  currentProfile: AbilityProfileCurrentSummary
+  stageRadar: AbilityStageRadar
+  abilityStructure: AbilityStructureItem[]
+  targetComparison: TargetComparisonGroup[]
+  developmentDirections: DevelopmentDirection[]
+  basis: ProfileBasis
 }

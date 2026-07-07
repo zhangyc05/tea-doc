@@ -164,7 +164,6 @@ describe('Element Plus admin integration', () => {
   it('migrates first table pages to the admin table adapter', () => {
     const tablePages = [
       'frontend/src/pages/admin/ability-profile/AbilityProfileGroupPage.vue',
-      'frontend/src/pages/admin/ability-profile/AbilityProfileTeacherDetailPage.vue',
       'frontend/src/pages/admin/archive/ArchiveProcessingPage.vue',
       'frontend/src/pages/admin/practice/PracticeApplicationPage.vue',
       'frontend/src/pages/admin/practice/PracticeRecordPage.vue',

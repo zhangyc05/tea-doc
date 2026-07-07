@@ -1,8 +1,14 @@
 import type {
+  AbilityStage,
+  AbilityStageRange,
   AbilityProfileDimension,
   AbilityProfileFocusObject,
   AbilityProfileGroupMock,
   AbilityProfileScore,
+  AbilityStructureItem,
+  BasicAbilityStatus,
+  DevelopmentDirection,
+  TargetComparisonGroup,
   AbilityProfileTeacher,
   AbilityProfileTeacherDetailMock,
   AbilityProfileTeacherListMock,
@@ -135,11 +141,82 @@ const defaultRadarData: AbilityProfileScore[] = [
   { label: '服务能力', value: 72 },
 ]
 
+const stageRanges: AbilityStageRange[] = [
+  { stage: '新手', min: 0, max: 25, color: '#94a3b8' },
+  { stage: '胜任', min: 26, max: 50, color: '#3b82f6' },
+  { stage: '骨干', min: 51, max: 75, color: '#18b76b' },
+  { stage: '名师', min: 76, max: 100, color: '#ff7a00' },
+]
+
 const teacherAbilityDimensions: AbilityProfileDimension[] = [
   { dimension: '教学能力', index: 88, composition: '课程建设、课堂教学、教学评价、教学改进等' },
   { dimension: '教研能力', index: 68, composition: '课题研究、专业建设、课程改革、成果培育等' },
   { dimension: '实践能力', index: 79, composition: '企业实践、产教融合、校企合作、成果转化等' },
   { dimension: '服务能力', index: 72, composition: '社会服务、学生支持、团队协作、重点任务等' },
+]
+
+const abilityStructure: AbilityStructureItem[] = [
+  {
+    dimension: '教学能力',
+    score: 88,
+    stage: '名师',
+    statusText: '表现较突出',
+    description: '课程建设、课堂教学、教学评价记录较完整',
+  },
+  {
+    dimension: '实践能力',
+    score: 79,
+    stage: '名师',
+    statusText: '持续积累中',
+    description: '已有企业实践经历，成果转化材料可继续沉淀',
+  },
+  {
+    dimension: '服务能力',
+    score: 72,
+    stage: '骨干',
+    statusText: '稳定发展',
+    description: '服务记录稳定，影响力材料可继续丰富',
+  },
+  {
+    dimension: '教研能力',
+    score: 68,
+    stage: '骨干',
+    statusText: '可继续提升',
+    description: '教研活动参与较稳定，成果化表达可继续积累',
+  },
+]
+
+const targetComparison: TargetComparisonGroup[] = [
+  {
+    title: '岗位培养参考',
+    formedSupports: ['教学工作', '课程建设'],
+    continuingDirections: ['实践成果转化', '教研成果沉淀'],
+  },
+  {
+    title: '聘期要求参考',
+    formedSupports: ['教学工作', '培训进修'],
+    continuingDirections: ['企业实践', '成果荣誉'],
+  },
+  {
+    title: '学校培养目标参考',
+    formedSupports: ['课堂改进', '课程资源建设'],
+    continuingDirections: ['社会服务影响', '教研成果表达'],
+  },
+]
+
+const detailDevelopmentDirections: DevelopmentDirection[] = [
+  {
+    title: '课程建设经验沉淀',
+    description: '适合整理已有课程建设和课堂改进材料。',
+  },
+  {
+    title: '实践成果转化表达',
+    description: '适合补充实践任务、企业评价和转化案例。',
+  },
+  {
+    title: '教研成果继续培育',
+    description: '适合围绕课题、论文和教研成果继续沉淀。',
+  },
 ]
 
 const supportDirections = [
@@ -276,6 +353,26 @@ export function getAbilityProfileTeacherDetailMock(teacherId: string): AbilityPr
     radarData: cloneScores(defaultRadarData),
     abilityDimensions: cloneDimensions(teacherAbilityDimensions),
     supportDirections: supportDirections.map(item => ({ ...item })),
+    currentProfile: {
+      statement: '教学优势较明显，实践与教研仍在持续积累',
+      note: '本页展示当前发展状态，供培养与发展参考。',
+      status: '处于稳定发展期',
+      statusDetail: '骨干方向持续积累',
+      developmentIndex: teacher.developmentIndex,
+      updatedAt: '2026-06-19',
+      tags: [getBasicAbilityTag(teacher.basicAbilityStatus), '教学优势', '实践积累', '教研沉淀'],
+    },
+    stageRadar: buildStageRadar(teacher.basicAbilityStatus, abilityStructure),
+    abilityStructure: abilityStructure.map(item => ({ ...item })),
+    targetComparison: cloneTargetComparison(targetComparison),
+    developmentDirections: detailDevelopmentDirections.map(item => ({ ...item })),
+    basis: {
+      summary: '画像基于成长档案、能力清单和岗位培养要求形成。',
+      links: [
+        { label: '查看引用记录', route: `/admin/archive/teacher/${teacher.id}` },
+        { label: '查看能力清单口径', route: '/admin/ability-list/execution' },
+      ],
+    },
   }
 }
 
@@ -284,7 +381,8 @@ export function calculateTeacherAbilityProfile(
   archiveFacts: TeacherArchiveFact[],
   executionIndicators: AbilityIndicator[],
 ): AbilityProfileTeacherDetailMock {
-  const baseProfile = getAbilityProfileTeacherDetailMock('lin')
+  const baseTeacher = teachers.find(teacher => teacher.name === teacherName) ?? teachers[0]
+  const baseProfile = getAbilityProfileTeacherDetailMock(baseTeacher.id)
   const teacherFacts = archiveFacts.filter(fact => fact.teacher === teacherName)
   const dimensions = ['教学能力', '教研能力', '实践能力', '服务能力']
   const abilityDimensions = dimensions.map((dimension) => {
@@ -304,6 +402,8 @@ export function calculateTeacherAbilityProfile(
   const radarData = abilityDimensions.map(item => ({ label: item.dimension, value: item.index }))
   const averageScore = Math.round(radarData.reduce((sum, item) => sum + item.value, 0) / radarData.length)
   const evidenceTitles = teacherFacts.map(fact => fact.title)
+  const updatedAt = teacherFacts[0]?.archiveTime || baseProfile.teacherInfo.updateTime
+  const calculatedAbilityStructure = buildAbilityStructureFromDimensions(abilityDimensions, baseProfile.abilityStructure)
 
   return {
     ...baseProfile,
@@ -311,7 +411,7 @@ export function calculateTeacherAbilityProfile(
       ...baseProfile.teacherInfo,
       name: teacherName,
       dataBasis: '正式档案事实 + 执行版能力清单',
-      updateTime: teacherFacts[0]?.archiveTime || baseProfile.teacherInfo.updateTime,
+      updateTime: updatedAt,
     },
     developmentIndex: {
       ...baseProfile.developmentIndex,
@@ -322,6 +422,23 @@ export function calculateTeacherAbilityProfile(
     },
     radarData,
     abilityDimensions,
+    currentProfile: {
+      ...baseProfile.currentProfile,
+      developmentIndex: averageScore,
+      updatedAt,
+      tags: [...baseProfile.currentProfile.tags],
+    },
+    stageRadar: buildStageRadar(baseProfile.stageRadar.basicAbilityStatus, calculatedAbilityStructure, {
+      structureSummary: baseProfile.stageRadar.structureSummary,
+      focusItems: baseProfile.stageRadar.focusItems,
+    }),
+    abilityStructure: calculatedAbilityStructure,
+    targetComparison: cloneTargetComparison(baseProfile.targetComparison),
+    developmentDirections: baseProfile.developmentDirections.map(item => ({ ...item })),
+    basis: {
+      ...baseProfile.basis,
+      links: baseProfile.basis.links.map(item => ({ ...item })),
+    },
     supportDirections: supportDirections.map((item, index) => ({
       ...item,
       focus: evidenceTitles[index]
@@ -368,6 +485,77 @@ function buildScoreDistribution(scores: number[]) {
 
 function getWeakestDimension(scores: AbilityProfileScore[]) {
   return [...scores].sort((a, b) => a.value - b.value)[0]?.label ?? '教学能力'
+}
+
+function getAbilityStage(score: number): AbilityStage {
+  return stageRanges.find(stage => score >= stage.min && score <= stage.max)?.stage ?? '名师'
+}
+
+function buildStageRadar(
+  basicAbilityStatus: BasicAbilityStatus,
+  dimensions: AbilityStructureItem[],
+  text: { structureSummary?: string; focusItems?: string[] } = {},
+) {
+  return {
+    basicAbilityStatus,
+    stages: stageRanges.map(item => ({ ...item })),
+    dimensions: dimensions.map(item => {
+      const stage = getAbilityStage(item.score)
+      return {
+        dimension: item.dimension,
+        score: item.score,
+        stage,
+        label: `${item.dimension} ${item.score}｜${stage}`,
+      }
+    }),
+    referenceLine: {
+      label: '岗位培养参考',
+      values: {
+        教学能力: 80,
+        实践能力: 80,
+        服务能力: 70,
+        教研能力: 75,
+      },
+    },
+    structureSummary: text.structureSummary ?? '基本能力已达标，教学与实践相对突出，教研和服务处于骨干阶段持续积累。',
+    focusItems: text.focusItems ? [...text.focusItems] : ['教研成果沉淀', '服务影响材料'],
+  }
+}
+
+function buildAbilityStructureFromDimensions(
+  dimensions: AbilityProfileDimension[],
+  baseItems: AbilityStructureItem[],
+): AbilityStructureItem[] {
+  return dimensions.map((item) => {
+    const dimension = getAbilityDimensionName(item.dimension)
+    const baseItem = baseItems.find(base => base.dimension === dimension)
+    return {
+      dimension,
+      score: item.index,
+      stage: getAbilityStage(item.index),
+      statusText: baseItem?.statusText ?? '持续积累中',
+      description: item.composition,
+    }
+  })
+}
+
+function getAbilityDimensionName(dimension: string) {
+  if (dimension === '教研能力') return '教研能力'
+  if (dimension === '实践能力') return '实践能力'
+  if (dimension === '服务能力') return '服务能力'
+  return '教学能力'
+}
+
+function getBasicAbilityTag(status: BasicAbilityStatus) {
+  return status === '达标' ? '基本能力达标' : '基本能力未达标'
+}
+
+function cloneTargetComparison(items: TargetComparisonGroup[]) {
+  return items.map(item => ({
+    ...item,
+    formedSupports: [...item.formedSupports],
+    continuingDirections: [...item.continuingDirections],
+  }))
 }
 
 function buildDevelopmentDirections(dimensions: AbilityProfileDimension[], factCount: number) {
