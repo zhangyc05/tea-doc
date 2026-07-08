@@ -35,6 +35,7 @@ import abilityIndicatorTable from '@/components/admin/ability-list/AbilityIndica
 import abilityStructureTree from '@/components/admin/ability-list/AbilityStructureTree.vue?raw'
 import detailSheet from '@/components/common/DetailSheet.vue?raw'
 import pageHeader from '@/components/common/PageHeader.vue?raw'
+import adminLayout from '@/layouts/AdminLayout.vue?raw'
 import adminSidebar from '@/components/layout/AdminSidebar.vue?raw'
 import adminTopbar from '@/components/layout/AdminTopbar.vue?raw'
 
@@ -137,6 +138,22 @@ const trainingPracticeLabSources = [
 ] as const
 
 describe('admin visual action guardrails', () => {
+  it('uses AdminLayout as the unified illustrated right-side stage', () => {
+    expect(adminLayout).toContain("import backgroundImage from '@/images/background-image@2x.png'")
+    expect(adminLayout).toContain(':style="{ backgroundImage: `url(${backgroundImage})` }"')
+    expect(adminLayout).toContain('class="admin-main-background"')
+    expect(adminLayout).toContain('background-size: cover;')
+    expect(adminLayout).toContain('background: rgba(255, 255, 255, 0.48);')
+    expect(adminLayout).toContain('position: relative;')
+    expect(adminLayout).toContain('z-index: 1;')
+  })
+
+  it('keeps pilot pages from repainting an opaque right-side page background', () => {
+    expect(archiveQueryPage).not.toContain('background: var(--color-page-bg);')
+    expect(archiveQueryPage).toContain('background: transparent;')
+    expect(archiveQueryPage).toContain('background: rgba(255, 255, 255, 0.9);')
+  })
+
   it('keeps AdminSelect root classes layout-only instead of drawing a second select shell', () => {
     const offenders = adminVisualSources.flatMap(([name, source]) =>
       findSelectRootShellStyles(source).map(block => `${name} .${block.className}: ${block.body.replace(/\s+/g, ' ').trim()}`),
@@ -1264,6 +1281,15 @@ describe('admin visual action guardrails', () => {
     expect(trainingResourcePage).toContain('当前查看资源')
     expect(trainingResourcePage).toContain('showIncompleteResources')
     expect(trainingResourcePage).not.toContain('<div class="sidebar-card">')
+  })
+
+  it('keeps the training resource page visual hierarchy aligned with the admin workstation style', () => {
+    expect(trainingResourcePage).toContain('background: linear-gradient(180deg, var(--color-admin-bg-soft) 0%, var(--color-admin-bg) 46%, #ffffff 100%)')
+    expect(trainingResourcePage).toContain('border-top: 3px solid var(--resource-accent)')
+    expect(trainingResourcePage).toContain('box-shadow: 0 12px 28px rgba(25, 82, 148, 0.07)')
+    expect(trainingResourcePage).toContain('background: linear-gradient(180deg, var(--color-admin-bg-soft) 0%, #eef5ff 100%)')
+    expect(trainingResourcePage).toContain('box-shadow: inset 3px 0 0 rgba(18, 104, 246, 0.72)')
+    expect(trainingResourcePage).toContain('<AdminTableColumn label="操作" min-width="78" fixed="right">')
   })
 
   it('uses CompactFilterBar for the training demand filter area', () => {

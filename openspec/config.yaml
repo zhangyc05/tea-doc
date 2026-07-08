@@ -2,6 +2,11 @@ schema: spec-driven
 
 # Project context (optional)
 # This is shown to AI when creating artifacts.
+context: |
+  本项目 OpenSpec 文档默认使用中文。
+  proposal.md、design.md、tasks.md、spec.md 中的说明、需求、场景和任务应优先使用中文表达。
+  OpenSpec 固定结构标题可保留英文，例如 "## ADDED Requirements"、"### Requirement:"、"#### Scenario:"，以保证 CLI 兼容。
+
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
 # Example:
 #   context: |

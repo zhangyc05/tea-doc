@@ -224,26 +224,26 @@ function showIncompleteResources() {
                   :row-class-name="resourceRowClassName"
                   empty-text="暂无符合条件的培训资源"
                 >
-                  <AdminTableColumn label="资源名称" min-width="210">
+                  <AdminTableColumn label="资源名称" min-width="190">
                     <template #default="{ row }">
                       <span class="resource-name">{{ row.name }}</span>
                     </template>
                   </AdminTableColumn>
-                  <AdminTableColumn prop="direction" label="培训方向" min-width="110" />
-                  <AdminTableColumn label="级别 / 学时" min-width="120">
+                  <AdminTableColumn prop="direction" label="培训方向" min-width="96" />
+                  <AdminTableColumn label="级别 / 学时" min-width="108">
                     <template #default="{ row }">
                       {{ row.level }} / {{ row.hours }}
                     </template>
                   </AdminTableColumn>
-                  <AdminTableColumn prop="institution" label="培训机构" min-width="160" />
-                  <AdminTableColumn prop="target" label="适合对象" min-width="120" />
-                  <AdminTableColumn prop="source" label="资源来源" min-width="100" />
-                  <AdminTableColumn label="资源状态" min-width="110">
+                  <AdminTableColumn prop="institution" label="培训机构" min-width="136" />
+                  <AdminTableColumn prop="target" label="适合对象" min-width="104" />
+                  <AdminTableColumn prop="source" label="资源来源" min-width="88" />
+                  <AdminTableColumn label="资源状态" min-width="100">
                     <template #default="{ row }">
                       <StatusBadge :status="row.status" />
                     </template>
                   </AdminTableColumn>
-                  <AdminTableColumn label="操作" min-width="90" fixed="right">
+                  <AdminTableColumn label="操作" min-width="78" fixed="right">
                     <template #default="{ row }">
                       <Button variant="ghost" size="sm" @click="viewDetail(row.id)">
                         查看
@@ -337,7 +337,7 @@ function showIncompleteResources() {
 <style scoped>
 .training-resource-page {
   min-height: 100vh;
-  background: var(--color-admin-bg);
+  background: linear-gradient(180deg, var(--color-admin-bg-soft) 0%, var(--color-admin-bg) 46%, #ffffff 100%);
   color: var(--color-admin-text-strong);
 }
 
@@ -376,29 +376,58 @@ function showIncompleteResources() {
 }
 
 .stats-section {
-  background: var(--color-admin-bg);
+  background: transparent;
 }
 
 .stats-container {
   max-width: 1560px;
   margin: 0 auto;
-  padding: 0 22px 18px;
+  padding: 18px 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-admin-lg);
 }
 
 .stat-card {
+  --resource-accent: var(--color-admin-primary);
+
+  position: relative;
   display: grid;
   grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-admin-card-gap);
   min-height: 132px;
   padding: 22px 30px;
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
   border: 1px solid var(--color-admin-border);
+  border-top: 3px solid var(--resource-accent);
   border-radius: var(--radius-admin-panel);
-  box-shadow: var(--shadow-admin-card-subtle);
+  box-shadow: 0 12px 28px rgba(25, 82, 148, 0.07);
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: -34px;
+  width: 106px;
+  height: 106px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--resource-accent) 11%, transparent);
+  pointer-events: none;
+}
+
+.stat-card:nth-child(2) {
+  --resource-accent: #18b675;
+}
+
+.stat-card:nth-child(3) {
+  --resource-accent: #ff8a1f;
+}
+
+.stat-card:nth-child(4) {
+  --resource-accent: #7347e9;
 }
 
 .stat-icon {
@@ -408,7 +437,10 @@ function showIncompleteResources() {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.66);
+  background: color-mix(in srgb, var(--resource-accent) 15%, #ffffff);
+  box-shadow:
+    inset 0 0 0 10px rgba(255, 255, 255, 0.58),
+    0 10px 22px color-mix(in srgb, var(--resource-accent) 18%, transparent);
 }
 
 .stat-icon :deep(svg) {
@@ -417,23 +449,19 @@ function showIncompleteResources() {
 }
 
 .icon-file {
-  color: #18b675;
-  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
+  color: var(--resource-accent);
 }
 
 .icon-check {
-  color: #1fbd75;
-  background: linear-gradient(145deg, #edfdf5 0%, #d7f7e8 100%);
+  color: var(--resource-accent);
 }
 
 .icon-edit {
-  color: #ff8a1f;
-  background: linear-gradient(145deg, #fff7ec 0%, #ffe8ca 100%);
+  color: var(--resource-accent);
 }
 
 .icon-book {
-  color: #7347e9;
-  background: linear-gradient(145deg, #f7f0ff 0%, #eadcff 100%);
+  color: var(--resource-accent);
 }
 
 .stat-value {
@@ -464,7 +492,7 @@ function showIncompleteResources() {
 .main-section {
   max-width: 1560px;
   margin: 0 auto;
-  padding: 0 22px 30px;
+  padding: 0 22px 34px;
 }
 
 .resource-workspace {
@@ -483,7 +511,12 @@ function showIncompleteResources() {
   border-radius: var(--radius-admin-panel);
   border: 1px solid var(--color-admin-border);
   overflow: hidden;
-  box-shadow: var(--shadow-admin-card-subtle);
+  box-shadow: 0 12px 28px rgba(25, 82, 148, 0.07);
+}
+
+.content-card :deep(.compact-filter-bar) {
+  padding: 18px 20px 20px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-admin-bg-soft) 100%);
 }
 
 .filter-item {
@@ -496,7 +529,7 @@ function showIncompleteResources() {
 .filter-label {
   font-size: 14px;
   font-weight: 600;
-  color: #1d2b48;
+  color: var(--color-admin-text-title);
   white-space: nowrap;
 }
 
@@ -514,7 +547,8 @@ function showIncompleteResources() {
   min-height: 40px;
   padding: 0 16px;
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 0 1px #d7e2f1 inset;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--color-admin-border-muted) inset;
   transition: box-shadow 0.16s ease;
 }
 
@@ -523,7 +557,7 @@ function showIncompleteResources() {
 }
 
 .search-input :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #1d6df2 inset;
+  box-shadow: 0 0 0 1px var(--color-admin-primary) inset;
 }
 
 .resource-create-action {
@@ -532,7 +566,7 @@ function showIncompleteResources() {
 
 .operation-message {
   margin-top: var(--space-admin-sm);
-  color: #1d6df2;
+  color: var(--color-admin-primary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -547,6 +581,8 @@ function showIncompleteResources() {
   table-layout: fixed;
   border-collapse: collapse;
   border: 1px solid var(--color-admin-border);
+  border-radius: var(--radius-admin-panel);
+  overflow: hidden;
 }
 
 .resource-table :deep(.el-table__header .el-table__cell) {
@@ -556,9 +592,9 @@ function showIncompleteResources() {
   line-height: 1.35;
   font-weight: 600;
   color: var(--color-admin-text-strong);
-  border-right: 1px solid #e4ecf7;
+  border-right: 1px solid var(--color-admin-divider);
   border-bottom: 1px solid var(--color-admin-border);
-  background: var(--color-admin-bg-soft);
+  background: linear-gradient(180deg, var(--color-admin-bg-soft) 0%, #eef5ff 100%);
 }
 
 .resource-table :deep(.el-table__body .el-table__cell) {
@@ -566,9 +602,13 @@ function showIncompleteResources() {
   font-size: 13px;
   line-height: 1.55;
   color: #24314c;
-  border-right: 1px solid #e4ecf7;
-  border-bottom: 1px solid #e4ecf7;
+  border-right: 1px solid var(--color-admin-divider);
+  border-bottom: 1px solid var(--color-admin-divider);
   vertical-align: middle;
+}
+
+.resource-table :deep(.el-table__body tr:hover .el-table__cell) {
+  background: #f7fbff;
 }
 
 .resource-table :deep(.el-table__cell:last-child) {
@@ -577,11 +617,12 @@ function showIncompleteResources() {
 
 :deep(.resource-row.active) {
   background: #f4f8ff;
+  box-shadow: inset 3px 0 0 rgba(18, 104, 246, 0.72);
 }
 
 .resource-name {
   font-weight: 600;
-  color: #14213d;
+  color: var(--color-admin-text-title);
 }
 
 .resource-table :deep(.el-table__cell:nth-child(1)) {
@@ -625,12 +666,23 @@ function showIncompleteResources() {
   align-items: center;
   gap: var(--space-admin-md-lg);
   padding: 16px 16px 20px;
-  color: #52617a;
+  color: var(--color-admin-text-muted);
   font-size: 13px;
 }
 
 .sidebar {
   min-width: 0;
+}
+
+.sidebar :deep(.insight-sidebar) {
+  border-color: var(--color-admin-border);
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-admin-bg-soft) 100%);
+  box-shadow: 0 12px 28px rgba(25, 82, 148, 0.07);
+}
+
+.sidebar :deep(.insight-sidebar__title) {
+  margin-bottom: var(--space-admin-lg);
+  color: var(--color-admin-text-title);
 }
 
 .sidebar-card {
@@ -651,13 +703,15 @@ function showIncompleteResources() {
 }
 
 .overview-section {
-  margin: 0 16px;
-  padding: 18px 8px;
-  border-bottom: 1px solid var(--color-admin-border);
+  margin: 0;
+  padding: var(--space-admin-lg);
+  border: 1px solid var(--color-admin-divider);
+  border-radius: var(--radius-admin-panel);
+  background: #fff;
 }
 
 .overview-section:last-child {
-  border-bottom: 1px solid var(--color-admin-border);
+  border-bottom: 1px solid var(--color-admin-divider);
 }
 
 .section-title {
@@ -678,6 +732,7 @@ function showIncompleteResources() {
   grid-template-columns: 12px minmax(0, 1fr) auto;
   gap: var(--space-admin-xs);
   align-items: center;
+  min-height: 24px;
 }
 
 .item-dot {
@@ -685,39 +740,46 @@ function showIncompleteResources() {
   height: 8px;
   border-radius: 50%;
   background: var(--color-admin-primary);
+  box-shadow: 0 0 0 4px rgba(18, 104, 246, 0.08);
 }
 
 .distribution-item:nth-child(2) .item-dot {
   background: #19bd72;
+  box-shadow: 0 0 0 4px rgba(25, 189, 114, 0.1);
 }
 
 .distribution-item:nth-child(3) .item-dot {
   background: #ff9a2e;
+  box-shadow: 0 0 0 4px rgba(255, 154, 46, 0.12);
 }
 
 .distribution-item:nth-child(4) .item-dot {
   background: #ff5d4f;
+  box-shadow: 0 0 0 4px rgba(255, 93, 79, 0.1);
 }
 
 .distribution-item:nth-child(5) .item-dot {
   background: #9aa6ba;
+  box-shadow: 0 0 0 4px rgba(154, 166, 186, 0.12);
 }
 
 .item-label {
   font-size: 13px;
-  color: #24314c;
+  color: var(--color-admin-text-strong);
 }
 
 .item-count {
   font-size: 13px;
   font-weight: 600;
-  color: #52617a;
+  color: var(--color-admin-text-muted);
 }
 
 .selected-resource {
-  margin: 0 16px;
-  padding: 18px 8px;
-  border-bottom: 1px solid var(--color-admin-border);
+  margin-top: var(--space-admin-md-lg);
+  padding: var(--space-admin-lg);
+  border: 1px solid var(--color-admin-border-muted);
+  border-radius: var(--radius-admin-panel);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
 }
 
 .selected-name {

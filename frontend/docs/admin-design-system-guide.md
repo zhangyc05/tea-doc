@@ -20,6 +20,7 @@
 ## 布局规则
 
 - 管理端统一使用 `frontend/src/layouts/AdminLayout.vue`。
+- 管理端右侧工作区统一由 `AdminLayout.vue` 承载 `frontend/src/images/background-image@2x.png` 作为整体背景舞台；页面根容器不得再绘制不透明整页背景，内容卡片优先使用半透明白色承载层，保证背景连续且表格、筛选、详情内容可读。
 - 侧边栏、顶栏、面包屑优先复用：
 
 ```txt

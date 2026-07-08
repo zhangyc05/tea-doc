@@ -274,7 +274,7 @@ function getTeacherInitial(name: string) {
   min-height: calc(100vh - var(--admin-topbar-height) - var(--admin-page-gutter-y) * 2);
   flex-direction: column;
   gap: var(--space-admin-md);
-  background: var(--color-page-bg);
+  background: transparent;
 }
 
 /* 查询搜索区 */
@@ -287,10 +287,11 @@ function getTeacherInitial(name: string) {
 
 .filter-content {
   width: 100%;
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: var(--space-admin-lg);
+  box-shadow: var(--shadow-admin-card-faint);
 }
 
 .filter-row {
@@ -476,7 +477,7 @@ function getTeacherInitial(name: string) {
   padding: 42px 20px;
   border: 1px dashed var(--color-card-border);
   border-radius: var(--radius-lg);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
   color: var(--color-text-secondary);
   text-align: center;
 }
@@ -498,7 +499,7 @@ function getTeacherInitial(name: string) {
 }
 
 .teacher-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
   padding: var(--space-admin-xl);
@@ -521,7 +522,7 @@ function getTeacherInitial(name: string) {
   padding: var(--space-admin-lg) var(--space-admin-xl);
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-lg);
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   transition: all 0.16s ease;
 }
 
